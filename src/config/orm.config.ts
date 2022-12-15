@@ -24,5 +24,5 @@ export default {
     entities: [join(__dirname, process.env.DB_ENTITIES)],
     migrations: [join(__dirname, process.env.DB_MIGRATIONS)],
     migrationsRun: true,
-    timezone: DB_TIMEZONE ?? '+00:00'
+    timezone: DB_TIMEZONE ?? '+00:00',
 } as TypeOrmModuleOptions;

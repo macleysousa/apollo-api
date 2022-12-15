@@ -5,11 +5,11 @@ export const REQUEST_CONTEXT = '_requestContext';
 
 @Injectable()
 export class InjectRequestInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
-    const request = context.switchToHttp().getRequest();
+    intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
+        const request = context.switchToHttp().getRequest();
 
-    request.body[REQUEST_CONTEXT] = { user: request.user, params: request.params };
+        request.body[REQUEST_CONTEXT] = { user: request.user, params: request.params };
 
-    return next.handle();
-  }
+        return next.handle();
+    }
 }

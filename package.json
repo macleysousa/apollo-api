@@ -23,16 +23,19 @@
     "controller:create": "npx nest g controller",
     "service:create": "npx nest g service",
     "crud": "npx nest g resource",
-    "migration:create": "typeorm migration:create -d src/migrations -n"
+    "migration:create": "typeorm migration:create"
   },
   "dependencies": {
     "@nestjs/common": "^9.2.1",
     "@nestjs/core": "^9.2.1",
+    "@nestjs/jwt": "^9.0.0",
+    "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.2.1",
     "@nestjs/swagger": "^6.1.4",
     "@nestjs/typeorm": "^9.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.0",
+    "crypto-js": "^4.1.1",
     "mysql2": "^2.3.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
@@ -43,8 +46,10 @@
     "@nestjs/cli": "^9.1.5",
     "@nestjs/schematics": "^9.0.3",
     "@nestjs/testing": "^9.2.1",
+    "@types/crypto-js": "^4.1.1",
     "@types/express": "^4.17.15",
     "@types/jest": "29.2.4",
+    "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.15",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
@@ -77,6 +82,13 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/$1"
+    },
+    "setupFiles": [
+      "<rootDir>/setup.test.ts"
+    ],
+    "verbose": true
   }
 }
