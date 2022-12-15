@@ -40,7 +40,13 @@ describe('UserController', () => {
     describe('create', () => {
         it('should create a User Entity with successful', async () => {
             // Arrange
-            const createUserDto: CreateUserDto = { username: 'username', password: 'password', name: 'name', role: Role.DEFAULT };
+            const createUserDto: CreateUserDto = {
+                username: 'username',
+                password: 'password',
+                name: 'name',
+                role: Role.DEFAULT,
+                status: UserStatus.RELEASED,
+            };
 
             // Act
             const response = await userController.create(createUserDto);
