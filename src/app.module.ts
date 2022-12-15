@@ -6,7 +6,6 @@ import ormConfig from './config/orm.config';
 import { InjectRequestInterceptor } from './commons/inject-request.interceptor';
 import { AllExceptionsFilter } from './exceptions/all-exceptions.filter';
 import { UserModule } from './modules/user/user.module';
-import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({ ...ormConfig }), UserModule],
