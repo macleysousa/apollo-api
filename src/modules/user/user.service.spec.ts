@@ -40,6 +40,7 @@ describe('UserService', () => {
 
     it('should be defined', () => {
         expect(userService).toBeDefined();
+        expect(userRepository).toBeDefined();
     });
 
     describe('create', () => {
