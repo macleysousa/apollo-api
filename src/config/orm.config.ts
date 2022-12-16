@@ -8,7 +8,7 @@ dotenv.config();
 const { DB_DATABASE, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_PORT, DB_TIMEZONE } = process.env;
 
 if (!DB_HOSTNAME || !DB_DATABASE || !DB_USERNAME) {
-    throw new Error('Database variable DB_* has not been set properly.');
+    throw new Error('Database variable DB_* has not been set properly');
 }
 
 export default {

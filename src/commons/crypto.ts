@@ -10,8 +10,7 @@ if (!SECRET_KEY) {
 }
 
 export function encrypt(value: string) {
-    if (value) return AES.encrypt(value, SECRET_KEY).toString();
-    else return null;
+    return AES.encrypt(value, SECRET_KEY).toString();
 }
 
 export function decrypt(value: string) {
