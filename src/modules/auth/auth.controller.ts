@@ -2,7 +2,6 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { IsPublic } from 'src/decorators/is-public.decorator';
 
-import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/login.dto';
 import { TokenDTO } from './dto/token.dto';
