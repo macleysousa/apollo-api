@@ -5,12 +5,8 @@ import { ValidatorConstraint, ValidationArguments } from 'class-validator';
 @ValidatorConstraint({ async: true })
 @Injectable()
 export class IsUserNameValidConstraint implements ValidatorConstraintInterface {
-    async validate(name: string): Promise<boolean> {
-        if (new RegExp('^([a-z0-9,-]{4,})$').test(name)) {
-            return true;
-        }
-
-        return false;
+    async validate(username: string): Promise<boolean> {
+        return new RegExp('^([a-z0-9,-]{3,})$').test(username);
     }
 
     defaultMessage(_validationArguments?: ValidationArguments): string {

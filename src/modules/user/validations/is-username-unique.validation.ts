@@ -9,13 +9,10 @@ import { UserService } from '../user.service';
 export class IsUserNameUniqueConstraint implements ValidatorConstraintInterface {
     constructor(private readonly userService: UserService) {}
 
-    async validate(name: string, args: ValidationArguments): Promise<boolean> {
-        const unique = await this.userService.findByUserName(name);
+    async validate(name: string, args?: ValidationArguments): Promise<boolean> {
+        const user = await this.userService.findByUserName(name);
 
-        if (!unique) {
-            return true;
-        }
-        return false;
+        return !user ? true : false;
     }
 
     defaultMessage(_validationArguments?: ValidationArguments): string {
