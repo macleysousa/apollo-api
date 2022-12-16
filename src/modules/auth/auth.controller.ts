@@ -10,7 +10,7 @@ import { TokenDTO } from './dto/token.dto';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService, private userService: UserService) {}
+    constructor(private readonly authService: AuthService) {}
 
     @IsPublic()
     @Post('/signIn')

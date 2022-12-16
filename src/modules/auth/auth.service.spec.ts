@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { authFakeRepository } from 'src/base-fake/auth';
 import { userFakeRepository } from 'src/base-fake/user';
-import { Z_UNKNOWN } from 'zlib';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/login.dto';
