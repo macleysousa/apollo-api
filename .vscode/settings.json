@@ -1,6 +1,11 @@
 {
     "editor.formatOnSave": true,
+    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
     "[typescript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-    }
+        "editor.defaultFormatter": "vscode.typescript-language-features",
+        "files.insertFinalNewline": false,
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    },
 }
