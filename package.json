@@ -93,6 +93,7 @@
             ".mock.ts",
             ".pipe.ts",
             ".d.ts",
+            "<rootDir>/base-fake",
             "<rootDir>/migrations",
             "<rootDir>/main.ts"
         ],
