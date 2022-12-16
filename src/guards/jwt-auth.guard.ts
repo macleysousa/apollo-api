@@ -13,7 +13,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     private getTokenFromRequest(request: TenantRequest): string {
-        const authHeader = Object.keys(request.headers).find(h => h.toLowerCase() === 'authorization');
+        const authHeader = Object.keys(request.headers).find((h) => h.toLowerCase() === 'authorization');
 
         if (!authHeader) {
             throw new UnauthorizedException('Token is not present');
@@ -41,7 +41,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         if (!token) {
             throw new UnauthorizedException('Invalid or not provided auth token');
         }
-        return this.AuthService.validateToken(token).then(async user => {
+        return this.AuthService.validateToken(token).then(async (user) => {
             if (!user) throw new UnauthorizedException('Invalid token');
             request.user = user;
             return true;

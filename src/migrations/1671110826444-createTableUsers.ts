@@ -55,7 +55,7 @@ export class createTableUsers1671110826444 implements MigrationInterface {
                         default: 'now()',
                     },
                 ],
-            }),
+            })
         );
     }
 

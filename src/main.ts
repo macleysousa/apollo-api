@@ -16,7 +16,7 @@ async function bootstrap() {
         new ValidationPipe({
             transform: true,
             exceptionFactory: ValidationExceptionFactory,
-        }),
+        })
     );
 
     useContainer(app.select(AppModule), { fallbackOnErrors: true });

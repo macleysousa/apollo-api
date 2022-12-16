@@ -20,10 +20,10 @@ export class UserEntity extends BaseEntity {
     @Exclude()
     @Column({
         transformer: {
-            to: value => {
+            to: (value) => {
                 return encrypt(value);
             },
-            from: value => {
+            from: (value) => {
                 return decrypt(value);
             },
         },

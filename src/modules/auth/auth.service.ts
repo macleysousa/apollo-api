@@ -25,7 +25,7 @@ export class AuthService {
     }
 
     async validateToken(token: string): Promise<UserEntity> {
-        await this.jwtService.verifyAsync(token).catch(err => {
+        await this.jwtService.verifyAsync(token).catch((err) => {
             if (err.name == 'TokenExpiredError') {
                 throw new UnauthorizedException('token expired');
             } else {
