@@ -48,9 +48,10 @@ describe('AuthService', () => {
     describe('login', () => {
         it('should succeed when logging in', async () => {
             // Arrange
+            const token = { token: 'token', refreshToken: 'token' };
             const login: LoginDTO = { username: 'username', password: 'password' };
             const user = userFakeRepository.findOne();
-            const payload = { ub: user.id, username: user.username, name: user.name };
+            const payload = { id: user.id, username: user.username, name: user.name };
 
             // Act
             const response = await authService.login(login);
@@ -58,9 +59,9 @@ describe('AuthService', () => {
             // Assert
             expect(userService.validateUser).toHaveBeenCalledTimes(1);
             expect(userService.validateUser).toHaveBeenCalledWith(login.username, login.password);
-            expect(jwtService.sign).toHaveBeenCalledTimes(1);
+            expect(jwtService.sign).toHaveBeenCalledTimes(2);
             expect(jwtService.sign).toHaveBeenCalledWith(payload);
-            expect(response).toEqual(authFakeRepository.token());
+            expect(response).toEqual(token);
         });
 
         it('should fail when logging in with error *username or password is invalid*', async () => {
@@ -117,6 +118,42 @@ describe('AuthService', () => {
             expect(authService.validateToken(token)).rejects.toEqual(new UnauthorizedException('undefined'));
             expect(jwtService.verifyAsync).toHaveBeenCalledTimes(1);
             expect(jwtService.verifyAsync).toHaveBeenCalledWith(token);
+        });
+    });
+
+    describe('refreshToken', () => {
+        it('should succeed when refresh token in', async () => {
+            // Arrange
+            const { token } = authFakeRepository.token();
+            const refreshToken = 'refreshToken';
+            const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+            const user = userFakeRepository.findOne();
+            const payload = { id: user.id, username: user.username, name: user.name };
+            jest.spyOn(jwtService, 'verifyAsync').mockResolvedValueOnce(payload);
+
+            // Act
+            const response = await authService.refreshToken(refreshToken);
+
+            // Assert
+            expect(jwtService.verifyAsync).toHaveBeenCalledTimes(1);
+            expect(jwtService.verifyAsync).toHaveBeenCalledWith(refreshToken, { secret: REFRESH_TOKEN_SECRET });
+            expect(jwtService.sign).toHaveBeenCalledTimes(1);
+            expect(jwtService.sign).toHaveBeenCalledWith(payload);
+            expect(response).toEqual({ token });
+        });
+
+        it('should fail when refresh in with error *refresh token invalid*', async () => {
+            // Arrange
+            const refreshToken = 'refreshToken';
+            const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+            jest.spyOn(jwtService, 'verifyAsync').mockRejectedValueOnce({});
+
+            // Act
+
+            // Assert
+            expect(authService.refreshToken(refreshToken)).rejects.toEqual(new UnauthorizedException('refresh token invalid'));
+            expect(jwtService.verifyAsync).toHaveBeenCalledTimes(1);
+            expect(jwtService.verifyAsync).toHaveBeenCalledWith(refreshToken, { secret: REFRESH_TOKEN_SECRET });
         });
     });
 });

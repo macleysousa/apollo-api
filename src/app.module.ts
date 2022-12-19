@@ -9,9 +9,10 @@ import { UserModule } from './modules/user/user.module';
 import { RolesGuard } from './guards/roles.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthModule } from './modules/auth/auth.module';
+import { ComponentsModule } from './modules/components/components.module';
 
 @Module({
-    imports: [TypeOrmModule.forRoot({ ...ormConfig }), AuthModule, UserModule],
+    imports: [TypeOrmModule.forRoot({ ...ormConfig }), AuthModule, UserModule, ComponentsModule],
     controllers: [],
     providers: [
         {

@@ -1,8 +1,6 @@
-import { TokenDTO } from 'src/modules/auth/dto/token.dto';
-
 class AuthFakeRepository {
-    token(): TokenDTO {
-        return { token: 'token' };
+    token() {
+        return { token: 'token', refreshToken: 'refreshToken' };
     }
 }
 
