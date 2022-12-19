@@ -1,34 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ComponentsService } from './components.service';
-import { CreateComponentDto } from './dto/create-component.dto';
-import { UpdateComponentDto } from './dto/update-component.dto';
 
+import { ComponentEntity } from './entities/component.entity';
+
+@ApiTags('Components')
 @Controller('components')
+@ApiBearerAuth()
 export class ComponentsController {
-  constructor(private readonly componentsService: ComponentsService) {}
+    constructor(private readonly componentsService: ComponentsService) {}
 
-  @Post()
-  create(@Body() createComponentDto: CreateComponentDto) {
-    return this.componentsService.create(createComponentDto);
-  }
+    @Get()
+    @ApiQuery({ name: 'filter', required: false })
+    @ApiQuery({ name: 'blocked', required: false })
+    async findAll(@Query('filter') filter: string, @Query('blocked') blocked: boolean): Promise<ComponentEntity[]> {
+        return this.componentsService.find(filter, blocked);
+    }
 
-  @Get()
-  findAll() {
-    return this.componentsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.componentsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateComponentDto: UpdateComponentDto) {
-    return this.componentsService.update(+id, updateComponentDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.componentsService.remove(+id);
-  }
+    @Get(':id')
+    async findOne(@Param('id') id: string): Promise<ComponentEntity> {
+        return this.componentsService.findById(id);
+    }
 }

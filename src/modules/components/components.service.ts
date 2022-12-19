@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateComponentDto } from './dto/create-component.dto';
-import { UpdateComponentDto } from './dto/update-component.dto';
+import { ILike, IsNull, Not, Repository } from 'typeorm';
 import { ComponentEntity } from './entities/component.entity';
 
 @Injectable()
@@ -12,23 +10,23 @@ export class ComponentsService {
         private componentRepository: Repository<ComponentEntity>
     ) {}
 
-    async create(createComponentDto: CreateComponentDto): Promise<ComponentEntity> {
-        return;
+    async find(filter?: string, blocked?: boolean): Promise<ComponentEntity[]> {
+        const queryBuilder = this.componentRepository.createQueryBuilder('c');
+        queryBuilder.where({ id: Not(IsNull()) });
+
+        if (filter) {
+            queryBuilder.andWhere({ id: ILike(`%${filter}%`) });
+            queryBuilder.andWhere({ name: ILike(`%${filter}%`) });
+        }
+
+        if (blocked) {
+            queryBuilder.andWhere({ blocked: blocked });
+        }
+
+        return queryBuilder.getMany();
     }
 
-    async findAll(): Promise<ComponentEntity[]> {
-        return;
-    }
-
-    async findOne(id: number): Promise<ComponentEntity> {
-        return;
-    }
-
-    async update(id: number, updateComponentDto: UpdateComponentDto): Promise<ComponentEntity> {
-        return;
-    }
-
-    async remove(id: number): Promise<ComponentEntity> {
-        return;
+    async findById(id: string): Promise<ComponentEntity> {
+        return this.componentRepository.findOne({ where: { id } });
     }
 }
