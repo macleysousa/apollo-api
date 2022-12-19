@@ -1,3 +1,4 @@
+import { UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { userFakeRepository } from 'src/base-fake/user';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -37,8 +38,29 @@ describe('UserController', () => {
     });
 
     describe('create', () => {
+        it('should create a User Entity with failed *To create sysadmin user you must have sysadmin access*', async () => {
+            // Arrange
+            const user = userFakeRepository.findOne();
+            const createUserDto: CreateUserDto = {
+                username: 'username',
+                password: 'password',
+                name: 'name',
+                role: Role.SYSADMIN,
+                status: UserStatus.RELEASED,
+            };
+
+            // Act
+
+            // Assert
+
+            expect(userController.create(user, createUserDto)).rejects.toEqual(
+                new UnauthorizedException('To create sysadmin user you must have sysadmin access')
+            );
+        });
+
         it('should create a User Entity with successful', async () => {
             // Arrange
+            const user = userFakeRepository.findOne();
             const createUserDto: CreateUserDto = {
                 username: 'username',
                 password: 'password',
@@ -48,7 +70,7 @@ describe('UserController', () => {
             };
 
             // Act
-            const response = await userController.create(createUserDto);
+            const response = await userController.create(user, createUserDto);
 
             // Assert
             expect(userService.create).toHaveBeenCalledTimes(1);
@@ -88,13 +110,28 @@ describe('UserController', () => {
     });
 
     describe('update', () => {
+        it('should update a User Entity with failed *To update user to sysadmin you must have sysadmin access*', async () => {
+            // Arrange
+            const user = userFakeRepository.findOne();
+            const userId = 1;
+            const updateUserDto: UpdateUserDto = { password: 'password', name: 'name', role: Role.SYSADMIN, status: UserStatus.BLOCKED };
+
+            // Act
+
+            // Assert
+            expect(userController.update(user, userId, updateUserDto)).rejects.toEqual(
+                new UnauthorizedException('To update user to sysadmin you must have sysadmin access')
+            );
+        });
+
         it('should update a User Entity with successful', async () => {
             // Arrange
+            const user = userFakeRepository.findOne();
             const userId = 1;
             const updateUserDto: UpdateUserDto = { password: 'password', name: 'name', role: Role.DEFAULT, status: UserStatus.BLOCKED };
 
             // Act
-            const response = await userController.update(userId, updateUserDto);
+            const response = await userController.update(user, userId, updateUserDto);
 
             // Assert
             expect(userService.update).toHaveBeenCalledTimes(1);

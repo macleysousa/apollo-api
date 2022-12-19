@@ -15,10 +15,10 @@ export class UpdateUserDto {
     name: string;
 
     @IsOptional()
-    @ApiProperty()
+    @ApiProperty({ enum: Role })
     role: Role;
 
     @IsOptional()
-    @ApiProperty()
+    @ApiProperty({ enum: UserStatus })
     status: UserStatus;
 }

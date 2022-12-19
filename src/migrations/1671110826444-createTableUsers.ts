@@ -1,3 +1,6 @@
+import { encrypt } from 'src/commons/crypto';
+import { Role } from 'src/modules/user/enum/user-role.enum';
+import { UserStatus } from 'src/modules/user/enum/user-status';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class createTableUsers1671110826444 implements MigrationInterface {
@@ -56,6 +59,10 @@ export class createTableUsers1671110826444 implements MigrationInterface {
                     },
                 ],
             })
+        );
+        queryRunner.query(
+            `INSERT INTO users(username,name,password,role,status)
+            VALUES ('apollo','developer','${encrypt('start')}','${Role.SYSADMIN}','${UserStatus.RELEASED}')`
         );
     }
 
