@@ -55,6 +55,8 @@ describe('crypto', () => {
         const text = 'apollo-api';
         process.env.SECRET_KEY = 'apollo';
 
+        jest.resetModules();
+
         const crypto = require('./crypto');
         jest.mock('crypto-js', () => {
             return {
@@ -70,6 +72,6 @@ describe('crypto', () => {
         const response = crypto.decrypt(text);
 
         // Assert
-        expect(response).toEqual(null || '');
+        expect(response).toEqual(null);
     });
 });

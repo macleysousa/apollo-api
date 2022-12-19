@@ -5,9 +5,9 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const { DB_DATABASE, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_PORT, DB_TIMEZONE } = process.env;
+const { DB_DATABASE, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_PORT, DB_TIMEZONE, DB_ENTITIES, DB_MIGRATIONS } = process.env;
 
-if (!DB_HOSTNAME || !DB_DATABASE || !DB_USERNAME) {
+if (!DB_HOSTNAME || !DB_DATABASE || !DB_USERNAME || !DB_ENTITIES || !DB_MIGRATIONS) {
     throw new Error('Database variable DB_* has not been set properly');
 }
 
@@ -21,8 +21,8 @@ export default {
     autoLoadEntities: true,
     synchronize: false,
     logging: true,
-    entities: [join(__dirname, process.env.DB_ENTITIES)],
-    migrations: [join(__dirname, process.env.DB_MIGRATIONS)],
+    entities: [join(__dirname, DB_ENTITIES)],
+    migrations: [join(__dirname, DB_MIGRATIONS)],
     migrationsRun: true,
-    timezone: DB_TIMEZONE ?? '+00:00',
+    timezone: DB_TIMEZONE || '+00:00',
 } as TypeOrmModuleOptions;

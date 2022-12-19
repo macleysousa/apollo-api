@@ -22,6 +22,20 @@ describe('orm configuration', () => {
         }
     });
 
+    it('should success to instantiate module orm configuration default env', () => {
+        // Arrange
+        process.env.DB_USERNAME = 'DB_USERNAME';
+        process.env.DB_PORT = '';
+        process.env.DB_TIMEZONE = '';
+
+        // Act
+        const orm = require('./orm.config');
+
+        // Assert
+        expect(orm).not.toEqual(null);
+        jest.resetModules();
+    });
+
     it('should success to instantiate module orm configuration', () => {
         // Arrange
         process.env.DB_USERNAME = 'DB_USERNAME';
