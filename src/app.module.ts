@@ -9,7 +9,7 @@ import { UserModule } from './modules/user/user.module';
 import { RolesGuard } from './guards/roles.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthModule } from './modules/auth/auth.module';
-import { ComponentsModule } from './modules/components/components.module';
+import { ComponentsModule } from './modules/component/component.module';
 import { ComponentGuard } from './guards/component.guard';
 
 @Module({

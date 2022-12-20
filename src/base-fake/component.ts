@@ -1,4 +1,4 @@
-import { ComponentEntity } from 'src/modules/components/entities/component.entity';
+import { ComponentEntity } from 'src/modules/component/entities/component.entity';
 
 class ComponentFakeRepository {
     find(): ComponentEntity[] {

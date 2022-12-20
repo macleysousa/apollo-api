@@ -3,7 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { exec } from 'child_process';
 import { componentFakeRepository } from 'src/base-fake/component';
 import { IsNull, Not, Repository } from 'typeorm';
-import { ComponentsService } from './components.service';
+import { ComponentsService } from './component.service';
 import { ComponentEntity } from './entities/component.entity';
 
 describe('ComponentsService', () => {

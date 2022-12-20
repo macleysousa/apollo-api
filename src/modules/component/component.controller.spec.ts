@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { componentFakeRepository } from 'src/base-fake/component';
-import { ComponentsController } from './components.controller';
-import { ComponentsService } from './components.service';
+import { ComponentsController } from './component.controller';
+import { ComponentsService } from './component.service';
 
 describe('ComponentsController', () => {
     let controller: ComponentsController;

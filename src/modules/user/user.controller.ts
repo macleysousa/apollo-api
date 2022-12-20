@@ -1,15 +1,14 @@
-import { Controller, Get, Post, Body, Param, Query, Put, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, UnauthorizedException } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
-import { ComponentGuard } from 'src/guards/component.guard';
 
-import { UserService } from './user.service';
+import { Component } from '../component/component.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
-import { Roles } from './roles.decorator';
 import { Role } from './enum/user-role.enum';
-import { Component } from '../components/component.decorator';
+import { Roles } from './roles.decorator';
+import { UserService } from './user.service';
 
 @ApiTags('Users')
 @Controller('users')
