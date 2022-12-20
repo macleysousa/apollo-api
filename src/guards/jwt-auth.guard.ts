@@ -8,7 +8,7 @@ import { IS_PUBLIC_KEY } from 'src/decorators/is-public.decorator';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-    constructor(private reflector: Reflector, private AuthService: AuthService) {
+    constructor(private reflector: Reflector, private authService: AuthService) {
         super();
     }
 
@@ -41,7 +41,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         if (!token) {
             throw new UnauthorizedException('Invalid or not provided auth token');
         }
-        return this.AuthService.validateToken(token).then(async (user) => {
+        return this.authService.validateToken(token).then(async (user) => {
             if (!user) throw new UnauthorizedException('Invalid token');
             request.user = user;
             return true;

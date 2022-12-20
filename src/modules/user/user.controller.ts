@@ -1,18 +1,20 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, Put, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
+import { ComponentGuard } from 'src/guards/component.guard';
+
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Put } from '@nestjs/common/decorators';
 import { UserEntity } from './entities/user.entity';
 import { Roles } from './roles.decorator';
 import { Role } from './enum/user-role.enum';
-import { CurrentUser } from 'src/decorators/current-user.decorator';
-import { UnauthorizedException } from '@nestjs/common/exceptions';
+import { Component } from '../components/component.decorator';
 
 @ApiTags('Users')
 @Controller('users')
 @ApiBearerAuth()
+@Component('ADMFM001')
 export class UserController {
     constructor(private readonly userService: UserService) {}
 

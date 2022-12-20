@@ -48,4 +48,8 @@ export class AuthService {
 
         return { token: this.jwtService.sign({ id, username, name }) };
     }
+
+    async validateComponent(userId: string, component: string): Promise<unknown> {
+        return;
+    }
 }

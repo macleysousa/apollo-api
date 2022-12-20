@@ -10,6 +10,7 @@ import { RolesGuard } from './guards/roles.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthModule } from './modules/auth/auth.module';
 import { ComponentsModule } from './modules/components/components.module';
+import { ComponentGuard } from './guards/component.guard';
 
 @Module({
     imports: [TypeOrmModule.forRoot({ ...ormConfig }), AuthModule, UserModule, ComponentsModule],
@@ -26,6 +27,10 @@ import { ComponentsModule } from './modules/components/components.module';
         {
             provide: APP_GUARD,
             useClass: RolesGuard,
+        },
+        {
+            provide: APP_GUARD,
+            useClass: ComponentGuard,
         },
         {
             provide: APP_INTERCEPTOR,
