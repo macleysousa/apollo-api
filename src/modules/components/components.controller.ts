@@ -13,12 +13,12 @@ export class ComponentsController {
     @Get()
     @ApiQuery({ name: 'filter', required: false })
     @ApiQuery({ name: 'blocked', required: false })
-    async findAll(@Query('filter') filter: string, @Query('blocked') blocked: boolean): Promise<ComponentEntity[]> {
+    async find(@Query('filter') filter: string, @Query('blocked') blocked: boolean): Promise<ComponentEntity[]> {
         return this.componentsService.find(filter, blocked);
     }
 
     @Get(':id')
-    async findOne(@Param('id') id: string): Promise<ComponentEntity> {
+    async findById(@Param('id') id: string): Promise<ComponentEntity> {
         return this.componentsService.findById(id);
     }
 }
