@@ -62,7 +62,7 @@ describe('ComponentGroupService', () => {
 
             // Assert
             expect(repository.find).toHaveBeenCalledTimes(1);
-            expect(repository.find).toHaveBeenCalledWith({ where: { name: ILike(`%${name ?? ''}%`) } });
+            expect(repository.find).toHaveBeenCalledWith({ where: { name: ILike(`%${name ?? ''}%`) }, relations: ['items'] });
 
             expect(response).toEqual(componentGroupFakeRepository.find());
         });
@@ -76,7 +76,7 @@ describe('ComponentGroupService', () => {
 
             // Assert
             expect(repository.find).toHaveBeenCalledTimes(1);
-            expect(repository.find).toHaveBeenCalledWith({ where: { name: ILike(`%${name ?? ''}%`) } });
+            expect(repository.find).toHaveBeenCalledWith({ where: { name: ILike(`%${name ?? ''}%`) }, relations: ['items'] });
 
             expect(response).toEqual(componentGroupFakeRepository.find());
         });
@@ -92,7 +92,7 @@ describe('ComponentGroupService', () => {
 
             // Assert
             expect(repository.findOne).toHaveBeenCalledTimes(1);
-            expect(repository.findOne).toHaveBeenCalledWith({ where: { id } });
+            expect(repository.findOne).toHaveBeenCalledWith({ where: { id }, relations: ['items'] });
 
             expect(response).toEqual(componentGroupFakeRepository.findOne());
         });

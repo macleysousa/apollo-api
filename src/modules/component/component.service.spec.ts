@@ -3,17 +3,17 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { exec } from 'child_process';
 import { componentFakeRepository } from 'src/base-fake/component';
 import { IsNull, Not, Repository } from 'typeorm';
-import { ComponentsService } from './component.service';
+import { ComponentService } from './component.service';
 import { ComponentEntity } from './entities/component.entity';
 
 describe('ComponentsService', () => {
-    let service: ComponentsService;
+    let service: ComponentService;
     let componentRepository: Repository<ComponentEntity>;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
-                ComponentsService,
+                ComponentService,
                 {
                     provide: getRepositoryToken(ComponentEntity),
                     useValue: {
@@ -28,7 +28,7 @@ describe('ComponentsService', () => {
             ],
         }).compile();
 
-        service = module.get<ComponentsService>(ComponentsService);
+        service = module.get<ComponentService>(ComponentService);
         componentRepository = module.get<Repository<ComponentEntity>>(getRepositoryToken(ComponentEntity));
     });
 

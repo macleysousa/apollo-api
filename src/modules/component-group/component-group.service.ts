@@ -18,12 +18,12 @@ export class ComponentGroupService {
         return this.findById(group.id);
     }
 
-    async find(name?: string): Promise<ComponentGroupEntity[]> {
-        return this.repository.find({ where: { name: ILike(`%${name ?? ''}%`) } });
+    async find(name?: string, relations: string[] = ['items']): Promise<ComponentGroupEntity[]> {
+        return this.repository.find({ where: { name: ILike(`%${name ?? ''}%`) }, relations });
     }
 
-    async findById(id: number): Promise<ComponentGroupEntity> {
-        return this.repository.findOne({ where: { id } });
+    async findById(id: number, relations: string[] = ['items']): Promise<ComponentGroupEntity> {
+        return this.repository.findOne({ where: { id }, relations });
     }
 
     async update(id: number, { name }: UpdateComponentGroupDto): Promise<ComponentGroupEntity> {

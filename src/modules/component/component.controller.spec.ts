@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { componentFakeRepository } from 'src/base-fake/component';
 import { ComponentsController } from './component.controller';
-import { ComponentsService } from './component.service';
+import { ComponentService } from './component.service';
 
 describe('ComponentsController', () => {
     let controller: ComponentsController;
-    let componentsService: ComponentsService;
+    let componentsService: ComponentService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [ComponentsController],
             providers: [
                 {
-                    provide: ComponentsService,
+                    provide: ComponentService,
                     useValue: {
                         find: jest.fn().mockResolvedValue(componentFakeRepository.find()),
                         findById: jest.fn().mockResolvedValue(componentFakeRepository.findOne()),
@@ -22,7 +22,7 @@ describe('ComponentsController', () => {
         }).compile();
 
         controller = module.get<ComponentsController>(ComponentsController);
-        componentsService = module.get<ComponentsService>(ComponentsService);
+        componentsService = module.get<ComponentService>(ComponentService);
     });
 
     it('should be defined', () => {

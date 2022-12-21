@@ -4,7 +4,7 @@ import { ILike, IsNull, Not, Repository } from 'typeorm';
 import { ComponentEntity } from './entities/component.entity';
 
 @Injectable()
-export class ComponentsService {
+export class ComponentService {
     constructor(
         @InjectRepository(ComponentEntity)
         private componentRepository: Repository<ComponentEntity>

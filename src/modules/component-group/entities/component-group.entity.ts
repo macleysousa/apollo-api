@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { BaseEntity } from 'src/commons/base.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { ComponentGroupItemEntity } from './component-group-item.entity';
+import { ComponentGroupItemEntity } from '../item/entities/component-group-item.entity';
 
 @Entity({ name: 'componentGroups' })
 export class ComponentGroupEntity extends BaseEntity {
@@ -14,7 +14,7 @@ export class ComponentGroupEntity extends BaseEntity {
     @Column()
     name: string;
 
-    @ApiProperty({ type: () => ComponentGroupItemEntity })
-    @OneToMany(() => ComponentGroupItemEntity, (value) => value.groupId)
+    @ApiProperty({ type: () => ComponentGroupItemEntity, isArray: true })
+    @OneToMany(() => ComponentGroupItemEntity, (value) => value.group)
     items: ComponentGroupItemEntity[];
 }

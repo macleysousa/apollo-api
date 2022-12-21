@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { ComponentsService } from './component.service';
+import { ComponentService } from './component.service';
 
 import { ComponentEntity } from './entities/component.entity';
 
@@ -8,7 +8,7 @@ import { ComponentEntity } from './entities/component.entity';
 @Controller('components')
 @ApiBearerAuth()
 export class ComponentsController {
-    constructor(private readonly componentsService: ComponentsService) {}
+    constructor(private readonly componentsService: ComponentService) {}
 
     @Get()
     @ApiQuery({ name: 'filter', required: false })
