@@ -13,7 +13,7 @@ import { UserService } from './user.service';
 @ApiTags('Users')
 @Controller('users')
 @ApiBearerAuth()
-@Component('ADMFM001')
+@Component('ADMFM001', 'Manutenção de usuário')
 export class UserController {
     constructor(private readonly userService: UserService) {}
 

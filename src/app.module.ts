@@ -11,9 +11,10 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthModule } from './modules/auth/auth.module';
 import { ComponentsModule } from './modules/component/component.module';
 import { ComponentGuard } from './guards/component.guard';
+import { ComponentGroupModule } from './modules/component-group/component-group.module';
 
 @Module({
-    imports: [TypeOrmModule.forRoot({ ...ormConfig }), AuthModule, UserModule, ComponentsModule],
+    imports: [TypeOrmModule.forRoot({ ...ormConfig }), AuthModule, UserModule, ComponentsModule, ComponentGroupModule],
     controllers: [],
     providers: [
         {
