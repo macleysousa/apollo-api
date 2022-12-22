@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateComponentGroupItemDto } from './dto/create-component-group-item.dto';
+import { AddComponentGroupItemDto } from './dto/create-component-group-item.dto';
 import { ComponentGroupItemEntity } from './entities/component-group-item.entity';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class ComponentGroupItemService {
         private repository: Repository<ComponentGroupItemEntity>
     ) {}
 
-    async add(groupId: number, { componentId }: CreateComponentGroupItemDto): Promise<ComponentGroupItemEntity[]> {
+    async add(groupId: number, { componentId }: AddComponentGroupItemDto): Promise<ComponentGroupItemEntity[]> {
         await this.repository.upsert({ groupId, componentId }, { conflictPaths: ['groupId', 'componentId'] });
         return this.findByGroup(groupId);
     }

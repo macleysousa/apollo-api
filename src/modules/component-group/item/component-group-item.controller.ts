@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { Component } from '../../component/component.decorator';
 import { ComponentGroupItemService } from './component-group-item.service';
-import { CreateComponentGroupItemDto } from './dto/create-component-group-item.dto';
+import { AddComponentGroupItemDto } from './dto/create-component-group-item.dto';
 import { ComponentGroupItemEntity } from './entities/component-group-item.entity';
 
 @ApiTags('Component Group Items')
@@ -14,10 +14,7 @@ export class ComponentGroupItemController {
     constructor(private readonly service: ComponentGroupItemService) {}
 
     @Post()
-    async add(
-        @Param('id') id: number,
-        @Body() createComponentGroupItemDto: CreateComponentGroupItemDto
-    ): Promise<ComponentGroupItemEntity[]> {
+    async add(@Param('id') id: number, @Body() createComponentGroupItemDto: AddComponentGroupItemDto): Promise<ComponentGroupItemEntity[]> {
         return this.service.add(id, createComponentGroupItemDto);
     }
 

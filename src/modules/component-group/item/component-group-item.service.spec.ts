@@ -4,7 +4,7 @@ import { componentGroupItemFakeRepository } from 'src/base-fake/component-group-
 import { Repository } from 'typeorm';
 
 import { ComponentGroupItemService } from './component-group-item.service';
-import { CreateComponentGroupItemDto } from './dto/create-component-group-item.dto';
+import { AddComponentGroupItemDto } from './dto/create-component-group-item.dto';
 import { ComponentGroupItemEntity } from './entities/component-group-item.entity';
 
 describe('ComponentGroupItemService', () => {
@@ -40,7 +40,7 @@ describe('ComponentGroupItemService', () => {
         it('should add component group item', async () => {
             // Arrage
             const groupId = 1;
-            const component: CreateComponentGroupItemDto = { componentId: 'ADMFM002' };
+            const component: AddComponentGroupItemDto = { componentId: 'ADMFM002' };
 
             // Act
             const response = await service.add(groupId, component);
