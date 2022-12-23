@@ -33,7 +33,7 @@ export class CreateBranchDto {
 
     @ApiProperty()
     @IsOptional()
-    codeActivity: number;
+    codeActivity: string;
 
     @ApiProperty()
     @IsOptional()

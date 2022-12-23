@@ -4,7 +4,7 @@ export class createTableComponentGroupItems1671558822130 implements MigrationInt
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: 'componentGroupItems',
+                name: 'components_groups_items',
                 columns: [
                     {
                         name: 'id',
@@ -44,7 +44,7 @@ export class createTableComponentGroupItems1671558822130 implements MigrationInt
                     }),
                     new TableForeignKey({
                         columnNames: ['groupId'],
-                        referencedTableName: 'componentGroups',
+                        referencedTableName: 'components_groups',
                         referencedColumnNames: ['id'],
                         onDelete: 'CASCADE',
                     }),
@@ -54,6 +54,6 @@ export class createTableComponentGroupItems1671558822130 implements MigrationInt
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable('componentGroupItems');
+        await queryRunner.dropTable('components_groups_items');
     }
 }

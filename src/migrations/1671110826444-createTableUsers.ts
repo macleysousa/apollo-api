@@ -60,7 +60,8 @@ export class createTableUsers1671110826444 implements MigrationInterface {
                 ],
             })
         );
-        queryRunner.query(
+
+        await queryRunner.query(
             `INSERT INTO users(username,name,password,role,status)
             VALUES ('apollo','developer','${encrypt('start')}','${Role.SYSADMIN}','${UserStatus.RELEASED}')`
         );

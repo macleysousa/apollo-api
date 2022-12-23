@@ -4,7 +4,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { ComponentGroupItemEntity } from '../item/entities/component-group-item.entity';
 
-@Entity({ name: 'componentGroups' })
+@Entity({ name: 'components_groups' })
 export class ComponentGroupEntity extends BaseEntity {
     @ApiProperty()
     @PrimaryGeneratedColumn('increment')

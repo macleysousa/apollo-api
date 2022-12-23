@@ -37,7 +37,7 @@ export class BranchEntity extends BaseEntity {
 
     @ApiProperty()
     @Column()
-    codeActivity: number;
+    codeActivity: string;
 
     @ApiProperty()
     @Column()

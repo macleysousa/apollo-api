@@ -6,7 +6,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn
 
 import { ComponentGroupEntity } from '../../entities/component-group.entity';
 
-@Entity({ name: 'componentGroupItems' })
+@Entity({ name: 'components_groups_items' })
 export class ComponentGroupItemEntity extends BaseEntity {
     @Exclude()
     @PrimaryGeneratedColumn('increment')

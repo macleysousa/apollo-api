@@ -4,7 +4,7 @@ export class createTableComponentGroups1671557814924 implements MigrationInterfa
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: 'componentGroups',
+                name: 'components_groups',
                 columns: [
                     {
                         name: 'id',
@@ -35,6 +35,6 @@ export class createTableComponentGroups1671557814924 implements MigrationInterfa
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable('componentGroups');
+        await queryRunner.dropTable('components_groups');
     }
 }
