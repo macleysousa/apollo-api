@@ -17,4 +17,9 @@ export class ComponentGroupEntity extends BaseEntity {
     @ApiProperty({ type: () => ComponentGroupItemEntity, isArray: true })
     @OneToMany(() => ComponentGroupItemEntity, (value) => value.group)
     items: ComponentGroupItemEntity[];
+
+    constructor(partial?: Partial<ComponentGroupEntity>) {
+        super();
+        Object.assign(this, partial);
+    }
 }

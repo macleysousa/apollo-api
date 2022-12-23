@@ -41,4 +41,9 @@ export class UserEntity extends BaseEntity {
     @ApiProperty()
     @Column()
     status: UserStatus;
+
+    constructor(partial?: Partial<UserEntity>) {
+        super();
+        Object.assign(this, partial);
+    }
 }

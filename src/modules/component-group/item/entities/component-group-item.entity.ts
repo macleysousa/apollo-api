@@ -29,4 +29,9 @@ export class ComponentGroupItemEntity extends BaseEntity {
     @ManyToOne(() => ComponentGroupEntity, (value) => value.id)
     @JoinColumn({ name: 'groupId', referencedColumnName: 'id' })
     group: ComponentGroupEntity;
+
+    constructor(partial?: Partial<ComponentGroupItemEntity>) {
+        super();
+        Object.assign(this, partial);
+    }
 }
