@@ -2,11 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 export class BaseEntity {
-    @CreateDateColumn({ default: new Date() })
+    @CreateDateColumn({ default: 'now()' })
     @ApiProperty()
     createdAt: Date;
 
-    @UpdateDateColumn({ default: new Date() })
+    @UpdateDateColumn({ default: 'now()' })
     @ApiProperty()
     updatedAt: Date;
 }

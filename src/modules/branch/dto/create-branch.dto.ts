@@ -3,6 +3,7 @@ import { IsNotEmpty, Min, Max, IsOptional } from 'class-validator';
 import { SubTributary } from 'src/commons/enum/sub-tributary';
 import { TaxRegime } from 'src/commons/enum/tax-regime';
 import { UF } from 'src/commons/enum/uf.enum';
+import { IsCnpjValid } from 'src/commons/validations/cnpj.validation';
 
 export class CreateBranchDto {
     @ApiProperty()
@@ -13,6 +14,7 @@ export class CreateBranchDto {
 
     @ApiProperty()
     @IsOptional()
+    @IsCnpjValid()
     cnpj: string;
 
     @ApiProperty()

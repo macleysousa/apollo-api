@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query, UnauthorizedException } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
 
@@ -37,14 +37,18 @@ export class UserController {
 
     @Get(':id')
     @ApiResponse({ type: UserEntity, status: 200 })
-    async findById(@Param('id') id: number): Promise<UserEntity> {
+    async findById(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
         return this.userService.findById(id);
     }
 
     @Put(':id')
     @ApiResponse({ type: UserEntity, status: 200 })
     @Roles(Role.ADMIN, Role.SYSADMIN)
-    async update(@CurrentUser() user: UserEntity, @Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    async update(
+        @CurrentUser() user: UserEntity,
+        @Param('id', ParseIntPipe) id: number,
+        @Body() updateUserDto: UpdateUserDto
+    ): Promise<UserEntity> {
         if (user.role != Role.SYSADMIN && updateUserDto.role == Role.SYSADMIN) {
             throw new UnauthorizedException('To update user to sysadmin you must have sysadmin access');
         }

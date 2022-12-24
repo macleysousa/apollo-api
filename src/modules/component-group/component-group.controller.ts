@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiComponent } from '../component/component.decorator';
 import { ComponentGroupService } from './component-group.service';
@@ -28,18 +28,21 @@ export class ComponentGroupController {
 
     @Get(':id')
     @ApiResponse({ type: ComponentGroupEntity, status: 200 })
-    async findOne(@Param('id') id: number): Promise<ComponentGroupEntity> {
+    async findOne(@Param('id', ParseIntPipe) id: number): Promise<ComponentGroupEntity> {
         return this.service.findById(id);
     }
 
     @Put(':id')
     @ApiResponse({ type: ComponentGroupEntity, status: 200 })
-    async update(@Param('id') id: number, @Body() updateComponentGroupDto: UpdateComponentGroupDto): Promise<ComponentGroupEntity> {
+    async update(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() updateComponentGroupDto: UpdateComponentGroupDto
+    ): Promise<ComponentGroupEntity> {
         return this.service.update(id, updateComponentGroupDto);
     }
 
     @Delete(':id')
-    async remove(@Param('id') id: number): Promise<void> {
+    async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
         return this.service.remove(id);
     }
 }

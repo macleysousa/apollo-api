@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ComponentService } from './component.service';
 
@@ -20,7 +20,7 @@ export class ComponentsController {
 
     @Get(':id')
     @ApiResponse({ type: ComponentEntity, status: 200 })
-    async findById(@Param('id') id: string): Promise<ComponentEntity> {
+    async findById(@Param('id', ParseIntPipe) id: string): Promise<ComponentEntity> {
         return this.componentsService.findById(id);
     }
 }
