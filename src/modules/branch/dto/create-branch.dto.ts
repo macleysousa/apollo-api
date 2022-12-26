@@ -27,41 +27,41 @@ export class CreateBranchDto {
 
     @ApiProperty({ enum: UF, default: UF.NotInformed })
     @IsOptional()
-    uf: UF;
+    uf?: UF;
 
     @ApiProperty()
     @IsOptional()
-    numberStateRegistration: string;
+    numberStateRegistration?: string;
 
     @ApiProperty()
     @IsOptional()
-    codeActivity: string;
+    codeActivity?: string;
 
     @ApiProperty()
     @IsOptional()
-    codeActivityCnae: string;
+    codeActivityCnae?: string;
 
     @ApiProperty({ enum: TaxRegime, default: TaxRegime.NotInformed })
     @IsOptional()
-    typeTaxRegime: TaxRegime;
+    typeTaxRegime?: TaxRegime;
 
     @ApiProperty({ enum: SubTributary, default: SubTributary.NotInformed })
     @IsOptional()
-    typeSubTributary: SubTributary;
+    typeSubTributary?: SubTributary;
 
     @ApiProperty()
     @IsOptional()
-    suframaCode: string;
+    suframaCode?: string;
 
     @ApiProperty()
     @IsOptional()
-    registrationMunicipal: string;
+    registrationMunicipal?: string;
 
     @ApiProperty()
     @IsOptional()
-    phone: string;
+    phone?: string;
 
     @ApiProperty()
     @IsOptional()
-    email: string;
+    email?: string;
 }
