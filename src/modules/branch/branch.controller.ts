@@ -29,8 +29,8 @@ export class BranchController {
 
     @Get(':id')
     @ApiResponse({ type: BranchEntity, status: 200 })
-    async findById(@Param('id', ParseIntPipe) id: string): Promise<BranchEntity> {
-        return this.branchService.findById(+id);
+    async findById(@Param('id', ParseIntPipe) id: number): Promise<BranchEntity> {
+        return this.branchService.findById(id);
     }
 
     @Put(':id')

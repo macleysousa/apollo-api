@@ -4,6 +4,7 @@ import { branchFakeRepository } from 'src/base-fake/branch';
 import { ILike, Repository } from 'typeorm';
 import { BranchService } from './branch.service';
 import { CreateBranchDto } from './dto/create-branch.dto';
+import { UpdateBranchDto } from './dto/update-branch.dto';
 import { BranchEntity } from './entities/branch.entity';
 
 describe('BranchService', () => {
@@ -102,7 +103,7 @@ describe('BranchService', () => {
         it('should update a branch', async () => {
             // Arrange
             const id = 1;
-            const branch: CreateBranchDto = { id, cnpj: '01.248.473/0001-75', name: 'branch1', fantasyName: 'fantasyName' };
+            const branch: UpdateBranchDto = { cnpj: '01.248.473/0001-75', name: 'branch1', fantasyName: 'fantasyName' };
 
             // Act
             const result = await service.update(id, branch);
