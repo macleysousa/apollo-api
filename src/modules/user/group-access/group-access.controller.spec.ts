@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GroupAccessController } from './group-access.controller';
-import { GroupAccessService } from './group-access.service';
+import { UserGroupAccessService } from './group-access.service';
 
 describe('GroupAccessController', () => {
   let controller: GroupAccessController;
@@ -8,7 +8,7 @@ describe('GroupAccessController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [GroupAccessController],
-      providers: [GroupAccessService],
+      providers: [UserGroupAccessService],
     }).compile();
 
     controller = module.get<GroupAccessController>(GroupAccessController);

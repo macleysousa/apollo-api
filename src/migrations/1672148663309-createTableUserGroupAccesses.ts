@@ -23,6 +23,22 @@ export class createTableUserGroupAccesses1672148663309 implements MigrationInter
                         type: 'int',
                         isNullable: false,
                     },
+                    {
+                        name: 'operatorId',
+                        type: 'int',
+                        isNullable: false,
+                        comment: 'id of user who created or last modified',
+                    },
+                    {
+                        name: 'createdAt',
+                        type: 'timestamp',
+                        default: 'now()',
+                    },
+                    {
+                        name: 'updatedAt',
+                        type: 'timestamp',
+                        default: 'now()',
+                    },
                 ],
                 uniques: [new TableUnique({ columnNames: ['userId', 'branchId', 'groupId'], name: 'unique_user_group_access' })],
                 foreignKeys: [
@@ -43,6 +59,11 @@ export class createTableUserGroupAccesses1672148663309 implements MigrationInter
                         referencedColumnNames: ['id'],
                         referencedTableName: 'components_groups',
                         onDelete: 'CASCADE',
+                    }),
+                    new TableForeignKey({
+                        columnNames: ['operatorId'],
+                        referencedColumnNames: ['id'],
+                        referencedTableName: 'users',
                     }),
                 ],
             })

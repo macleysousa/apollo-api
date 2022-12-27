@@ -1,34 +1,50 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { GroupAccessService } from './group-access.service';
+import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+import { UserGroupAccessService } from './group-access.service';
 import { CreateGroupAccessDto } from './dto/create-group-access.dto';
-import { UpdateGroupAccessDto } from './dto/update-group-access.dto';
+import { UserGroupAccessEntity } from './entities/group-access.entity';
 
-@Controller('group-access')
+@ApiTags('User Group Accesses')
+@Controller('users/:id/group-accesses')
+@ApiBearerAuth()
 export class GroupAccessController {
-  constructor(private readonly groupAccessService: GroupAccessService) {}
+    constructor(private readonly groupAccessService: UserGroupAccessService) {}
 
-  @Post()
-  create(@Body() createGroupAccessDto: CreateGroupAccessDto) {
-    return this.groupAccessService.create(createGroupAccessDto);
-  }
+    @Post()
+    @ApiResponse({ type: UserGroupAccessEntity, status: 201 })
+    async create(@Body() createGroupAccessDto: CreateGroupAccessDto): Promise<UserGroupAccessEntity> {
+        return this.groupAccessService.create(createGroupAccessDto);
+    }
 
-  @Get()
-  findAll() {
-    return this.groupAccessService.findAll();
-  }
+    @Get()
+    async find(@Param('id', ParseIntPipe) id: number): Promise<UserGroupAccessEntity[]> {
+        return this.groupAccessService.find(id);
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.groupAccessService.findOne(+id);
-  }
+    @Get(':branchId')
+    async findByBranchId(
+        @Param('id', ParseIntPipe) id: number,
+        @Param('branchId', ParseIntPipe) branchId: number
+    ): Promise<UserGroupAccessEntity[]> {
+        return this.groupAccessService.findByBranchId(id, branchId);
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateGroupAccessDto: UpdateGroupAccessDto) {
-    return this.groupAccessService.update(+id, updateGroupAccessDto);
-  }
+    @Get(':branchId/:groupId')
+    async findByBranchIdAndGroupId(
+        @Param('id', ParseIntPipe) id: number,
+        @Param('branchId', ParseIntPipe) branchId: number,
+        @Param('groupId', ParseIntPipe) groupId: number
+    ): Promise<UserGroupAccessEntity> {
+        return this.groupAccessService.findByBranchIdAndGroupId(id, branchId, groupId);
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.groupAccessService.remove(+id);
-  }
+    @Delete(':branchId/:groupId')
+    async remove(
+        @Param('id', ParseIntPipe) id: number,
+        @Param('branchId', ParseIntPipe) branchId: number,
+        @Param('groupId', ParseIntPipe) groupId: number
+    ): Promise<void> {
+        this.groupAccessService.remove(id, branchId, groupId);
+    }
 }
