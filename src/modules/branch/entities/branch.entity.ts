@@ -5,7 +5,7 @@ import { TaxRegime } from 'src/commons/enum/tax-regime';
 import { UF } from 'src/commons/enum/uf.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'branchs' })
+@Entity({ name: 'branches' })
 export class BranchEntity extends BaseEntity {
     @ApiProperty()
     @PrimaryGeneratedColumn()

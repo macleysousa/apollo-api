@@ -7,8 +7,8 @@ import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';
 import { BranchEntity } from './entities/branch.entity';
 
-@ApiTags('Branchs')
-@Controller('branchs')
+@ApiTags('Branches')
+@Controller('branches')
 @ApiBearerAuth()
 @ApiComponent('ADMFM003', 'Manutenção de filial')
 export class BranchController {

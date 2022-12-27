@@ -35,7 +35,7 @@ export class createTableUserGroupAccesses1672148663309 implements MigrationInter
                     new TableForeignKey({
                         columnNames: ['branchId'],
                         referencedColumnNames: ['id'],
-                        referencedTableName: 'branchs',
+                        referencedTableName: 'branches',
                         onDelete: 'CASCADE',
                     }),
                     new TableForeignKey({
