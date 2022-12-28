@@ -3,8 +3,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { userFakeRepository } from 'src/base-fake/user';
 import { ILike, IsNull, Not, Repository } from 'typeorm';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserAccessEntity } from './entities/user-access.entity';
 import { UserEntity } from './entities/user.entity';
 import { Role } from './enum/user-role.enum';
 import { UserStatus } from './enum/user-status';
@@ -13,6 +15,7 @@ import { UserService } from './user.service';
 describe('UserService', () => {
     let userService: UserService;
     let userRepository: Repository<UserEntity>;
+    let accessRepository: Repository<UserAccessEntity>;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -31,16 +34,24 @@ describe('UserService', () => {
                         }),
                     },
                 },
+                {
+                    provide: getRepositoryToken(UserAccessEntity),
+                    useValue: {
+                        find: jest.fn().mockResolvedValue(userFakeRepository.findAccesses()),
+                    },
+                },
             ],
         }).compile();
 
         userService = module.get<UserService>(UserService);
         userRepository = module.get<Repository<UserEntity>>(getRepositoryToken(UserEntity));
+        accessRepository = module.get<Repository<UserAccessEntity>>(getRepositoryToken(UserAccessEntity));
     });
 
     it('should be defined', () => {
         expect(userService).toBeDefined();
         expect(userRepository).toBeDefined();
+        expect(accessRepository).toBeDefined();
     });
 
     describe('create', () => {
@@ -109,6 +120,23 @@ describe('UserService', () => {
             expect(userRepository.findOne).toHaveBeenCalledTimes(1);
             expect(userRepository.findOne).toHaveBeenCalledWith({ where: { username } });
             expect(response).toEqual(userFakeRepository.findOne());
+        });
+    });
+
+    describe('findAccesses', () => {
+        it('should return a list User Access Entity with successful', async () => {
+            // Arrange
+            const id = 1;
+            const filter = { branchId: undefined, componentId: undefined };
+
+            // Act
+            const response = await userService.findAccesses(id);
+
+            // Assert
+            expect(accessRepository.find).toHaveBeenCalledTimes(1);
+            expect(accessRepository.find).toHaveBeenCalledWith({ where: { id } });
+
+            expect(response).toEqual(userFakeRepository.findAccesses());
         });
     });
 

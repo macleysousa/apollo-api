@@ -28,7 +28,7 @@ export class UserGroupAccessEntity extends BaseEntity {
     @Column()
     operatorId: number;
 
-    constructor(partial: Partial<UserGroupAccessEntity>) {
+    constructor(partial?: Partial<UserGroupAccessEntity>) {
         super();
         Object.assign(this, partial);
     }

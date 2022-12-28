@@ -5,6 +5,7 @@ import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { ApiComponent } from '../component/component.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserAccessEntity } from './entities/user-access.entity';
 import { UserEntity } from './entities/user.entity';
 import { Role } from './enum/user-role.enum';
 import { Roles } from './roles.decorator';
@@ -39,6 +40,18 @@ export class UserController {
     @ApiResponse({ type: UserEntity, status: 200 })
     async findById(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
         return this.userService.findById(id);
+    }
+
+    @Get(':id/accesses')
+    @ApiResponse({ type: UserAccessEntity, isArray: true, status: 200 })
+    @ApiQuery({ name: 'branchId', required: false })
+    @ApiQuery({ name: 'componentId', required: false })
+    async findAccesses(
+        @Param('id', ParseIntPipe) id: number,
+        @Query('branchId') branchId?: string,
+        @Query('componentId') componentId?: string
+    ): Promise<UserAccessEntity[]> {
+        return this.userService.findAccesses(id, { branchId: +branchId ? +branchId : null, componentId });
     }
 
     @Put(':id')

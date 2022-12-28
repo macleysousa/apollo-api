@@ -3,13 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, IsNull, Not, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserAccessEntity } from './entities/user-access.entity';
 import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(UserEntity)
-        private userRepository: Repository<UserEntity>
+        private userRepository: Repository<UserEntity>,
+        @InjectRepository(UserAccessEntity)
+        private userAccessView: Repository<UserAccessEntity>
     ) {}
 
     async create(createUserDto: CreateUserDto): Promise<UserEntity> {
@@ -32,6 +35,10 @@ export class UserService {
 
     async findByUserName(username: string): Promise<UserEntity> {
         return this.userRepository.findOne({ where: { username } });
+    }
+
+    async findAccesses(id: number, filter?: { branchId?: number; componentId?: string }): Promise<UserAccessEntity[]> {
+        return this.userAccessView.find({ where: { id, ...filter } });
     }
 
     async update(id: number, { password, name, role, status }: UpdateUserDto): Promise<UserEntity> {

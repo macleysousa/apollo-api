@@ -22,6 +22,7 @@ describe('UserController', () => {
                         create: jest.fn().mockResolvedValue(userFakeRepository.findOne()),
                         find: jest.fn().mockResolvedValue(userFakeRepository.find()),
                         findById: jest.fn().mockResolvedValue(userFakeRepository.findOne()),
+                        findAccesses: jest.fn().mockResolvedValue(userFakeRepository.findAccesses()),
                         update: jest.fn().mockResolvedValue(userFakeRepository.findOne()),
                     },
                 },
@@ -37,7 +38,7 @@ describe('UserController', () => {
         expect(userService).toBeDefined();
     });
 
-    describe('create', () => {
+    describe('/ (POST)', () => {
         it('should create a User Entity with failed *To create sysadmin user you must have sysadmin access*', async () => {
             // Arrange
             const user = userFakeRepository.findOne();
@@ -79,7 +80,7 @@ describe('UserController', () => {
         });
     });
 
-    describe('find', () => {
+    describe('/ (GET)', () => {
         it('should return a list User Entity with successful', async () => {
             // Arrange
             const name = 'name generic';
@@ -94,7 +95,7 @@ describe('UserController', () => {
         });
     });
 
-    describe('findById', () => {
+    describe('/:id (GET)', () => {
         it('should return a User Entity with successful by id', async () => {
             // Arrange
             const userId = 1;
@@ -109,7 +110,39 @@ describe('UserController', () => {
         });
     });
 
-    describe('update', () => {
+    describe('/:id/accesses (GET)', () => {
+        it('should return a list Accesses User Entity with successful by id with filter', async () => {
+            // Arrange
+            const id = 1;
+            const branchId = '1';
+            const componentId = 'ADMFM001';
+
+            // Act
+            const response = await userController.findAccesses(id, branchId, componentId);
+
+            // Assert
+            expect(userService.findAccesses).toHaveBeenCalledTimes(1);
+            expect(userService.findAccesses).toHaveBeenCalledWith(id, { branchId: +branchId ? +branchId : null, componentId });
+            expect(response).toEqual(userFakeRepository.findAccesses());
+        });
+
+        it('should return a list Accesses User Entity with successful by id no filter', async () => {
+            // Arrange
+            const id = 1;
+            const branchId = undefined;
+            const componentId = undefined;
+
+            // Act
+            const response = await userController.findAccesses(id, branchId, componentId);
+
+            // Assert
+            expect(userService.findAccesses).toHaveBeenCalledTimes(1);
+            expect(userService.findAccesses).toHaveBeenCalledWith(id, { branchId: +branchId ? +branchId : null, componentId });
+            expect(response).toEqual(userFakeRepository.findAccesses());
+        });
+    });
+
+    describe('/:id (PUT)', () => {
         it('should update a User Entity with failed *To update user to sysadmin you must have sysadmin access*', async () => {
             // Arrange
             const user = userFakeRepository.findOne();
