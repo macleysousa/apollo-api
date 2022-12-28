@@ -5,11 +5,6 @@ export class CreateGroupAccessDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsNumber()
-    userId: number;
-
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsNumber()
     @Min(1)
     @Max(999)
     branchId: number;

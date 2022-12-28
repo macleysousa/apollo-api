@@ -31,7 +31,7 @@ describe('GroupAccessService', () => {
                         save: jest.fn().mockResolvedValue(userGroupAccessFakeRepository.findOne()),
                         find: jest.fn().mockResolvedValue(userGroupAccessFakeRepository.find()),
                         findOne: jest.fn().mockResolvedValue(userGroupAccessFakeRepository.findOne()),
-                        remove: jest.fn(),
+                        delete: jest.fn(),
                     },
                 },
             ],
@@ -51,27 +51,100 @@ describe('GroupAccessService', () => {
     describe('create', () => {
         it('should create a group access', async () => {
             // Arrange
-            const group: CreateGroupAccessDto = { userId: 1, branchId: 1, groupId: 1 };
+            const userId = 1;
+            const operatorId = request.user.id;
+            const group: CreateGroupAccessDto = { branchId: 1, groupId: 1 };
 
             // Act
-            const result = await service.create(group);
+            const result = await service.add(userId, group);
 
             // Assert
             expect(repository.save).toHaveBeenCalledTimes(1);
-            expect(repository.save).toHaveBeenCalledWith({ ...group, operatorId: request.user.id });
+            expect(repository.save).toHaveBeenCalledWith({ ...group, userId, operatorId });
 
             expect(result).toEqual(userGroupAccessFakeRepository.findOne());
         });
 
         it('should throw error when create a group access', async () => {
             // Arrange
-            const group: CreateGroupAccessDto = { userId: 1, branchId: 1, groupId: 1 };
+            const userId = 1;
+            const group: CreateGroupAccessDto = { branchId: 1, groupId: 1 };
             repository.save = jest.fn().mockRejectedValue(new Error());
 
             // Act
 
             // Assert
-            expect(service.create(group)).rejects.toEqual(new BadRequestException(`invalid user, branch or group`));
+            expect(service.add(userId, group)).rejects.toEqual(new BadRequestException(`invalid user, branch or group`));
+        });
+    });
+
+    describe('find', () => {
+        it('should find group access', async () => {
+            // Arrange
+            const userId = 1;
+            const relations = ['group', 'group.items'];
+
+            // Act
+            const result = await service.find(userId);
+
+            // Assert
+            expect(repository.find).toHaveBeenCalledTimes(1);
+            expect(repository.find).toHaveBeenCalledWith({ where: { userId }, relations });
+
+            expect(result).toEqual(userGroupAccessFakeRepository.find());
+        });
+    });
+
+    describe('findByBranchId', () => {
+        it('should find groups access by branch id', async () => {
+            // Arrange
+            const userId = 1;
+            const branchId = 1;
+            const relations = ['group', 'group.items'];
+
+            // Act
+            const result = await service.findByBranchId(userId, branchId);
+
+            // Assert
+            expect(repository.find).toHaveBeenCalledTimes(1);
+            expect(repository.find).toHaveBeenCalledWith({ where: { userId, branchId }, relations });
+
+            expect(result).toEqual(userGroupAccessFakeRepository.find());
+        });
+    });
+
+    describe('findByBranchIdAndGroupId', () => {
+        it('should find groups access by branch id and group id', async () => {
+            // Arrange
+            const userId = 1;
+            const branchId = 1;
+            const groupId = 1;
+            const relations = ['group', 'group.items'];
+
+            // Act
+            const result = await service.findByBranchIdAndGroupId(userId, branchId, groupId);
+
+            // Assert
+            expect(repository.findOne).toHaveBeenCalledTimes(1);
+            expect(repository.findOne).toHaveBeenCalledWith({ where: { userId, branchId, groupId }, relations });
+
+            expect(result).toEqual(userGroupAccessFakeRepository.findOne());
+        });
+    });
+
+    describe('remove', () => {
+        it('should remove group access', async () => {
+            // Arrange
+            const userId = 1;
+            const branchId = 1;
+            const groupId = 1;
+
+            // Act
+            await service.remove(userId, branchId, groupId);
+
+            // Assert
+            expect(repository.delete).toHaveBeenCalledTimes(1);
+            expect(repository.delete).toHaveBeenCalledWith({ userId, branchId, groupId });
         });
     });
 });

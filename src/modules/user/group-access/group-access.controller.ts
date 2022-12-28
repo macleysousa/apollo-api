@@ -4,17 +4,19 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserGroupAccessService } from './group-access.service';
 import { CreateGroupAccessDto } from './dto/create-group-access.dto';
 import { UserGroupAccessEntity } from './entities/group-access.entity';
+import { ApiComponent } from 'src/modules/component/component.decorator';
 
 @ApiTags('User Group Accesses')
 @Controller('users/:id/group-accesses')
 @ApiBearerAuth()
+@ApiComponent('ADMFM005', 'Relacionar usuário ao grupo de acessos')
 export class GroupAccessController {
     constructor(private readonly groupAccessService: UserGroupAccessService) {}
 
     @Post()
     @ApiResponse({ type: UserGroupAccessEntity, status: 201 })
-    async create(@Body() createGroupAccessDto: CreateGroupAccessDto): Promise<UserGroupAccessEntity> {
-        return this.groupAccessService.create(createGroupAccessDto);
+    async add(@Param('id', ParseIntPipe) id: number, @Body() createGroupAccessDto: CreateGroupAccessDto): Promise<UserGroupAccessEntity> {
+        return this.groupAccessService.add(id, createGroupAccessDto);
     }
 
     @Get()

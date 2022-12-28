@@ -10,7 +10,7 @@ import { BranchEntity } from './entities/branch.entity';
 @ApiTags('Branches')
 @Controller('branches')
 @ApiBearerAuth()
-@ApiComponent('ADMFM003', 'Manutenção de filial')
+@ApiComponent('ADMFM004', 'Manutenção de filial')
 export class BranchController {
     constructor(private readonly branchService: BranchService) {}
 

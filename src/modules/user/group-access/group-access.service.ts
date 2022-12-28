@@ -15,8 +15,8 @@ export class UserGroupAccessService {
         private repository: Repository<UserGroupAccessEntity>
     ) {}
 
-    async create(createGroupAccessDto: CreateGroupAccessDto): Promise<UserGroupAccessEntity> {
-        const access = await this.repository.save({ ...createGroupAccessDto, operatorId: this.request.user.id }).catch(() => {
+    async add(userId: number, createGroupAccessDto: CreateGroupAccessDto): Promise<UserGroupAccessEntity> {
+        const access = await this.repository.save({ ...createGroupAccessDto, userId, operatorId: this.request.user.id }).catch(() => {
             throw new BadRequestException(`invalid user, branch or group`);
         });
         return this.findByBranchIdAndGroupId(access.userId, access.branchId, access.groupId);
