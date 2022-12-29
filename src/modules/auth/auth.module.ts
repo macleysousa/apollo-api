@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { BranchConstraint } from 'src/commons/validations/branch.validation';
 import { LoginValidationMiddleware } from 'src/middlewares/login-validation.middleware';
 import { BranchModule } from '../branch/branch.module';
 import { UserModule } from '../user/user.module';
@@ -18,7 +19,7 @@ import { AuthService } from './auth.service';
         }),
     ],
     controllers: [AuthController],
-    providers: [AuthService],
+    providers: [AuthService, BranchConstraint],
     exports: [AuthService],
 })
 export class AuthModule implements NestModule {
