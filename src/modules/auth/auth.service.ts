@@ -1,5 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { BranchService } from '../branch/branch.service';
+import { BranchEntity } from '../branch/entities/branch.entity';
 
 import { UserEntity } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
@@ -7,13 +9,13 @@ import { LoginDTO } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly jwtService: JwtService, private readonly userService: UserService) {}
+    constructor(private jwtService: JwtService, private userService: UserService, private branchService: BranchService) {}
 
-    async login(login: LoginDTO): Promise<{ token: string; refreshToken: string }> {
-        const user = await this.userService.validateUser(login.username, login.password);
+    async login({ username, password, branchId }: LoginDTO): Promise<{ token: string; refreshToken: string }> {
+        const user = await this.userService.validateUser(username, password);
 
         if (user) {
-            const payload = { id: user.id, username: user.username, name: user.name };
+            const payload = { id: user.id, username: user.username, name: user.name, branchId };
 
             const token = this.jwtService.sign(payload);
 
@@ -26,7 +28,7 @@ export class AuthService {
         }
     }
 
-    async validateToken(token: string): Promise<UserEntity> {
+    async validateToken(token: string): Promise<{ user: UserEntity; branch?: BranchEntity }> {
         await this.jwtService.verifyAsync(token).catch((err) => {
             if (err.name == 'TokenExpiredError') {
                 throw new UnauthorizedException('token expired');
@@ -36,20 +38,28 @@ export class AuthService {
         });
 
         const username = this.jwtService.decode(token)['username'];
-        return this.userService.findByUserName(username);
+        const user = await this.userService.findByUserName(username);
+
+        const branchId = this.jwtService.decode(token)['branchId'];
+        const branch = branchId ? await this.branchService.findById(branchId) : undefined;
+
+        return { user, branch };
     }
 
     async refreshToken(refreshToken: string): Promise<{ token: string }> {
         const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
-        const { id, username, name } = await this.jwtService.verifyAsync(refreshToken, { secret: REFRESH_TOKEN_SECRET }).catch(() => {
-            throw new UnauthorizedException('refresh token invalid');
-        });
+        const { id, username, name, branchId } = await this.jwtService
+            .verifyAsync(refreshToken, { secret: REFRESH_TOKEN_SECRET })
+            .catch(() => {
+                throw new UnauthorizedException('refresh token invalid');
+            });
 
-        return { token: this.jwtService.sign({ id, username, name }) };
+        return { token: this.jwtService.sign({ id, username, name, branchId }) };
     }
 
-    async validateComponent(userId: string, component: string): Promise<unknown> {
-        return;
+    async validateComponent(userId: number, branchId: number, componentId: string): Promise<boolean> {
+        const access = await this.userService.findAccesses(userId, { branchId, componentId });
+        return access?.length > 0;
     }
 }

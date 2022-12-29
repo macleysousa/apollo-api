@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { userFakeRepository } from 'src/base-fake/user';
 import { userGroupAccessFakeRepository } from 'src/base-fake/user-group-access';
-import { AuthRequest } from 'src/decorators/current-user.decorator';
+import { AuthRequest } from 'src/decorators/current-auth.decorator';
 import { Repository } from 'typeorm';
 import { CreateGroupAccessDto } from './dto/create-group-access.dto';
 import { UserGroupAccessEntity } from './entities/group-access.entity';

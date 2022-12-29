@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, MinLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, MinLength } from 'class-validator';
 
 import { IsUserNameValid } from 'src/modules/user/validations/is-username.validation';
 
@@ -14,4 +14,8 @@ export class LoginDTO {
     @ApiProperty()
     @MinLength(3)
     password: string;
+
+    @ApiProperty()
+    @IsOptional()
+    branchId?: number;
 }

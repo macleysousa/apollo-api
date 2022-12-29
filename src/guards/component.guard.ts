@@ -13,11 +13,11 @@ export class ComponentGuard implements CanActivate {
 
         if (!componentId) return true;
 
-        const { user } = context.switchToHttp().getRequest();
+        const { user, branch } = context.switchToHttp().getRequest();
 
-        if (user?.role == Role.SYSADMIN) return true;
+        if (user?.role == Role.SYSADMIN || user.role == Role.ADMIN) return true;
 
-        const isValid = await this.authService.validateComponent(user?.id, componentId);
+        const isValid = await this.authService.validateComponent(user?.id, branch?.id, componentId);
 
         if (!isValid) {
             throw new UnauthorizedException(`User does not have access to component ${componentId}`);

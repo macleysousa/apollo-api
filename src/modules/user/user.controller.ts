@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query, UnauthorizedException } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CurrentUser } from 'src/decorators/current-user.decorator';
+import { CurrentUser } from 'src/decorators/current-auth.decorator';
 
 import { ApiComponent } from '../component/component.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -8,7 +8,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserAccessEntity } from './entities/user-access.entity';
 import { UserEntity } from './entities/user.entity';
 import { Role } from './enum/user-role.enum';
-import { Roles } from './roles.decorator';
 import { UserService } from './user.service';
 
 @ApiTags('Users')
@@ -20,7 +19,6 @@ export class UserController {
 
     @Post()
     @ApiResponse({ type: UserEntity, status: 201 })
-    @Roles(Role.ADMIN, Role.SYSADMIN)
     async create(@CurrentUser() user: UserEntity, @Body() createUserDto: CreateUserDto): Promise<UserEntity> {
         if (user.role != Role.SYSADMIN && createUserDto.role == Role.SYSADMIN) {
             throw new UnauthorizedException('To create sysadmin user you must have sysadmin access');
@@ -30,7 +28,6 @@ export class UserController {
 
     @Get()
     @ApiResponse({ type: [UserEntity], status: 200 })
-    @Roles(Role.ADMIN, Role.SYSADMIN)
     @ApiQuery({ name: 'name', type: 'string', required: false })
     async find(@Query('name') name: string): Promise<UserEntity[]> {
         return this.userService.find(name);
@@ -56,7 +53,6 @@ export class UserController {
 
     @Put(':id')
     @ApiResponse({ type: UserEntity, status: 200 })
-    @Roles(Role.ADMIN, Role.SYSADMIN)
     async update(
         @CurrentUser() user: UserEntity,
         @Param('id', ParseIntPipe) id: number,

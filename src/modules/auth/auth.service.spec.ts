@@ -2,7 +2,9 @@ import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { authFakeRepository } from 'src/base-fake/auth';
+import { branchFakeRepository } from 'src/base-fake/branch';
 import { userFakeRepository } from 'src/base-fake/user';
+import { BranchService } from '../branch/branch.service';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/login.dto';
@@ -11,6 +13,7 @@ describe('AuthService', () => {
     let authService: AuthService;
     let jwtService: JwtService;
     let userService: UserService;
+    let branchService: BranchService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -21,7 +24,7 @@ describe('AuthService', () => {
                     useValue: {
                         sign: jest.fn().mockReturnValue(authFakeRepository.token().token),
                         verifyAsync: jest.fn().mockResolvedValue({}),
-                        decode: jest.fn().mockReturnValue({ username: 'username' }),
+                        decode: jest.fn().mockReturnValue({ username: 'username', branchId: 1 }),
                     },
                 },
                 {
@@ -29,6 +32,13 @@ describe('AuthService', () => {
                     useValue: {
                         validateUser: jest.fn().mockResolvedValue(userFakeRepository.findOne()),
                         findByUserName: jest.fn().mockResolvedValue(userFakeRepository.findOne()),
+                        findAccesses: jest.fn().mockResolvedValue(userFakeRepository.findAccesses()),
+                    },
+                },
+                {
+                    provide: BranchService,
+                    useValue: {
+                        findById: jest.fn().mockResolvedValue(branchFakeRepository.findOne()),
                     },
                 },
             ],
@@ -37,12 +47,14 @@ describe('AuthService', () => {
         authService = module.get<AuthService>(AuthService);
         jwtService = module.get<JwtService>(JwtService);
         userService = module.get<UserService>(UserService);
+        branchService = module.get<BranchService>(BranchService);
     });
 
     it('should be defined', () => {
         expect(authService).toBeDefined();
         expect(jwtService).toBeDefined();
         expect(userService).toBeDefined();
+        expect(branchService).toBeDefined();
     });
 
     describe('login', () => {
@@ -82,6 +94,7 @@ describe('AuthService', () => {
         it('should succeed in validating the token', async () => {
             // Arrange
             const token = 'token';
+            jest.spyOn(jwtService, 'decode').mockReturnValue({ username: 'username' });
 
             // Act
             const response = await authService.validateToken(token);
@@ -89,9 +102,28 @@ describe('AuthService', () => {
             // Assert
             expect(jwtService.verifyAsync).toHaveBeenCalledTimes(1);
             expect(jwtService.verifyAsync).toHaveBeenCalledWith(token);
-            expect(jwtService.decode).toHaveBeenCalledTimes(1);
+
+            expect(jwtService.decode).toHaveBeenCalledTimes(2);
             expect(jwtService.decode).toHaveBeenCalledWith(token);
-            expect(response).toEqual(userFakeRepository.findOne());
+
+            expect(response).toEqual({ user: userFakeRepository.findOne(), branch: undefined });
+        });
+
+        it('should succeed in validating the token with branch id', async () => {
+            // Arrange
+            const token = 'token';
+
+            // Act
+            const response = await authService.validateToken(token);
+
+            // Assert
+            expect(jwtService.verifyAsync).toHaveBeenCalledTimes(1);
+            expect(jwtService.verifyAsync).toHaveBeenCalledWith(token);
+
+            expect(jwtService.decode).toHaveBeenCalledTimes(2);
+            expect(jwtService.decode).toHaveBeenCalledWith(token);
+
+            expect(response).toEqual({ user: userFakeRepository.findOne(), branch: branchFakeRepository.findOne() });
         });
 
         it('should fail in validating the token with error *token expired*', async () => {
@@ -154,6 +186,41 @@ describe('AuthService', () => {
             expect(authService.refreshToken(refreshToken)).rejects.toEqual(new UnauthorizedException('refresh token invalid'));
             expect(jwtService.verifyAsync).toHaveBeenCalledTimes(1);
             expect(jwtService.verifyAsync).toHaveBeenCalledWith(refreshToken, { secret: REFRESH_TOKEN_SECRET });
+        });
+    });
+
+    describe('validateComponent', () => {
+        it('should succeed in validating the component', async () => {
+            // Arrange
+            const userId = 1;
+            const branchId = 1;
+            const componentId = 'ADMFM001';
+
+            // Act
+            const response = await authService.validateComponent(userId, branchId, componentId);
+
+            // Assert
+            expect(userService.findAccesses).toHaveBeenCalledTimes(1);
+            expect(userService.findAccesses).toHaveBeenCalledWith(userId, { branchId, componentId });
+
+            expect(response).toBeTruthy();
+        });
+
+        it('should failed in validating the component', async () => {
+            // Arrange
+            const userId = 1;
+            const branchId = 1;
+            const componentId = 'ADMFM001';
+            jest.spyOn(userService, 'findAccesses').mockResolvedValueOnce(undefined);
+
+            // Act
+            const response = await authService.validateComponent(userId, branchId, componentId);
+
+            // Assert
+            expect(userService.findAccesses).toHaveBeenCalledTimes(1);
+            expect(userService.findAccesses).toHaveBeenCalledWith(userId, { branchId, componentId });
+
+            expect(response).toBeFalsy();
         });
     });
 });

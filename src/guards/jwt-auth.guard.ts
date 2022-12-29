@@ -29,22 +29,21 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         return authParts[1] as string;
     }
 
-    canActivate(context: ExecutionContext): Promise<boolean> | Observable<boolean> | boolean {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [context.getHandler(), context.getClass()]);
 
-        if (isPublic) {
-            return true;
-        }
+        if (isPublic) return true;
 
         const token = this.getTokenFromRequest(request);
-        if (!token) {
-            throw new UnauthorizedException('Invalid or not provided auth token');
-        }
-        return this.authService.validateToken(token).then(async (user) => {
-            if (!user) throw new UnauthorizedException('Invalid token');
-            request.user = user;
-            return true;
-        });
+        if (!token) throw new UnauthorizedException('Invalid or not provided auth token');
+
+        const { user, branch } = await this.authService.validateToken(token);
+        if (!user) throw new UnauthorizedException('Invalid token');
+
+        request.user = user;
+        request.branch = branch;
+
+        return true;
     }
 }

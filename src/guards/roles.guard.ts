@@ -18,7 +18,7 @@ export class RolesGuard implements CanActivate {
         if (requiredRoles.includes(user.role)) {
             return true;
         } else {
-            throw new UnauthorizedException('access denied for this route');
+            throw new UnauthorizedException(`${user.role} is not authorized to access this route`);
         }
     }
 }

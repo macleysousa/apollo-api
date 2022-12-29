@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthRequest } from 'src/decorators/current-user.decorator';
+import { AuthRequest } from 'src/decorators/current-auth.decorator';
 import { Repository } from 'typeorm';
 
 import { CreateGroupAccessDto } from './dto/create-group-access.dto';
