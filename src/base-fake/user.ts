@@ -38,7 +38,7 @@ class UserFakeRepository {
             groupName: 'Administrativo',
             componentId: 'ADMFM001',
             componentName: 'Manutenção de usuário',
-            blocked: false,
+            deprecated: false,
         });
 
         return [access];

@@ -5,7 +5,7 @@ class ComponentFakeRepository {
         const component = new ComponentEntity();
         component.id = 'ADMFM001';
         component.name = 'NAME COMPONENT';
-        component.blocked = false;
+        component.deprecated = false;
         component.createdAt = new Date('2022-10-15T11:13:18.000Z');
         component.updatedAt = new Date('2022-10-15T11:13:18.000Z');
         return [component];
@@ -15,7 +15,7 @@ class ComponentFakeRepository {
         const component = new ComponentEntity();
         component.id = 'ADMFM001';
         component.name = 'NAME COMPONENT';
-        component.blocked = false;
+        component.deprecated = false;
         component.createdAt = new Date('2022-10-15T11:13:18.000Z');
         component.updatedAt = new Date('2022-10-15T11:13:18.000Z');
         return component;

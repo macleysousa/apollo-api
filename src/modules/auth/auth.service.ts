@@ -59,7 +59,13 @@ export class AuthService {
     }
 
     async validateComponent(userId: number, branchId: number, componentId: string): Promise<boolean> {
-        const access = await this.userService.findAccesses(userId, { branchId, componentId });
-        return access?.length > 0;
+        const accesses = await this.userService.findAccesses(userId, { branchId, componentId });
+        const access = accesses?.find((access) => access.componentId == componentId);
+
+        if (access?.deprecated) {
+            throw new UnauthorizedException(`component ${componentId} is deprecated`);
+        }
+
+        return access ? true : false;
     }
 }

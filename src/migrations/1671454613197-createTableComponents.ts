@@ -19,7 +19,7 @@ export class createTableComponents1671454613197 implements MigrationInterface {
                         isNullable: false,
                     },
                     {
-                        name: 'blocked',
+                        name: 'depreciated',
                         type: 'boolean',
                         default: false,
                     },

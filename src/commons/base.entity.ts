@@ -4,9 +4,9 @@ import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
 export class BaseEntity {
     @CreateDateColumn({ default: 'now()' })
     @ApiProperty()
-    createdAt: Date;
+    createdAt?: Date;
 
     @UpdateDateColumn({ default: 'now()' })
     @ApiProperty()
-    updatedAt: Date;
+    updatedAt?: Date;
 }

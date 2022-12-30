@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { exec } from 'child_process';
 import { componentFakeRepository } from 'src/base-fake/component';
 import { IsNull, Not, Repository } from 'typeorm';
 import { ComponentService } from './component.service';
@@ -17,6 +16,7 @@ describe('ComponentsService', () => {
                 {
                     provide: getRepositoryToken(ComponentEntity),
                     useValue: {
+                        save: jest.fn(),
                         findOne: jest.fn().mockResolvedValue(componentFakeRepository.findOne()),
                         createQueryBuilder: jest.fn().mockReturnValue({
                             where: jest.fn(),
@@ -35,6 +35,21 @@ describe('ComponentsService', () => {
     it('should be defined', () => {
         expect(service).toBeDefined();
         expect(componentRepository).toBeDefined();
+    });
+
+    describe('popular', () => {
+        it('should return popular components', async () => {
+            // Arrange
+            // const components: ComponentEntity[] = new Array(10).fill(componentFakeRepository.findOne());
+
+            // Act
+            await service.popular();
+
+            // Assert
+
+            expect(componentRepository.save).toHaveBeenCalledTimes(1);
+            expect(componentRepository.save).toHaveBeenCalledWith([]);
+        });
     });
 
     describe('find', () => {

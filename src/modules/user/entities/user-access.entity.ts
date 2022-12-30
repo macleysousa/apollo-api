@@ -29,7 +29,7 @@ export class UserAccessEntity {
 
     @ApiProperty()
     @ViewColumn()
-    blocked: boolean;
+    deprecated: boolean;
 
     constructor(partial?: Partial<UserAccessEntity>) {
         Object.assign(this, partial);

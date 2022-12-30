@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { authFakeRepository } from 'src/base-fake/auth';
 import { branchFakeRepository } from 'src/base-fake/branch';
+import { componentFakeRepository } from 'src/base-fake/component';
 import { userFakeRepository } from 'src/base-fake/user';
 import { BranchService } from '../branch/branch.service';
 import { UserService } from '../user/user.service';
@@ -204,6 +205,26 @@ describe('AuthService', () => {
             expect(userService.findAccesses).toHaveBeenCalledWith(userId, { branchId, componentId });
 
             expect(response).toBeTruthy();
+        });
+
+        it('should failed in validation the component deprecated', async () => {
+            // Arrange
+            const userId = 1;
+            const branchId = 1;
+            const componentId = 'ADMFM001';
+            const component = userFakeRepository.findAccesses().find((c) => c.componentId === componentId);
+            component.deprecated = true;
+            jest.spyOn(userService, 'findAccesses').mockResolvedValueOnce(Promise.resolve([component]));
+
+            // Act
+
+            // Assert
+            expect(authService.validateComponent(userId, branchId, componentId)).rejects.toEqual(
+                new UnauthorizedException(`component ${componentId} is deprecated`)
+            );
+
+            expect(userService.findAccesses).toHaveBeenCalledTimes(1);
+            expect(userService.findAccesses).toHaveBeenCalledWith(userId, { branchId, componentId });
         });
 
         it('should failed in validating the component', async () => {

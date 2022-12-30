@@ -14,5 +14,5 @@ export class ComponentEntity extends BaseEntity {
 
     @ApiProperty()
     @Column()
-    blocked: boolean;
+    deprecated: boolean;
 }

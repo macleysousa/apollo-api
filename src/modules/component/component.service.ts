@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, IsNull, Not, Repository } from 'typeorm';
+import { components } from './component.decorator';
 import { ComponentEntity } from './entities/component.entity';
 
 @Injectable()
@@ -8,7 +9,13 @@ export class ComponentService {
     constructor(
         @InjectRepository(ComponentEntity)
         private componentRepository: Repository<ComponentEntity>
-    ) {}
+    ) {
+        //   this.popular();
+    }
+
+    async popular(): Promise<void> {
+        this.componentRepository.save(components);
+    }
 
     async find(filter?: string, blocked?: boolean): Promise<ComponentEntity[]> {
         const queryBuilder = this.componentRepository.createQueryBuilder('c');

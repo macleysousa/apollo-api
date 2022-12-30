@@ -11,7 +11,7 @@ CREATE OR REPLACE VIEW user_accesses AS
     cg.name 'groupName',
     cgi.componentId,
     c.name 'componentName',
-    c.blocked from users as u
+    c.depreciated from users as u
 inner join users_groups_accesses ug on ug.userId = u.id
 inner join components_groups cg on cg.id = ug.groupId
 inner join components_groups_items cgi on cgi.groupId = ug.groupId
