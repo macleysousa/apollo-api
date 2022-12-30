@@ -9,9 +9,7 @@ export class ComponentService {
     constructor(
         @InjectRepository(ComponentEntity)
         private componentRepository: Repository<ComponentEntity>
-    ) {
-        //   this.popular();
-    }
+    ) {}
 
     async popular(): Promise<void> {
         this.componentRepository.save(components);

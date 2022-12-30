@@ -11,4 +11,8 @@ import { IsComponentValidConstraint } from './validations/is-component.validatio
     controllers: [ComponentsController],
     providers: [ComponentService, IsComponentValidConstraint],
 })
-export class ComponentsModule {}
+export class ComponentsModule {
+    constructor(private componentsService: ComponentService) {
+        this.componentsService.popular();
+    }
+}
