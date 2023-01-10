@@ -13,9 +13,10 @@ import { ComponentsModule } from './modules/component/component.module';
 import { ComponentGuard } from './guards/component.guard';
 import { ComponentGroupModule } from './modules/component-group/component-group.module';
 import { BranchModule } from './modules/branch/branch.module';
+import { ColorModule } from './modules/color/color.module';
 
 @Module({
-    imports: [TypeOrmModule.forRoot({ ...ormConfig }), AuthModule, UserModule, ComponentsModule, ComponentGroupModule, BranchModule],
+    imports: [TypeOrmModule.forRoot({ ...ormConfig }), AuthModule, UserModule, ComponentsModule, ComponentGroupModule, BranchModule, ColorModule],
     controllers: [],
     providers: [
         {
