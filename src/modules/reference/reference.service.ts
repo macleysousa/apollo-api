@@ -1,26 +1,46 @@
 import { Injectable } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common/exceptions';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ILike, Repository } from 'typeorm';
+
 import { CreateReferenceDto } from './dto/create-reference.dto';
 import { UpdateReferenceDto } from './dto/update-reference.dto';
+import { ReferenceEntity } from './entities/reference.entity';
 
 @Injectable()
 export class ReferenceService {
-  create(createReferenceDto: CreateReferenceDto) {
-    return 'This action adds a new reference';
+  constructor(
+    @InjectRepository(ReferenceEntity)
+    private referenceRepository: Repository<ReferenceEntity>
+  ) {}
+
+  async create(createReferenceDto: CreateReferenceDto): Promise<ReferenceEntity> {
+    const reference = await this.referenceRepository.save(createReferenceDto);
+
+    return this.findById(reference.id);
   }
 
-  findAll() {
-    return `This action returns all reference`;
+  async find(name?: string, externalId?: string): Promise<ReferenceEntity[]> {
+    return this.referenceRepository.find({
+      where: { name: ILike(`%${name ?? ''}%`), externalId: ILike(`%${externalId ?? ''}%`) },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} reference`;
+  async findById(id: number): Promise<ReferenceEntity> {
+    return this.referenceRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateReferenceDto: UpdateReferenceDto) {
-    return `This action updates a #${id} reference`;
+  async update(id: number, updateReferenceDto: UpdateReferenceDto): Promise<ReferenceEntity> {
+    const reference = await this.findById(id);
+    if (!reference) {
+      throw new BadRequestException('Reference not found');
+    }
+    await this.referenceRepository.save({ ...reference, ...updateReferenceDto });
+
+    return await this.findById(id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} reference`;
+  async remove(id: number): Promise<void> {
+    await this.referenceRepository.delete({ id });
   }
 }
