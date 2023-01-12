@@ -9,41 +9,41 @@ import { UserStatus } from '../enum/user-status';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
-    @ApiProperty()
-    @PrimaryGeneratedColumn('increment')
-    id: number;
+  @ApiProperty()
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
-    @ApiProperty()
-    @Column()
-    username: string;
+  @ApiProperty()
+  @Column()
+  username: string;
 
-    @Exclude()
-    @Column({
-        transformer: {
-            to: (value) => {
-                return encrypt(value);
-            },
-            from: (value) => {
-                return decrypt(value);
-            },
-        },
-    })
-    password: string;
+  @Exclude()
+  @Column({
+    transformer: {
+      to: (value) => {
+        return encrypt(value);
+      },
+      from: (value) => {
+        return decrypt(value);
+      },
+    },
+  })
+  password: string;
 
-    @ApiProperty()
-    @Column()
-    name: string;
+  @ApiProperty()
+  @Column()
+  name: string;
 
-    @ApiProperty({ enum: Role })
-    @Column()
-    role: Role;
+  @ApiProperty({ enum: Role })
+  @Column()
+  role: Role;
 
-    @ApiProperty()
-    @Column()
-    status: UserStatus;
+  @ApiProperty()
+  @Column()
+  status: UserStatus;
 
-    constructor(partial?: Partial<UserEntity>) {
-        super();
-        Object.assign(this, partial);
-    }
+  constructor(partial?: Partial<UserEntity>) {
+    super();
+    Object.assign(this, partial);
+  }
 }

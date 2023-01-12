@@ -11,36 +11,36 @@ import { SizeEntity } from './entities/size.entity';
 @ApiBearerAuth()
 @ApiComponent('PRDFM002', 'Manutenção de tamanho de produto')
 export class SizeController {
-    constructor(private readonly sizeService: SizeService) {}
+  constructor(private readonly sizeService: SizeService) {}
 
-    @Post()
-    @ApiResponse({ status: 201, type: SizeEntity })
-    async create(@Body() createSizeDto: CreateSizeDto): Promise<SizeEntity> {
-        return this.sizeService.create(createSizeDto);
-    }
+  @Post()
+  @ApiResponse({ status: 201, type: SizeEntity })
+  async create(@Body() createSizeDto: CreateSizeDto): Promise<SizeEntity> {
+    return this.sizeService.create(createSizeDto);
+  }
 
-    @Get()
-    @ApiResponse({ status: 200, type: [SizeEntity] })
-    @ApiQuery({ name: 'name', required: false })
-    @ApiQuery({ name: 'active', required: false, type: Boolean })
-    async find(@Query('name') name?: string, @Query('active') active?: boolean | unknown): Promise<SizeEntity[]> {
-        return this.sizeService.find(name, active);
-    }
+  @Get()
+  @ApiResponse({ status: 200, type: [SizeEntity] })
+  @ApiQuery({ name: 'name', required: false })
+  @ApiQuery({ name: 'active', required: false, type: Boolean })
+  async find(@Query('name') name?: string, @Query('active') active?: boolean | unknown): Promise<SizeEntity[]> {
+    return this.sizeService.find(name, active);
+  }
 
-    @Get(':id')
-    @ApiResponse({ status: 200, type: SizeEntity })
-    async findById(@Param('id', ParseIntPipe) id: number): Promise<SizeEntity> {
-        return this.sizeService.findById(id);
-    }
+  @Get(':id')
+  @ApiResponse({ status: 200, type: SizeEntity })
+  async findById(@Param('id', ParseIntPipe) id: number): Promise<SizeEntity> {
+    return this.sizeService.findById(id);
+  }
 
-    @Put(':id')
-    @ApiResponse({ status: 200, type: SizeEntity })
-    async update(@Param('id', ParseIntPipe) id: number, @Body() updateSizeDto: UpdateSizeDto): Promise<SizeEntity> {
-        return this.sizeService.update(id, updateSizeDto);
-    }
+  @Put(':id')
+  @ApiResponse({ status: 200, type: SizeEntity })
+  async update(@Param('id', ParseIntPipe) id: number, @Body() updateSizeDto: UpdateSizeDto): Promise<SizeEntity> {
+    return this.sizeService.update(id, updateSizeDto);
+  }
 
-    @Delete(':id')
-    async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        await this.sizeService.remove(id);
-    }
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    await this.sizeService.remove(id);
+  }
 }

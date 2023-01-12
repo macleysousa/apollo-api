@@ -9,9 +9,9 @@ import { GroupAccessModule } from './group-access/group-access.module';
 import { UserAccessEntity } from './entities/user-access.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([UserEntity, UserAccessEntity]), GroupAccessModule],
-    controllers: [UserController],
-    providers: [UserService, IsUserNameUniqueConstraint],
-    exports: [UserService],
+  imports: [TypeOrmModule.forFeature([UserEntity, UserAccessEntity]), GroupAccessModule],
+  controllers: [UserController],
+  providers: [UserService, IsUserNameUniqueConstraint],
+  exports: [UserService],
 })
 export class UserModule {}

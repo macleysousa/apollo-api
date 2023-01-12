@@ -1,7 +1,7 @@
 class AuthFakeRepository {
-    token() {
-        return { token: 'token', refreshToken: 'refreshToken' };
-    }
+  token() {
+    return { token: 'token', refreshToken: 'refreshToken' };
+  }
 }
 
 const authFakeRepository = new AuthFakeRepository();

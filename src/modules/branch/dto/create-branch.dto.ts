@@ -6,62 +6,62 @@ import { UF } from 'src/commons/enum/uf.enum';
 import { IsCnpjValid } from 'src/commons/validations/cnpj.validation';
 
 export class CreateBranchDto {
-    @ApiProperty()
-    @IsNotEmpty()
-    @Min(1)
-    @Max(999)
-    id: number;
+  @ApiProperty()
+  @IsNotEmpty()
+  @Min(1)
+  @Max(999)
+  id: number;
 
-    @ApiProperty()
-    @IsOptional()
-    @IsCnpjValid()
-    cnpj: string;
+  @ApiProperty()
+  @IsOptional()
+  @IsCnpjValid()
+  cnpj: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    name: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  name: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    fantasyName: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  fantasyName: string;
 
-    @ApiProperty({ enum: UF, default: UF.NotInformed })
-    @IsOptional()
-    uf?: UF;
+  @ApiProperty({ enum: UF, default: UF.NotInformed })
+  @IsOptional()
+  uf?: UF;
 
-    @ApiProperty()
-    @IsOptional()
-    numberStateRegistration?: string;
+  @ApiProperty()
+  @IsOptional()
+  numberStateRegistration?: string;
 
-    @ApiProperty()
-    @IsOptional()
-    codeActivity?: string;
+  @ApiProperty()
+  @IsOptional()
+  codeActivity?: string;
 
-    @ApiProperty()
-    @IsOptional()
-    codeActivityCnae?: string;
+  @ApiProperty()
+  @IsOptional()
+  codeActivityCnae?: string;
 
-    @ApiProperty({ enum: TaxRegime, default: TaxRegime.NotInformed })
-    @IsOptional()
-    typeTaxRegime?: TaxRegime;
+  @ApiProperty({ enum: TaxRegime, default: TaxRegime.NotInformed })
+  @IsOptional()
+  typeTaxRegime?: TaxRegime;
 
-    @ApiProperty({ enum: SubTributary, default: SubTributary.NotInformed })
-    @IsOptional()
-    typeSubTributary?: SubTributary;
+  @ApiProperty({ enum: SubTributary, default: SubTributary.NotInformed })
+  @IsOptional()
+  typeSubTributary?: SubTributary;
 
-    @ApiProperty()
-    @IsOptional()
-    suframaCode?: string;
+  @ApiProperty()
+  @IsOptional()
+  suframaCode?: string;
 
-    @ApiProperty()
-    @IsOptional()
-    registrationMunicipal?: string;
+  @ApiProperty()
+  @IsOptional()
+  registrationMunicipal?: string;
 
-    @ApiProperty()
-    @IsOptional()
-    phone?: string;
+  @ApiProperty()
+  @IsOptional()
+  phone?: string;
 
-    @ApiProperty()
-    @IsOptional()
-    email?: string;
+  @ApiProperty()
+  @IsOptional()
+  email?: string;
 }

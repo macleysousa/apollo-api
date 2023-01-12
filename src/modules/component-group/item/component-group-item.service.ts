@@ -6,25 +6,25 @@ import { ComponentGroupItemEntity } from './entities/component-group-item.entity
 
 @Injectable()
 export class ComponentGroupItemService {
-    constructor(
-        @InjectRepository(ComponentGroupItemEntity)
-        private repository: Repository<ComponentGroupItemEntity>
-    ) {}
+  constructor(
+    @InjectRepository(ComponentGroupItemEntity)
+    private repository: Repository<ComponentGroupItemEntity>
+  ) {}
 
-    async add(groupId: number, { componentId }: AddComponentGroupItemDto): Promise<ComponentGroupItemEntity[]> {
-        await this.repository.upsert({ groupId, componentId }, { conflictPaths: ['groupId', 'componentId'] });
-        return this.findByGroup(groupId);
-    }
+  async add(groupId: number, { componentId }: AddComponentGroupItemDto): Promise<ComponentGroupItemEntity[]> {
+    await this.repository.upsert({ groupId, componentId }, { conflictPaths: ['groupId', 'componentId'] });
+    return this.findByGroup(groupId);
+  }
 
-    async findByGroup(groupId: number, relations = ['component']): Promise<ComponentGroupItemEntity[]> {
-        return this.repository.find({ where: { groupId }, relations });
-    }
+  async findByGroup(groupId: number, relations = ['component']): Promise<ComponentGroupItemEntity[]> {
+    return this.repository.find({ where: { groupId }, relations });
+  }
 
-    async findByComponent(groupId: number, componentId: string, relations = ['component']): Promise<ComponentGroupItemEntity> {
-        return this.repository.findOne({ where: { groupId, componentId }, relations });
-    }
+  async findByComponent(groupId: number, componentId: string, relations = ['component']): Promise<ComponentGroupItemEntity> {
+    return this.repository.findOne({ where: { groupId, componentId }, relations });
+  }
 
-    async remove(groupId: number, componentId: string): Promise<void> {
-        await this.repository.delete({ groupId, componentId });
-    }
+  async remove(groupId: number, componentId: string): Promise<void> {
+    await this.repository.delete({ groupId, componentId });
+  }
 }

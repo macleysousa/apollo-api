@@ -1,5 +1,5 @@
 export enum SubTributary {
-    NotInformed = '',
-    Calculate = 'Calculate',
-    NotCalculate = 'NotCalculate',
+  NotInformed = '',
+  Calculate = 'Calculate',
+  NotCalculate = 'NotCalculate',
 }

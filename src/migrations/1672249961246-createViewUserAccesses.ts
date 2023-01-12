@@ -1,8 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class createViewUserAccesses1672249961246 implements MigrationInterface {
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
 CREATE OR REPLACE VIEW user_accesses AS
     select distinct
     u.id,
@@ -17,9 +17,9 @@ inner join components_groups cg on cg.id = ug.groupId
 inner join components_groups_items cgi on cgi.groupId = ug.groupId
 inner join components c on c.id = cgi.componentId
         `);
-    }
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP VIEW user_accesses`);
-    }
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP VIEW user_accesses`);
+  }
 }

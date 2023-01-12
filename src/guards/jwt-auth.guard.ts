@@ -8,42 +8,42 @@ import { IS_PUBLIC_KEY } from 'src/decorators/is-public.decorator';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-    constructor(private reflector: Reflector, private authService: AuthService) {
-        super();
+  constructor(private reflector: Reflector, private authService: AuthService) {
+    super();
+  }
+
+  private getTokenFromRequest(request: TenantRequest): string {
+    const authHeader = Object.keys(request.headers).find((h) => h.toLowerCase() === 'authorization');
+
+    if (!authHeader) {
+      throw new UnauthorizedException('Token is not present');
     }
 
-    private getTokenFromRequest(request: TenantRequest): string {
-        const authHeader = Object.keys(request.headers).find((h) => h.toLowerCase() === 'authorization');
+    const authorization = request.headers[authHeader] as string;
 
-        if (!authHeader) {
-            throw new UnauthorizedException('Token is not present');
-        }
-
-        const authorization = request.headers[authHeader] as string;
-
-        const authParts = authorization.split(' ');
-        if (authParts[0].toLowerCase() !== 'bearer') {
-            throw new UnauthorizedException('Invalid token');
-        }
-
-        return authParts[1] as string;
+    const authParts = authorization.split(' ');
+    if (authParts[0].toLowerCase() !== 'bearer') {
+      throw new UnauthorizedException('Invalid token');
     }
 
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
-        const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [context.getHandler(), context.getClass()]);
+    return authParts[1] as string;
+  }
 
-        if (isPublic) return true;
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [context.getHandler(), context.getClass()]);
 
-        const token = this.getTokenFromRequest(request);
-        if (!token) throw new UnauthorizedException('Invalid or not provided auth token');
+    if (isPublic) return true;
 
-        const { user, branch } = await this.authService.validateToken(token);
-        if (!user) throw new UnauthorizedException('Invalid token');
+    const token = this.getTokenFromRequest(request);
+    if (!token) throw new UnauthorizedException('Invalid or not provided auth token');
 
-        request.user = user;
-        request.branch = branch;
+    const { user, branch } = await this.authService.validateToken(token);
+    if (!user) throw new UnauthorizedException('Invalid token');
 
-        return true;
-    }
+    request.user = user;
+    request.branch = branch;
+
+    return true;
+  }
 }

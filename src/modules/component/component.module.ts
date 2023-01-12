@@ -7,12 +7,12 @@ import { ComponentEntity } from './entities/component.entity';
 import { IsComponentValidConstraint } from './validations/is-component.validation';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([ComponentEntity])],
-    controllers: [ComponentsController],
-    providers: [ComponentService, IsComponentValidConstraint],
+  imports: [TypeOrmModule.forFeature([ComponentEntity])],
+  controllers: [ComponentsController],
+  providers: [ComponentService, IsComponentValidConstraint],
 })
 export class ComponentsModule {
-    constructor(private componentsService: ComponentService) {
-        this.componentsService.popular();
-    }
+  constructor(private componentsService: ComponentService) {
+    this.componentsService.popular();
+  }
 }

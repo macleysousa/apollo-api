@@ -6,8 +6,8 @@ import { GroupAccessController } from './group-access.controller';
 import { UserGroupAccessService } from './group-access.service';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([UserGroupAccessEntity])],
-    controllers: [GroupAccessController],
-    providers: [UserGroupAccessService],
+  imports: [TypeOrmModule.forFeature([UserGroupAccessEntity])],
+  controllers: [GroupAccessController],
+  providers: [UserGroupAccessService],
 })
 export class GroupAccessModule {}

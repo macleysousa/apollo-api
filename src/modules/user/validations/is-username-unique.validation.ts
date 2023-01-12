@@ -7,27 +7,27 @@ import { UserService } from '../user.service';
 @ValidatorConstraint({ async: true })
 @Injectable()
 export class IsUserNameUniqueConstraint implements ValidatorConstraintInterface {
-    constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
-    async validate(name: string, args?: ValidationArguments): Promise<boolean> {
-        const user = await this.userService.findByUserName(name);
+  async validate(name: string, args?: ValidationArguments): Promise<boolean> {
+    const user = await this.userService.findByUserName(name);
 
-        return !user ? true : false;
-    }
+    return !user ? true : false;
+  }
 
-    defaultMessage(_validationArguments?: ValidationArguments): string {
-        return 'username is already in use';
-    }
+  defaultMessage(_validationArguments?: ValidationArguments): string {
+    return 'username is already in use';
+  }
 }
 
 export const IsUserNameUnique = (validationOptions?: ValidationOptions) => {
-    return (object: Object, propertyName: string) => {
-        registerDecorator({
-            target: object.constructor,
-            propertyName,
-            options: validationOptions,
-            constraints: [object],
-            validator: IsUserNameUniqueConstraint,
-        });
-    };
+  return (object: Object, propertyName: string) => {
+    registerDecorator({
+      target: object.constructor,
+      propertyName,
+      options: validationOptions,
+      constraints: [object],
+      validator: IsUserNameUniqueConstraint,
+    });
+  };
 };

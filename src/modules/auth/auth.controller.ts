@@ -10,21 +10,21 @@ import { TokenDTO } from './dto/token.dto';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
-    @IsPublic()
-    @Post('/signIn')
-    @ApiOkResponse({ type: TokenDTO })
-    async login(@Body() loginDto: LoginDTO, @Response() res): Promise<any> {
-        const { token, refreshToken } = await this.authService.login(loginDto);
-        res.cookie('refreshToken', refreshToken, { httpOnly: true });
-        res.send({ token });
-    }
+  @IsPublic()
+  @Post('/signIn')
+  @ApiOkResponse({ type: TokenDTO })
+  async login(@Body() loginDto: LoginDTO, @Response() res): Promise<any> {
+    const { token, refreshToken } = await this.authService.login(loginDto);
+    res.cookie('refreshToken', refreshToken, { httpOnly: true });
+    res.send({ token });
+  }
 
-    @IsPublic()
-    @Post('/refresh')
-    @ApiOkResponse({ type: TokenDTO })
-    async refreshToken(@Body() { refreshToken }: RefreshTokenDTO): Promise<any> {
-        return this.authService.refreshToken(refreshToken);
-    }
+  @IsPublic()
+  @Post('/refresh')
+  @ApiOkResponse({ type: TokenDTO })
+  async refreshToken(@Body() { refreshToken }: RefreshTokenDTO): Promise<any> {
+    return this.authService.refreshToken(refreshToken);
+  }
 }

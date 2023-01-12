@@ -9,21 +9,21 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
 @Module({
-    imports: [
-        UserModule,
-        BranchModule,
-        PassportModule,
-        JwtModule.register({
-            secret: process.env.ACCESS_TOKEN_SECRET,
-            signOptions: { expiresIn: '1d' },
-        }),
-    ],
-    controllers: [AuthController],
-    providers: [AuthService, BranchConstraint],
-    exports: [AuthService],
+  imports: [
+    UserModule,
+    BranchModule,
+    PassportModule,
+    JwtModule.register({
+      secret: process.env.ACCESS_TOKEN_SECRET,
+      signOptions: { expiresIn: '1d' },
+    }),
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, BranchConstraint],
+  exports: [AuthService],
 })
 export class AuthModule implements NestModule {
-    configure(consumer: MiddlewareConsumer) {
-        consumer.apply(LoginValidationMiddleware).forRoutes('login');
-    }
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoginValidationMiddleware).forRoutes('login');
+  }
 }

@@ -7,29 +7,29 @@ import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 
 @Entity({ name: 'users_groups_accesses' })
 export class UserGroupAccessEntity extends BaseEntity {
-    @ApiProperty()
-    @PrimaryColumn()
-    userId: number;
+  @ApiProperty()
+  @PrimaryColumn()
+  userId: number;
 
-    @ApiProperty()
-    @PrimaryColumn()
-    branchId: number;
+  @ApiProperty()
+  @PrimaryColumn()
+  branchId: number;
 
-    @ApiProperty()
-    @PrimaryColumn()
-    groupId: number;
+  @ApiProperty()
+  @PrimaryColumn()
+  groupId: number;
 
-    @ApiProperty({ type: () => ComponentGroupEntity })
-    @OneToOne(() => ComponentGroupEntity, (value) => value.id)
-    @JoinColumn({ name: 'groupId', referencedColumnName: 'id' })
-    group: ComponentGroupEntity;
+  @ApiProperty({ type: () => ComponentGroupEntity })
+  @OneToOne(() => ComponentGroupEntity, (value) => value.id)
+  @JoinColumn({ name: 'groupId', referencedColumnName: 'id' })
+  group: ComponentGroupEntity;
 
-    @ApiProperty()
-    @Column()
-    operatorId: number;
+  @ApiProperty()
+  @Column()
+  operatorId: number;
 
-    constructor(partial?: Partial<UserGroupAccessEntity>) {
-        super();
-        Object.assign(this, partial);
-    }
+  constructor(partial?: Partial<UserGroupAccessEntity>) {
+    super();
+    Object.assign(this, partial);
+  }
 }

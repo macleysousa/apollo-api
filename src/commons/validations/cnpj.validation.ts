@@ -5,42 +5,42 @@ import { ValidatorConstraint, ValidationArguments } from 'class-validator';
 @ValidatorConstraint({ async: true })
 @Injectable()
 export class IsCnpjValidConstraint implements ValidatorConstraintInterface {
-    calculateDigitVerifier(cnpj: string, weights: number[]): string {
-        let sum = 0;
-        for (let i = 0; i < weights.length; i++) {
-            sum += parseInt(cnpj[i]) * weights[i];
-        }
-
-        const modulo = sum % 11;
-        const result = modulo < 2 ? 0 : 11 - modulo;
-        return result.toString();
+  calculateDigitVerifier(cnpj: string, weights: number[]): string {
+    let sum = 0;
+    for (let i = 0; i < weights.length; i++) {
+      sum += parseInt(cnpj[i]) * weights[i];
     }
 
-    async validate(value: string): Promise<boolean> {
-        const regex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
-        const cnpj = value.replace(/[^\d]+/g, '');
+    const modulo = sum % 11;
+    const result = modulo < 2 ? 0 : 11 - modulo;
+    return result.toString();
+  }
 
-        if (cnpj.length !== 14) return false;
+  async validate(value: string): Promise<boolean> {
+    const regex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
+    const cnpj = value.replace(/[^\d]+/g, '');
 
-        const digit1 = this.calculateDigitVerifier(cnpj.substring(0, 12), [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
-        const digit2 = this.calculateDigitVerifier(cnpj.substring(0, 12) + digit1, [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+    if (cnpj.length !== 14) return false;
 
-        return cnpj[12] === digit1 && cnpj[13] === digit2 && regex.test(value);
-    }
+    const digit1 = this.calculateDigitVerifier(cnpj.substring(0, 12), [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+    const digit2 = this.calculateDigitVerifier(cnpj.substring(0, 12) + digit1, [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
 
-    defaultMessage(_validationArguments?: ValidationArguments): string {
-        return 'cnpj is incorrect or in an invalid format';
-    }
+    return cnpj[12] === digit1 && cnpj[13] === digit2 && regex.test(value);
+  }
+
+  defaultMessage(_validationArguments?: ValidationArguments): string {
+    return 'cnpj is incorrect or in an invalid format';
+  }
 }
 
 export const IsCnpjValid = (validationOptions?: ValidationOptions) => {
-    return (object: unknown, propertyName: string) => {
-        registerDecorator({
-            target: object.constructor,
-            propertyName,
-            options: validationOptions,
-            constraints: [object],
-            validator: IsCnpjValidConstraint,
-        });
-    };
+  return (object: unknown, propertyName: string) => {
+    registerDecorator({
+      target: object.constructor,
+      propertyName,
+      options: validationOptions,
+      constraints: [object],
+      validator: IsCnpjValidConstraint,
+    });
+  };
 };

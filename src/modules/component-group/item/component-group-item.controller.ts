@@ -11,31 +11,31 @@ import { ComponentGroupItemEntity } from './entities/component-group-item.entity
 @ApiBearerAuth()
 @ApiComponent('ADMFM003', 'Relacionar componente ao grupo de acesso')
 export class ComponentGroupItemController {
-    constructor(private readonly service: ComponentGroupItemService) {}
+  constructor(private readonly service: ComponentGroupItemService) {}
 
-    @Post()
-    @ApiResponse({ type: ComponentGroupItemEntity, status: 201 })
-    async add(
-        @Param('id', ParseIntPipe) id: number,
-        @Body() createComponentGroupItemDto: AddComponentGroupItemDto
-    ): Promise<ComponentGroupItemEntity[]> {
-        return this.service.add(id, createComponentGroupItemDto);
-    }
+  @Post()
+  @ApiResponse({ type: ComponentGroupItemEntity, status: 201 })
+  async add(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() createComponentGroupItemDto: AddComponentGroupItemDto
+  ): Promise<ComponentGroupItemEntity[]> {
+    return this.service.add(id, createComponentGroupItemDto);
+  }
 
-    @Get()
-    @ApiResponse({ type: [ComponentGroupItemEntity], status: 200 })
-    async findByGroup(@Param('id', ParseIntPipe) id: number): Promise<ComponentGroupItemEntity[]> {
-        return this.service.findByGroup(id);
-    }
+  @Get()
+  @ApiResponse({ type: [ComponentGroupItemEntity], status: 200 })
+  async findByGroup(@Param('id', ParseIntPipe) id: number): Promise<ComponentGroupItemEntity[]> {
+    return this.service.findByGroup(id);
+  }
 
-    @Get('/:component')
-    @ApiResponse({ type: ComponentGroupItemEntity, status: 200 })
-    async findByComponent(@Param('id', ParseIntPipe) id: number, @Param('component') component: string): Promise<ComponentGroupItemEntity> {
-        return this.service.findByComponent(id, component);
-    }
+  @Get('/:component')
+  @ApiResponse({ type: ComponentGroupItemEntity, status: 200 })
+  async findByComponent(@Param('id', ParseIntPipe) id: number, @Param('component') component: string): Promise<ComponentGroupItemEntity> {
+    return this.service.findByComponent(id, component);
+  }
 
-    @Delete('/:component')
-    async remove(@Param('id', ParseIntPipe) id: number, @Param('component') component: string): Promise<void> {
-        return this.service.remove(id, component);
-    }
+  @Delete('/:component')
+  async remove(@Param('id', ParseIntPipe) id: number, @Param('component') component: string): Promise<void> {
+    return this.service.remove(id, component);
+  }
 }

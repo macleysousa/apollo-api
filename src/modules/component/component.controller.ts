@@ -8,19 +8,19 @@ import { ComponentEntity } from './entities/component.entity';
 @Controller('components')
 @ApiBearerAuth()
 export class ComponentsController {
-    constructor(private readonly componentsService: ComponentService) {}
+  constructor(private readonly componentsService: ComponentService) {}
 
-    @Get()
-    @ApiResponse({ type: [ComponentEntity], status: 200 })
-    @ApiQuery({ name: 'filter', required: false })
-    @ApiQuery({ name: 'blocked', required: false })
-    async find(@Query('filter') filter: string, @Query('blocked') blocked: boolean): Promise<ComponentEntity[]> {
-        return this.componentsService.find(filter, blocked);
-    }
+  @Get()
+  @ApiResponse({ type: [ComponentEntity], status: 200 })
+  @ApiQuery({ name: 'filter', required: false })
+  @ApiQuery({ name: 'blocked', required: false })
+  async find(@Query('filter') filter: string, @Query('blocked') blocked: boolean): Promise<ComponentEntity[]> {
+    return this.componentsService.find(filter, blocked);
+  }
 
-    @Get(':id')
-    @ApiResponse({ type: ComponentEntity, status: 200 })
-    async findById(@Param('id', ParseIntPipe) id: string): Promise<ComponentEntity> {
-        return this.componentsService.findById(id);
-    }
+  @Get(':id')
+  @ApiResponse({ type: ComponentEntity, status: 200 })
+  async findById(@Param('id', ParseIntPipe) id: string): Promise<ComponentEntity> {
+    return this.componentsService.findById(id);
+  }
 }

@@ -15,35 +15,46 @@ import { ComponentGroupModule } from './modules/component-group/component-group.
 import { BranchModule } from './modules/branch/branch.module';
 import { ColorModule } from './modules/color/color.module';
 import { SizeModule } from './modules/size/size.module';
+import { ReferenceModule } from './modules/reference/reference.module';
 
 @Module({
-    imports: [TypeOrmModule.forRoot({ ...ormConfig }), AuthModule, UserModule, ComponentsModule, ComponentGroupModule, BranchModule, ColorModule, SizeModule],
-    controllers: [],
-    providers: [
-        {
-            provide: APP_FILTER,
-            useClass: AllExceptionsFilter,
-        },
-        {
-            provide: APP_GUARD,
-            useClass: JwtAuthGuard,
-        },
-        {
-            provide: APP_GUARD,
-            useClass: RolesGuard,
-        },
-        {
-            provide: APP_GUARD,
-            useClass: ComponentGuard,
-        },
-        {
-            provide: APP_INTERCEPTOR,
-            useClass: ClassSerializerInterceptor,
-        },
-        {
-            provide: APP_INTERCEPTOR,
-            useClass: InjectRequestInterceptor,
-        },
-    ],
+  imports: [
+    TypeOrmModule.forRoot({ ...ormConfig }),
+    AuthModule,
+    UserModule,
+    ComponentsModule,
+    ComponentGroupModule,
+    BranchModule,
+    ColorModule,
+    SizeModule,
+    ReferenceModule,
+  ],
+  controllers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ComponentGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: InjectRequestInterceptor,
+    },
+  ],
 })
 export class AppModule {}

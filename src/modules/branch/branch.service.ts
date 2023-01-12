@@ -7,38 +7,38 @@ import { BranchEntity } from './entities/branch.entity';
 
 @Injectable()
 export class BranchService {
-    constructor(
-        @InjectRepository(BranchEntity)
-        private branchRepository: Repository<BranchEntity>
-    ) {}
+  constructor(
+    @InjectRepository(BranchEntity)
+    private branchRepository: Repository<BranchEntity>
+  ) {}
 
-    async create(createBranchDto: CreateBranchDto): Promise<BranchEntity> {
-        const branch = await this.branchRepository.save(createBranchDto);
+  async create(createBranchDto: CreateBranchDto): Promise<BranchEntity> {
+    const branch = await this.branchRepository.save(createBranchDto);
 
-        return this.findById(branch.id);
-    }
+    return this.findById(branch.id);
+  }
 
-    /** filter by cnpj or name */
-    async find(filter?: string): Promise<BranchEntity[]> {
-        return this.branchRepository.find({
-            where: {
-                cnpj: ILike(`%${filter ?? ''}%`),
-                name: ILike(`%${filter ?? ''}%`),
-            },
-        });
-    }
+  /** filter by cnpj or name */
+  async find(filter?: string): Promise<BranchEntity[]> {
+    return this.branchRepository.find({
+      where: {
+        cnpj: ILike(`%${filter ?? ''}%`),
+        name: ILike(`%${filter ?? ''}%`),
+      },
+    });
+  }
 
-    async findById(id: number): Promise<BranchEntity> {
-        return this.branchRepository.findOne({ where: { id } });
-    }
+  async findById(id: number): Promise<BranchEntity> {
+    return this.branchRepository.findOne({ where: { id } });
+  }
 
-    async update(id: number, updateBranchDto: UpdateBranchDto): Promise<BranchEntity> {
-        await this.branchRepository.update(id, updateBranchDto);
+  async update(id: number, updateBranchDto: UpdateBranchDto): Promise<BranchEntity> {
+    await this.branchRepository.update(id, updateBranchDto);
 
-        return this.findById(id);
-    }
+    return this.findById(id);
+  }
 
-    async remove(id: number): Promise<void> {
-        await this.branchRepository.delete(id);
-    }
+  async remove(id: number): Promise<void> {
+    await this.branchRepository.delete(id);
+  }
 }

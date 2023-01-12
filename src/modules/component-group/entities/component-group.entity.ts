@@ -6,20 +6,20 @@ import { ComponentGroupItemEntity } from '../item/entities/component-group-item.
 
 @Entity({ name: 'components_groups' })
 export class ComponentGroupEntity extends BaseEntity {
-    @ApiProperty()
-    @PrimaryGeneratedColumn('increment')
-    id: number;
+  @ApiProperty()
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
-    @ApiProperty()
-    @Column()
-    name: string;
+  @ApiProperty()
+  @Column()
+  name: string;
 
-    @ApiProperty({ type: () => ComponentGroupItemEntity, isArray: true })
-    @OneToMany(() => ComponentGroupItemEntity, (value) => value.group)
-    items: ComponentGroupItemEntity[];
+  @ApiProperty({ type: () => ComponentGroupItemEntity, isArray: true })
+  @OneToMany(() => ComponentGroupItemEntity, (value) => value.group)
+  items: ComponentGroupItemEntity[];
 
-    constructor(partial?: Partial<ComponentGroupEntity>) {
-        super();
-        Object.assign(this, partial);
-    }
+  constructor(partial?: Partial<ComponentGroupEntity>) {
+    super();
+    Object.assign(this, partial);
+  }
 }

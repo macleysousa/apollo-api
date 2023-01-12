@@ -6,8 +6,8 @@ import { ComponentGroupItemService } from './component-group-item.service';
 import { ComponentGroupItemEntity } from './entities/component-group-item.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([ComponentGroupItemEntity])],
-    controllers: [ComponentGroupItemController],
-    providers: [ComponentGroupItemService],
+  imports: [TypeOrmModule.forFeature([ComponentGroupItemEntity])],
+  controllers: [ComponentGroupItemController],
+  providers: [ComponentGroupItemService],
 })
 export class ComponentGroupItemModule {}
