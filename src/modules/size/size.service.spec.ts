@@ -23,6 +23,7 @@ describe('SizeService', () => {
             find: jest.fn().mockResolvedValue(sizeFakeRepository.find()),
             findOne: jest.fn().mockResolvedValue(sizeFakeRepository.findOne()),
             save: jest.fn().mockResolvedValue(sizeFakeRepository.findOne()),
+            update: jest.fn(),
             delete: jest.fn(),
           },
         },
@@ -153,8 +154,8 @@ describe('SizeService', () => {
       const result = await service.update(id, size);
 
       // Assert
-      expect(repository.save).toHaveBeenCalledTimes(1);
-      expect(repository.save).toHaveBeenCalledWith({ ...sizeFakeRepository.findOne(), ...size });
+      expect(repository.update).toHaveBeenCalledTimes(1);
+      expect(repository.update).toHaveBeenCalledWith(id, size);
 
       expect(result).toEqual(sizeFakeRepository.findOne());
     });
@@ -175,7 +176,6 @@ describe('SizeService', () => {
       // Arrange
       const id = 2;
       const size: UpdateSizeDto = { name: 'M', active: true };
-      //  jest.spyOn(service, '').mockResolvedValue(sizeFakeRepository.findOne());
 
       // Act
 

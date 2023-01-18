@@ -16,6 +16,7 @@ import { BranchModule } from './modules/branch/branch.module';
 import { ColorModule } from './modules/color/color.module';
 import { SizeModule } from './modules/size/size.module';
 import { ReferenceModule } from './modules/reference/reference.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ReferenceModule } from './modules/reference/reference.module';
     ColorModule,
     SizeModule,
     ReferenceModule,
+    CategoryModule,
   ],
   controllers: [],
   providers: [

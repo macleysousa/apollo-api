@@ -19,7 +19,7 @@ export class SizeService {
     }
 
     const sizeByName = await this.findByName(createSizeDto.name);
-    if (sizeByName && sizeByName.name != createSizeDto.name) {
+    if (sizeByName && sizeByName.id != createSizeDto.id) {
       throw new BadRequestException(`Size with this name ${createSizeDto.name} already exists`);
     }
 
@@ -53,7 +53,7 @@ export class SizeService {
       throw new BadRequestException(`Size with this name ${updateSizeDto.name} already exists`);
     }
 
-    await this.sizeRepository.save({ ...sizeById, ...updateSizeDto });
+    await this.sizeRepository.update(id, updateSizeDto);
 
     return this.findById(id);
   }
