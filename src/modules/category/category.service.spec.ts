@@ -61,7 +61,7 @@ describe('CategoryService', () => {
       // Act
 
       // Assert
-      expect(service.create(category)).rejects.toThrowError(`Category with id ${category.id} already exists`);
+      expect(service.create(category)).rejects.toEqual(new BadRequestException(`Category with id ${category.id} already exists`));
     });
 
     it('should create a new category with error *Category with name ${createCategoryDto.name} already exists*', async () => {
@@ -72,7 +72,7 @@ describe('CategoryService', () => {
       // Act
 
       // Assert
-      expect(service.create(category)).rejects.toThrowError(`Category with name ${category.name} already exists`);
+      expect(service.create(category)).rejects.toEqual(new BadRequestException(`Category with name ${category.name} already exists`));
     });
   });
 

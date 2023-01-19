@@ -1,8 +1,9 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
 import { ParseIntPipe } from '@nestjs/common/pipes';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ApiComponent } from '../component/component.decorator';
+import { IsPublic } from 'src/decorators/is-public.decorator';
 
+import { ApiComponent } from '../component/component.decorator';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -22,6 +23,7 @@ export class CategoryController {
   }
 
   @Get()
+  @IsPublic()
   @ApiResponse({ status: 200, type: [CategoryEntity] })
   @ApiQuery({ name: 'name', required: false })
   @ApiQuery({ name: 'active', required: false, type: Boolean })
@@ -30,6 +32,7 @@ export class CategoryController {
   }
 
   @Get(':id')
+  @IsPublic()
   @ApiResponse({ status: 200, type: CategoryEntity })
   async findById(@Param('id', ParseIntPipe) id: number): Promise<CategoryEntity> {
     return this.categoryService.findById(id);

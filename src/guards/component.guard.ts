@@ -1,5 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { IS_PUBLIC_KEY } from 'src/decorators/is-public.decorator';
 import { AuthService } from 'src/modules/auth/auth.service';
 import { COMPONENT_KEY } from 'src/modules/component/component.decorator';
 import { Role } from 'src/modules/user/enum/user-role.enum';
@@ -10,14 +11,16 @@ export class ComponentGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const componentId = this.reflector.getAllAndOverride<string>(COMPONENT_KEY, [context.getHandler(), context.getClass()]);
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [context.getHandler(), context.getClass()]);
 
-    if (!componentId) return true;
+    if (isPublic) return true;
+    else if (!componentId) return true;
 
     const { user, branch } = context.switchToHttp().getRequest();
 
     const isValid = await this.authService.validateComponent(user?.id, branch?.id, componentId);
 
-    if (isValid || user?.role == Role.SYSADMIN || user.role == Role.ADMIN) {
+    if (isValid || user?.role == Role.SYSADMIN || user?.role == Role.ADMIN) {
       return true;
     }
 

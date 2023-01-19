@@ -12,7 +12,7 @@ import { IsComponentValidConstraint } from './validations/is-component.validatio
   providers: [ComponentService, IsComponentValidConstraint],
 })
 export class ComponentsModule {
-  constructor(private componentsService: ComponentService) {
-    this.componentsService.popular();
+  constructor(private componentService: ComponentService) {
+    this.componentService.popular();
   }
 }

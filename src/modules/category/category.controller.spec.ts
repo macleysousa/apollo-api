@@ -86,7 +86,7 @@ describe('CategoryController', () => {
   });
 
   describe('/:id (PUT)', () => {
-    it('should update a size', async () => {
+    it('should update a category', async () => {
       // Arrange
       const id = 1;
       const category: UpdateCategoryDto = { name: 'Name', active: true };
