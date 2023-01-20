@@ -17,6 +17,7 @@ import { ColorModule } from './modules/color/color.module';
 import { SizeModule } from './modules/size/size.module';
 import { ReferenceModule } from './modules/reference/reference.module';
 import { CategoryModule } from './modules/category/category.module';
+import { BrandModule } from './modules/brand/brand.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CategoryModule } from './modules/category/category.module';
     SizeModule,
     ReferenceModule,
     CategoryModule,
+    BrandModule,
   ],
   controllers: [],
   providers: [

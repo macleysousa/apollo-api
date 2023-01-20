@@ -1,10 +1,10 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey, TableUnique } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class createTableSubCategory1674135078364 implements MigrationInterface {
+export class createTableBrands1674216709811 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'categories_subs',
+        name: 'brands',
         columns: [
           {
             name: 'id',
@@ -14,14 +14,10 @@ export class createTableSubCategory1674135078364 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'categoryId',
-            type: 'int',
-            isNullable: false,
-          },
-          {
             name: 'name',
             type: 'varchar',
             length: '255',
+            isUnique: true,
             isNullable: false,
           },
           {
@@ -40,21 +36,11 @@ export class createTableSubCategory1674135078364 implements MigrationInterface {
             default: 'now()',
           },
         ],
-        uniques: [new TableUnique({ columnNames: ['categoryId', 'name'] })],
-        foreignKeys: [
-          new TableForeignKey({
-            columnNames: ['categoryId'],
-            referencedTableName: 'categories',
-            referencedColumnNames: ['id'],
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE',
-          }),
-        ],
       })
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('categories_subs');
+    await queryRunner.dropTable('brands');
   }
 }
