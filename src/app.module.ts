@@ -18,6 +18,8 @@ import { SizeModule } from './modules/size/size.module';
 import { ReferenceModule } from './modules/reference/reference.module';
 import { CategoryModule } from './modules/category/category.module';
 import { BrandModule } from './modules/brand/brand.module';
+import { ProductModule } from './modules/product/product.module';
+import { MeasurementUnitModule } from './modules/measurement-unit/measurement-unit.module';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { BrandModule } from './modules/brand/brand.module';
     ReferenceModule,
     CategoryModule,
     BrandModule,
+    MeasurementUnitModule,
+    ProductModule,
   ],
   controllers: [],
   providers: [
