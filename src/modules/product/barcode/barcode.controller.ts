@@ -1,34 +1,25 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { ParseIntPipe } from '@nestjs/common/pipes';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiComponent } from 'src/modules/component/component.decorator';
+
 import { BarcodeService } from './barcode.service';
 import { CreateBarcodeDto } from './dto/create-barcode.dto';
-import { UpdateBarcodeDto } from './dto/update-barcode.dto';
 
-@Controller('barcode')
+@ApiTags('Products')
+@Controller('products/:id/barcodes')
+@ApiBearerAuth()
+@ApiComponent('PRDFM009', 'Manutenção de codigo de barras')
 export class BarcodeController {
-  constructor(private readonly barcodeService: BarcodeService) {}
+  constructor(private readonly service: BarcodeService) {}
 
   @Post()
-  create(@Body() createBarcodeDto: CreateBarcodeDto) {
-    return this.barcodeService.create(createBarcodeDto);
+  async create(@Param('id', ParseIntPipe) id: number, @Body() createDto: CreateBarcodeDto): Promise<void> {
+    await this.service.create(id, createDto);
   }
 
-  @Get()
-  findAll() {
-    return this.barcodeService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.barcodeService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBarcodeDto: UpdateBarcodeDto) {
-    return this.barcodeService.update(+id, updateBarcodeDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.barcodeService.remove(+id);
+  @Delete(':barcode')
+  async remove(@Param('id', ParseIntPipe) id: number, @Param('barcode') barcode: string): Promise<void> {
+    await this.service.remove(id, barcode);
   }
 }

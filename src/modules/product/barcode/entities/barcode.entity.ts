@@ -1,24 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BaseEntity } from 'src/commons/base.entity';
-import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+
 import { ProductEntity } from '../../entities/product.entity';
 
-@Entity({ name: 'product_barcodes' })
-export class BarcodeEntity extends BaseEntity {
-  @ApiProperty()
-  @PrimaryColumn()
+@Entity({ name: 'products_barcodes' })
+export class BarcodeEntity {
+  @Exclude()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ApiProperty()
   @Column()
+  code: string;
+
+  @Exclude()
+  @Column()
   productId: number;
 
-  @ApiProperty()
-  @OneToMany(() => ProductEntity, (product) => product.id)
+  @Exclude()
+  @ManyToOne(() => ProductEntity, (product) => product.id)
+  @JoinColumn({ name: 'productId', referencedColumnName: 'id' })
   product: ProductEntity;
 
   constructor(partial?: Partial<BarcodeEntity>) {
-    super();
     Object.assign(this, partial);
   }
 }

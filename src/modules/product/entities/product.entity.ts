@@ -3,6 +3,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from 'src/commons/base.entity';
 
 import { BarcodeEntity } from '../barcode/entities/barcode.entity';
+import { Transform } from 'class-transformer';
 
 @Entity({ name: 'products' })
 export class ProductEntity extends BaseEntity {
@@ -21,10 +22,6 @@ export class ProductEntity extends BaseEntity {
   @ApiProperty()
   @Column()
   externalId: string;
-
-  @ApiProperty()
-  @OneToMany(() => BarcodeEntity, (barcode) => barcode.product)
-  barcodes: BarcodeEntity[];
 
   @ApiProperty()
   @Column()
@@ -53,6 +50,13 @@ export class ProductEntity extends BaseEntity {
   @ApiProperty()
   @Column()
   brandId: number;
+
+  @ApiProperty({ type: [String] })
+  @OneToMany(() => BarcodeEntity, (value) => value.product, { eager: true })
+  @Transform(({ value }) => {
+    return value.map(({ code }) => code);
+  })
+  barcodes: BarcodeEntity[];
 
   constructor(partial?: Partial<ProductEntity>) {
     super();

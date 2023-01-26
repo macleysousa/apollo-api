@@ -1,26 +1,22 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import { CreateBarcodeDto } from './dto/create-barcode.dto';
-import { UpdateBarcodeDto } from './dto/update-barcode.dto';
+import { BarcodeEntity } from './entities/barcode.entity';
 
 @Injectable()
 export class BarcodeService {
-  create(createBarcodeDto: CreateBarcodeDto) {
-    return 'This action adds a new barcode';
+  constructor(
+    @InjectRepository(BarcodeEntity)
+    private repository: Repository<BarcodeEntity>
+  ) {}
+
+  async create(productId: number, { barcode }: CreateBarcodeDto): Promise<void> {
+    await this.repository.upsert({ productId, code: barcode }, { conflictPaths: ['productId', 'code'] });
   }
 
-  findAll() {
-    return `This action returns all barcode`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} barcode`;
-  }
-
-  update(id: number, updateBarcodeDto: UpdateBarcodeDto) {
-    return `This action updates a #${id} barcode`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} barcode`;
+  async remove(productId: number, barcode: string): Promise<void> {
+    await this.repository.delete({ productId, code: barcode });
   }
 }
