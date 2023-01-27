@@ -32,7 +32,7 @@ export class createTableProducts1674743625382 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'unitMeasureId',
+            name: 'measurementUnitId',
             type: 'int',
             isNullable: true,
           },
@@ -52,7 +52,7 @@ export class createTableProducts1674743625382 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'subCaregoryId',
+            name: 'subCategoryId',
             type: 'int',
             isNullable: true,
           },
@@ -79,7 +79,7 @@ export class createTableProducts1674743625382 implements MigrationInterface {
         ],
         foreignKeys: [
           new TableForeignKey({
-            columnNames: ['unitMeasureId'],
+            columnNames: ['measurementUnitId'],
             referencedTableName: 'measurement_units',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
@@ -107,7 +107,7 @@ export class createTableProducts1674743625382 implements MigrationInterface {
             onUpdate: 'CASCADE',
           }),
           new TableForeignKey({
-            columnNames: ['subCaregoryId'],
+            columnNames: ['subCategoryId'],
             referencedTableName: 'categories_subs',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',

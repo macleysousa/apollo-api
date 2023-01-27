@@ -4,7 +4,7 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 export class CreateProductDto {
   @ApiProperty({ required: false })
   @IsOptional()
-  id: number;
+  id?: number;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -12,37 +12,37 @@ export class CreateProductDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  description: string;
+  description?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  externalId: string;
+  externalId?: string;
 
   @ApiProperty()
   @IsOptional()
-  unitMeasureId: number;
+  measurementUnitId?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  colorId: number;
+  colorId?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  sizeId: number;
+  sizeId?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  categoryId: number;
+  categoryId?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  subCaregoryId: number;
+  subCaregoryId?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  referenceId: number;
+  referenceId?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  brandId: number;
+  brandId?: number;
 }

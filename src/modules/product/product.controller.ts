@@ -27,21 +27,15 @@ export class ProductController {
   @Get()
   @IsPublic()
   @ApiPaginatedResponse(ProductEntity)
-  @ApiQuery({ name: 'id', required: false })
-  @ApiQuery({ name: 'name', required: false })
-  @ApiQuery({ name: 'externalId', required: false })
-  @ApiQuery({ name: 'barcode', required: false })
+  @ApiQuery({ name: 'searchTerm', required: false })
   @ApiQuery({ name: 'page', required: false, description: 'Value default: 1' })
   @ApiQuery({ name: 'limit', required: false, description: 'Value default: 100' })
   async find(
-    @Query('id') id: number,
-    @Query('name') name: string,
-    @Query('externalId') externalId: string,
-    @Query('barcode') barcode: string,
+    @Query('searchTerm') searchTerm: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number
   ): Promise<Pagination<ProductEntity>> {
-    return this.productService.find(id, name, externalId, barcode, page, limit);
+    return this.productService.find(searchTerm, page, limit);
   }
 
   @Get(':id')

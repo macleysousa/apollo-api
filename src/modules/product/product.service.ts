@@ -1,8 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Pagination } from 'nestjs-typeorm-paginate';
-import { paginate } from 'nestjs-typeorm-paginate/dist/paginate';
-import { ILike, IsNull, Not, Repository } from 'typeorm';
+import { paginate, Pagination } from 'nestjs-typeorm-paginate';
+import { ILike, Repository } from 'typeorm';
 
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -24,24 +23,32 @@ export class ProductService {
     return this.findById(product.brandId);
   }
 
-  async find(id?: number, name?: string, externalId?: string, barcode?: string, page = 1, limit = 100): Promise<Pagination<ProductEntity>> {
+  async find(searchTerm?: string, page = 1, limit = 100): Promise<Pagination<ProductEntity>> {
     const queryBuilder = this.repository.createQueryBuilder('c');
-    queryBuilder.where({ id: Not(IsNull()) });
-    queryBuilder.innerJoinAndSelect('c.barcodes', 'barcode');
+    queryBuilder.leftJoinAndSelect('c.measurementUnit', 'measurementUnit');
+    queryBuilder.leftJoinAndSelect('c.color', 'color');
+    queryBuilder.leftJoinAndSelect('c.size', 'size');
+    queryBuilder.leftJoinAndSelect('c.category', 'category');
+    queryBuilder.leftJoinAndSelect('c.subCategory', 'subCategory');
+    queryBuilder.leftJoinAndSelect('c.reference', 'reference');
+    queryBuilder.leftJoinAndSelect('c.brand', 'brand');
+    queryBuilder.leftJoinAndSelect('c.barcodes', 'barcode');
 
-    if (id) queryBuilder.andWhere({ id: id });
-
-    if (name) queryBuilder.andWhere({ name: ILike(`%${name}%`) });
-
-    if (externalId) queryBuilder.andWhere({ externalId: ILike(`%${externalId}%`) });
-
-    if (barcode) queryBuilder.andWhere('barcode.code LIKE :barcode', { barcode: `%${barcode}%` });
+    if (searchTerm) {
+      queryBuilder.orWhere({ id: ILike(`%${searchTerm}%`) });
+      queryBuilder.orWhere({ name: ILike(`%${searchTerm}%`) });
+      queryBuilder.orWhere({ externalId: ILike(`%${searchTerm}%`) });
+      queryBuilder.orWhere({ measurementUnitId: ILike(`%${searchTerm}%`) });
+      queryBuilder.orWhere({ colorId: ILike(`%${searchTerm}%`) });
+      queryBuilder.orWhere({ sizeId: ILike(`%${searchTerm}%`) });
+      queryBuilder.orWhere({ categoryId: ILike(`%${searchTerm}%`) });
+      queryBuilder.orWhere({ subCategoryId: ILike(`%${searchTerm}%`) });
+      queryBuilder.orWhere({ referenceId: ILike(`%${searchTerm}%`) });
+      queryBuilder.orWhere({ brandId: ILike(`%${searchTerm}%`) });
+      queryBuilder.orWhere('barcode.code LIKE :barcode', { barcode: `%${searchTerm}%` });
+    }
 
     return paginate<ProductEntity>(queryBuilder, { page, limit });
-  }
-
-  async findByBarcode(barcode: string): Promise<ProductEntity[]> {
-    return this.repository.find({ where: { barcodes: [{ code: barcode }] }, loadEagerRelations: true });
   }
 
   async findById(id: number): Promise<ProductEntity> {
