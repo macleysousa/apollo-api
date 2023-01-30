@@ -7,6 +7,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 
 import { ProductEntity } from './entities/product.entity';
 import { ProductService } from './product.service';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({
@@ -28,7 +29,7 @@ describe('ProductService', () => {
             find: jest.fn().mockResolvedValue(productFakeRepository.find()),
             findOne: jest.fn().mockResolvedValue(productFakeRepository.findOne()),
             update: jest.fn().mockResolvedValue(productFakeRepository.findOne()),
-            delete: jest.fn(),
+            delete: jest.fn().mockResolvedValue(Promise<void>),
             createQueryBuilder: jest.fn().mockReturnValue({
               leftJoinAndSelect: jest.fn().mockReturnThis(),
               orWhere: jest.fn().mockReturnThis(),
@@ -133,6 +134,61 @@ describe('ProductService', () => {
       expect(repository.findOne).toHaveBeenCalledWith({ where: { id }, loadEagerRelations: true });
 
       expect(result).toEqual(productFakeRepository.findOne());
+    });
+  });
+
+  describe('update', () => {
+    it('should update a product', async () => {
+      // Arrange
+      const productId = 1;
+      const updateDto = new UpdateProductDto({ name: 'Updated Product 1' });
+
+      // Act
+      const result = await service.update(productId, updateDto);
+
+      // Assert
+      expect(repository.update).toHaveBeenCalledTimes(1);
+      expect(repository.update).toHaveBeenCalledWith(productId, updateDto);
+
+      expect(result).toEqual(productFakeRepository.findOne());
+    });
+
+    it('should not update a product error *Product with id ${id} not found*', () => {
+      // Arrange
+      const id = 1;
+      const updateDto: UpdateProductDto = { name: 'test updated' };
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(undefined);
+
+      // Act
+
+      // Assert
+      expect(service.update(id, updateDto)).rejects.toEqual(new BadRequestException(`Product with id ${id} not found`));
+    });
+  });
+
+  describe('remove', () => {
+    it('should delete a product successfully', async () => {
+      // Arrange
+      const productId = 1;
+
+      // Act
+      await service.remove(productId);
+
+      // Assert
+      expect(repository.delete).toHaveBeenCalledWith({ id: productId });
+    });
+
+    it('should throw BadRequestException *Unable to delete product with id ${id}*', async () => {
+      // Arrange
+      const productId = 1;
+      jest.spyOn(repository, 'delete').mockRejectedValueOnce(() => {
+        throw new BadRequestException(`Unable to delete product with id ${productId}`);
+      });
+
+      // Act
+
+      // Assert
+      expect(service.remove(productId)).rejects.toThrow(BadRequestException);
     });
   });
 });
