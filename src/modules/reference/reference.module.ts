@@ -8,5 +8,6 @@ import { ReferenceEntity } from './entities/reference.entity';
   imports: [TypeOrmModule.forFeature([ReferenceEntity])],
   controllers: [ReferenceController],
   providers: [ReferenceService],
+  exports: [ReferenceService],
 })
 export class ReferenceModule {}

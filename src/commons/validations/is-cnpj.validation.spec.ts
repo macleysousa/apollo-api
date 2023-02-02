@@ -1,4 +1,4 @@
-import { IsCnpjValidConstraint } from './cnpj.validation';
+import { IsCnpjValidConstraint } from './is-cnpj.validation';
 
 describe('CNPJ validation', () => {
   let isCnpjValidConstraint: IsCnpjValidConstraint;

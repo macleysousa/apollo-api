@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, MinLength } from 'class-validator';
-import { IsBranch } from 'src/commons/validations/branch.validation';
+import { IsBranch } from 'src/commons/validations/is-branch.validation';
 
 import { IsUserNameValid } from 'src/modules/user/validations/is-username.validation';
 

@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { branchFakeRepository } from 'src/base-fake/branch';
 import { BranchService } from 'src/modules/branch/branch.service';
 
-import { BranchConstraint } from './branch.validation';
+import { BranchConstraint } from './is-branch.validation';
 
 describe('Branch validation', () => {
   let branchConstraint: BranchConstraint;
