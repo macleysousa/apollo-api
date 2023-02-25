@@ -5,14 +5,14 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const { DB_DATABASE, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_PORT, DB_TIMEZONE, DB_ENTITIES, DB_MIGRATIONS } = process.env;
+const { DB_TYPE, DB_DATABASE, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_PORT, DB_TIMEZONE, DB_ENTITIES, DB_MIGRATIONS } = process.env;
 
-if (!DB_HOSTNAME || !DB_DATABASE || !DB_USERNAME || !DB_ENTITIES || !DB_MIGRATIONS) {
+if (!DB_TYPE || !DB_HOSTNAME || !DB_DATABASE || !DB_USERNAME || !DB_ENTITIES || !DB_MIGRATIONS) {
   throw new Error('Database variable DB_* has not been set properly');
 }
 
 export default {
-  type: 'mysql',
+  type: DB_TYPE,
   host: DB_HOSTNAME,
   username: DB_USERNAME,
   password: DB_PASSWORD,
