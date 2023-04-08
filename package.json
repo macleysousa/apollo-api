@@ -50,7 +50,7 @@
     "typeorm": "^0.3.11"
   },
   "devDependencies": {
-    "@nestjs/cli": "^9.1.5",
+    "@nestjs/cli": "^9.3.0",
     "@nestjs/schematics": "^9.0.3",
     "@nestjs/testing": "^9.2.1",
     "@types/crypto-js": "^4.1.1",
