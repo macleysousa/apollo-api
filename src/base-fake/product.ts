@@ -7,8 +7,8 @@ class ProductFakeRepository {
       id: 1,
       name: 'P',
       externalId: 'REF001',
-      createdAt: new Date('2022-10-15T11:13:18.000Z'),
-      updatedAt: new Date('2022-10-15T11:13:18.000Z'),
+      criadoEm: new Date('2022-10-15T11:13:18.000Z'),
+      atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
     });
 
     return [value];
@@ -33,8 +33,8 @@ class ProductFakeRepository {
       id: 1,
       name: 'P',
       externalId: 'REF001',
-      createdAt: new Date('2022-10-15T11:13:18.000Z'),
-      updatedAt: new Date('2022-10-15T11:13:18.000Z'),
+      criadoEm: new Date('2022-10-15T11:13:18.000Z'),
+      atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
     });
 
     return value;

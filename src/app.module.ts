@@ -5,13 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import ormConfig from './config/orm.config';
 import { InjectRequestInterceptor } from './commons/interceptors/inject-request.interceptor';
 import { AllExceptionsFilter } from './exceptions/all-exceptions.filter';
-import { UserModule } from './modules/user/user.module';
+import { UsuarioModule } from './modules/usuario/usuario.module';
 import { RolesGuard } from './guards/roles.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthModule } from './modules/auth/auth.module';
-import { ComponentsModule } from './modules/component/component.module';
+import { ComponentsModule } from './modules/componente/componente.module';
 import { ComponentGuard } from './guards/component.guard';
-import { ComponentGroupModule } from './modules/component-group/component-group.module';
+import { ComponentGroupModule } from './modules/component-group/componente-grupo.module';
 import { BranchModule } from './modules/branch/branch.module';
 import { ColorModule } from './modules/color/color.module';
 import { SizeModule } from './modules/size/size.module';
@@ -24,8 +24,8 @@ import { MeasurementUnitModule } from './modules/measurement-unit/measurement-un
 @Module({
   imports: [
     TypeOrmModule.forRoot({ ...ormConfig }),
+    UsuarioModule.forRoot(),
     AuthModule,
-    UserModule,
     ComponentsModule,
     ComponentGroupModule,
     BranchModule,

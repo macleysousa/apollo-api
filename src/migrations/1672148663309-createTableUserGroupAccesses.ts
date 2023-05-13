@@ -6,64 +6,64 @@ export class createTableUserGroupAccesses1672148663309 implements MigrationInter
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'users_groups_accesses',
+        name: 'usuarios_grupos',
         columns: [
           {
-            name: 'userId',
+            name: 'usuarioId',
             type: 'int',
             isNullable: false,
           },
           {
-            name: 'branchId',
+            name: 'empresaId',
             type: 'int',
             isNullable: false,
           },
           {
-            name: 'groupId',
+            name: 'grupoId',
             type: 'int',
             isNullable: false,
           },
           {
-            name: 'operatorId',
+            name: 'operadorId',
             type: 'int',
             isNullable: false,
-            comment: 'id of user who created or last modified',
+            comment: 'usuário que realizou a ação',
           },
           {
-            name: 'createdAt',
+            name: 'criadoEm',
             type: 'timestamp',
             default: 'now()',
           },
           {
-            name: 'updatedAt',
+            name: 'atualizadoEm',
             type: 'timestamp',
             default: 'now()',
           },
         ],
-        uniques: [new TableUnique({ columnNames: ['userId', 'branchId', 'groupId'], name: 'unique_user_group_access' })],
+        uniques: [new TableUnique({ columnNames: ['usuarioId', 'empresaId', 'grupoId'], name: 'unique_user_group_access' })],
         foreignKeys: [
           new TableForeignKey({
-            columnNames: ['userId'],
+            columnNames: ['usuarioId'],
             referencedColumnNames: ['id'],
-            referencedTableName: 'users',
+            referencedTableName: 'usuarios',
             onDelete: 'CASCADE',
           }),
           new TableForeignKey({
-            columnNames: ['branchId'],
+            columnNames: ['empresaId'],
             referencedColumnNames: ['id'],
-            referencedTableName: 'branches',
+            referencedTableName: 'empresas',
             onDelete: 'CASCADE',
           }),
           new TableForeignKey({
-            columnNames: ['groupId'],
+            columnNames: ['grupoId'],
             referencedColumnNames: ['id'],
-            referencedTableName: 'components_groups',
+            referencedTableName: 'componentes_grupos',
             onDelete: 'CASCADE',
           }),
           new TableForeignKey({
-            columnNames: ['operatorId'],
+            columnNames: ['operadorId'],
             referencedColumnNames: ['id'],
-            referencedTableName: 'users',
+            referencedTableName: 'usuarios',
           }),
         ],
       })
@@ -71,6 +71,6 @@ export class createTableUserGroupAccesses1672148663309 implements MigrationInter
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('users_groups_accesses');
+    await queryRunner.dropTable('usuarios_grupos');
   }
 }

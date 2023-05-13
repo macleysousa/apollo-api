@@ -7,7 +7,7 @@ import { MeasurementUnitService } from './measurement-unit.service';
 import { CreateMeasurementUnitDto } from './dto/create-measurement-unit.dto';
 import { UpdateMeasurementUnitDto } from './dto/update-measurement-unit.dto';
 import { MeasurementUnitEntity } from './entities/measurement-unit.entity';
-import { ApiComponent } from '../component/component.decorator';
+import { ApiComponent } from '../componente/decorator/componente.decorator';
 
 @ApiTags('Measurement Units')
 @Controller('measurement-units')

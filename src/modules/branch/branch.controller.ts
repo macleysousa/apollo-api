@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { Query } from '@nestjs/common/decorators';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ApiComponent } from '../component/component.decorator';
+import { ApiComponent } from '../componente/decorator/componente.decorator';
 import { BranchService } from './branch.service';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';

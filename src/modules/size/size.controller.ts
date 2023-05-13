@@ -3,7 +3,7 @@ import { SizeService } from './size.service';
 import { CreateSizeDto } from './dto/create-size.dto';
 import { UpdateSizeDto } from './dto/update-size.dto';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ApiComponent } from '../component/component.decorator';
+import { ApiComponent } from '../componente/decorator/componente.decorator';
 import { SizeEntity } from './entities/size.entity';
 
 @ApiTags('Sizes')

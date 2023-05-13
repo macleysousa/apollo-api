@@ -3,7 +3,7 @@ import { ReferenceService } from './reference.service';
 import { CreateReferenceDto } from './dto/create-reference.dto';
 import { UpdateReferenceDto } from './dto/update-reference.dto';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ApiComponent } from '../component/component.decorator';
+import { ApiComponent } from '../componente/decorator/componente.decorator';
 import { ReferenceEntity } from './entities/reference.entity';
 import { ParseIntPipe } from '@nestjs/common/pipes';
 

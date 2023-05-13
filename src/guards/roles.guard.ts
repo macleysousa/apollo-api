@@ -1,8 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ROLES_KEY } from 'src/modules/user/roles.decorator';
-
-import { Role } from '../modules/user/enum/user-role.enum';
+import { ROLES_KEY } from 'src/modules/usuario/roles.decorator';
+import { Role } from 'src/modules/usuario/enums/usuario-tipo.enum';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -15,10 +14,10 @@ export class RolesGuard implements CanActivate {
     }
     const { user } = context.switchToHttp().getRequest();
 
-    if (requiredRoles.includes(user.role)) {
+    if (requiredRoles.includes(user.tipo)) {
       return true;
     } else {
-      throw new UnauthorizedException(`${user.role} is not authorized to access this route`);
+      throw new UnauthorizedException(`${user.tipo} is not authorized to access this route`);
     }
   }
 }

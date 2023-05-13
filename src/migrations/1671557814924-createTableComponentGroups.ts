@@ -4,7 +4,7 @@ export class createTableComponentGroups1671557814924 implements MigrationInterfa
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'components_groups',
+        name: 'componentes_grupos',
         columns: [
           {
             name: 'id',
@@ -14,18 +14,18 @@ export class createTableComponentGroups1671557814924 implements MigrationInterfa
             generationStrategy: 'increment',
           },
           {
-            name: 'name',
+            name: 'nome',
             type: 'varchar',
             length: '255',
             isNullable: false,
           },
           {
-            name: 'createdAt',
+            name: 'criadoEm',
             type: 'timestamp',
             default: 'now()',
           },
           {
-            name: 'updatedAt',
+            name: 'atualizadoEm',
             type: 'timestamp',
             default: 'now()',
           },
@@ -35,6 +35,6 @@ export class createTableComponentGroups1671557814924 implements MigrationInterfa
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('components_groups');
+    await queryRunner.dropTable('componentes_grupos');
   }
 }

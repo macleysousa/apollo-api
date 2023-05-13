@@ -1,23 +1,23 @@
-import { ComponentEntity } from 'src/modules/component/entities/component.entity';
+import { ComponenteEntity } from 'src/modules/componente/entities/componente.entity';
 
 class ComponentFakeRepository {
-  find(): ComponentEntity[] {
-    const component = new ComponentEntity();
+  find(): ComponenteEntity[] {
+    const component = new ComponenteEntity();
     component.id = 'ADMFM001';
-    component.name = 'NAME COMPONENT';
-    component.deprecated = false;
-    component.createdAt = new Date('2022-10-15T11:13:18.000Z');
-    component.updatedAt = new Date('2022-10-15T11:13:18.000Z');
+    component.nome = 'NAME COMPONENT';
+    component.descontinuado = false;
+    component.criadoEm = new Date('2022-10-15T11:13:18.000Z');
+    component.atualizadoEm = new Date('2022-10-15T11:13:18.000Z');
     return [component];
   }
 
-  findOne(): ComponentEntity {
-    const component = new ComponentEntity();
+  findOne(): ComponenteEntity {
+    const component = new ComponenteEntity();
     component.id = 'ADMFM001';
-    component.name = 'NAME COMPONENT';
-    component.deprecated = false;
-    component.createdAt = new Date('2022-10-15T11:13:18.000Z');
-    component.updatedAt = new Date('2022-10-15T11:13:18.000Z');
+    component.nome = 'NAME COMPONENT';
+    component.descontinuado = false;
+    component.criadoEm = new Date('2022-10-15T11:13:18.000Z');
+    component.atualizadoEm = new Date('2022-10-15T11:13:18.000Z');
     return component;
   }
 }

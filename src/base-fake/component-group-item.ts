@@ -1,23 +1,23 @@
-import { ComponentGroupItemEntity } from 'src/modules/component-group/item/entities/component-group-item.entity';
+import { ComponenteGrupoItemEntity } from 'src/modules/component-group/item/entities/componente-grupo-item.entity';
 
 class ComponentGroupItemFakeRepository {
-  find(): ComponentGroupItemEntity[] {
-    const group = new ComponentGroupItemEntity();
+  find(): ComponenteGrupoItemEntity[] {
+    const group = new ComponenteGrupoItemEntity();
     group.id = 1;
-    group.groupId = 1;
-    group.componentId = 'ADMFM001';
-    group.createdAt = new Date('2022-10-15T11:13:18.000Z');
-    group.updatedAt = new Date('2022-10-15T11:13:18.000Z');
+    group.grupoId = 1;
+    group.componenteId = 'ADMFM001';
+    group.criadoEm = new Date('2022-10-15T11:13:18.000Z');
+    group.atualizadoEm = new Date('2022-10-15T11:13:18.000Z');
     return [group];
   }
 
-  findOne(): ComponentGroupItemEntity {
-    const group = new ComponentGroupItemEntity();
+  findOne(): ComponenteGrupoItemEntity {
+    const group = new ComponenteGrupoItemEntity();
     group.id = 1;
-    group.groupId = 1;
-    group.componentId = 'ADMFM001';
-    group.createdAt = new Date('2022-10-15T11:13:18.000Z');
-    group.updatedAt = new Date('2022-10-15T11:13:18.000Z');
+    group.grupoId = 1;
+    group.componenteId = 'ADMFM001';
+    group.criadoEm = new Date('2022-10-15T11:13:18.000Z');
+    group.atualizadoEm = new Date('2022-10-15T11:13:18.000Z');
     return group;
   }
 }

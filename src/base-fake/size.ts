@@ -5,8 +5,8 @@ class SizeFakeRepository {
     const size = new SizeEntity({
       id: 1,
       name: 'P',
-      createdAt: new Date('2022-10-15T11:13:18.000Z'),
-      updatedAt: new Date('2022-10-15T11:13:18.000Z'),
+      criadoEm: new Date('2022-10-15T11:13:18.000Z'),
+      atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
       active: true,
     });
 
@@ -17,8 +17,8 @@ class SizeFakeRepository {
     const size = new SizeEntity({
       id: 1,
       name: 'P',
-      createdAt: new Date('2022-10-15T11:13:18.000Z'),
-      updatedAt: new Date('2022-10-15T11:13:18.000Z'),
+      criadoEm: new Date('2022-10-15T11:13:18.000Z'),
+      atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
       active: true,
     });
 

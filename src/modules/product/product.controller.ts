@@ -8,7 +8,7 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './entities/product.entity';
-import { ApiComponent } from '../component/component.decorator';
+import { ApiComponent } from '../componente/decorator/componente.decorator';
 import { IsPublic } from 'src/decorators/is-public.decorator';
 
 @ApiTags('Products')

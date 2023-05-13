@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IsPublic } from 'src/decorators/is-public.decorator';
-import { ApiComponent } from '../component/component.decorator';
+import { ApiComponent } from '../componente/decorator/componente.decorator';
 
 import { BrandService } from './brand.service';
 import { CreateBrandDto } from './dto/create-brand.dto';

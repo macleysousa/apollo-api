@@ -4,13 +4,13 @@ import { PassportModule } from '@nestjs/passport';
 import { BranchConstraint } from 'src/commons/validations/is-branch.validation';
 import { LoginValidationMiddleware } from 'src/middlewares/login-validation.middleware';
 import { BranchModule } from '../branch/branch.module';
-import { UserModule } from '../user/user.module';
+import { UsuarioModule } from '../usuario/usuario.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
 @Module({
   imports: [
-    UserModule,
+    UsuarioModule,
     BranchModule,
     PassportModule,
     JwtModule.register({

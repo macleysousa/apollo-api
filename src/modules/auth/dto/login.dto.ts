@@ -2,22 +2,22 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, MinLength } from 'class-validator';
 import { IsBranch } from 'src/commons/validations/is-branch.validation';
 
-import { IsUserNameValid } from 'src/modules/user/validations/is-username.validation';
+import { IsUsuarioValidation } from 'src/modules/usuario/validations/is-usuario.validation';
 
 export class LoginDTO {
   @IsNotEmpty()
-  @IsUserNameValid()
+  @IsUsuarioValidation()
   @ApiProperty()
   @MinLength(3)
-  username: string;
+  usuario: string;
 
   @IsNotEmpty()
   @ApiProperty()
   @MinLength(3)
-  password: string;
+  senha: string;
 
   @ApiProperty()
   @IsOptional()
   @IsBranch()
-  branchId?: number;
+  empresaId?: number;
 }

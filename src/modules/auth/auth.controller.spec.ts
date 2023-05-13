@@ -34,7 +34,7 @@ describe('AuthController', () => {
   describe('/signIn (POST)', () => {
     it('should succeed when logging in', async () => {
       // Arrange
-      const login: LoginDTO = { username: 'username', password: 'password' };
+      const login: LoginDTO = { usuario: 'username', senha: 'password' };
       const response = { cookie: jest.fn(), send: jest.fn() };
       const { token, refreshToken } = authFakeRepository.token();
 

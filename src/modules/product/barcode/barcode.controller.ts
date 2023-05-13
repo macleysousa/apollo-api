@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ParseIntPipe } from '@nestjs/common/pipes';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ApiComponent } from 'src/modules/component/component.decorator';
+import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
 
 import { BarcodeService } from './barcode.service';
 import { CreateBarcodeDto } from './dto/create-barcode.dto';

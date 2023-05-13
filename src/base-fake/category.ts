@@ -7,8 +7,8 @@ class CategoryFakeRepository {
     const item = new CategoryEntity({
       id: 1,
       name: 'Name',
-      createdAt: new Date('2022-10-15T11:13:18.000Z'),
-      updatedAt: new Date('2022-10-15T11:13:18.000Z'),
+      criadoEm: new Date('2022-10-15T11:13:18.000Z'),
+      atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
       active: true,
     });
 
@@ -19,8 +19,8 @@ class CategoryFakeRepository {
     const size = new CategoryEntity({
       id: 1,
       name: 'Name',
-      createdAt: new Date('2022-10-15T11:13:18.000Z'),
-      updatedAt: new Date('2022-10-15T11:13:18.000Z'),
+      criadoEm: new Date('2022-10-15T11:13:18.000Z'),
+      atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
       active: true,
     });
 
@@ -32,8 +32,8 @@ class CategoryFakeRepository {
       id: 1,
       categoryId: 1,
       name: 'Name',
-      createdAt: new Date('2022-10-15T11:13:18.000Z'),
-      updatedAt: new Date('2022-10-15T11:13:18.000Z'),
+      criadoEm: new Date('2022-10-15T11:13:18.000Z'),
+      atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
       active: true,
     });
 
@@ -45,8 +45,8 @@ class CategoryFakeRepository {
       id: 1,
       categoryId: 1,
       name: 'Name',
-      createdAt: new Date('2022-10-15T11:13:18.000Z'),
-      updatedAt: new Date('2022-10-15T11:13:18.000Z'),
+      criadoEm: new Date('2022-10-15T11:13:18.000Z'),
+      atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
       active: true,
     });
 

@@ -4,7 +4,7 @@ export class createTableComponentGroupItems1671558822130 implements MigrationInt
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'components_groups_items',
+        name: 'componentes_grupos_itens',
         columns: [
           {
             name: 'id',
@@ -14,37 +14,37 @@ export class createTableComponentGroupItems1671558822130 implements MigrationInt
             generationStrategy: 'increment',
           },
           {
-            name: 'groupId',
+            name: 'grupoId',
             type: 'int',
             isNullable: false,
           },
           {
-            name: 'componentId',
+            name: 'componenteId',
             type: 'varchar',
             length: '255',
             isNullable: false,
           },
           {
-            name: 'createdAt',
+            name: 'criadoEm',
             type: 'timestamp',
             default: 'now()',
           },
           {
-            name: 'updatedAt',
+            name: 'atualizadoEm',
             type: 'timestamp',
             default: 'now()',
           },
         ],
         foreignKeys: [
           new TableForeignKey({
-            columnNames: ['componentId'],
-            referencedTableName: 'components',
+            columnNames: ['componenteId'],
+            referencedTableName: 'componentes',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
           }),
           new TableForeignKey({
-            columnNames: ['groupId'],
-            referencedTableName: 'components_groups',
+            columnNames: ['grupoId'],
+            referencedTableName: 'componentes_grupos',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
           }),
@@ -54,6 +54,6 @@ export class createTableComponentGroupItems1671558822130 implements MigrationInt
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('components_groups_items');
+    await queryRunner.dropTable('componentes_grupos_itens');
   }
 }

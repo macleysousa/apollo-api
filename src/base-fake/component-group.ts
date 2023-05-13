@@ -1,21 +1,21 @@
-import { ComponentGroupEntity } from 'src/modules/component-group/entities/component-group.entity';
+import { ComponenteGrupoEntity } from 'src/modules/component-group/entities/componente-grupo.entity';
 
 class ComponentGroupFakeRepository {
-  find(): ComponentGroupEntity[] {
-    const group = new ComponentGroupEntity();
+  find(): ComponenteGrupoEntity[] {
+    const group = new ComponenteGrupoEntity();
     group.id = 1;
-    group.name = 'Admin';
-    group.createdAt = new Date('2022-10-15T11:13:18.000Z');
-    group.updatedAt = new Date('2022-10-15T11:13:18.000Z');
+    group.nome = 'Admin';
+    group.criadoEm = new Date('2022-10-15T11:13:18.000Z');
+    group.atualizadoEm = new Date('2022-10-15T11:13:18.000Z');
     return [group];
   }
 
-  findOne(): ComponentGroupEntity {
-    const group = new ComponentGroupEntity();
+  findOne(): ComponenteGrupoEntity {
+    const group = new ComponenteGrupoEntity();
     group.id = 1;
-    group.name = 'Admin';
-    group.createdAt = new Date('2022-10-15T11:13:18.000Z');
-    group.updatedAt = new Date('2022-10-15T11:13:18.000Z');
+    group.nome = 'Admin';
+    group.criadoEm = new Date('2022-10-15T11:13:18.000Z');
+    group.atualizadoEm = new Date('2022-10-15T11:13:18.000Z');
     return group;
   }
 }

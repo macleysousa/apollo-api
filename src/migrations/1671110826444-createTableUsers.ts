@@ -1,13 +1,14 @@
-import { encrypt } from 'src/commons/crypto';
-import { Role } from 'src/modules/user/enum/user-role.enum';
-import { UserStatus } from 'src/modules/user/enum/user-status';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+
+import { encrypt } from 'src/commons/crypto';
+import { Role } from 'src/modules/usuario/enums/usuario-tipo.enum';
+import { UsuarioSituacao } from 'src/modules/usuario/enums/usuario-situacao.enum';
 
 export class createTableUsers1671110826444 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'users',
+        name: 'usuarios',
         columns: [
           {
             name: 'id',
@@ -17,43 +18,43 @@ export class createTableUsers1671110826444 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'username',
+            name: 'usuario',
             type: 'varchar',
             length: '255',
             isNullable: false,
             isUnique: true,
           },
           {
-            name: 'name',
+            name: 'nome',
             type: 'varchar',
             length: '255',
             isNullable: false,
           },
           {
-            name: 'password',
+            name: 'senha',
             type: 'varchar',
             length: '255',
             isNullable: false,
           },
           {
-            name: 'role',
+            name: 'tipo',
             type: 'varchar',
             length: '255',
             isNullable: false,
           },
           {
-            name: 'status',
+            name: 'situacao',
             type: 'varchar',
             length: '255',
             isNullable: false,
           },
           {
-            name: 'createdAt',
+            name: 'creadoEm',
             type: 'timestamp',
             default: 'now()',
           },
           {
-            name: 'updatedAt',
+            name: 'atualizadoEm',
             type: 'timestamp',
             default: 'now()',
           },
@@ -62,8 +63,8 @@ export class createTableUsers1671110826444 implements MigrationInterface {
     );
 
     await queryRunner.query(
-      `INSERT INTO users(username,name,password,role,status)
-            VALUES ('apollo','developer','${encrypt('start')}','${Role.SYSADMIN}','${UserStatus.RELEASED}')`
+      `INSERT INTO usuarios(usuario,nome,senha,tipo,situacao)
+            VALUES ('apollo','developer','${encrypt('start')}','${Role.sysadmin}','${UsuarioSituacao.ativo}')`
     );
   }
 

@@ -4,7 +4,7 @@ export class createTableBranches1671815503457 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'branches',
+        name: 'empresas',
         columns: [
           {
             name: 'id',
@@ -19,19 +19,19 @@ export class createTableBranches1671815503457 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'name',
+            name: 'nome',
             type: 'varchar',
             isNullable: false,
           },
           {
-            name: 'fantasyName',
+            name: 'nomeFantasia',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'isInactive',
+            name: 'ativa',
             type: 'boolean',
-            default: false,
+            default: true,
           },
           {
             name: 'uf',
@@ -39,42 +39,42 @@ export class createTableBranches1671815503457 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'numberStateRegistration',
+            name: 'escricaoEstadual',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'codeActivity',
+            name: 'codigoDeAtividade',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'codeActivityCnae',
+            name: 'codigoDeNaturezaJuridica',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'typeTaxRegime',
+            name: 'regime',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'typeSubTributary',
+            name: 'substituicaoTributaria',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'suframaCode',
+            name: 'suframa',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'registrationMunicipal',
+            name: 'registroMunicipal',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'phone',
+            name: 'telefone',
             type: 'varchar',
             isNullable: true,
           },
@@ -84,12 +84,12 @@ export class createTableBranches1671815503457 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'createdAt',
+            name: 'criadoEm',
             type: 'timestamp',
             default: 'now()',
           },
           {
-            name: 'updatedAt',
+            name: 'atualizadoEm',
             type: 'timestamp',
             default: 'now()',
           },
@@ -99,6 +99,6 @@ export class createTableBranches1671815503457 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('branches');
+    await queryRunner.dropTable('empresas');
   }
 }
