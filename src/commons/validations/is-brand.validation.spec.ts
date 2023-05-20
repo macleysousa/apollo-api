@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { brandFakeRepository } from 'src/base-fake/brand';
-import { BrandService } from 'src/modules/brand/brand.service';
+import { MarcaService } from 'src/modules/marca/marca.service';
 
 import { BrandConstraint } from './is-brand.validation';
 
 describe('Brand validation', () => {
   let brandConstraint: BrandConstraint;
-  let brandService: BrandService;
+  let brandService: MarcaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BrandConstraint,
         {
-          provide: BrandService,
+          provide: MarcaService,
           useValue: {
             findById: jest.fn().mockResolvedValue(brandFakeRepository.findOne()),
           },
@@ -21,7 +21,7 @@ describe('Brand validation', () => {
       ],
     }).compile();
     brandConstraint = module.get<BrandConstraint>(BrandConstraint);
-    brandService = module.get<BrandService>(BrandService);
+    brandService = module.get<MarcaService>(MarcaService);
   });
 
   it('should be defined', () => {

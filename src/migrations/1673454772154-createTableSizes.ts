@@ -23,7 +23,7 @@ export class createTableSizes1673454772154 implements MigrationInterface {
           {
             name: 'inativa',
             type: 'boolean',
-            default: true,
+            default: false,
           },
           {
             name: 'criadoEm',

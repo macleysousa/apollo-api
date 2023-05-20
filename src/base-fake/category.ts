@@ -1,53 +1,53 @@
-import { CategoryEntity } from 'src/modules/category/entities/category.entity';
-import { SubCategoryEntity } from 'src/modules/category/sub/entities/sub.entity';
+import { CategoriaEntity } from 'src/modules/categoria/entities/category.entity';
+import { SubCategoriaEntity } from 'src/modules/categoria/sub/entities/sub.entity';
 import { TamanhoEntity } from 'src/modules/tamanho/entities/tamanho.entity';
 
 class CategoryFakeRepository {
-  find(): CategoryEntity[] {
-    const item = new CategoryEntity({
+  find(): CategoriaEntity[] {
+    const item = new CategoriaEntity({
       id: 1,
-      name: 'Name',
+      nome: 'Name',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
-      active: true,
+      inativa: true,
     });
 
     return [item];
   }
 
-  findOne(): CategoryEntity {
-    const size = new CategoryEntity({
+  findOne(): CategoriaEntity {
+    const size = new CategoriaEntity({
       id: 1,
-      name: 'Name',
+      nome: 'Name',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
-      active: true,
+      inativa: true,
     });
 
     return size;
   }
 
-  findSub(): SubCategoryEntity[] {
-    const item = new SubCategoryEntity({
+  findSub(): SubCategoriaEntity[] {
+    const item = new SubCategoriaEntity({
       id: 1,
-      categoryId: 1,
-      name: 'Name',
+      categoriaId: 1,
+      nome: 'Name',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
-      active: true,
+      inativa: true,
     });
 
     return [item];
   }
 
-  findSubOne(): SubCategoryEntity {
-    const item = new SubCategoryEntity({
+  findSubOne(): SubCategoriaEntity {
+    const item = new SubCategoriaEntity({
       id: 1,
-      categoryId: 1,
-      name: 'Name',
+      categoriaId: 1,
+      nome: 'Name',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
-      active: true,
+      inativa: true,
     });
 
     return item;

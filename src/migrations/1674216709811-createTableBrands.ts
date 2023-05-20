@@ -4,7 +4,7 @@ export class createTableBrands1674216709811 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'brands',
+        name: 'marcas',
         columns: [
           {
             name: 'id',
@@ -14,24 +14,24 @@ export class createTableBrands1674216709811 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'name',
+            name: 'nome',
             type: 'varchar',
             length: '255',
             isUnique: true,
             isNullable: false,
           },
           {
-            name: 'active',
+            name: 'inativa',
             type: 'boolean',
             default: true,
           },
           {
-            name: 'createdAt',
+            name: 'criadoEm',
             type: 'timestamp',
             default: 'now()',
           },
           {
-            name: 'updatedAt',
+            name: 'atualizadoEm',
             type: 'timestamp',
             default: 'now()',
           },
@@ -41,6 +41,6 @@ export class createTableBrands1674216709811 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('brands');
+    await queryRunner.dropTable('marcas');
   }
 }

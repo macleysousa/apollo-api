@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { categoryFakeRepository } from 'src/base-fake/category';
-import { CategoryService } from 'src/modules/category/category.service';
+import { CategoriaService } from 'src/modules/categoria/categoria.service';
 import { CategoryConstraint } from './is-category.validation';
 
 describe('Category validation', () => {
   let constraint: CategoryConstraint;
-  let categoryService: CategoryService;
+  let categoryService: CategoriaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CategoryConstraint,
         {
-          provide: CategoryService,
+          provide: CategoriaService,
           useValue: {
             findById: jest.fn().mockResolvedValue(categoryFakeRepository.findOne()),
           },
@@ -20,7 +20,7 @@ describe('Category validation', () => {
       ],
     }).compile();
     constraint = module.get<CategoryConstraint>(CategoryConstraint);
-    categoryService = module.get<CategoryService>(CategoryService);
+    categoryService = module.get<CategoriaService>(CategoriaService);
   });
 
   it('should be defined', () => {

@@ -16,10 +16,9 @@ import { EmpresaModule } from './modules/empresa/empresa.module';
 import { CorModule } from './modules/cor/cor.module';
 import { TamanhoModule } from './modules/tamanho/tamanho.module';
 import { ReferenciaModule } from './modules/referencia/referencia.module';
-import { CategoryModule } from './modules/category/category.module';
-import { BrandModule } from './modules/brand/brand.module';
-import { ProductModule } from './modules/product/product.module';
-import { MeasurementUnitModule } from './modules/measurement-unit/measurement-unit.module';
+import { CategoriaModule } from './modules/categoria/categoria.module';
+import { MarcaModule } from './modules/marca/marca.module';
+import { ProdutoModule } from './modules/produto/produto.module';
 
 @Module({
   imports: [
@@ -32,10 +31,9 @@ import { MeasurementUnitModule } from './modules/measurement-unit/measurement-un
     CorModule,
     TamanhoModule,
     ReferenciaModule,
-    CategoryModule,
-    BrandModule,
-    MeasurementUnitModule,
-    ProductModule,
+    CategoriaModule,
+    MarcaModule,
+    ProdutoModule,
   ],
   controllers: [],
   providers: [

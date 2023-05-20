@@ -1,12 +1,12 @@
 import { PaginatedDTO } from 'src/decorators/api-paginated-response.decorator';
-import { ProductEntity } from 'src/modules/product/entities/product.entity';
+import { ProdutoEntity } from 'src/modules/produto/entities/produto.entity';
 
 class ProductFakeRepository {
-  find(): ProductEntity[] {
-    const value = new ProductEntity({
+  find(): ProdutoEntity[] {
+    const value = new ProdutoEntity({
       id: 1,
-      name: 'P',
-      externalId: 'REF001',
+      nome: 'P',
+      idExterno: 'REF001',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
     });
@@ -14,8 +14,8 @@ class ProductFakeRepository {
     return [value];
   }
 
-  findPaginate(): PaginatedDTO<ProductEntity>[] {
-    const item: PaginatedDTO<ProductEntity> = {
+  findPaginate(): PaginatedDTO<ProdutoEntity>[] {
+    const item: PaginatedDTO<ProdutoEntity> = {
       items: productFakeRepository.find(),
       meta: {
         currentPage: 1,
@@ -28,11 +28,11 @@ class ProductFakeRepository {
     return [item];
   }
 
-  findOne(): ProductEntity {
-    const value = new ProductEntity({
+  findOne(): ProdutoEntity {
+    const value = new ProdutoEntity({
       id: 1,
-      name: 'P',
-      externalId: 'REF001',
+      nome: 'P',
+      idExterno: 'REF001',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
     });

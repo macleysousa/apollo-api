@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { categoryFakeRepository } from 'src/base-fake/category';
-import { SubCategoryService } from 'src/modules/category/sub/sub.service';
+import { SubCategoriaService } from 'src/modules/categoria/sub/sub.service';
 import { SubCategoryConstraint } from './is-category-sub.validation';
 
 describe('SubCategoryConstraint', () => {
-  let service: SubCategoryService;
+  let service: SubCategoriaService;
   let constraint: SubCategoryConstraint;
 
   beforeEach(async () => {
@@ -12,7 +12,7 @@ describe('SubCategoryConstraint', () => {
       providers: [
         SubCategoryConstraint,
         {
-          provide: SubCategoryService,
+          provide: SubCategoriaService,
           useValue: {
             findById: jest.fn().mockResolvedValue(categoryFakeRepository.findSubOne()),
           },
@@ -20,7 +20,7 @@ describe('SubCategoryConstraint', () => {
       ],
     }).compile();
     constraint = module.get<SubCategoryConstraint>(SubCategoryConstraint);
-    service = module.get<SubCategoryService>(SubCategoryService);
+    service = module.get<SubCategoriaService>(SubCategoriaService);
   });
 
   describe('validate', () => {

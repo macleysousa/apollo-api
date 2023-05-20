@@ -4,125 +4,77 @@ export class createTableProducts1674743625382 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'products',
+        name: 'produtos',
         columns: [
           {
             name: 'id',
-            type: 'int',
+            type: 'bigint',
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'increment',
           },
           {
-            name: 'name',
+            name: 'nome',
             type: 'varchar',
             length: '255',
             isNullable: false,
           },
           {
-            name: 'description',
+            name: 'descricao',
             type: 'varchar',
             length: '255',
             isNullable: true,
           },
           {
-            name: 'externalId',
+            name: 'idExterno',
             type: 'varchar',
             length: '255',
             isNullable: true,
           },
           {
-            name: 'measurementUnitId',
+            name: 'corId',
             type: 'int',
             isNullable: true,
           },
           {
-            name: 'colorId',
+            name: 'tamanhoId',
             type: 'int',
             isNullable: true,
           },
           {
-            name: 'sizeId',
+            name: 'referenciaId',
             type: 'int',
             isNullable: true,
           },
           {
-            name: 'categoryId',
-            type: 'int',
-            isNullable: true,
-          },
-          {
-            name: 'subCategoryId',
-            type: 'int',
-            isNullable: true,
-          },
-          {
-            name: 'referenceId',
-            type: 'int',
-            isNullable: true,
-          },
-          {
-            name: 'brandId',
-            type: 'int',
-            isNullable: true,
-          },
-          {
-            name: 'createdAt',
+            name: 'criadoEm',
             type: 'timestamp',
             default: 'now()',
           },
           {
-            name: 'updatedAt',
+            name: 'atualizadoEm',
             type: 'timestamp',
             default: 'now()',
           },
         ],
         foreignKeys: [
           new TableForeignKey({
-            columnNames: ['measurementUnitId'],
-            referencedTableName: 'measurement_units',
+            columnNames: ['corId'],
+            referencedTableName: 'cores',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           }),
           new TableForeignKey({
-            columnNames: ['colorId'],
-            referencedTableName: 'colors',
+            columnNames: ['tamanhoId'],
+            referencedTableName: 'tamanhos',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           }),
           new TableForeignKey({
-            columnNames: ['sizeId'],
-            referencedTableName: 'sizes',
-            referencedColumnNames: ['id'],
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE',
-          }),
-          new TableForeignKey({
-            columnNames: ['categoryId'],
-            referencedTableName: 'categories',
-            referencedColumnNames: ['id'],
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE',
-          }),
-          new TableForeignKey({
-            columnNames: ['subCategoryId'],
-            referencedTableName: 'categories_subs',
-            referencedColumnNames: ['id'],
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE',
-          }),
-          new TableForeignKey({
-            columnNames: ['referenceId'],
-            referencedTableName: 'references',
-            referencedColumnNames: ['id'],
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE',
-          }),
-          new TableForeignKey({
-            columnNames: ['brandId'],
-            referencedTableName: 'brands',
+            columnNames: ['referenciaId'],
+            referencedTableName: 'referencias',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
@@ -133,6 +85,6 @@ export class createTableProducts1674743625382 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('products');
+    await queryRunner.dropTable('produtos');
   }
 }

@@ -23,7 +23,7 @@ export class createTableColor1673370822743 implements MigrationInterface {
           {
             name: 'inativa',
             type: 'boolean',
-            default: true,
+            default: false,
           },
           {
             name: 'criadoEm',

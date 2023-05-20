@@ -4,7 +4,7 @@ export class createTableProductsBarcodes1674744452844 implements MigrationInterf
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'products_barcodes',
+        name: 'produtos_codigos_barras',
         columns: [
           {
             name: 'id',
@@ -15,24 +15,24 @@ export class createTableProductsBarcodes1674744452844 implements MigrationInterf
             generationStrategy: 'uuid',
           },
           {
-            name: 'code',
+            name: 'codigo',
             type: 'varchar',
             length: '255',
           },
           {
-            name: 'productId',
-            type: 'int',
+            name: 'produtoId',
+            type: 'bigint',
           },
         ],
         uniques: [
           new TableUnique({
-            columnNames: ['code', 'productId'],
+            columnNames: ['codigo', 'produtoId'],
           }),
         ],
         foreignKeys: [
           new TableForeignKey({
-            columnNames: ['productId'],
-            referencedTableName: 'products',
+            columnNames: ['produtoId'],
+            referencedTableName: 'produtos',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
@@ -43,6 +43,6 @@ export class createTableProductsBarcodes1674744452844 implements MigrationInterf
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('products_barcodes');
+    await queryRunner.dropTable('produtos_codigos_barras');
   }
 }

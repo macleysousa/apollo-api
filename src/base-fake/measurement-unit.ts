@@ -1,25 +1,25 @@
-import { BrandEntity } from 'src/modules/brand/entities/brand.entity';
+import { MarcaEntity } from 'src/modules/marca/entities/marca.entity';
 
 class MeasurementUnitFakeRepository {
-  find(): BrandEntity[] {
-    const item = new BrandEntity({
+  find(): MarcaEntity[] {
+    const item = new MarcaEntity({
       id: 1,
-      name: 'Name',
+      nome: 'Name',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
-      active: true,
+      inativa: true,
     });
 
     return [item];
   }
 
-  findOne(): BrandEntity {
-    const item = new BrandEntity({
+  findOne(): MarcaEntity {
+    const item = new MarcaEntity({
       id: 1,
-      name: 'Name',
+      nome: 'Name',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
-      active: true,
+      inativa: true,
     });
     return item;
   }
