@@ -1,8 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
-import { IsSubCategory } from 'src/commons/validations/is-category-sub.validation';
-import { IsCategory } from 'src/commons/validations/is-category.validation';
 import { IsColor } from 'src/commons/validations/is-color.validation';
 import { IsReference } from 'src/commons/validations/is-reference.validation';
 import { IsSize } from 'src/commons/validations/is-size.validation';

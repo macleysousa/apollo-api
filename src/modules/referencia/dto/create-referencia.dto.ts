@@ -19,7 +19,7 @@ export class CreateReferenciaDto {
 
   @ApiProperty({ enum: UnidadeMedida })
   @IsOptional()
-  unidadeMedida: UnidadeMedida;
+  unidadeMedida?: UnidadeMedida;
 
   @ApiProperty({ required: false })
   @IsOptional()

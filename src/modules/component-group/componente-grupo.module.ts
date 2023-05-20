@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ComponenteGrupoController } from './componente-grupo.controller';
@@ -11,4 +11,11 @@ import { ComponentGroupItemModule } from './item/componente-grupo-item.module';
   controllers: [ComponenteGrupoController],
   providers: [ComponenteGrupoService],
 })
-export class ComponentGroupModule {}
+export class ComponentGroupModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

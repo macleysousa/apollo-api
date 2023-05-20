@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { SubCategoriaService } from './sub.service';
@@ -11,4 +11,11 @@ import { SubCategoriaEntity } from './entities/sub.entity';
   providers: [SubCategoriaService],
   exports: [SubCategoriaService],
 })
-export class SubCategoriaModule {}
+export class SubCategoriaModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

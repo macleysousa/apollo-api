@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CorService } from './cor.service';
@@ -11,4 +11,11 @@ import { CorEntity } from './entities/cor.entity';
   providers: [CorService],
   exports: [CorService],
 })
-export class CorModule {}
+export class CorModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { TamanhoService } from './tamanho.service';
 import { TamanhoController } from './tamanho.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,4 +10,11 @@ import { TamanhoEntity } from './entities/tamanho.entity';
   providers: [TamanhoService],
   exports: [TamanhoService],
 })
-export class TamanhoModule {}
+export class TamanhoModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

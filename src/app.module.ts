@@ -22,18 +22,18 @@ import { ProdutoModule } from './modules/produto/produto.module';
 
 @Module({
   imports: [
+    AuthModule,
     TypeOrmModule.forRoot({ ...ormConfig }),
     UsuarioModule.forRoot(),
-    AuthModule,
-    ComponentsModule,
-    ComponentGroupModule,
-    EmpresaModule,
-    CorModule,
-    TamanhoModule,
-    ReferenciaModule,
-    CategoriaModule,
-    MarcaModule,
-    ProdutoModule,
+    ComponentsModule.forRoot(),
+    ComponentGroupModule.forRoot(),
+    EmpresaModule.forRoot(),
+    CorModule.forRoot(),
+    TamanhoModule.forRoot(),
+    ReferenciaModule.forRoot(),
+    CategoriaModule.forRoot(),
+    MarcaModule.forRoot(),
+    ProdutoModule.forRoot(),
   ],
   controllers: [],
   providers: [

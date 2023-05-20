@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 
 import { MarcaService } from './marca.service';
 import { MarcaController } from './marca.controller';
@@ -11,4 +11,11 @@ import { MarcaEntity } from './entities/marca.entity';
   providers: [MarcaService],
   exports: [MarcaService],
 })
-export class MarcaModule {}
+export class MarcaModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

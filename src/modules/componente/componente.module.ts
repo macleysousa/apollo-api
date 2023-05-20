@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ComponenteService } from './componente.service';
@@ -14,5 +14,12 @@ import { IsComponentValidConstraint } from './validations/is-component.validatio
 export class ComponentsModule {
   constructor(private componentService: ComponenteService) {
     this.componentService.popular();
+  }
+
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
   }
 }
