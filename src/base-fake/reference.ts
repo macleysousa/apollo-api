@@ -1,11 +1,11 @@
-import { ReferenceEntity } from 'src/modules/reference/entities/reference.entity';
+import { ReferenciaEntity } from 'src/modules/referencia/entities/referencia.entity';
 
 class ReferenceFakeRepository {
-  find(): ReferenceEntity[] {
-    const item = new ReferenceEntity({
+  find(): ReferenciaEntity[] {
+    const item = new ReferenciaEntity({
       id: 1,
-      name: 'reference',
-      externalId: '0001',
+      nome: 'reference',
+      idExterno: '0001',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
     });
@@ -13,11 +13,11 @@ class ReferenceFakeRepository {
     return [item];
   }
 
-  findOne(): ReferenceEntity {
-    const item = new ReferenceEntity({
+  findOne(): ReferenciaEntity {
+    const item = new ReferenciaEntity({
       id: 1,
-      name: 'reference',
-      externalId: '0001',
+      nome: 'reference',
+      idExterno: '0001',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
     });

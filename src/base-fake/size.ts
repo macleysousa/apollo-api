@@ -1,25 +1,25 @@
-import { SizeEntity } from 'src/modules/size/entities/size.entity';
+import { TamanhoEntity } from 'src/modules/tamanho/entities/tamanho.entity';
 
 class SizeFakeRepository {
-  find(): SizeEntity[] {
-    const size = new SizeEntity({
+  find(): TamanhoEntity[] {
+    const size = new TamanhoEntity({
       id: 1,
-      name: 'P',
+      nome: 'P',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
-      active: true,
+      inativo: true,
     });
 
     return [size];
   }
 
-  findOne(): SizeEntity {
-    const size = new SizeEntity({
+  findOne(): TamanhoEntity {
+    const size = new TamanhoEntity({
       id: 1,
-      name: 'P',
+      nome: 'P',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
-      active: true,
+      inativo: true,
     });
 
     return size;

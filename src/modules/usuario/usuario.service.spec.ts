@@ -1,9 +1,9 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { userFakeRepository } from 'src/base-fake/user';
 import { ILike, IsNull, Not, Repository } from 'typeorm';
 
+import { userFakeRepository } from 'src/base-fake/user';
 import { CriarUsuarioDto } from './dto/criar-usuario.dto';
 import { AtualizarUsuarioDto } from './dto/atualizar-usuario.dto';
 import { UsuarioAcessoEntity } from './entities/usuario-acessos.entity';

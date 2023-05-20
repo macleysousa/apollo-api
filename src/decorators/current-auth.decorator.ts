@@ -1,10 +1,10 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { BranchEntity } from 'src/modules/branch/entities/branch.entity';
+import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 import { UsuarioEntity } from 'src/modules/usuario/entities/usuario.entity';
 
 export interface AuthRequest extends Request {
   user: UsuarioEntity;
-  branch?: BranchEntity;
+  branch?: EmpresaEntity;
 }
 
 export const CurrentUser = createParamDecorator((data: unknown, context: ExecutionContext): UsuarioEntity => {
@@ -13,7 +13,7 @@ export const CurrentUser = createParamDecorator((data: unknown, context: Executi
   return request.user;
 });
 
-export const CurrentBranch = createParamDecorator((data: unknown, context: ExecutionContext): BranchEntity => {
+export const CurrentBranch = createParamDecorator((data: unknown, context: ExecutionContext): EmpresaEntity => {
   const request = context.switchToHttp().getRequest<AuthRequest>();
 
   return request.branch;

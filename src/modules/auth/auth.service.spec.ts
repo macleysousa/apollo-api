@@ -6,7 +6,7 @@ import { authFakeRepository } from 'src/base-fake/auth';
 import { branchFakeRepository } from 'src/base-fake/branch';
 import { userFakeRepository } from 'src/base-fake/user';
 
-import { BranchService } from '../branch/branch.service';
+import { EmpresaService } from '../empresa/empresa.service';
 import { UsuarioService } from '../usuario/usuario.service';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/login.dto';
@@ -15,7 +15,7 @@ describe('AuthService', () => {
   let authService: AuthService;
   let jwtService: JwtService;
   let userService: UsuarioService;
-  let branchService: BranchService;
+  let branchService: EmpresaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -38,7 +38,7 @@ describe('AuthService', () => {
           },
         },
         {
-          provide: BranchService,
+          provide: EmpresaService,
           useValue: {
             findById: jest.fn().mockResolvedValue(branchFakeRepository.findOne()),
           },
@@ -49,7 +49,7 @@ describe('AuthService', () => {
     authService = module.get<AuthService>(AuthService);
     jwtService = module.get<JwtService>(JwtService);
     userService = module.get<UsuarioService>(UsuarioService);
-    branchService = module.get<BranchService>(BranchService);
+    branchService = module.get<EmpresaService>(EmpresaService);
   });
 
   it('should be defined', () => {

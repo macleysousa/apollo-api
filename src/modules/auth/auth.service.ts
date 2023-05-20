@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { BranchService } from '../branch/branch.service';
-import { BranchEntity } from '../branch/entities/branch.entity';
+import { EmpresaService } from '../empresa/empresa.service';
+import { EmpresaEntity } from '../empresa/entities/empresa.entity';
 
 import { LoginDTO } from './dto/login.dto';
 import { UsuarioService } from '../usuario/usuario.service';
@@ -9,7 +9,7 @@ import { UsuarioEntity } from '../usuario/entities/usuario.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(private jwtService: JwtService, private userService: UsuarioService, private branchService: BranchService) {}
+  constructor(private jwtService: JwtService, private userService: UsuarioService, private branchService: EmpresaService) {}
 
   async login({ usuario, senha, empresaId }: LoginDTO): Promise<{ token: string; refreshToken: string }> {
     const user = await this.userService.validateUser(usuario, senha);
@@ -28,7 +28,7 @@ export class AuthService {
     }
   }
 
-  async validateToken(token: string): Promise<{ user: UsuarioEntity; branch?: BranchEntity }> {
+  async validateToken(token: string): Promise<{ user: UsuarioEntity; branch?: EmpresaEntity }> {
     await this.jwtService.verifyAsync(token).catch((err) => {
       if (err.name == 'TokenExpiredError') {
         throw new UnauthorizedException('token expired');

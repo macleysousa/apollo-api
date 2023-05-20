@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } from 'class-validator';
 import { ValidatorConstraint, ValidationArguments } from 'class-validator';
-import { BranchService } from 'src/modules/branch/branch.service';
+import { EmpresaService } from 'src/modules/empresa/empresa.service';
 
 @ValidatorConstraint({ async: true })
 @Injectable()
 export class BranchConstraint implements ValidatorConstraintInterface {
-  constructor(private readonly branchService: BranchService) {}
+  constructor(private readonly branchService: EmpresaService) {}
 
   async validate(value: number, args?: ValidationArguments): Promise<boolean> {
     const branch = await this.branchService.findById(value);

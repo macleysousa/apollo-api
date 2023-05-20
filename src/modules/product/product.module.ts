@@ -11,13 +11,13 @@ import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { ProductEntity } from './entities/product.entity';
 import { BarcodeModule } from './barcode/barcode.module';
-import { ColorModule } from '../color/color.module';
+import { CorModule } from '../cor/cor.module';
 import { MeasurementUnitModule } from '../measurement-unit/measurement-unit.module';
-import { SizeModule } from '../size/size.module';
+import { TamanhoModule } from '../tamanho/tamanho.module';
 import { CategoryModule } from '../category/category.module';
 import { SubCategoryModule } from '../category/sub/sub.module';
 import { ReferenceConstraint } from 'src/commons/validations/is-reference.validation';
-import { ReferenceModule } from '../reference/reference.module';
+import { ReferenciaModule } from '../referencia/referencia.module';
 import { BrandConstraint } from 'src/commons/validations/is-brand.validation';
 import { BrandModule } from '../brand/brand.module';
 
@@ -26,11 +26,11 @@ import { BrandModule } from '../brand/brand.module';
     BarcodeModule,
     TypeOrmModule.forFeature([ProductEntity]),
     MeasurementUnitModule,
-    ColorModule,
-    SizeModule,
+    CorModule,
+    TamanhoModule,
     CategoryModule,
     SubCategoryModule,
-    ReferenceModule,
+    ReferenciaModule,
     BrandModule,
   ],
   controllers: [ProductController],

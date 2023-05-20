@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { referenceFakeRepository } from 'src/base-fake/reference';
-import { ReferenceService } from 'src/modules/reference/reference.service';
+import { ReferenciaService } from 'src/modules/referencia/referencia.service';
 
 import { ReferenceConstraint } from './is-reference.validation';
 
 describe('Reference validation', () => {
   let constraint: ReferenceConstraint;
-  let service: ReferenceService;
+  let service: ReferenciaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ReferenceConstraint,
         {
-          provide: ReferenceService,
+          provide: ReferenciaService,
           useValue: {
             findById: jest.fn().mockResolvedValue(referenceFakeRepository.findOne()),
           },
@@ -21,7 +21,7 @@ describe('Reference validation', () => {
       ],
     }).compile();
     constraint = module.get<ReferenceConstraint>(ReferenceConstraint);
-    service = module.get<ReferenceService>(ReferenceService);
+    service = module.get<ReferenciaService>(ReferenciaService);
   });
 
   it('should be defined', () => {

@@ -12,10 +12,10 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ComponentsModule } from './modules/componente/componente.module';
 import { ComponentGuard } from './guards/component.guard';
 import { ComponentGroupModule } from './modules/component-group/componente-grupo.module';
-import { BranchModule } from './modules/branch/branch.module';
-import { ColorModule } from './modules/color/color.module';
-import { SizeModule } from './modules/size/size.module';
-import { ReferenceModule } from './modules/reference/reference.module';
+import { EmpresaModule } from './modules/empresa/empresa.module';
+import { CorModule } from './modules/cor/cor.module';
+import { TamanhoModule } from './modules/tamanho/tamanho.module';
+import { ReferenciaModule } from './modules/referencia/referencia.module';
 import { CategoryModule } from './modules/category/category.module';
 import { BrandModule } from './modules/brand/brand.module';
 import { ProductModule } from './modules/product/product.module';
@@ -28,10 +28,10 @@ import { MeasurementUnitModule } from './modules/measurement-unit/measurement-un
     AuthModule,
     ComponentsModule,
     ComponentGroupModule,
-    BranchModule,
-    ColorModule,
-    SizeModule,
-    ReferenceModule,
+    EmpresaModule,
+    CorModule,
+    TamanhoModule,
+    ReferenciaModule,
     CategoryModule,
     BrandModule,
     MeasurementUnitModule,

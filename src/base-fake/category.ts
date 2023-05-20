@@ -1,6 +1,6 @@
 import { CategoryEntity } from 'src/modules/category/entities/category.entity';
 import { SubCategoryEntity } from 'src/modules/category/sub/entities/sub.entity';
-import { SizeEntity } from 'src/modules/size/entities/size.entity';
+import { TamanhoEntity } from 'src/modules/tamanho/entities/tamanho.entity';
 
 class CategoryFakeRepository {
   find(): CategoryEntity[] {

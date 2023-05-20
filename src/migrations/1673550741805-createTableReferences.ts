@@ -4,7 +4,7 @@ export class createTableReferences1673550741805 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'references',
+        name: 'referencias',
         columns: [
           {
             name: 'id',
@@ -14,24 +14,24 @@ export class createTableReferences1673550741805 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'name',
+            name: 'nome',
             type: 'varchar',
             length: '255',
             isNullable: false,
           },
           {
-            name: 'externalId',
+            name: 'idExterno',
             type: 'varchar',
             length: '255',
             isNullable: true,
           },
           {
-            name: 'createdAt',
+            name: 'criadoEm',
             type: 'timestamp',
             default: 'now()',
           },
           {
-            name: 'updatedAt',
+            name: 'atualizadoEm',
             type: 'timestamp',
             default: 'now()',
           },
@@ -41,6 +41,6 @@ export class createTableReferences1673550741805 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('references');
+    await queryRunner.dropTable('referencias');
   }
 }

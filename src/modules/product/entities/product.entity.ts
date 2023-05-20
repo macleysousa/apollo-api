@@ -5,11 +5,11 @@ import { BaseEntity } from 'src/commons/base.entity';
 import { BarcodeEntity } from '../barcode/entities/barcode.entity';
 import { Exclude, Transform } from 'class-transformer';
 import { MeasurementUnitEntity } from 'src/modules/measurement-unit/entities/measurement-unit.entity';
-import { ColorEntity } from 'src/modules/color/entities/color.entity';
-import { SizeEntity } from 'src/modules/size/entities/size.entity';
+import { CorEntity } from 'src/modules/cor/entities/cor.entity';
+import { TamanhoEntity } from 'src/modules/tamanho/entities/tamanho.entity';
 import { CategoryEntity } from 'src/modules/category/entities/category.entity';
 import { SubCategoryEntity } from 'src/modules/category/sub/entities/sub.entity';
-import { ReferenceEntity } from 'src/modules/reference/entities/reference.entity';
+import { ReferenciaEntity } from 'src/modules/referencia/entities/referencia.entity';
 import { BrandEntity } from 'src/modules/brand/entities/brand.entity';
 
 @Entity({ name: 'products' })
@@ -44,18 +44,18 @@ export class ProductEntity extends BaseEntity {
   colorId: number;
 
   @ApiProperty()
-  @OneToOne(() => ColorEntity, (value) => value.id, { eager: true })
+  @OneToOne(() => CorEntity, (value) => value.id, { eager: true })
   @JoinColumn({ name: 'colorId' })
-  color: ColorEntity;
+  color: CorEntity;
 
   @Exclude()
   @Column()
   sizeId: number;
 
   @ApiProperty()
-  @OneToOne(() => SizeEntity, (value) => value.id, { eager: true })
+  @OneToOne(() => TamanhoEntity, (value) => value.id, { eager: true })
   @JoinColumn({ name: 'sizeId' })
-  size: SizeEntity;
+  size: TamanhoEntity;
 
   @Exclude()
   @Column()
@@ -80,9 +80,9 @@ export class ProductEntity extends BaseEntity {
   referenceId: number;
 
   @ApiProperty()
-  @OneToOne(() => ReferenceEntity, (value) => value.id, { eager: true })
+  @OneToOne(() => ReferenciaEntity, (value) => value.id, { eager: true })
   @JoinColumn({ name: 'referenceId' })
-  reference: ReferenceEntity;
+  reference: ReferenciaEntity;
 
   @Exclude()
   @Column()

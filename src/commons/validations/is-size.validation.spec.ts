@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { sizeFakeRepository } from 'src/base-fake/size';
-import { SizeService } from 'src/modules/size/size.service';
+import { TamanhoService } from 'src/modules/tamanho/tamanho.service';
 
 import { SizeConstraint } from './is-size.validation';
 
 describe('Size validation', () => {
   let constraint: SizeConstraint;
-  let service: SizeService;
+  let service: TamanhoService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SizeConstraint,
         {
-          provide: SizeService,
+          provide: TamanhoService,
           useValue: {
             findById: jest.fn().mockResolvedValue(sizeFakeRepository.findOne()),
           },
@@ -21,7 +21,7 @@ describe('Size validation', () => {
       ],
     }).compile();
     constraint = module.get<SizeConstraint>(SizeConstraint);
-    service = module.get<SizeService>(SizeService);
+    service = module.get<TamanhoService>(TamanhoService);
   });
 
   it('should be defined', () => {

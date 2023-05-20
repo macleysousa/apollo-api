@@ -1,8 +1,8 @@
-import { BranchEntity } from 'src/modules/branch/entities/branch.entity';
+import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 
 class BranchFakeRepository {
-  find(): BranchEntity[] {
-    const branch = new BranchEntity({
+  find(): EmpresaEntity[] {
+    const branch = new EmpresaEntity({
       id: 1,
       cnpj: '01.248.473/0001-75',
       name: 'Branch Test',
@@ -13,8 +13,8 @@ class BranchFakeRepository {
     return [branch];
   }
 
-  findOne(): BranchEntity {
-    const branch = new BranchEntity({
+  findOne(): EmpresaEntity {
+    const branch = new EmpresaEntity({
       id: 1,
       cnpj: '01.248.473/0001-75',
       name: 'Branch Test',

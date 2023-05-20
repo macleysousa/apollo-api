@@ -3,7 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { BranchConstraint } from 'src/commons/validations/is-branch.validation';
 import { LoginValidationMiddleware } from 'src/middlewares/login-validation.middleware';
-import { BranchModule } from '../branch/branch.module';
+import { EmpresaModule } from '../empresa/empresa.module';
 import { UsuarioModule } from '../usuario/usuario.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -11,7 +11,7 @@ import { AuthService } from './auth.service';
 @Module({
   imports: [
     UsuarioModule,
-    BranchModule,
+    EmpresaModule,
     PassportModule,
     JwtModule.register({
       secret: process.env.ACCESS_TOKEN_SECRET,

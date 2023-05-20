@@ -1,10 +1,10 @@
-import { ColorEntity } from 'src/modules/color/entities/color.entity';
+import { CorEntity } from 'src/modules/cor/entities/cor.entity';
 
 class ColorFakeRepository {
-  find(): ColorEntity[] {
-    const color = new ColorEntity({
+  find(): CorEntity[] {
+    const color = new CorEntity({
       id: 1,
-      name: 'black',
+      nome: 'black',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
     });
@@ -13,9 +13,9 @@ class ColorFakeRepository {
   }
 
   findOne() {
-    const color = new ColorEntity({
+    const color = new CorEntity({
       id: 1,
-      name: 'black',
+      nome: 'black',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
     });

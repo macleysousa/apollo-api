@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { colorFakeRepository } from 'src/base-fake/color';
-import { ColorService } from 'src/modules/color/color.service';
+import { CorService } from 'src/modules/cor/cor.service';
 
 import { ColorConstraint } from './is-color.validation';
 
 describe('Color validation', () => {
   let constraint: ColorConstraint;
-  let service: ColorService;
+  let service: CorService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ColorConstraint,
         {
-          provide: ColorService,
+          provide: CorService,
           useValue: {
             findById: jest.fn().mockResolvedValue(colorFakeRepository.findOne()),
           },
@@ -21,7 +21,7 @@ describe('Color validation', () => {
       ],
     }).compile();
     constraint = module.get<ColorConstraint>(ColorConstraint);
-    service = module.get<ColorService>(ColorService);
+    service = module.get<CorService>(CorService);
   });
 
   it('should be defined', () => {

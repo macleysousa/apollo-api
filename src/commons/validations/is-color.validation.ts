@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } from 'class-validator';
 import { ValidatorConstraint, ValidationArguments } from 'class-validator';
-import { ColorService } from '../../modules/color/color.service';
+import { CorService } from '../../modules/cor/cor.service';
 
 @ValidatorConstraint({ async: true })
 @Injectable()
 export class ColorConstraint implements ValidatorConstraintInterface {
-  constructor(private readonly service: ColorService) {}
+  constructor(private readonly service: CorService) {}
 
   async validate(value: number, args?: ValidationArguments): Promise<boolean> {
     return (await this.service.findById(value)) ? true : false;

@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { branchFakeRepository } from 'src/base-fake/branch';
-import { BranchService } from 'src/modules/branch/branch.service';
+import { EmpresaService } from 'src/modules/empresa/empresa.service';
 
 import { BranchConstraint } from './is-branch.validation';
 
 describe('Branch validation', () => {
   let branchConstraint: BranchConstraint;
-  let branchService: BranchService;
+  let branchService: EmpresaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BranchConstraint,
         {
-          provide: BranchService,
+          provide: EmpresaService,
           useValue: {
             findById: jest.fn().mockResolvedValue(branchFakeRepository.findOne()),
           },
@@ -21,7 +21,7 @@ describe('Branch validation', () => {
       ],
     }).compile();
     branchConstraint = module.get<BranchConstraint>(BranchConstraint);
-    branchService = module.get<BranchService>(BranchService);
+    branchService = module.get<EmpresaService>(EmpresaService);
   });
 
   it('should be defined', () => {
