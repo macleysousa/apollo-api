@@ -11,7 +11,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthModule } from './modules/auth/auth.module';
 import { ComponentsModule } from './modules/componente/componente.module';
 import { ComponentGuard } from './guards/component.guard';
-import { ComponentGroupModule } from './modules/component-group/componente-grupo.module';
+import { ComponentGroupModule } from './modules/componente-grupo/componente-grupo.module';
 import { EmpresaModule } from './modules/empresa/empresa.module';
 import { CorModule } from './modules/cor/cor.module';
 import { TamanhoModule } from './modules/tamanho/tamanho.module';

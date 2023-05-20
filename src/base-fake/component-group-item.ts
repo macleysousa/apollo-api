@@ -1,4 +1,4 @@
-import { ComponenteGrupoItemEntity } from 'src/modules/component-group/item/entities/componente-grupo-item.entity';
+import { ComponenteGrupoItemEntity } from 'src/modules/componente-grupo/item/entities/componente-grupo-item.entity';
 
 class ComponentGroupItemFakeRepository {
   find(): ComponenteGrupoItemEntity[] {

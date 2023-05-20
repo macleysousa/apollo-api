@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
-import { ComponenteGrupoEntity } from 'src/modules/component-group/entities/componente-grupo.entity';
+import { ComponenteGrupoEntity } from 'src/modules/componente-grupo/entities/componente-grupo.entity';
 
 @Entity({ name: 'usuarios_grupos' })
 export class UsuarioGrupoEntity extends BaseEntity {
