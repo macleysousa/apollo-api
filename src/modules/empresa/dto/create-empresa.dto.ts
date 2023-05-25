@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, Min, Max, IsOptional } from 'class-validator';
+import { IsNotEmpty, Min, Max, IsOptional, IsEnum } from 'class-validator';
 import { SubTributary } from 'src/commons/enum/sub-tributary';
 import { TaxRegime } from 'src/commons/enum/tax-regime';
 import { UF } from 'src/commons/enum/uf.enum';
@@ -12,56 +12,57 @@ export class CreateEmpresaDto {
   @Max(999)
   id: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsCnpjValid()
   cnpj: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  name: string;
+  nome: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  fantasyName: string;
+  nomeFantasia: string;
 
-  @ApiProperty({ enum: UF, default: UF.NotInformed })
+  @ApiProperty({ enum: UF, default: UF.NotInformed, required: false })
   @IsOptional()
   uf?: UF;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
-  numberStateRegistration?: string;
+  inscricaoEstadual?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
-  codeActivity?: string;
+  codigoDeAtividade?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
-  codeActivityCnae?: string;
+  codigoDeNaturezaJuridica?: string;
 
-  @ApiProperty({ enum: TaxRegime, default: TaxRegime.NotInformed })
+  @ApiProperty({ enum: TaxRegime, default: TaxRegime.NaoInformado })
   @IsOptional()
-  typeTaxRegime?: TaxRegime;
+  regime?: TaxRegime;
 
   @ApiProperty({ enum: SubTributary, default: SubTributary.NotInformed })
   @IsOptional()
-  typeSubTributary?: SubTributary;
+  @IsEnum(SubTributary)
+  substituicaoTributaria?: SubTributary;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
-  suframaCode?: string;
+  suframa?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
-  registrationMunicipal?: string;
+  registroMunicipal?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
-  phone?: string;
+  telefone?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   email?: string;
 }

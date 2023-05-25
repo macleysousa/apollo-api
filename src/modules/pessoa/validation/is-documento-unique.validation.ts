@@ -1,32 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } from 'class-validator';
 import { ValidatorConstraint, ValidationArguments } from 'class-validator';
-import { EmpresaService } from 'src/modules/empresa/empresa.service';
+
+import { PessoaService } from '../pessoa.service';
 
 @ValidatorConstraint({ async: true })
 @Injectable()
-export class BranchConstraint implements ValidatorConstraintInterface {
-  constructor(private readonly branchService: EmpresaService) {}
+export class IsDocumentoConstraint implements ValidatorConstraintInterface {
+  constructor(private readonly service: PessoaService) {}
 
-  async validate(value: number, args?: ValidationArguments): Promise<boolean> {
-    const branch = await this.branchService.findById(value);
+  async validate(value: string, args?: ValidationArguments): Promise<boolean> {
+    const response = await this.service.findByDocumento(value);
 
-    return branch ? true : false;
+    return !response ? true : false;
   }
 
   defaultMessage(_validationArguments?: ValidationArguments): string {
-    return 'Empresa não encontrada';
+    return `Documento já vinculado a outra pessoa`;
   }
 }
 
-export const IsBranch = (validationOptions?: ValidationOptions) => {
+export const IsDocumentoUnique = (validationOptions?: ValidationOptions) => {
   return (object: Object, propertyName: string) => {
     registerDecorator({
       target: object.constructor,
       propertyName,
       options: validationOptions,
       constraints: [object],
-      validator: BranchConstraint,
+      validator: IsDocumentoConstraint,
     });
   };
 };

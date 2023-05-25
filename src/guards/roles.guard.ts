@@ -12,12 +12,12 @@ export class RolesGuard implements CanActivate {
     if (!requiredRoles) {
       return true;
     }
-    const { user } = context.switchToHttp().getRequest();
+    const { usuario } = context.switchToHttp().getRequest();
 
-    if (requiredRoles.includes(user.tipo)) {
+    if (requiredRoles.includes(usuario.tipo)) {
       return true;
     } else {
-      throw new UnauthorizedException(`${user.tipo} is not authorized to access this route`);
+      throw new UnauthorizedException(`O usuário não tem acesso a essa funcionalidade`);
     }
   }
 }

@@ -23,7 +23,7 @@ export class EmpresaService {
     return this.branchRepository.find({
       where: {
         cnpj: ILike(`%${filter ?? ''}%`),
-        name: ILike(`%${filter ?? ''}%`),
+        nome: ILike(`%${filter ?? ''}%`),
       },
     });
   }

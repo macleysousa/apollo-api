@@ -15,14 +15,14 @@ export class ComponentGuard implements CanActivate {
     if (isPublic) return true;
     else if (!componentId) return true;
 
-    const { user, branch } = context.switchToHttp().getRequest();
+    const { usuario, empresa } = context.switchToHttp().getRequest();
 
-    const isValid = await this.authService.validateComponent(user?.id, branch?.id, componentId);
+    const isValid = await this.authService.validateComponent(usuario?.id, empresa?.id, componentId);
 
-    if (isValid || user?.tipo == Role.sysadmin || user?.tipo == Role.administrador) {
+    if (isValid || usuario?.tipo == Role.sysadmin || usuario?.tipo == Role.administrador) {
       return true;
     }
 
-    throw new UnauthorizedException(`User does not have access to component ${componentId}`);
+    throw new UnauthorizedException(`O usuário não tem acesso ao componente ${componentId}`);
   }
 }

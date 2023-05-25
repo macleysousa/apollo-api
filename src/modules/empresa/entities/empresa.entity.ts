@@ -17,15 +17,15 @@ export class EmpresaEntity extends BaseEntity {
 
   @ApiProperty()
   @Column()
-  name: string;
+  nome: string;
 
   @ApiProperty()
   @Column()
-  fantasyName: string;
+  nomeFantasia: string;
 
   @ApiProperty()
   @Column()
-  isInactive: boolean;
+  ativa: boolean;
 
   @ApiProperty({ enum: UF, default: UF.NotInformed })
   @Column()
@@ -33,35 +33,35 @@ export class EmpresaEntity extends BaseEntity {
 
   @ApiProperty()
   @Column()
-  numberStateRegistration: string;
+  inscricaoEstadual: string;
 
   @ApiProperty()
   @Column()
-  codeActivity: string;
+  codigoDeAtividade: string;
 
   @ApiProperty()
   @Column()
-  codeActivityCnae: string;
+  codigoDeNaturezaJuridica: string;
 
-  @ApiProperty({ enum: TaxRegime, default: TaxRegime.NotInformed })
+  @ApiProperty({ enum: TaxRegime, default: TaxRegime.NaoInformado })
   @Column()
-  typeTaxRegime: TaxRegime;
+  regime: TaxRegime;
 
   @ApiProperty({ enum: SubTributary, default: SubTributary.NotInformed })
   @Column()
-  typeSubTributary: SubTributary;
+  substituicaoTributaria: SubTributary;
 
   @ApiProperty()
   @Column()
-  suframaCode: string;
+  suframa: string;
 
   @ApiProperty()
   @Column()
-  registrationMunicipal: string;
+  registroMunicipal: string;
 
   @ApiProperty()
   @Column()
-  phone: string;
+  telefone: string;
 
   @ApiProperty()
   @Column()

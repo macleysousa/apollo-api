@@ -39,7 +39,7 @@ export class createTableBranches1671815503457 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'escricaoEstadual',
+            name: 'inscricaoEstadual',
             type: 'varchar',
             isNullable: true,
           },

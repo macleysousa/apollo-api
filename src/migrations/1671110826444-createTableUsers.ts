@@ -49,7 +49,7 @@ export class createTableUsers1671110826444 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'creadoEm',
+            name: 'criadoEm',
             type: 'timestamp',
             default: 'now()',
           },

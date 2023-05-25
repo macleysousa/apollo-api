@@ -1,11 +1,11 @@
 export enum TaxRegime {
-  NotInformed = '',
+  NaoInformado = '',
   Normal = 'Normal',
-  MicroBranch = 'Micro empresa',
+  MicroEmpresa = 'Micro empresa',
   Epp = 'EPP',
-  RealProfit = 'Lucro real',
-  PresumedProfit = 'Lucro presumido',
+  LucroReal = 'Lucro real',
+  LucroPredumido = 'Lucro presumido',
   Mei = 'MEI',
   Eireli = 'Eireli',
-  Others = 'Outros',
+  Outros = 'Outros',
 }

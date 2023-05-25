@@ -17,7 +17,7 @@ export class UsuarioGrupoService {
   ) {}
 
   async add(usuarioId: number, createGroupAccessDto: AdicionarUsuarioGrupoDto): Promise<UsuarioGrupoEntity> {
-    const access = await this.repository.save({ ...createGroupAccessDto, usuarioId, operadorId: this.request.user.id }).catch(() => {
+    const access = await this.repository.save({ ...createGroupAccessDto, usuarioId, operadorId: this.request.usuario.id }).catch(() => {
       throw new BadRequestException(`usuário, empresa ou grupo inválido`);
     });
     return this.findByBranchIdAndGroupId(access.usuarioId, access.empresaId, access.grupoId);

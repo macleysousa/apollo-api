@@ -24,12 +24,12 @@
     "service:create": "npx nest g service",
     "crud": "npx nest g resource",
     "typeorm:": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./ormconfig.ts",
-    "schema:log": "yarn typeorm: schema:log",
-    "migration:create": "yarn typeorm: migration:create",
-    "migration:generate": "yarn typeorm: migration:generate",
-    "migration:run": "yarn typeorm: migration:run",
-    "migration:revert": "yarn typeorm: migration:revert",
-    "migration:show": "yarn typeorm: migration:show"
+    "schema:log": "npm run typeorm: schema:log",
+    "migration:create": "typeorm migration:create",
+    "migration:generate": "npm run typeorm: migration:generate",
+    "migration:run": "npm run typeorm: migration:run",
+    "migration:revert": "npm run typeorm: migration:revert",
+    "migration:show": "npm run typeorm: migration:show"
   },
   "dependencies": {
     "@nestjs/common": "^9.4.1",
@@ -41,6 +41,7 @@
     "@nestjs/typeorm": "^9.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "cpf-cnpj-validator": "^1.0.3",
     "crypto-js": "^4.1.1",
     "mysql2": "^3.3.1",
     "nestjs-typeorm-paginate": "^4.0.3",

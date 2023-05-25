@@ -5,8 +5,8 @@ class BranchFakeRepository {
     const branch = new EmpresaEntity({
       id: 1,
       cnpj: '01.248.473/0001-75',
-      name: 'Branch Test',
-      fantasyName: 'Fantasy Test',
+      nome: 'Branch Test',
+      nomeFantasia: 'Fantasy Test',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
     });
@@ -17,8 +17,8 @@ class BranchFakeRepository {
     const branch = new EmpresaEntity({
       id: 1,
       cnpj: '01.248.473/0001-75',
-      name: 'Branch Test',
-      fantasyName: 'Fantasy Test',
+      nome: 'Branch Test',
+      nomeFantasia: 'Fantasy Test',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
     });

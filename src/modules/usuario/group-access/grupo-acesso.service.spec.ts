@@ -52,7 +52,7 @@ describe('GroupAccessService', () => {
     it('should create a group access', async () => {
       // Arrange
       const usuarioId = 1;
-      const operadorId = request.user.id;
+      const operadorId = request.usuario.id;
       const group: AdicionarUsuarioGrupoDto = { empresaId: 1, grupoId: 1 };
 
       // Act

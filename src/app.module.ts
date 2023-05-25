@@ -19,6 +19,8 @@ import { ReferenciaModule } from './modules/referencia/referencia.module';
 import { CategoriaModule } from './modules/categoria/categoria.module';
 import { MarcaModule } from './modules/marca/marca.module';
 import { ProdutoModule } from './modules/produto/produto.module';
+import { PessoaModule } from './modules/pessoa/pessoa.module';
+import { EmpresaAuthGuard } from './guards/empresa-auth.guard';
 
 @Module({
   imports: [
@@ -34,6 +36,7 @@ import { ProdutoModule } from './modules/produto/produto.module';
     CategoriaModule.forRoot(),
     MarcaModule.forRoot(),
     ProdutoModule.forRoot(),
+    PessoaModule,
   ],
   controllers: [],
   providers: [
@@ -52,6 +55,10 @@ import { ProdutoModule } from './modules/produto/produto.module';
     {
       provide: APP_GUARD,
       useClass: ComponentGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: EmpresaAuthGuard,
     },
     {
       provide: APP_INTERCEPTOR,

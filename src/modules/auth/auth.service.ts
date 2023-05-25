@@ -28,7 +28,7 @@ export class AuthService {
     }
   }
 
-  async validateToken(token: string): Promise<{ user: UsuarioEntity; branch?: EmpresaEntity }> {
+  async validateToken(token: string): Promise<{ usuario: UsuarioEntity; empresa?: EmpresaEntity }> {
     await this.jwtService.verifyAsync(token).catch((err) => {
       if (err.name == 'TokenExpiredError') {
         throw new UnauthorizedException('token expired');
@@ -37,13 +37,13 @@ export class AuthService {
       }
     });
 
-    const username = this.jwtService.decode(token)['username'];
-    const user = await this.userService.findByUserName(username);
+    const username = this.jwtService.decode(token)['usuario'];
+    const usuario = await this.userService.findByUserName(username);
 
-    const branchId = this.jwtService.decode(token)['branchId'];
-    const branch = branchId ? await this.branchService.findById(branchId) : undefined;
+    const branchId = this.jwtService.decode(token)['empresaId'];
+    const empresa = branchId ? await this.branchService.findById(branchId) : undefined;
 
-    return { user, branch };
+    return { usuario, empresa };
   }
 
   async refreshToken(refreshToken: string): Promise<{ token: string }> {

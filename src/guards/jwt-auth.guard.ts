@@ -38,11 +38,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const token = this.getTokenFromRequest(request);
     if (!token) throw new UnauthorizedException('Invalid or not provided auth token');
 
-    const { user, branch } = await this.authService.validateToken(token);
-    if (!user) throw new UnauthorizedException('Invalid token');
+    const { usuario, empresa } = await this.authService.validateToken(token);
+    if (!usuario) throw new UnauthorizedException('Invalid token');
 
-    request.user = user;
-    request.branch = branch;
+    request.usuario = usuario;
+    request.empresa = empresa;
 
     return true;
   }

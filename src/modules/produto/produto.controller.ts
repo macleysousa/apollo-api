@@ -25,7 +25,6 @@ export class ProdutoController {
   }
 
   @Get()
-  @IsPublic()
   @ApiPaginatedResponse(ProdutoEntity)
   @ApiQuery({ name: 'searchTerm', required: false })
   @ApiQuery({ name: 'page', required: false, description: 'Value default: 1' })
@@ -39,7 +38,6 @@ export class ProdutoController {
   }
 
   @Get(':id')
-  @IsPublic()
   @ApiResponse({ status: 200, type: ProdutoEntity })
   async findById(@Param('id', ParseIntPipe) id: number): Promise<ProdutoEntity> {
     return this.productService.findById(id);
