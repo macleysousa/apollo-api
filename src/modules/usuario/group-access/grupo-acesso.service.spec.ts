@@ -2,13 +2,16 @@ import { BadRequestException } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import { userFakeRepository } from 'src/base-fake/user';
 import { userGroupAccessFakeRepository } from 'src/base-fake/user-group-access';
 import { AuthRequest } from 'src/decorators/current-auth.decorator';
-import { Repository } from 'typeorm';
+
 import { AdicionarUsuarioGrupoDto } from './dto/adicionar-usuario-grupo.dto';
 import { UsuarioGrupoEntity } from './entities/grupo-acesso.entity';
 import { UsuarioGrupoService } from './grupo-acesso.service';
+import { branchFakeRepository } from 'src/base-fake/branch';
 
 describe('GroupAccessService', () => {
   let service: UsuarioGrupoService;
@@ -22,7 +25,8 @@ describe('GroupAccessService', () => {
         {
           provide: REQUEST,
           useValue: {
-            user: userFakeRepository.findOne(),
+            usuario: userFakeRepository.findOne(),
+            empresa: branchFakeRepository.findOne(),
           },
         },
         {

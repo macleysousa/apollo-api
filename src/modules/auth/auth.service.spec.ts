@@ -26,7 +26,7 @@ describe('AuthService', () => {
           useValue: {
             sign: jest.fn().mockReturnValue(authFakeRepository.token().token),
             verifyAsync: jest.fn().mockResolvedValue({}),
-            decode: jest.fn().mockReturnValue({ username: 'username', branchId: 1 }),
+            decode: jest.fn().mockReturnValue({ usuario: 'username', empresaId: 1 }),
           },
         },
         {
@@ -96,7 +96,7 @@ describe('AuthService', () => {
     it('should succeed in validating the token', async () => {
       // Arrange
       const token = 'token';
-      jest.spyOn(jwtService, 'decode').mockReturnValue({ username: 'username' });
+      jest.spyOn(jwtService, 'decode').mockReturnValueOnce({ usuario: 'username' }).mockReturnValueOnce({ usuario: 'username' });
 
       // Act
       const response = await authService.validateToken(token);
@@ -108,13 +108,15 @@ describe('AuthService', () => {
       expect(jwtService.decode).toHaveBeenCalledTimes(2);
       expect(jwtService.decode).toHaveBeenCalledWith(token);
 
-      expect(response).toEqual({ user: userFakeRepository.findOne(), branch: undefined });
+      expect(response).toEqual({ usuario: userFakeRepository.findOne(), empresa: undefined });
     });
 
     it('should succeed in validating the token with branch id', async () => {
       // Arrange
       const token = 'token';
 
+      jest.spyOn(branchService, 'findById').mockResolvedValueOnce(branchFakeRepository.findOne());
+
       // Act
       const response = await authService.validateToken(token);
 
@@ -125,7 +127,7 @@ describe('AuthService', () => {
       expect(jwtService.decode).toHaveBeenCalledTimes(2);
       expect(jwtService.decode).toHaveBeenCalledWith(token);
 
-      expect(response).toEqual({ user: userFakeRepository.findOne(), branch: branchFakeRepository.findOne() });
+      expect(response).toEqual({ usuario: userFakeRepository.findOne(), empresa: branchFakeRepository.findOne() });
     });
 
     it('should fail in validating the token with error *token expired*', async () => {

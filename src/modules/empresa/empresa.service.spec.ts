@@ -40,7 +40,7 @@ describe('BranchService', () => {
   describe('create', () => {
     it('should create a branch', async () => {
       // Arrange
-      const branch: CreateEmpresaDto = { id: 1, cnpj: '01.248.473/0001-75', name: 'branch1', fantasyName: 'fantasyName' };
+      const branch: CreateEmpresaDto = { id: 1, cnpj: '01.248.473/0001-75', nome: 'branch1', nomeFantasia: 'fantasyName' };
 
       // Act
       const result = await service.create(branch);
@@ -63,7 +63,7 @@ describe('BranchService', () => {
 
       // Assert
       expect(repository.find).toHaveBeenCalledTimes(1);
-      expect(repository.find).toHaveBeenCalledWith({ where: { cnpj: ILike(`%${filter ?? ''}%`), name: ILike(`%${filter ?? ''}%`) } });
+      expect(repository.find).toHaveBeenCalledWith({ where: { cnpj: ILike(`%${filter ?? ''}%`), nome: ILike(`%${filter ?? ''}%`) } });
 
       expect(result).toEqual(branchFakeRepository.find());
     });
@@ -77,7 +77,7 @@ describe('BranchService', () => {
 
       // Assert
       expect(repository.find).toHaveBeenCalledTimes(1);
-      expect(repository.find).toHaveBeenCalledWith({ where: { cnpj: ILike(`%${filter ?? ''}%`), name: ILike(`%${filter ?? ''}%`) } });
+      expect(repository.find).toHaveBeenCalledWith({ where: { cnpj: ILike(`%${filter ?? ''}%`), nome: ILike(`%${filter ?? ''}%`) } });
 
       expect(result).toEqual(branchFakeRepository.find());
     });
@@ -103,7 +103,7 @@ describe('BranchService', () => {
     it('should update a branch', async () => {
       // Arrange
       const id = 1;
-      const branch: UpdateEmpresaDto = { cnpj: '01.248.473/0001-75', name: 'branch1', fantasyName: 'fantasyName' };
+      const branch: UpdateEmpresaDto = { cnpj: '01.248.473/0001-75', nome: 'branch1', nomeFantasia: 'fantasyName' };
 
       // Act
       const result = await service.update(id, branch);

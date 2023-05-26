@@ -17,9 +17,9 @@ export class PessoaService {
   async create(empresaId: number, createPessoaDto: CreatePessoaDto): Promise<PessoaEntity> {
     const pessoaByDocumento = await this.findByDocumento(createPessoaDto.documento);
     if (pessoaByDocumento) {
-      throw new BadRequestException(`Pessoa with documento ${createPessoaDto.documento} already exists`);
+      throw new BadRequestException(`Pessoa com documento ${createPessoaDto.documento} já cadastrada`);
     }
-    const pessoa = await this.repository.save({ ...createPessoaDto, empresaCadastro: empresaId, empresasAcesso: [empresaId, 2] });
+    const pessoa = await this.repository.save({ ...createPessoaDto, empresaCadastro: empresaId, empresasAcesso: [empresaId] });
     return this.findById(pessoa.id);
   }
 
@@ -52,7 +52,7 @@ export class PessoaService {
   async block(id: number): Promise<PessoaEntity> {
     const pessoa = await this.findById(id);
     if (!pessoa) {
-      throw new BadRequestException(`Pessoa with id ${id} not found`);
+      throw new BadRequestException(`Pessoa com id ${id} não encontrada`);
     }
     await this.repository.update(id, { bloqueado: true });
     return this.findById(id);
@@ -61,7 +61,7 @@ export class PessoaService {
   async unblock(id: number): Promise<PessoaEntity> {
     const pessoa = await this.findById(id);
     if (!pessoa) {
-      throw new BadRequestException(`Pessoa with id ${id} not found`);
+      throw new BadRequestException(`Pessoa com id ${id} não encontrada`);
     }
     await this.repository.update(id, { bloqueado: false });
     return this.findById(id);
@@ -70,7 +70,7 @@ export class PessoaService {
   async liberarAcesso(id: number, empresaId: number): Promise<PessoaEntity> {
     const pessoa = await this.findById(id);
     if (!pessoa) {
-      throw new BadRequestException(`Pessoa with id ${id} not found`);
+      throw new BadRequestException(`Pessoa com id ${id} não encontrada`);
     }
 
     if (!pessoa.empresasAcesso.find((x) => x == empresaId)) pessoa.empresasAcesso.push(empresaId);

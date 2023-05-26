@@ -60,4 +60,9 @@ export class PessoaEntity extends BaseEntity {
   @Column('simple-array')
   @Transform(({ value }) => value.map(Number))
   empresasAcesso: number[];
+
+  constructor(partial?: Partial<PessoaEntity>) {
+    super();
+    Object.assign(this, partial);
+  }
 }

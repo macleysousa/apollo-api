@@ -37,7 +37,7 @@ describe('BranchController', () => {
   describe('/ (POST)', () => {
     it('should create a branch', async () => {
       // Arrange
-      const branch: CreateEmpresaDto = { id: 1, cnpj: '01.248.473/0001-75', name: 'branch1', fantasyName: 'fantasyName' };
+      const branch: CreateEmpresaDto = { id: 1, cnpj: '01.248.473/0001-75', nome: 'branch1', nomeFantasia: 'fantasyName' };
 
       // Act
       const result = await controller.create(branch);
@@ -100,7 +100,7 @@ describe('BranchController', () => {
     it('should update a branch', async () => {
       // Arrange
       const id = 1;
-      const branch: CreateEmpresaDto = { id: 1, cnpj: '01.248.473/0001-75', name: 'branch1', fantasyName: 'fantasyName' };
+      const branch: CreateEmpresaDto = { id: 1, cnpj: '01.248.473/0001-75', nome: 'branch1', nomeFantasia: 'fantasyName' };
 
       // Act
       const result = await controller.update(id, branch);

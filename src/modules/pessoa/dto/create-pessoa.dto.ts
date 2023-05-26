@@ -12,7 +12,7 @@ export class CreatePessoaDto {
   @IsOptional()
   @IsInt()
   @IsBetween(1, 999, { message: 'O valor deve estar entre 1 e 999' })
-  id: number;
+  id?: number;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -31,25 +31,25 @@ export class CreatePessoaDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  ufInscricaoEstadual: string;
+  ufInscricaoEstadual?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  inscricaoEstadual: string;
+  inscricaoEstadual?: string;
 
   @ApiProperty({ type: 'string', format: 'date', required: false })
   @IsOptional()
-  nacimento: Date;
+  nacimento?: Date;
 
   @ApiProperty({ default: true, required: false })
   @IsOptional()
-  cliente: boolean;
+  cliente?: boolean;
 
   @ApiProperty({ default: false, required: false })
   @IsOptional()
-  fornecedor: boolean;
+  fornecedor?: boolean;
 
   @ApiProperty({ default: false, required: false })
   @IsOptional()
-  funcionario: boolean;
+  funcionario?: boolean;
 }

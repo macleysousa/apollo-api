@@ -60,7 +60,7 @@ describe('Branch validation', () => {
       const result = branchConstraint.defaultMessage();
 
       // Assert
-      expect(result).toEqual('branch not found');
+      expect(result).toEqual('Empresa não encontrada');
     });
   });
 });
