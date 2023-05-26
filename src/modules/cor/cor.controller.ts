@@ -7,41 +7,41 @@ import { CreateCorDto } from './dto/create-cor.dto';
 import { UpdateCorDto } from './dto/update-cor.dto';
 import { CorEntity } from './entities/cor.entity';
 
-@ApiTags('Colors')
-@Controller('colors')
+@ApiTags('Cores')
+@Controller('cores')
 @ApiBearerAuth()
 @ApiComponent('PRDFM001', 'Manutenção de cor de produto')
 export class CorController {
-  constructor(private readonly colorService: CorService) {}
+  constructor(private readonly service: CorService) {}
 
   @Post()
   @ApiResponse({ type: CorEntity, status: 201 })
   async create(@Body() createColorDto: CreateCorDto): Promise<CorEntity> {
-    return this.colorService.create(createColorDto);
+    return this.service.create(createColorDto);
   }
 
   @Get()
   @ApiResponse({ type: [CorEntity], status: 200 })
-  @ApiQuery({ name: 'name', required: false })
-  @ApiQuery({ name: 'active', required: false, type: Boolean })
-  async find(@Query('name') name?: string, @Query('active') active?: boolean | unknown): Promise<CorEntity[]> {
-    return this.colorService.find(name, active);
+  @ApiQuery({ name: 'nome', required: false })
+  @ApiQuery({ name: 'inativa', required: false, type: Boolean })
+  async find(@Query('nome') nome?: string, @Query('inativa') inativa?: boolean | unknown): Promise<CorEntity[]> {
+    return this.service.find(nome, inativa);
   }
 
   @Get(':id')
   @ApiResponse({ type: CorEntity, status: 200 })
   async findById(@Param('id', ParseIntPipe) id: number): Promise<CorEntity> {
-    return this.colorService.findById(id);
+    return this.service.findById(id);
   }
 
   @Put(':id')
   @ApiResponse({ type: CorEntity, status: 200 })
   async update(@Param('id', ParseIntPipe) id: number, @Body() updateColorDto: UpdateCorDto): Promise<CorEntity> {
-    return this.colorService.update(id, updateColorDto);
+    return this.service.update(id, updateColorDto);
   }
 
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.colorService.remove(id);
+    return this.service.remove(id);
   }
 }

@@ -8,8 +8,8 @@ import { CreateMarcaDto } from './dto/create-marca.dto';
 import { UpdateMarcaDto } from './dto/update-marca.dto';
 import { MarcaEntity } from './entities/marca.entity';
 
-@ApiTags('Brands')
-@Controller('brands')
+@ApiTags('Marcas')
+@Controller('marcas')
 @ApiComponent('PRDFM006', 'Manutenção de marca do produto')
 export class MarcaController {
   constructor(private readonly service: MarcaService) {}
@@ -23,10 +23,10 @@ export class MarcaController {
   @Get()
   @IsPublic()
   @ApiResponse({ status: 200, type: [MarcaEntity] })
-  @ApiQuery({ name: 'name', required: false })
-  @ApiQuery({ name: 'active', required: false, type: Boolean })
-  async find(@Query('name') name?: string, @Query('active') active?: unknown): Promise<MarcaEntity[]> {
-    return this.service.find(name, active);
+  @ApiQuery({ name: 'nome', required: false })
+  @ApiQuery({ name: 'inativa', required: false, type: Boolean })
+  async find(@Query('nome') nome?: string, @Query('inativa') inativa?: unknown): Promise<MarcaEntity[]> {
+    return this.service.find(nome, inativa);
   }
 
   @Get(':id')

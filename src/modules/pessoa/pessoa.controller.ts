@@ -12,6 +12,7 @@ import { IsEmpresaAuth } from 'src/decorators/is-empresa-auth.decorator';
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { LiberarEmpresaAcessoDto } from './dto/liberar-empresa-acesso.dto';
+import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 
 @ApiTags('Pessoas')
 @Controller('pessoas')
@@ -54,7 +55,7 @@ export class PessoaController {
 
   @Put(':id')
   @ApiResponse({ status: 200, type: PessoaEntity })
-  async update(@Param('id', ParseIntPipe) id: number, @Body() updatePessoaDto: CreatePessoaDto): Promise<PessoaEntity> {
+  async update(@Param('id', ParseIntPipe) id: number, @Body() updatePessoaDto: UpdatePessoaDto): Promise<PessoaEntity> {
     return this.service.update(id, updatePessoaDto);
   }
 

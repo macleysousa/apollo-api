@@ -1,13 +1,14 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { ApiComponent } from '../componente/decorator/componente.decorator';
 import { ComponenteGrupoService } from './componente-grupo.service';
 import { CreateComponenteGrupoDto } from './dto/criar-componente-grupo.dto';
 import { UpdateComponentGroupDto } from './dto/atualizar-componente-grupo.dto';
 import { ComponenteGrupoEntity } from './entities/componente-grupo.entity';
 
-@ApiTags('Component Groups')
-@Controller('component/groups')
+@ApiTags('Componentes Grupos')
+@Controller('componentes/grupos')
 @ApiBearerAuth()
 @ApiComponent('ADMFM002', 'Manutenção do grupo de acesso')
 export class ComponenteGrupoController {

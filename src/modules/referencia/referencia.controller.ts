@@ -7,10 +7,10 @@ import { ApiComponent } from '../componente/decorator/componente.decorator';
 import { ReferenciaEntity } from './entities/referencia.entity';
 import { ParseIntPipe } from '@nestjs/common/pipes';
 
-@ApiTags('References')
-@Controller('references')
+@ApiTags('Referências')
+@Controller('referencias')
 @ApiBearerAuth()
-@ApiComponent('PRDFM003', 'Manutenção de referencia')
+@ApiComponent('PRDFM003', 'Manutenção de referência')
 export class ReferenciaController {
   constructor(private readonly referenceService: ReferenciaService) {}
 
@@ -22,10 +22,10 @@ export class ReferenciaController {
 
   @Get()
   @ApiResponse({ type: [ReferenciaEntity], status: 200 })
-  @ApiQuery({ name: 'name', required: false })
-  @ApiQuery({ name: 'externalId', required: false })
-  async find(@Query('name') name?: string, @Query('externalId') externalId?: string): Promise<ReferenciaEntity[]> {
-    return this.referenceService.find(name, externalId);
+  @ApiQuery({ name: 'nome', required: false })
+  @ApiQuery({ name: 'idExterno', required: false })
+  async find(@Query('nome') nome?: string, @Query('idExterno') idExterno?: string): Promise<ReferenciaEntity[]> {
+    return this.referenceService.find(nome, idExterno);
   }
 
   @Get(':id')

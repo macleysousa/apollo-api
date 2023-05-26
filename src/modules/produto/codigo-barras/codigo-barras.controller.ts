@@ -6,8 +6,8 @@ import { ApiComponent } from 'src/modules/componente/decorator/componente.decora
 import { CodigoBarrasService } from './codigo-barras.service';
 import { CreateCodigoBarrasDto } from './dto/create-codigo-barras.dto';
 
-@ApiTags('Products')
-@Controller('products/:id/barcodes')
+@ApiTags('Produtos')
+@Controller('produtos/:id/codigo-barras')
 @ApiBearerAuth()
 @ApiComponent('PRDFM009', 'Manutenção de codigo de barras')
 export class CodigoBarrasController {

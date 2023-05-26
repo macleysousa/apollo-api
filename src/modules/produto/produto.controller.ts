@@ -11,8 +11,8 @@ import { ProdutoEntity } from './entities/produto.entity';
 import { ApiComponent } from '../componente/decorator/componente.decorator';
 import { IsPublic } from 'src/decorators/is-public.decorator';
 
-@ApiTags('Products')
-@Controller('products')
+@ApiTags('Produtos')
+@Controller('produtos')
 @ApiBearerAuth()
 @ApiComponent('PRDFM008', 'Manutenção de produto')
 export class ProdutoController {

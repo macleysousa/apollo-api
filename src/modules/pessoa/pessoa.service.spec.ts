@@ -1,14 +1,15 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ILike, IsNull, Not, Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { ILike, IsNull, Not, Repository } from 'typeorm';
 
 import { pessoaFakeRepository } from 'src/base-fake/pessoa';
 
-import { PessoaService } from './pessoa.service';
-import { PessoaEntity } from './entities/pessoa.entity';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
+import { UpdatePessoaDto } from './dto/update-pessoa.dto';
+import { PessoaEntity } from './entities/pessoa.entity';
 import { PessoaTipo } from './enum/pessoa-tipo.enum';
+import { PessoaService } from './pessoa.service';
 
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({
@@ -178,7 +179,7 @@ describe('PessoaService', () => {
   describe('update', () => {
     it('should update a PessoaEntity and return it', async () => {
       const id = 1;
-      const updatePessoaDto = { nome: 'John Doe' };
+      const updatePessoaDto: UpdatePessoaDto = { nome: 'John Doe' };
       const pessoa = new PessoaEntity();
       jest.spyOn(repository, 'update').mockResolvedValueOnce(undefined);
       jest.spyOn(service, 'findById').mockResolvedValueOnce(pessoa);

@@ -89,7 +89,7 @@ describe('UserService', () => {
       expect(userRepository.createQueryBuilder().where).toHaveBeenCalledTimes(1);
       expect(userRepository.createQueryBuilder().where).toHaveBeenCalledWith({ id: Not(IsNull()) });
       expect(userRepository.createQueryBuilder().andWhere).toHaveBeenCalledTimes(1);
-      expect(userRepository.createQueryBuilder().andWhere).toHaveBeenCalledWith({ nome: ILike(`%${nome ?? ''}%`) });
+      expect(userRepository.createQueryBuilder().andWhere).toHaveBeenCalledWith({ nome: ILike(`%${nome}%`) });
       expect(response).toEqual(userFakeRepository.find());
     });
   });

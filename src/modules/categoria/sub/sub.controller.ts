@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
 import { IsPublic } from 'src/decorators/is-public.decorator';
 
@@ -8,8 +9,8 @@ import { CreateSubCategoriaDto } from './dto/create-sub.dto';
 import { UpdateSubCategoriaDto } from './dto/update-sub.dto';
 import { SubCategoriaEntity } from './entities/sub.entity';
 
-@ApiTags('Categories')
-@Controller('categories/:id/sub')
+@ApiTags('Categorias')
+@Controller('categorias/:id/sub')
 @ApiBearerAuth()
 @ApiComponent('PRDFM005', 'Manutenção da sub-categoria do produto')
 export class SubCategoriaController {

@@ -24,7 +24,7 @@ export class UsuarioService {
     const queryBuilder = this.userRepository.createQueryBuilder('c');
     queryBuilder.where({ id: Not(IsNull()) });
     if (nome) {
-      queryBuilder.andWhere({ nome: ILike(`%${nome ?? ''}%`) });
+      queryBuilder.andWhere({ nome: ILike(`%${nome}%`) });
     }
     return queryBuilder.getMany();
   }
