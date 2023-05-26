@@ -1,101 +1,70 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreateTablePessoas1685038205568 implements MigrationInterface {
+export class CreateTablePessoasEndereco1685119483944 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'pessoas',
+        name: 'pessoas_enderecos',
         columns: [
           {
-            name: 'id',
+            name: 'pessoaId',
             type: 'int',
             isPrimary: true,
-            isGenerated: true,
-            generationStrategy: 'increment',
           },
           {
-            name: 'nome',
-            type: 'varchar',
-            length: '255',
-            isNullable: true,
-          },
-          {
-            name: 'tipo',
-            type: 'varchar',
-            length: '255',
-            isNullable: true,
-          },
-          {
-            name: 'documento',
-            type: 'varchar',
-            length: '255',
-            isNullable: true,
-          },
-          {
-            name: 'ufInscricaoEstadual',
-            type: 'varchar',
-            length: '255',
-            isNullable: true,
-          },
-          {
-            name: 'inscricaoEstadual',
-            type: 'varchar',
-            length: '255',
-            isNullable: true,
-          },
-          {
-            name: 'nascimento',
-            type: 'date',
-            isNullable: true,
-          },
-          {
-            name: 'email',
-            type: 'varchar',
-            length: '255',
-            isNullable: true,
-          },
-          {
-            name: 'tipoContato',
-            type: 'varchar',
-            length: '255',
-            isNullable: true,
-          },
-          {
-            name: 'contato',
-            type: 'varchar',
-            length: '255',
-            isNullable: true,
-          },
-          {
-            name: 'cliente',
-            type: 'boolean',
-            default: true,
-          },
-          {
-            name: 'fornecedor',
-            type: 'boolean',
-            default: false,
-          },
-          {
-            name: 'funcionario',
-            type: 'boolean',
-            default: false,
-          },
-          {
-            name: 'bloqueado',
-            type: 'boolean',
-            default: false,
-          },
-          {
-            name: 'empresaCadastro',
-            type: 'int',
-            isNullable: false,
-          },
-          {
-            name: 'empresasAcesso',
+            name: 'tipoEndereco',
             type: 'varchar',
             length: '255',
             isNullable: false,
+          },
+          {
+            name: 'cep',
+            type: 'varchar',
+            length: '255',
+            isNullable: true,
+          },
+          {
+            name: 'logradouro',
+            type: 'varchar',
+            length: '255',
+            isNullable: true,
+          },
+          {
+            name: 'numero',
+            type: 'varchar',
+            length: '255',
+            isNullable: true,
+          },
+          {
+            name: 'complemento',
+            type: 'varchar',
+            length: '255',
+            isNullable: true,
+          },
+          {
+            name: 'bairro',
+            type: 'varchar',
+            length: '255',
+            isNullable: true,
+          },
+          {
+            name: 'municipio',
+            type: 'varchar',
+            length: '255',
+            isNullable: true,
+          },
+          {
+            name: 'uf',
+            type: 'varchar',
+            length: '255',
+            isNullable: true,
+          },
+          {
+            name: 'pais',
+            type: 'varchar',
+            length: '255',
+            default: '"Brasil"',
+            isNullable: true,
           },
           {
             name: 'criadoEm',
@@ -109,18 +78,18 @@ export class CreateTablePessoas1685038205568 implements MigrationInterface {
           },
         ],
         foreignKeys: [
-          new TableForeignKey({
-            columnNames: ['empresaCadastro'],
-            referencedTableName: 'empresas',
+          {
+            referencedTableName: 'pessoas',
             referencedColumnNames: ['id'],
+            columnNames: ['pessoaId'],
             onDelete: 'CASCADE',
-          }),
+          },
         ],
       })
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('pessoas');
+    await queryRunner.dropTable('pessoas_enderecos');
   }
 }

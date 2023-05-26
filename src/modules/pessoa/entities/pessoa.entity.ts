@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 
 import { PessoaTipo } from '../enum/pessoa-tipo.enum';
-import { Transform } from 'class-transformer';
+import { ContatoTipo } from '../enum/contato-tipo.enum';
 
 @Entity({ name: 'pessoas' })
 export class PessoaEntity extends BaseEntity {
@@ -13,47 +14,59 @@ export class PessoaEntity extends BaseEntity {
   id: number;
 
   @ApiProperty()
-  @Column()
+  @Column({ nullable: true })
   nome: string;
 
   @ApiProperty({ enum: PessoaTipo })
-  @Column()
+  @Column({ nullable: false })
   tipo: PessoaTipo;
 
   @ApiProperty()
-  @Column()
+  @Column({ nullable: true })
   documento: string;
 
   @ApiProperty()
-  @Column()
+  @Column({ nullable: true })
   ufInscricaoEstadual: string;
 
   @ApiProperty()
-  @Column()
+  @Column({ nullable: true })
   inscricaoEstadual: string;
 
   @ApiProperty({ type: 'string', format: 'date' })
-  @Column()
+  @Column({ nullable: true })
   nascimento: Date;
 
+  @ApiProperty()
+  @Column({ nullable: true })
+  email: string;
+
+  @ApiProperty({ enum: ContatoTipo })
+  @Column({ nullable: true })
+  tipoContato: ContatoTipo;
+
+  @ApiProperty()
+  @Column({ nullable: true })
+  contato: string;
+
   @ApiProperty({ default: true })
-  @Column()
+  @Column({ nullable: true })
   cliente: boolean;
 
   @ApiProperty()
-  @Column()
+  @Column({ nullable: true })
   fornecedor: boolean;
 
   @ApiProperty()
-  @Column()
+  @Column({ nullable: true })
   funcionario: boolean;
 
   @ApiProperty({ default: false })
-  @Column()
+  @Column({ nullable: true })
   bloqueado: boolean;
 
   @ApiProperty()
-  @Column()
+  @Column({ nullable: true })
   empresaCadastro: number;
 
   @ApiProperty({ type: [Number] })

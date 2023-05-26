@@ -6,6 +6,7 @@ import { IsBetween } from 'src/commons/validations/is-between.validation';
 
 import { PessoaTipo } from '../enum/pessoa-tipo.enum';
 import { IsDocumentoUnique } from '../validation/is-documento-unique.validation';
+import { ContatoTipo } from '../enum/contato-tipo.enum';
 
 export class CreatePessoaDto {
   @ApiProperty({ required: false })
@@ -40,6 +41,19 @@ export class CreatePessoaDto {
   @ApiProperty({ type: 'string', format: 'date', required: false })
   @IsOptional()
   nacimento?: Date;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  email?: string;
+
+  @ApiProperty({ required: false, enum: ContatoTipo })
+  @IsOptional()
+  @IsEnum(PessoaTipo)
+  tipoContato?: ContatoTipo;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  contato?: string;
 
   @ApiProperty({ default: true, required: false })
   @IsOptional()
