@@ -21,6 +21,7 @@ import { MarcaModule } from './modules/marca/marca.module';
 import { ProdutoModule } from './modules/produto/produto.module';
 import { PessoaModule } from './modules/pessoa/pessoa.module';
 import { EmpresaAuthGuard } from './guards/empresa-auth.guard';
+import { VendedorModule } from './modules/vendedor/vendedor.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { EmpresaAuthGuard } from './guards/empresa-auth.guard';
     CategoriaModule.forRoot(),
     ProdutoModule.forRoot(),
     PessoaModule,
+    VendedorModule,
   ],
   controllers: [],
   providers: [

@@ -1,32 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } from 'class-validator';
 import { ValidatorConstraint, ValidationArguments } from 'class-validator';
-import { EmpresaService } from 'src/modules/empresa/empresa.service';
+import { MarcaService } from 'src/modules/marca/marca.service';
 
 @ValidatorConstraint({ async: true })
 @Injectable()
-export class BranchConstraint implements ValidatorConstraintInterface {
-  constructor(private readonly branchService: EmpresaService) {}
+export class MarcaConstraint implements ValidatorConstraintInterface {
+  constructor(private readonly service: MarcaService) {}
 
   async validate(value: number, args?: ValidationArguments): Promise<boolean> {
-    const branch = await this.branchService.findById(value);
-
-    return branch ? true : false;
+    return (await this.service.findById(value)) ? true : false;
   }
 
   defaultMessage(_validationArguments?: ValidationArguments): string {
-    return 'Empresa não encontrada';
+    return 'brand is not valid';
   }
 }
 
-export const IsBranch = (validationOptions?: ValidationOptions) => {
-  return (object: Object, propertyName: string) => {
+export const IsMarca = (validationOptions?: ValidationOptions) => {
+  return (object: unknown, propertyName: string) => {
     registerDecorator({
       target: object.constructor,
       propertyName,
       options: validationOptions,
       constraints: [object],
-      validator: BranchConstraint,
+      validator: MarcaConstraint,
     });
   };
 };

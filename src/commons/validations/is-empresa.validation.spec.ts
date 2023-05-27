@@ -2,16 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { branchFakeRepository } from 'src/base-fake/branch';
 import { EmpresaService } from 'src/modules/empresa/empresa.service';
 
-import { BranchConstraint } from './is-branch.validation';
+import { EmpresaConstraint } from './is-empresa.validation';
 
 describe('Branch validation', () => {
-  let branchConstraint: BranchConstraint;
+  let branchConstraint: EmpresaConstraint;
   let branchService: EmpresaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        BranchConstraint,
+        EmpresaConstraint,
         {
           provide: EmpresaService,
           useValue: {
@@ -20,7 +20,7 @@ describe('Branch validation', () => {
         },
       ],
     }).compile();
-    branchConstraint = module.get<BranchConstraint>(BranchConstraint);
+    branchConstraint = module.get<EmpresaConstraint>(EmpresaConstraint);
     branchService = module.get<EmpresaService>(EmpresaService);
   });
 

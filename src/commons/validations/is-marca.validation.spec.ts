@@ -2,16 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { brandFakeRepository } from 'src/base-fake/brand';
 import { MarcaService } from 'src/modules/marca/marca.service';
 
-import { BrandConstraint } from './is-brand.validation';
+import { MarcaConstraint } from './is-marca.validation';
 
 describe('Brand validation', () => {
-  let brandConstraint: BrandConstraint;
+  let brandConstraint: MarcaConstraint;
   let brandService: MarcaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        BrandConstraint,
+        MarcaConstraint,
         {
           provide: MarcaService,
           useValue: {
@@ -20,7 +20,7 @@ describe('Brand validation', () => {
         },
       ],
     }).compile();
-    brandConstraint = module.get<BrandConstraint>(BrandConstraint);
+    brandConstraint = module.get<MarcaConstraint>(MarcaConstraint);
     brandService = module.get<MarcaService>(MarcaService);
   });
 
