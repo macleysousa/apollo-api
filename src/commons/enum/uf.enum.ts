@@ -1,5 +1,5 @@
 export enum UF {
-  NotInformed = '',
+  NaoInformado = '',
   AC = 'AC',
   AL = 'AL',
   AM = 'AM',

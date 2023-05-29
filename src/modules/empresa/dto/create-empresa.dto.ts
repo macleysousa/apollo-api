@@ -25,7 +25,7 @@ export class CreateEmpresaDto {
   @IsNotEmpty()
   nomeFantasia: string;
 
-  @ApiProperty({ enum: UF, default: UF.NotInformed, required: false })
+  @ApiProperty({ enum: UF, default: UF.NaoInformado, required: false })
   @IsOptional()
   uf?: UF;
 
@@ -45,7 +45,7 @@ export class CreateEmpresaDto {
   @IsOptional()
   regime?: TaxRegime;
 
-  @ApiProperty({ enum: SubTributary, default: SubTributary.NotInformed })
+  @ApiProperty({ enum: SubTributary, default: SubTributary.NaoInformado })
   @IsOptional()
   @IsEnum(SubTributary)
   substituicaoTributaria?: SubTributary;

@@ -27,7 +27,7 @@ export class EmpresaEntity extends BaseEntity {
   @Column()
   ativa: boolean;
 
-  @ApiProperty({ enum: UF, default: UF.NotInformed })
+  @ApiProperty({ enum: UF, default: UF.NaoInformado })
   @Column()
   uf: UF;
 
@@ -47,7 +47,7 @@ export class EmpresaEntity extends BaseEntity {
   @Column()
   regime: TaxRegime;
 
-  @ApiProperty({ enum: SubTributary, default: SubTributary.NotInformed })
+  @ApiProperty({ enum: SubTributary, default: SubTributary.NaoInformado })
   @Column()
   substituicaoTributaria: SubTributary;
 
@@ -66,6 +66,10 @@ export class EmpresaEntity extends BaseEntity {
   @ApiProperty()
   @Column()
   email: string;
+
+  @ApiProperty()
+  @Column({ type: 'date' })
+  data: Date;
 
   constructor(partial?: Partial<EmpresaEntity>) {
     super();

@@ -84,6 +84,11 @@ export class createTableBranches1671815503457 implements MigrationInterface {
             isNullable: true,
           },
           {
+            name: 'data',
+            type: 'date',
+            isNullable: true,
+          },
+          {
             name: 'criadoEm',
             type: 'timestamp',
             default: 'now()',
