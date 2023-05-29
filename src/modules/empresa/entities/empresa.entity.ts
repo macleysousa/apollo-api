@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
 import { BaseEntity } from 'src/commons/base.entity';
 import { SubTributary } from 'src/commons/enum/sub-tributary';
 import { TaxRegime } from 'src/commons/enum/tax-regime';
 import { UF } from 'src/commons/enum/uf.enum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'empresas' })
 export class EmpresaEntity extends BaseEntity {

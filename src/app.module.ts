@@ -22,6 +22,7 @@ import { ProdutoModule } from './modules/produto/produto.module';
 import { PessoaModule } from './modules/pessoa/pessoa.module';
 import { EmpresaAuthGuard } from './guards/empresa-auth.guard';
 import { VendedorModule } from './modules/vendedor/vendedor.module';
+import { ParametroModule } from './modules/parametro/parametro.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { VendedorModule } from './modules/vendedor/vendedor.module';
     UsuarioModule.forRoot(),
     ComponentsModule.forRoot(),
     ComponentGroupModule.forRoot(),
+    ParametroModule.forRoot(),
     EmpresaModule.forRoot(),
     MarcaModule.forRoot(),
     CorModule.forRoot(),

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
+
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
 import { EmpresaEntity } from './entities/empresa.entity';
@@ -9,18 +10,18 @@ import { EmpresaEntity } from './entities/empresa.entity';
 export class EmpresaService {
   constructor(
     @InjectRepository(EmpresaEntity)
-    private branchRepository: Repository<EmpresaEntity>
+    private repository: Repository<EmpresaEntity>
   ) {}
 
   async create(createBranchDto: CreateEmpresaDto): Promise<EmpresaEntity> {
-    const branch = await this.branchRepository.save(createBranchDto);
+    const branch = await this.repository.save(createBranchDto);
 
     return this.findById(branch.id);
   }
 
   /** filter by cnpj or name */
   async find(filter?: string): Promise<EmpresaEntity[]> {
-    return this.branchRepository.find({
+    return this.repository.find({
       where: {
         cnpj: ILike(`%${filter ?? ''}%`),
         nome: ILike(`%${filter ?? ''}%`),
@@ -29,16 +30,16 @@ export class EmpresaService {
   }
 
   async findById(id: number): Promise<EmpresaEntity> {
-    return this.branchRepository.findOne({ where: { id } });
+    return this.repository.findOne({ where: { id } });
   }
 
   async update(id: number, updateBranchDto: UpdateEmpresaDto): Promise<EmpresaEntity> {
-    await this.branchRepository.update(id, updateBranchDto);
+    await this.repository.update(id, updateBranchDto);
 
     return this.findById(id);
   }
 
   async remove(id: number): Promise<void> {
-    await this.branchRepository.delete(id);
+    await this.repository.delete(id);
   }
 }
