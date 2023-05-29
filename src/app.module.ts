@@ -23,6 +23,7 @@ import { PessoaModule } from './modules/pessoa/pessoa.module';
 import { EmpresaAuthGuard } from './guards/empresa-auth.guard';
 import { VendedorModule } from './modules/vendedor/vendedor.module';
 import { ParametroModule } from './modules/parametro/parametro.module';
+import { CaixaModule } from './modules/caixa/caixa.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ParametroModule } from './modules/parametro/parametro.module';
     ComponentGroupModule.forRoot(),
     ParametroModule.forRoot(),
     EmpresaModule.forRoot(),
+    CaixaModule.forRoot(),
     MarcaModule.forRoot(),
     CorModule.forRoot(),
     TamanhoModule.forRoot(),

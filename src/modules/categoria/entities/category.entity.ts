@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BaseEntity } from 'src/commons/base.entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
+import { BaseEntity } from 'src/commons/base.entity';
 
 @Entity({ name: 'categorias' })
 export class CategoriaEntity extends BaseEntity {
