@@ -2,6 +2,8 @@ import { UsuarioAcessoEntity } from 'src/modules/usuario/entities/usuario-acesso
 import { UsuarioEntity } from 'src/modules/usuario/entities/usuario.entity';
 import { Role } from 'src/modules/usuario/enums/usuario-tipo.enum';
 import { UsuarioSituacao } from 'src/modules/usuario/enums/usuario-situacao.enum';
+import { UsuarioTerminalEntity } from 'src/modules/usuario/terminal/entities/terminal.entity';
+import { branchFakeRepository } from './branch';
 
 class UserFakeRepository {
   find(): UsuarioEntity[] {
@@ -42,6 +44,16 @@ class UserFakeRepository {
     });
 
     return [access];
+  }
+
+  findOneTerminal(): UsuarioTerminalEntity {
+    const terminal = new UsuarioTerminalEntity({
+      usuarioId: 1,
+      empresaId: 1,
+      terminalId: 1,
+      terminal: branchFakeRepository.findOneTerminal(),
+    });
+    return terminal;
   }
 }
 
