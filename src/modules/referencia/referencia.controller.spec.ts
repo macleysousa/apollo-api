@@ -38,7 +38,7 @@ describe('ReferenceController', () => {
   describe('/ (POST)', () => {
     it('should create a reference', async () => {
       // Arrange
-      const reference: CreateReferenciaDto = { id: 1, nome: 'test', idExterno: '0001' };
+      const reference: CreateReferenciaDto = { id: 1, nome: 'test', idExterno: '0001', marcaId: 1 };
 
       // Act
       const result = await controller.create(reference);

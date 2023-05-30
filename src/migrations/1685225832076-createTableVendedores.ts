@@ -57,12 +57,14 @@ export class CreateTableVendedores1685225832076 implements MigrationInterface {
             referencedTableName: 'empresas',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
           },
           {
             columnNames: ['pessoaId'],
             referencedTableName: 'pessoas',
             referencedColumnNames: ['id'],
             onDelete: 'SET NULL',
+            onUpdate: 'CASCADE',
           },
         ],
       })

@@ -43,6 +43,10 @@ export class ReferenciaEntity extends BaseEntity {
   @JoinColumn({ name: 'subCategoryId' })
   subCategory: SubCategoriaEntity;
 
+  @ApiProperty()
+  @Column()
+  marcaId: number;
+
   constructor(partial?: Partial<ReferenciaEntity>) {
     super();
     Object.assign(this, partial);

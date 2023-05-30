@@ -114,6 +114,7 @@ export class CreateTablePessoas1685038205568 implements MigrationInterface {
             referencedTableName: 'empresas',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
           }),
         ],
       })

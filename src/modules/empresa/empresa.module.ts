@@ -4,9 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EmpresaService } from './empresa.service';
 import { EmpresaController } from './empresa.controller';
 import { EmpresaEntity } from './entities/empresa.entity';
+import { TerminalModule } from './terminal/terminal.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EmpresaEntity])],
+  imports: [TypeOrmModule.forFeature([EmpresaEntity]), TerminalModule],
   controllers: [EmpresaController],
   providers: [EmpresaService],
   exports: [EmpresaService],

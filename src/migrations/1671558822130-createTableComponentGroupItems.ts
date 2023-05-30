@@ -41,12 +41,14 @@ export class createTableComponentGroupItems1671558822130 implements MigrationInt
             referencedTableName: 'componentes',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
           }),
           new TableForeignKey({
             columnNames: ['grupoId'],
             referencedTableName: 'componentes_grupos',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
           }),
         ],
       })

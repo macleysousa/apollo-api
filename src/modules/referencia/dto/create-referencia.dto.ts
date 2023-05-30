@@ -1,8 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
+
 import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
 import { IsSubCategory } from 'src/commons/validations/is-category-sub.validation';
 import { IsCategory } from 'src/commons/validations/is-category.validation';
+import { IsMarca } from 'src/commons/validations/is-marca.validation';
 
 export class CreateReferenciaDto {
   @ApiProperty()
@@ -30,4 +32,9 @@ export class CreateReferenciaDto {
   @IsOptional()
   @IsSubCategory()
   subCategoriaId?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsMarca()
+  marcaId: number;
 }

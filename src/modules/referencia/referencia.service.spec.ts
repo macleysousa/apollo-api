@@ -42,7 +42,7 @@ describe('ReferenceService', () => {
   describe('create', () => {
     it('should create a reference', async () => {
       // Arrange
-      const reference: CreateReferenciaDto = { id: 1, nome: 'reference', idExterno: '0001' };
+      const reference: CreateReferenciaDto = { id: 1, nome: 'reference', idExterno: '0001', marcaId: 1 };
 
       // Act
       const result = await service.create(reference);

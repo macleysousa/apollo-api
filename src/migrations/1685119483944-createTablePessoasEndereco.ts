@@ -83,6 +83,7 @@ export class CreateTablePessoasEndereco1685119483944 implements MigrationInterfa
             referencedColumnNames: ['id'],
             columnNames: ['pessoaId'],
             onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
           },
         ],
       })

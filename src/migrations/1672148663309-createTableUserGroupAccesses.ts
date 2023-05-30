@@ -47,18 +47,21 @@ export class createTableUserGroupAccesses1672148663309 implements MigrationInter
             referencedColumnNames: ['id'],
             referencedTableName: 'usuarios',
             onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
           }),
           new TableForeignKey({
             columnNames: ['empresaId'],
-            referencedColumnNames: ['id'],
             referencedTableName: 'empresas',
+            referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
           }),
           new TableForeignKey({
             columnNames: ['grupoId'],
             referencedColumnNames: ['id'],
             referencedTableName: 'componentes_grupos',
             onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
           }),
           new TableForeignKey({
             columnNames: ['operadorId'],
