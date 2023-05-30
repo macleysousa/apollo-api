@@ -29,6 +29,7 @@ class UserFakeRepository {
     user.situacao = UsuarioSituacao.ativo;
     user.criadoEm = new Date('2022-10-15T11:13:18.000Z');
     user.atualizadoEm = new Date('2022-10-15T11:13:18.000Z');
+    user.terminais = [this.findOneTerminal().terminal];
     return user;
   }
 

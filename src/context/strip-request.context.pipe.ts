@@ -1,7 +1,7 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
 import { omit } from 'lodash';
 
-import { REQUEST_CONTEXT } from '../interceptors/inject-request.interceptor';
+import { REQUEST_CONTEXT } from '../commons/interceptors/inject-request.interceptor';
 
 @Injectable()
 export class StripRequestContextPipe implements PipeTransform {

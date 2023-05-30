@@ -1,10 +1,11 @@
 import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { Observable } from 'rxjs';
+import { instanceToPlain } from 'class-transformer';
 import { TenantRequest } from 'src';
-import { AuthService } from '../modules/auth/auth.service';
+
 import { IS_PUBLIC_KEY } from 'src/decorators/is-public.decorator';
+import { AuthService } from '../modules/auth/auth.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -41,8 +42,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const { usuario, empresa } = await this.authService.validateToken(token);
     if (!usuario) throw new UnauthorizedException('Invalid token');
 
-    request.usuario = usuario;
-    request.empresa = empresa;
+    request.usuario = instanceToPlain(usuario);
+    request.empresa = instanceToPlain(empresa);
 
     return true;
   }

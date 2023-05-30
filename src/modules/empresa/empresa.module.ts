@@ -1,15 +1,17 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { EmpresaService } from './empresa.service';
+import { EmpresaConstraint } from 'src/commons/validations/is-empresa.validation';
+
 import { EmpresaController } from './empresa.controller';
+import { EmpresaService } from './empresa.service';
 import { EmpresaEntity } from './entities/empresa.entity';
 import { TerminalModule } from './terminal/terminal.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([EmpresaEntity]), TerminalModule],
   controllers: [EmpresaController],
-  providers: [EmpresaService],
+  providers: [EmpresaService, EmpresaConstraint],
   exports: [EmpresaService],
 })
 export class EmpresaModule {

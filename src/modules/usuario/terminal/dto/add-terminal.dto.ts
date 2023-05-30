@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
+
 import { IsEmpresa } from 'src/commons/validations/is-empresa.validation';
+import { IsTerminal } from 'src/commons/validations/is-terminal.validation';
 
 export class AddUsuarioTerminalDto {
   @ApiProperty()
@@ -10,6 +12,6 @@ export class AddUsuarioTerminalDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsInt()
+  @IsTerminal({ validarUsuario: false })
   terminalId: number;
 }

@@ -24,10 +24,12 @@ import { EmpresaAuthGuard } from './guards/empresa-auth.guard';
 import { VendedorModule } from './modules/vendedor/vendedor.module';
 import { ParametroModule } from './modules/parametro/parametro.module';
 import { CaixaModule } from './modules/caixa/caixa.module';
+import { ContextModule } from './context/context.module';
 
 @Module({
   imports: [
     AuthModule,
+    ContextModule.forRoot(),
     TypeOrmModule.forRoot({ ...ormConfig }),
     UsuarioModule.forRoot(),
     ComponentsModule.forRoot(),
