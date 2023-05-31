@@ -25,6 +25,7 @@ import { VendedorModule } from './modules/vendedor/vendedor.module';
 import { ParametroModule } from './modules/parametro/parametro.module';
 import { CaixaModule } from './modules/caixa/caixa.module';
 import { ContextModule } from './context/context.module';
+import { FormaDePagamentoModule } from './modules/forma-de-pagamento/forma-de-pagamento.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { ContextModule } from './context/context.module';
     ProdutoModule.forRoot(),
     PessoaModule,
     VendedorModule,
+    FormaDePagamentoModule,
   ],
   controllers: [],
   providers: [

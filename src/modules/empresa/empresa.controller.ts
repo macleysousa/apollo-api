@@ -24,7 +24,7 @@ export class EmpresaController {
   }
 
   @Get()
-  @ApiResponse({ type: EmpresaEntity, isArray: true, status: 200 })
+  @ApiResponse({ type: [EmpresaEntity], status: 200 })
   @ApiQuery({ name: 'filter', required: false, description: 'filter by cnpj or name' })
   async find(@Query('filter') filter: string): Promise<EmpresaEntity[]> {
     return this.service.find(filter);
