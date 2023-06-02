@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { categoryFakeRepository } from 'src/base-fake/category';
 import { SubCategoriaService } from 'src/modules/categoria/sub/sub.service';
-import { SubCategoryConstraint } from './is-category-sub.validation';
+import { SubCategoriaConstraint } from './is-categoria-sub.validation';
 
 describe('SubCategoryConstraint', () => {
   let service: SubCategoriaService;
-  let constraint: SubCategoryConstraint;
+  let constraint: SubCategoriaConstraint;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        SubCategoryConstraint,
+        SubCategoriaConstraint,
         {
           provide: SubCategoriaService,
           useValue: {
@@ -19,7 +19,7 @@ describe('SubCategoryConstraint', () => {
         },
       ],
     }).compile();
-    constraint = module.get<SubCategoryConstraint>(SubCategoryConstraint);
+    constraint = module.get<SubCategoriaConstraint>(SubCategoriaConstraint);
     service = module.get<SubCategoriaService>(SubCategoriaService);
   });
 

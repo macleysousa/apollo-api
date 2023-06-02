@@ -14,15 +14,8 @@ export class createTableProducts1674743625382 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'nome',
-            type: 'varchar',
-            length: '255',
-            isNullable: false,
-          },
-          {
-            name: 'descricao',
-            type: 'varchar',
-            length: '255',
+            name: 'referenciaId',
+            type: 'int',
             isNullable: true,
           },
           {
@@ -42,11 +35,6 @@ export class createTableProducts1674743625382 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'referenciaId',
-            type: 'int',
-            isNullable: true,
-          },
-          {
             name: 'criadoEm',
             type: 'timestamp',
             default: 'now()',
@@ -59,6 +47,13 @@ export class createTableProducts1674743625382 implements MigrationInterface {
         ],
         foreignKeys: [
           new TableForeignKey({
+            columnNames: ['referenciaId'],
+            referencedTableName: 'referencias',
+            referencedColumnNames: ['id'],
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
+          }),
+          new TableForeignKey({
             columnNames: ['corId'],
             referencedTableName: 'cores',
             referencedColumnNames: ['id'],
@@ -68,13 +63,6 @@ export class createTableProducts1674743625382 implements MigrationInterface {
           new TableForeignKey({
             columnNames: ['tamanhoId'],
             referencedTableName: 'tamanhos',
-            referencedColumnNames: ['id'],
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE',
-          }),
-          new TableForeignKey({
-            columnNames: ['referenciaId'],
-            referencedTableName: 'referencias',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',

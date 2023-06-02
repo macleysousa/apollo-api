@@ -5,7 +5,6 @@ class ProductFakeRepository {
   find(): ProdutoEntity[] {
     const value = new ProdutoEntity({
       id: 1,
-      nome: 'P',
       idExterno: 'REF001',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
@@ -31,7 +30,6 @@ class ProductFakeRepository {
   findOne(): ProdutoEntity {
     const value = new ProdutoEntity({
       id: 1,
-      nome: 'P',
       idExterno: 'REF001',
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),

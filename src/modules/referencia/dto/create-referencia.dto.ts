@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
 import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
-import { IsSubCategory } from 'src/commons/validations/is-category-sub.validation';
-import { IsCategory } from 'src/commons/validations/is-category.validation';
+import { IsSubCategoria } from 'src/commons/validations/is-categoria-sub.validation';
+import { IsCategoria } from 'src/commons/validations/is-categoria.validation';
 import { IsMarca } from 'src/commons/validations/is-marca.validation';
 
 export class CreateReferenciaDto {
@@ -19,21 +19,21 @@ export class CreateReferenciaDto {
   @IsOptional()
   idExterno?: string;
 
-  @ApiProperty({ enum: UnidadeMedida })
+  @ApiProperty({ enum: UnidadeMedida, required: false })
   @IsOptional()
   unidadeMedida?: UnidadeMedida;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsCategory()
+  @IsCategoria()
   categoriaId?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsSubCategory()
+  @IsSubCategoria()
   subCategoriaId?: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsMarca()
   marcaId: number;

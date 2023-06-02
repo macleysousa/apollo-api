@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IsPublic } from 'src/decorators/is-public.decorator';
 import { ApiComponent } from '../componente/decorator/componente.decorator';
 
@@ -10,6 +10,7 @@ import { MarcaEntity } from './entities/marca.entity';
 
 @ApiTags('Marcas')
 @Controller('marcas')
+@ApiBearerAuth()
 @ApiComponent('PRDFM006', 'Manutenção de marca do produto')
 export class MarcaController {
   constructor(private readonly service: MarcaService) {}

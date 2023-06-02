@@ -21,7 +21,7 @@ export class createTableSizes1673454772154 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'inativa',
+            name: 'inativo',
             type: 'boolean',
             default: false,
           },

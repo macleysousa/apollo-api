@@ -1,10 +1,14 @@
 import { Controller, Get, Body } from '@nestjs/common';
-import { ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { ParametroService } from './parametro.service';
 import { ParametroEntity } from './entities/parametro.entity';
+import { ApiComponent } from '../componente/decorator/componente.decorator';
 
-@Controller('parametro')
+@ApiTags('Parâmetros')
+@Controller('parametros')
+@ApiBearerAuth()
+@ApiComponent('ADMFL001', 'Consultar de parâmetros')
 export class ParametroController {
   constructor(private readonly service: ParametroService) {}
 

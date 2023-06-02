@@ -61,7 +61,7 @@ describe('ProductService', () => {
   describe('create', () => {
     it('should create a product', async () => {
       // Arrange
-      const createDto: CreateProdutoDto = { id: 1, nome: 'test' };
+      const createDto: CreateProdutoDto = { id: 1, corId: 1 };
       jest.spyOn(service, 'findById').mockResolvedValueOnce(undefined);
 
       // Act
@@ -76,7 +76,7 @@ describe('ProductService', () => {
 
     it('should not create a product error *Product with id ${createDto.id} already exists*', () => {
       // Arrange
-      const createDto: CreateProdutoDto = { id: 1, nome: 'test' };
+      const createDto: CreateProdutoDto = { id: 1, corId: 1 };
 
       // Act
 
@@ -152,7 +152,7 @@ describe('ProductService', () => {
     it('should not update a product error *Product with id ${id} not found*', () => {
       // Arrange
       const id = 1;
-      const updateDto: UpdateProdutoDto = { nome: 'test updated' };
+      const updateDto: UpdateProdutoDto = { corId: 1 };
       jest.spyOn(service, 'findById').mockResolvedValueOnce(undefined);
 
       // Act

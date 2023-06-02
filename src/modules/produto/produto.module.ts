@@ -10,6 +10,7 @@ import { CodigoBarraseModule } from './codigo-barras/codigo-barras.module';
   imports: [CodigoBarraseModule, TypeOrmModule.forFeature([ProdutoEntity])],
   controllers: [ProdutoController],
   providers: [ProdutoService],
+  exports: [ProdutoService],
 })
 export class ProdutoModule {
   static forRoot(): DynamicModule {

@@ -2,21 +2,18 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
 import { IsColor } from 'src/commons/validations/is-color.validation';
-import { IsReference } from 'src/commons/validations/is-reference.validation';
-import { IsSize } from 'src/commons/validations/is-size.validation';
+import { IsReferencia } from 'src/commons/validations/is-referencia.validation';
+import { IsTamanho } from 'src/commons/validations/is-tamanho.validation';
 
 export class CreateProdutoDto {
   @ApiProperty({ required: false })
   @IsOptional()
   id?: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: true })
   @IsNotEmpty()
-  nome: string;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  descricao?: string;
+  @IsReferencia()
+  referenciaId?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -29,11 +26,6 @@ export class CreateProdutoDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsSize()
+  @IsTamanho()
   tamanhoId?: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsReference()
-  referenciaId?: number;
 }

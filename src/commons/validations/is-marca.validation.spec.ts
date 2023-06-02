@@ -60,7 +60,7 @@ describe('Brand validation', () => {
       const result = brandConstraint.defaultMessage();
 
       // Assert
-      expect(result).toEqual('brand is not valid');
+      expect(result).toEqual('Marca não encontrada');
     });
   });
 });

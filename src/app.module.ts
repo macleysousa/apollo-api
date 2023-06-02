@@ -26,6 +26,7 @@ import { ParametroModule } from './modules/parametro/parametro.module';
 import { CaixaModule } from './modules/caixa/caixa.module';
 import { ContextModule } from './context/context.module';
 import { FormaDePagamentoModule } from './modules/forma-de-pagamento/forma-de-pagamento.module';
+import { EstoqueModule } from './modules/estoque/estoque.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { FormaDePagamentoModule } from './modules/forma-de-pagamento/forma-de-pa
     PessoaModule,
     VendedorModule,
     FormaDePagamentoModule,
+    EstoqueModule,
   ],
   controllers: [],
   providers: [

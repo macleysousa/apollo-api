@@ -36,12 +36,12 @@ export class ReferenciaEntity extends BaseEntity {
 
   @Exclude()
   @Column()
-  subCategoryId: number;
+  subCategoriaId: number;
 
   @ApiProperty()
   @OneToOne(() => SubCategoriaEntity, (value) => value.id, { eager: true })
-  @JoinColumn({ name: 'subCategoryId' })
-  subCategory: SubCategoriaEntity;
+  @JoinColumn({ name: 'subCategoriaId' })
+  subCategoria: SubCategoriaEntity;
 
   @ApiProperty()
   @Column()

@@ -1,13 +1,16 @@
 import { Module, DynamicModule } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { ReferenciaConstraint } from 'src/commons/validations/is-referencia.validation';
+
 import { ReferenciaService } from './referencia.service';
 import { ReferenciaController } from './referencia.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ReferenciaEntity } from './entities/referencia.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ReferenciaEntity])],
   controllers: [ReferenciaController],
-  providers: [ReferenciaService],
+  providers: [ReferenciaService, ReferenciaConstraint],
   exports: [ReferenciaService],
 })
 export class ReferenciaModule {

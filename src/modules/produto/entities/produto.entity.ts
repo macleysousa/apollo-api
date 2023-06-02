@@ -1,14 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude, Transform } from 'class-transformer';
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { BaseEntity } from 'src/commons/base.entity';
 
 import { CodigoBarrasEntity } from '../codigo-barras/entities/codigo-barras.entity';
-import { Exclude, Transform } from 'class-transformer';
+
+import { BaseEntity } from 'src/commons/base.entity';
 import { CorEntity } from 'src/modules/cor/entities/cor.entity';
-import { TamanhoEntity } from 'src/modules/tamanho/entities/tamanho.entity';
-import { CategoriaEntity } from 'src/modules/categoria/entities/category.entity';
-import { SubCategoriaEntity } from 'src/modules/categoria/sub/entities/sub.entity';
 import { ReferenciaEntity } from 'src/modules/referencia/entities/referencia.entity';
+import { TamanhoEntity } from 'src/modules/tamanho/entities/tamanho.entity';
 
 @Entity({ name: 'produtos' })
 export class ProdutoEntity extends BaseEntity {
@@ -16,13 +15,14 @@ export class ProdutoEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @ApiProperty()
+  @Exclude()
   @Column()
-  nome: string;
+  referenciaId: number;
 
   @ApiProperty()
-  @Column()
-  descricao: string;
+  @OneToOne(() => ReferenciaEntity, (value) => value.id, { eager: true })
+  @JoinColumn({ name: 'referenciaId' })
+  referencia: ReferenciaEntity;
 
   @ApiProperty()
   @Column()
@@ -45,15 +45,6 @@ export class ProdutoEntity extends BaseEntity {
   @OneToOne(() => TamanhoEntity, (value) => value.id, { eager: true })
   @JoinColumn({ name: 'tamanhoId' })
   tamanho: TamanhoEntity;
-
-  @Exclude()
-  @Column()
-  referenciaId: number;
-
-  @ApiProperty()
-  @OneToOne(() => ReferenciaEntity, (value) => value.id, { eager: true })
-  @JoinColumn({ name: 'referenciaId' })
-  referencia: ReferenciaEntity;
 
   @ApiProperty({ type: [String] })
   @OneToMany(() => CodigoBarrasEntity, (value) => value.produto, { eager: true })

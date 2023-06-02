@@ -13,7 +13,7 @@ export class MarcaConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage(_validationArguments?: ValidationArguments): string {
-    return 'brand is not valid';
+    return 'Marca não encontrada';
   }
 }
 

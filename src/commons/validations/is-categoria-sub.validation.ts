@@ -1,30 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } from 'class-validator';
 import { ValidatorConstraint, ValidationArguments } from 'class-validator';
-import { TamanhoService } from 'src/modules/tamanho/tamanho.service';
+import { SubCategoriaService } from 'src/modules/categoria/sub/sub.service';
 
 @ValidatorConstraint({ async: true })
 @Injectable()
-export class SizeConstraint implements ValidatorConstraintInterface {
-  constructor(private readonly service: TamanhoService) {}
+export class SubCategoriaConstraint implements ValidatorConstraintInterface {
+  constructor(private readonly service: SubCategoriaService) {}
 
   async validate(value: number, args?: ValidationArguments): Promise<boolean> {
-    return (await this.service.findById(value)) ? true : false;
+    const { categoryId }: any = args.object;
+
+    if (!categoryId) return false;
+
+    return (await this.service.findById(categoryId, value)) ? true : false;
   }
 
   defaultMessage(_validationArguments?: ValidationArguments): string {
-    return 'size is not valid';
+    return 'category or sub category is not valid';
   }
 }
 
-export const IsSize = (validationOptions?: ValidationOptions) => {
+export const IsSubCategoria = (validationOptions?: ValidationOptions) => {
   return (object: unknown, propertyName: string) => {
     registerDecorator({
       target: object.constructor,
       propertyName,
       options: validationOptions,
       constraints: [object],
-      validator: SizeConstraint,
+      validator: SubCategoriaConstraint,
     });
   };
 };

@@ -1,14 +1,16 @@
 import { Module, DynamicModule } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CategoriaConstraint } from 'src/commons/validations/is-categoria.validation';
+
 import { CategoriaService } from './categoria.service';
 import { CategoriaController } from './categoria.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriaEntity } from './entities/category.entity';
 import { SubCategoriaModule } from './sub/sub.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CategoriaEntity]), SubCategoriaModule.forRoot()],
   controllers: [CategoriaController],
-  providers: [CategoriaService],
+  providers: [CategoriaService, CategoriaConstraint],
   exports: [CategoriaService],
 })
 export class CategoriaModule {

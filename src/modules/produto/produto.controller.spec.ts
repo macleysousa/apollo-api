@@ -39,7 +39,7 @@ describe('ProductController', () => {
   describe('/ (POST)', () => {
     it('should create a new product', async () => {
       // Arrange
-      const value: CreateProdutoDto = { nome: 'Name' };
+      const value: CreateProdutoDto = { corId: 1 };
 
       // Act
       const result = await controller.create(value);
@@ -90,7 +90,7 @@ describe('ProductController', () => {
     it('should update a product', async () => {
       // Arrange
       const id = 1;
-      const value: UpdateProdutoDto = { nome: 'Name' };
+      const value: UpdateProdutoDto = { corId: 1 };
 
       // Act
       const result = await controller.update(id, value);

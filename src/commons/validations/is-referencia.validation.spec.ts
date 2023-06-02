@@ -2,16 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { referenceFakeRepository } from 'src/base-fake/reference';
 import { ReferenciaService } from 'src/modules/referencia/referencia.service';
 
-import { ReferenceConstraint } from './is-reference.validation';
+import { ReferenciaConstraint } from './is-referencia.validation';
 
 describe('Reference validation', () => {
-  let constraint: ReferenceConstraint;
+  let constraint: ReferenciaConstraint;
   let service: ReferenciaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ReferenceConstraint,
+        ReferenciaConstraint,
         {
           provide: ReferenciaService,
           useValue: {
@@ -20,7 +20,7 @@ describe('Reference validation', () => {
         },
       ],
     }).compile();
-    constraint = module.get<ReferenceConstraint>(ReferenceConstraint);
+    constraint = module.get<ReferenciaConstraint>(ReferenciaConstraint);
     service = module.get<ReferenciaService>(ReferenciaService);
   });
 
@@ -60,7 +60,7 @@ describe('Reference validation', () => {
       const result = constraint.defaultMessage();
 
       // Assert
-      expect(result).toEqual('reference is not valid');
+      expect(result).toEqual('Referência não encontrada');
     });
   });
 });

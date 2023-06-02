@@ -2,16 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { sizeFakeRepository } from 'src/base-fake/size';
 import { TamanhoService } from 'src/modules/tamanho/tamanho.service';
 
-import { SizeConstraint } from './is-size.validation';
+import { TamanhoConstraint } from './is-tamanho.validation';
 
 describe('Size validation', () => {
-  let constraint: SizeConstraint;
+  let constraint: TamanhoConstraint;
   let service: TamanhoService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        SizeConstraint,
+        TamanhoConstraint,
         {
           provide: TamanhoService,
           useValue: {
@@ -20,7 +20,7 @@ describe('Size validation', () => {
         },
       ],
     }).compile();
-    constraint = module.get<SizeConstraint>(SizeConstraint);
+    constraint = module.get<TamanhoConstraint>(TamanhoConstraint);
     service = module.get<TamanhoService>(TamanhoService);
   });
 
