@@ -1,10 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 import { SubTributary } from 'src/commons/enum/sub-tributary';
 import { TaxRegime } from 'src/commons/enum/tax-regime';
 import { UF } from 'src/commons/enum/uf.enum';
+import { EmpresaFormaPagamentoEntity } from '../forma-de-pagamento/entities/forma-de-pagamento.entity';
+import { TerminalEntity } from '../terminal/entities/terminal.entity';
+import { FormaDePagamentoEntity } from 'src/modules/forma-de-pagamento/entities/forma-de-pagamento.entity';
+import { Transform } from 'class-transformer';
 
 @Entity({ name: 'empresas' })
 export class EmpresaEntity extends BaseEntity {
@@ -71,6 +75,15 @@ export class EmpresaEntity extends BaseEntity {
   @ApiProperty()
   @Column({ type: 'date' })
   data: Date;
+
+  @ApiProperty({ type: () => TerminalEntity })
+  @OneToMany(() => TerminalEntity, ({ empresa }) => empresa)
+  terminais: TerminalEntity[];
+
+  @ApiProperty({ type: () => FormaDePagamentoEntity })
+  @OneToMany(() => EmpresaFormaPagamentoEntity, ({ empresa }) => empresa)
+  @Transform(({ value }) => value.map(({ formaDePagamento }) => formaDePagamento))
+  formasDePagamento: FormaDePagamentoEntity[];
 
   constructor(partial?: Partial<EmpresaEntity>) {
     super();

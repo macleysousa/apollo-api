@@ -9,10 +9,9 @@ export class CreateTableFormasDePagamento1685550114851 implements MigrationInter
           {
             name: 'id',
             type: 'int',
-            unsigned: true,
+            isPrimary: true,
             isGenerated: true,
             generationStrategy: 'increment',
-            isPrimary: true,
           },
           {
             name: 'descricao',

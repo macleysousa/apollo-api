@@ -7,9 +7,10 @@ import { EmpresaController } from './empresa.controller';
 import { EmpresaService } from './empresa.service';
 import { EmpresaEntity } from './entities/empresa.entity';
 import { TerminalModule } from './terminal/terminal.module';
+import { EmpresaFormaPagamentoModule } from './forma-de-pagamento/forma-de-pagamento.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EmpresaEntity]), TerminalModule],
+  imports: [TypeOrmModule.forFeature([EmpresaEntity]), TerminalModule, EmpresaFormaPagamentoModule],
   controllers: [EmpresaController],
   providers: [EmpresaService, EmpresaConstraint],
   exports: [EmpresaService],

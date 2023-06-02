@@ -30,4 +30,9 @@ export class FormaDePagamentoEntity extends BaseEntity {
   @ApiProperty()
   @Column()
   inativa: boolean;
+
+  constructor(partial?: Partial<FormaDePagamentoEntity>) {
+    super();
+    Object.assign(this, partial);
+  }
 }

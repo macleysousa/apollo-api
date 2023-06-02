@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
+import { Exclude } from 'class-transformer';
+import { EmpresaEntity } from '../../entities/empresa.entity';
 
 @Entity({ name: 'empresas_terminais' })
 export class TerminalEntity extends BaseEntity {
@@ -20,6 +22,10 @@ export class TerminalEntity extends BaseEntity {
   @ApiProperty()
   @Column()
   inativo: boolean;
+
+  @Exclude()
+  @ManyToOne(() => EmpresaEntity, ({ terminais }) => terminais)
+  empresa: EmpresaEntity;
 
   constructor(partial?: Partial<TerminalEntity>) {
     super();
