@@ -4,8 +4,12 @@ import { Column, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 @Entity({ name: 'estoque' })
 export class EstoqueEntity {
   @ApiProperty()
-  @PrimaryColumn()
+  @PrimaryColumn('int')
   empresaId: number;
+
+  @ApiProperty()
+  @PrimaryColumn('int')
+  refereciaId: number;
 
   @ApiProperty()
   @PrimaryColumn('bigint')
@@ -15,8 +19,8 @@ export class EstoqueEntity {
   @Column({ type: 'decimal', precision: 10, scale: 4 })
   quantidade: number;
 
-  @UpdateDateColumn({ default: 'now()' })
   @ApiProperty()
+  @UpdateDateColumn({ default: 'now()' })
   atualizadoEm?: Date;
 
   constructor(partial?: Partial<EstoqueEntity>) {
