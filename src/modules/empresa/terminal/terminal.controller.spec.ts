@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { branchFakeRepository } from 'src/base-fake/branch';
+import { empresaFakeRepository } from 'src/base-fake/empresa';
 
 import { EmpresaService } from '../empresa.service';
 import { CreateTerminalDto } from './dto/create-terminal.dto';
@@ -30,7 +30,7 @@ describe('TerminalController', () => {
         {
           provide: EmpresaService,
           useValue: {
-            findById: jest.fn().mockResolvedValue(branchFakeRepository.findOne()),
+            findById: jest.fn().mockResolvedValue(empresaFakeRepository.findOne()),
           },
         },
       ],

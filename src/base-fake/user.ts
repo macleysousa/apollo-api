@@ -3,7 +3,7 @@ import { UsuarioEntity } from 'src/modules/usuario/entities/usuario.entity';
 import { Role } from 'src/modules/usuario/enums/usuario-tipo.enum';
 import { UsuarioSituacao } from 'src/modules/usuario/enums/usuario-situacao.enum';
 import { UsuarioTerminalEntity } from 'src/modules/usuario/terminal/entities/terminal.entity';
-import { branchFakeRepository } from './branch';
+import { empresaFakeRepository } from './empresa';
 
 class UserFakeRepository {
   find(): UsuarioEntity[] {
@@ -52,7 +52,7 @@ class UserFakeRepository {
       usuarioId: 1,
       empresaId: 1,
       terminalId: 1,
-      terminal: branchFakeRepository.findOneTerminal(),
+      terminal: empresaFakeRepository.findOneTerminal(),
     });
     return terminal;
   }

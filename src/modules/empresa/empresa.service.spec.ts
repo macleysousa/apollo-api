@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { branchFakeRepository } from 'src/base-fake/branch';
+import { empresaFakeRepository } from 'src/base-fake/empresa';
 import { ILike, Repository } from 'typeorm';
 import { EmpresaService } from './empresa.service';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
@@ -18,10 +18,10 @@ describe('BranchService', () => {
         {
           provide: getRepositoryToken(EmpresaEntity),
           useValue: {
-            save: jest.fn().mockResolvedValue(branchFakeRepository.findOne()),
-            find: jest.fn().mockResolvedValue(branchFakeRepository.find()),
-            findOne: jest.fn().mockResolvedValue(branchFakeRepository.findOne()),
-            update: jest.fn().mockResolvedValue(branchFakeRepository.findOne()),
+            save: jest.fn().mockResolvedValue(empresaFakeRepository.findOne()),
+            find: jest.fn().mockResolvedValue(empresaFakeRepository.find()),
+            findOne: jest.fn().mockResolvedValue(empresaFakeRepository.findOne()),
+            update: jest.fn().mockResolvedValue(empresaFakeRepository.findOne()),
             delete: jest.fn(),
           },
         },
@@ -49,7 +49,7 @@ describe('BranchService', () => {
       expect(repository.save).toHaveBeenCalledTimes(1);
       expect(repository.save).toHaveBeenCalledWith(branch);
 
-      expect(result).toEqual(branchFakeRepository.findOne());
+      expect(result).toEqual(empresaFakeRepository.findOne());
     });
   });
 
@@ -65,7 +65,7 @@ describe('BranchService', () => {
       expect(repository.find).toHaveBeenCalledTimes(1);
       expect(repository.find).toHaveBeenCalledWith({ where: { cnpj: ILike(`%${filter ?? ''}%`), nome: ILike(`%${filter ?? ''}%`) } });
 
-      expect(result).toEqual(branchFakeRepository.find());
+      expect(result).toEqual(empresaFakeRepository.find());
     });
 
     it('should find branches with filter', async () => {
@@ -79,7 +79,7 @@ describe('BranchService', () => {
       expect(repository.find).toHaveBeenCalledTimes(1);
       expect(repository.find).toHaveBeenCalledWith({ where: { cnpj: ILike(`%${filter ?? ''}%`), nome: ILike(`%${filter ?? ''}%`) } });
 
-      expect(result).toEqual(branchFakeRepository.find());
+      expect(result).toEqual(empresaFakeRepository.find());
     });
   });
 
@@ -95,7 +95,7 @@ describe('BranchService', () => {
       expect(repository.findOne).toHaveBeenCalledTimes(1);
       expect(repository.findOne).toHaveBeenCalledWith({ where: { id } });
 
-      expect(result).toEqual(branchFakeRepository.findOne());
+      expect(result).toEqual(empresaFakeRepository.findOne());
     });
   });
 
@@ -112,7 +112,7 @@ describe('BranchService', () => {
       expect(repository.update).toHaveBeenCalledTimes(1);
       expect(repository.update).toHaveBeenCalledWith(id, branch);
 
-      expect(result).toEqual(branchFakeRepository.findOne());
+      expect(result).toEqual(empresaFakeRepository.findOne());
     });
   });
 

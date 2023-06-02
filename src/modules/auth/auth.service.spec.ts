@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { authFakeRepository } from 'src/base-fake/auth';
-import { branchFakeRepository } from 'src/base-fake/branch';
+import { empresaFakeRepository } from 'src/base-fake/empresa';
 import { userFakeRepository } from 'src/base-fake/user';
 
 import { EmpresaService } from '../empresa/empresa.service';
@@ -40,7 +40,7 @@ describe('AuthService', () => {
         {
           provide: EmpresaService,
           useValue: {
-            findById: jest.fn().mockResolvedValue(branchFakeRepository.findOne()),
+            findById: jest.fn().mockResolvedValue(empresaFakeRepository.findOne()),
           },
         },
       ],
@@ -115,7 +115,7 @@ describe('AuthService', () => {
       // Arrange
       const token = 'token';
 
-      jest.spyOn(branchService, 'findById').mockResolvedValueOnce(branchFakeRepository.findOne());
+      jest.spyOn(branchService, 'findById').mockResolvedValueOnce(empresaFakeRepository.findOne());
 
       // Act
       const response = await authService.validateToken(token);
@@ -127,7 +127,7 @@ describe('AuthService', () => {
       expect(jwtService.decode).toHaveBeenCalledTimes(2);
       expect(jwtService.decode).toHaveBeenCalledWith(token);
 
-      expect(response).toEqual({ usuario: userFakeRepository.findOne(), empresa: branchFakeRepository.findOne() });
+      expect(response).toEqual({ usuario: userFakeRepository.findOne(), empresa: empresaFakeRepository.findOne() });
     });
 
     it('should fail in validating the token with error *token expired*', async () => {

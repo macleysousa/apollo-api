@@ -1,7 +1,7 @@
 import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 import { TerminalEntity } from 'src/modules/empresa/terminal/entities/terminal.entity';
 
-class BranchFakeRepository {
+class EmpresaFakeRepository {
   find(): EmpresaEntity[] {
     const branch = new EmpresaEntity({
       id: 1,
@@ -51,5 +51,5 @@ class BranchFakeRepository {
   }
 }
 
-const branchFakeRepository = new BranchFakeRepository();
-export { branchFakeRepository };
+const empresaFakeRepository = new EmpresaFakeRepository();
+export { empresaFakeRepository };

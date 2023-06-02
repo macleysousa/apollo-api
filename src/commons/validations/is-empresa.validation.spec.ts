@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { branchFakeRepository } from 'src/base-fake/branch';
+import { empresaFakeRepository } from 'src/base-fake/empresa';
 import { EmpresaService } from 'src/modules/empresa/empresa.service';
 
 import { EmpresaConstraint } from './is-empresa.validation';
@@ -15,7 +15,7 @@ describe('Branch validation', () => {
         {
           provide: EmpresaService,
           useValue: {
-            findById: jest.fn().mockResolvedValue(branchFakeRepository.findOne()),
+            findById: jest.fn().mockResolvedValue(empresaFakeRepository.findOne()),
           },
         },
       ],

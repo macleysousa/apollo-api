@@ -3,11 +3,11 @@ import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 import { UsuarioEntity } from 'src/modules/usuario/entities/usuario.entity';
 
 import { userFakeRepository } from './user';
-import { branchFakeRepository } from './branch';
+import { empresaFakeRepository } from './empresa';
 
 export class AuthRequestFake implements AuthRequest {
   usuario: UsuarioEntity = userFakeRepository.findOne();
-  empresa?: EmpresaEntity = branchFakeRepository.findOne();
+  empresa?: EmpresaEntity = empresaFakeRepository.findOne();
   cache: RequestCache;
   credentials: RequestCredentials;
   destination: RequestDestination;

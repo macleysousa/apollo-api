@@ -1,20 +1,109 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ParametroController } from './parametro.controller';
-import { ParametroService } from './parametro.service';
+
+import { empresaParametroFakeRepository } from 'src/base-fake/empresa-paramtro';
+
+import { EmpresaService } from '../empresa.service';
+import { CreateParametroDto } from './dto/create-parametro.dto';
+import { EmpresaParametroController } from './parametro.controller';
+import { EmpresaParametroService } from './parametro.service';
+import { EmpresaParametroView } from './views/paramentro.view';
 
 describe('ParametroController', () => {
-  let controller: ParametroController;
+  let controller: EmpresaParametroController;
+  let service: EmpresaParametroService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [ParametroController],
-      providers: [ParametroService],
+      controllers: [EmpresaParametroController],
+      providers: [
+        {
+          provide: EmpresaParametroService,
+          useValue: {
+            create: jest.fn().mockResolvedValue(empresaParametroFakeRepository.findViewOne()),
+            find: jest.fn().mockResolvedValue(empresaParametroFakeRepository.findView()),
+            findByParametroId: jest.fn().mockResolvedValue(empresaParametroFakeRepository.findViewOne()),
+            update: jest.fn().mockResolvedValue(empresaParametroFakeRepository.findViewOne()),
+          },
+        },
+        {
+          provide: EmpresaService,
+          useValue: {
+            findOne: jest.fn().mockResolvedValue({ id: 1 }),
+          },
+        },
+      ],
     }).compile();
 
-    controller = module.get<ParametroController>(ParametroController);
+    controller = module.get<EmpresaParametroController>(EmpresaParametroController);
+    service = module.get<EmpresaParametroService>(EmpresaParametroService);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+    expect(service).toBeDefined();
+  });
+
+  describe('/ (POST)', () => {
+    it('should create a parametro', async () => {
+      // Arrange
+      const empresaId = 1;
+      const createParametroDto: CreateParametroDto = { parametroId: 'parametro1', valor: 'valor1' };
+      const parametroView: EmpresaParametroView = empresaParametroFakeRepository.findViewOne();
+
+      // Act
+      const result = await controller.create(empresaId, createParametroDto);
+
+      // Assert
+      expect(service.create).toHaveBeenCalledWith(empresaId, createParametroDto);
+      expect(result).toEqual(parametroView);
+    });
+  });
+
+  describe('/ (GET)', () => {
+    it('should find parametros', async () => {
+      // Arrange
+      const empresaId = 1;
+      const parametrosView: EmpresaParametroView[] = empresaParametroFakeRepository.findView();
+
+      // Act
+      const result = await controller.find(empresaId);
+
+      // Assert
+      expect(service.find).toHaveBeenCalledWith(empresaId);
+      expect(result).toEqual(parametrosView);
+    });
+  });
+
+  describe('/:id (GET)', () => {
+    it('should find a parametro by parametroId', async () => {
+      // Arrange
+      const empresaId = 1;
+      const parametroId = 'parametro1';
+      const parametroView: EmpresaParametroView = empresaParametroFakeRepository.findViewOne();
+
+      // Act
+      const result = await controller.findByParametroId(empresaId, parametroId);
+
+      // Assert
+      expect(service.findByParametroId).toHaveBeenCalledWith(empresaId, parametroId);
+      expect(result).toEqual(parametroView);
+    });
+  });
+
+  describe('/:id (PUT)', () => {
+    it('should update a parametro by parametroId', async () => {
+      // Arrange
+      const empresaId = 1;
+      const parametroId = 'parametro1';
+      const updateParametroDto: CreateParametroDto = { parametroId: 'parametro1', valor: 'valor1' };
+      const parametroView: EmpresaParametroView = empresaParametroFakeRepository.findViewOne();
+
+      // Act
+      const result = await controller.update(empresaId, parametroId, updateParametroDto);
+
+      // Assert
+      expect(service.update).toHaveBeenCalledWith(empresaId, parametroId, updateParametroDto);
+      expect(result).toEqual(parametroView);
+    });
   });
 });

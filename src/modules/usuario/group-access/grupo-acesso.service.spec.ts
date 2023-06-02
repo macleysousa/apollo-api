@@ -11,7 +11,7 @@ import { AuthRequest } from 'src/decorators/current-auth.decorator';
 import { AdicionarUsuarioGrupoDto } from './dto/adicionar-usuario-grupo.dto';
 import { UsuarioGrupoEntity } from './entities/grupo-acesso.entity';
 import { UsuarioGrupoService } from './grupo-acesso.service';
-import { branchFakeRepository } from 'src/base-fake/branch';
+import { empresaFakeRepository } from 'src/base-fake/empresa';
 
 describe('GroupAccessService', () => {
   let service: UsuarioGrupoService;
@@ -26,7 +26,7 @@ describe('GroupAccessService', () => {
           provide: REQUEST,
           useValue: {
             usuario: userFakeRepository.findOne(),
-            empresa: branchFakeRepository.findOne(),
+            empresa: empresaFakeRepository.findOne(),
           },
         },
         {

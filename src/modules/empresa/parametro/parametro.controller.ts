@@ -1,19 +1,20 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ParseEmpresaPipe } from 'src/commons/pipes/parseEmpresa.pipe';
 import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
 
 import { CreateParametroDto } from './dto/create-parametro.dto';
-import { ParametroService } from './parametro.service';
+import { EmpresaParametroService } from './parametro.service';
 import { EmpresaParametroView } from './views/paramentro.view';
+import { UpdateEmpresaParametroDto } from './dto/update-parametro.dto';
 
 @ApiTags('Empresas Parâmetros')
 @Controller('empresas/:empresaId/parametros')
 @ApiBearerAuth()
 @ApiComponent('ADMFM009', 'Manutenção de parâmetros da empresa')
-export class ParametroController {
-  constructor(private readonly service: ParametroService) {}
+export class EmpresaParametroController {
+  constructor(private readonly service: EmpresaParametroService) {}
 
   @Post()
   @ApiResponse({ status: 201, type: EmpresaParametroView })
@@ -37,5 +38,15 @@ export class ParametroController {
     @Param('parametroId') parametroId: string
   ): Promise<EmpresaParametroView> {
     return this.service.findByParametroId(empresaId, parametroId);
+  }
+
+  @Put(':parametroId')
+  @ApiResponse({ status: 200, type: EmpresaParametroView })
+  async update(
+    @Param('empresaId', ParseEmpresaPipe) empresaId: number,
+    @Param('parametroId') parametroId: string,
+    @Body() updateEmpresaParametroDto: UpdateEmpresaParametroDto
+  ): Promise<EmpresaParametroView> {
+    return this.service.update(empresaId, parametroId, updateEmpresaParametroDto);
   }
 }

@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 
 import { pessoaFakeRepository } from 'src/base-fake/pessoa';
-import { branchFakeRepository } from 'src/base-fake/branch';
+import { empresaFakeRepository } from 'src/base-fake/empresa';
 
 import { PessoaController } from './pessoa.controller';
 import { PessoaService } from './pessoa.service';
@@ -52,7 +52,7 @@ describe('PessoaController', () => {
         tipo: PessoaTipo.Fisica,
       };
 
-      const empresa = branchFakeRepository.findOne();
+      const empresa = empresaFakeRepository.findOne();
 
       const pessoa = pessoaFakeRepository.findOne();
 

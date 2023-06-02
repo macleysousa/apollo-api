@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { branchFakeRepository } from 'src/base-fake/branch';
+import { empresaFakeRepository } from 'src/base-fake/empresa';
 import { EmpresaController } from './empresa.controller';
 import { EmpresaService } from './empresa.service';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
@@ -15,10 +15,10 @@ describe('BranchController', () => {
         {
           provide: EmpresaService,
           useValue: {
-            create: jest.fn().mockResolvedValue(branchFakeRepository.findOne()),
-            find: jest.fn().mockResolvedValue(branchFakeRepository.find()),
-            findById: jest.fn().mockResolvedValue(branchFakeRepository.findOne()),
-            update: jest.fn().mockResolvedValue(branchFakeRepository.findOne()),
+            create: jest.fn().mockResolvedValue(empresaFakeRepository.findOne()),
+            find: jest.fn().mockResolvedValue(empresaFakeRepository.find()),
+            findById: jest.fn().mockResolvedValue(empresaFakeRepository.findOne()),
+            update: jest.fn().mockResolvedValue(empresaFakeRepository.findOne()),
             remove: jest.fn(),
           },
         },
@@ -46,7 +46,7 @@ describe('BranchController', () => {
       expect(service.create).toHaveBeenCalledTimes(1);
       expect(service.create).toHaveBeenCalledWith(branch);
 
-      expect(result).toEqual(branchFakeRepository.findOne());
+      expect(result).toEqual(empresaFakeRepository.findOne());
     });
   });
 
@@ -62,7 +62,7 @@ describe('BranchController', () => {
       expect(service.find).toHaveBeenCalledTimes(1);
       expect(service.find).toHaveBeenCalledWith(filter);
 
-      expect(result).toEqual(branchFakeRepository.find());
+      expect(result).toEqual(empresaFakeRepository.find());
     });
 
     it('should get branches with filter', async () => {
@@ -76,7 +76,7 @@ describe('BranchController', () => {
       expect(service.find).toHaveBeenCalledTimes(1);
       expect(service.find).toHaveBeenCalledWith(filter);
 
-      expect(result).toEqual(branchFakeRepository.find());
+      expect(result).toEqual(empresaFakeRepository.find());
     });
   });
 
@@ -92,7 +92,7 @@ describe('BranchController', () => {
       expect(service.findById).toHaveBeenCalledTimes(1);
       expect(service.findById).toHaveBeenCalledWith(id);
 
-      expect(result).toEqual(branchFakeRepository.findOne());
+      expect(result).toEqual(empresaFakeRepository.findOne());
     });
   });
 
@@ -109,7 +109,7 @@ describe('BranchController', () => {
       expect(service.update).toHaveBeenCalledTimes(1);
       expect(service.update).toHaveBeenCalledWith(id, branch);
 
-      expect(result).toEqual(branchFakeRepository.findOne());
+      expect(result).toEqual(empresaFakeRepository.findOne());
     });
   });
 
