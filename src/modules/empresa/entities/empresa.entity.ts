@@ -1,14 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
+import { Transform } from 'class-transformer';
 import { BaseEntity } from 'src/commons/base.entity';
 import { SubTributary } from 'src/commons/enum/sub-tributary';
 import { TaxRegime } from 'src/commons/enum/tax-regime';
 import { UF } from 'src/commons/enum/uf.enum';
+import { FormaDePagamentoEntity } from 'src/modules/forma-de-pagamento/entities/forma-de-pagamento.entity';
+
 import { EmpresaFormaPagamentoEntity } from '../forma-de-pagamento/entities/forma-de-pagamento.entity';
 import { TerminalEntity } from '../terminal/entities/terminal.entity';
-import { FormaDePagamentoEntity } from 'src/modules/forma-de-pagamento/entities/forma-de-pagamento.entity';
-import { Transform } from 'class-transformer';
 
 @Entity({ name: 'empresas' })
 export class EmpresaEntity extends BaseEntity {
@@ -84,6 +85,10 @@ export class EmpresaEntity extends BaseEntity {
   @OneToMany(() => EmpresaFormaPagamentoEntity, ({ empresa }) => empresa)
   @Transform(({ value }) => value.map(({ formaDePagamento }) => formaDePagamento))
   formasDePagamento: FormaDePagamentoEntity[];
+
+  // @ApiProperty()
+  // @OneToMany(() => EmpresaParametroEntity, ({ empresa }) => empresa)
+  // parametros: EmpresaParametroEntity[];
 
   constructor(partial?: Partial<EmpresaEntity>) {
     super();

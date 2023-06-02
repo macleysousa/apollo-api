@@ -18,7 +18,6 @@ export class CorService {
   }
 
   async find(name?: string, active?: boolean | unknown): Promise<CorEntity[]> {
-    console.log(active);
     return this.colorRepository.find({
       where: { nome: ILike(`%${name ?? ''}%`), inativa: active == undefined ? undefined : Boolean(active) },
     });
