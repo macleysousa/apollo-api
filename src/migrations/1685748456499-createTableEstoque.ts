@@ -22,7 +22,7 @@ export class CreateTableEstoque1685748456499 implements MigrationInterface {
             isPrimary: true,
           },
           {
-            name: 'quantidade',
+            name: 'saldo',
             type: 'decimal',
             precision: 10,
             scale: 4,

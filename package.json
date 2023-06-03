@@ -98,6 +98,7 @@
       "exception.ts",
       ".module.ts",
       ".entity.ts",
+      ".view.ts",
       "filter.ts",
       ".mock.ts",
       ".pipe.ts",

@@ -17,7 +17,7 @@ export class EstoqueEntity {
 
   @ApiProperty()
   @Column({ type: 'decimal', precision: 10, scale: 4 })
-  quantidade: number;
+  saldo: number;
 
   @ApiProperty()
   @UpdateDateColumn({ default: 'now()' })
