@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
+
 import { CreateTamanhoDto } from './dto/create-tamanho.dto';
 import { UpdateTamanhoDto } from './dto/update-tamanho.dto';
 import { TamanhoEntity } from './entities/tamanho.entity';
@@ -9,7 +10,7 @@ import { TamanhoEntity } from './entities/tamanho.entity';
 export class TamanhoService {
   constructor(
     @InjectRepository(TamanhoEntity)
-    private readonly sizeRepository: Repository<TamanhoEntity>
+    private readonly repository: Repository<TamanhoEntity>
   ) {}
 
   async create(createSizeDto: CreateTamanhoDto): Promise<TamanhoEntity> {
@@ -23,23 +24,23 @@ export class TamanhoService {
       throw new BadRequestException(`Size with this name ${createSizeDto.nome} already exists`);
     }
 
-    const size = await this.sizeRepository.save(createSizeDto);
+    const size = await this.repository.save(createSizeDto);
 
     return this.findById(size.id);
   }
 
-  async find(name?: string, active?: boolean | unknown): Promise<TamanhoEntity[]> {
-    return this.sizeRepository.find({
-      where: { nome: ILike(`%${name ?? ''}%`), inativo: active == undefined ? undefined : Boolean(active) },
+  async find(nome?: string, inativo?: boolean | unknown): Promise<TamanhoEntity[]> {
+    return this.repository.find({
+      where: { nome: ILike(`%${nome ?? ''}%`), inativo: inativo == undefined ? undefined : Boolean(inativo) },
     });
   }
 
   async findById(id: number): Promise<TamanhoEntity> {
-    return this.sizeRepository.findOne({ where: { id } });
+    return this.repository.findOne({ where: { id } });
   }
 
   async findByName(name: string): Promise<TamanhoEntity> {
-    return this.sizeRepository.findOne({ where: { nome: name } });
+    return this.repository.findOne({ where: { nome: name } });
   }
 
   async update(id: number, updateSizeDto: UpdateTamanhoDto): Promise<TamanhoEntity> {
@@ -53,12 +54,12 @@ export class TamanhoService {
       throw new BadRequestException(`Size with this name ${updateSizeDto.nome} already exists`);
     }
 
-    await this.sizeRepository.update(id, updateSizeDto);
+    await this.repository.update(id, updateSizeDto);
 
     return this.findById(id);
   }
 
   async remove(id: number): Promise<void> {
-    await this.sizeRepository.delete({ id });
+    await this.repository.delete({ id });
   }
 }

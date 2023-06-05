@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { IsPessoaConstraint } from 'src/commons/validations/is-pessoa.validation';
@@ -15,4 +15,11 @@ import { PessoaEnderecoModule } from './pessoa-endereco/pessoa-endereco.module';
   providers: [PessoaService, IsPessoaConstraint, IsDocumentoConstraint],
   exports: [PessoaService],
 })
-export class PessoaModule {}
+export class PessoaModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

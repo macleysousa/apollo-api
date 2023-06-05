@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Put, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe, Put, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { TamanhoService } from './tamanho.service';
 import { CreateTamanhoDto } from './dto/create-tamanho.dto';
 import { UpdateTamanhoDto } from './dto/update-tamanho.dto';
-import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiComponent } from '../componente/decorator/componente.decorator';
 import { TamanhoEntity } from './entities/tamanho.entity';
 
@@ -15,16 +16,16 @@ export class TamanhoController {
 
   @Post()
   @ApiResponse({ status: 201, type: TamanhoEntity })
-  async create(@Body() createSizeDto: CreateTamanhoDto): Promise<TamanhoEntity> {
-    return this.service.create(createSizeDto);
+  async create(@Body() createDto: CreateTamanhoDto): Promise<TamanhoEntity> {
+    return this.service.create(createDto);
   }
 
   @Get()
   @ApiResponse({ status: 200, type: [TamanhoEntity] })
   @ApiQuery({ name: 'nome', required: false })
-  @ApiQuery({ name: 'inativa', required: false, type: Boolean })
-  async find(@Query('nome') nome?: string, @Query('inativa') inativa?: boolean | unknown): Promise<TamanhoEntity[]> {
-    return this.service.find(nome, inativa);
+  @ApiQuery({ name: 'inativo', required: false, type: Boolean })
+  async find(@Query('nome') nome?: string, @Query('inativo') inativo?: boolean | unknown): Promise<TamanhoEntity[]> {
+    return this.service.find(nome, inativo);
   }
 
   @Get(':id')
@@ -35,8 +36,8 @@ export class TamanhoController {
 
   @Put(':id')
   @ApiResponse({ status: 200, type: TamanhoEntity })
-  async update(@Param('id', ParseIntPipe) id: number, @Body() updateSizeDto: UpdateTamanhoDto): Promise<TamanhoEntity> {
-    return this.service.update(id, updateSizeDto);
+  async update(@Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateTamanhoDto): Promise<TamanhoEntity> {
+    return this.service.update(id, updateDto);
   }
 
   @Delete(':id')

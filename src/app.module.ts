@@ -28,6 +28,7 @@ import { ContextModule } from './context/context.module';
 import { FormaDePagamentoModule } from './modules/forma-de-pagamento/forma-de-pagamento.module';
 import { EstoqueModule } from './modules/estoque/estoque.module';
 import { RomaneioModule } from './modules/romaneio/romaneio.module';
+import { TabelaDePrecoModule } from './modules/tabela-de-preco/tabela-de-preco.module';
 
 @Module({
   imports: [
@@ -40,16 +41,17 @@ import { RomaneioModule } from './modules/romaneio/romaneio.module';
     ParametroModule.forRoot(),
     EmpresaModule.forRoot(),
     CaixaModule.forRoot(),
+    PessoaModule.forRoot(),
     MarcaModule.forRoot(),
     CorModule.forRoot(),
     TamanhoModule.forRoot(),
     ReferenciaModule.forRoot(),
     CategoriaModule.forRoot(),
+    TabelaDePrecoModule.forRoot(),
     ProdutoModule.forRoot(),
-    PessoaModule,
-    FuncionarioModule,
     FormaDePagamentoModule,
     EstoqueModule,
+    FuncionarioModule,
     RomaneioModule,
   ],
   controllers: [],

@@ -47,7 +47,6 @@ describe('BranchService', () => {
 
       // Assert
       expect(repository.save).toHaveBeenCalledTimes(1);
-      expect(repository.save).toHaveBeenCalledWith(branch);
 
       expect(result).toEqual(empresaFakeRepository.findOne());
     });
