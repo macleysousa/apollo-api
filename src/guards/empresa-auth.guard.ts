@@ -1,7 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { EMPRESA_KEY } from 'src/decorators/is-empresa-auth.decorator';
+import { EMPRESA_KEY } from 'src/decorators/api-empresa-auth.decorator';
 import { IS_PUBLIC_KEY } from 'src/decorators/is-public.decorator';
 
 @Injectable()

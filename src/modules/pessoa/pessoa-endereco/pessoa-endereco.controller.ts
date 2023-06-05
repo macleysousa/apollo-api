@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-import { IsEmpresaAuth } from 'src/decorators/is-empresa-auth.decorator';
+import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
 import { ParsePessoaPipe } from 'src/commons/pipes/parsePessoa.pipe';
 
@@ -13,7 +13,7 @@ import { PessoaEnderecoEntity } from './entities/pessoa-endereco.entity';
 @ApiTags('Pessoas Endereços')
 @Controller('pessoas/:pessoaId/enderecos')
 @ApiBearerAuth()
-@IsEmpresaAuth()
+@ApiEmpresaAuth()
 @ApiComponent('PESFM002', 'Manutenção de pessoa endereço')
 export class PessoaEnderecoController {
   constructor(private readonly service: PessoaEnderecoService) {}

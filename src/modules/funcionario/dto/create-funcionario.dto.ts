@@ -4,9 +4,9 @@ import { IsBoolean, IsEnum, IsInt, IsNotEmpty, IsOptional } from 'class-validato
 import { IsEmpresa } from 'src/commons/validations/is-empresa.validation';
 import { IsPessoa } from 'src/commons/validations/is-pessoa.validation';
 
-import { VendedorTipo } from '../enum/vendedor-tipo.enum';
+import { FuncionarioTipo } from '../enum/funcionario-tipo.enum';
 
-export class CreateVendedorDto {
+export class CreateFuncionarioDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsEmpresa()
@@ -26,10 +26,10 @@ export class CreateVendedorDto {
   @IsPessoa()
   pessoaId?: number;
 
-  @ApiProperty({ enum: VendedorTipo })
+  @ApiProperty({ enum: FuncionarioTipo })
   @IsOptional()
-  @IsEnum(VendedorTipo)
-  tipo?: VendedorTipo;
+  @IsEnum(FuncionarioTipo)
+  tipo?: FuncionarioTipo;
 
   @ApiProperty({ default: false })
   @IsOptional()

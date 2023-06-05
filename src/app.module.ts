@@ -21,12 +21,13 @@ import { MarcaModule } from './modules/marca/marca.module';
 import { ProdutoModule } from './modules/produto/produto.module';
 import { PessoaModule } from './modules/pessoa/pessoa.module';
 import { EmpresaAuthGuard } from './guards/empresa-auth.guard';
-import { VendedorModule } from './modules/vendedor/vendedor.module';
+import { FuncionarioModule } from './modules/funcionario/funcionario.module';
 import { ParametroModule } from './modules/parametro/parametro.module';
 import { CaixaModule } from './modules/caixa/caixa.module';
 import { ContextModule } from './context/context.module';
 import { FormaDePagamentoModule } from './modules/forma-de-pagamento/forma-de-pagamento.module';
 import { EstoqueModule } from './modules/estoque/estoque.module';
+import { RomaneioModule } from './modules/romaneio/romaneio.module';
 
 @Module({
   imports: [
@@ -46,9 +47,10 @@ import { EstoqueModule } from './modules/estoque/estoque.module';
     CategoriaModule.forRoot(),
     ProdutoModule.forRoot(),
     PessoaModule,
-    VendedorModule,
+    FuncionarioModule,
     FormaDePagamentoModule,
     EstoqueModule,
+    RomaneioModule,
   ],
   controllers: [],
   providers: [

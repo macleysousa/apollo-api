@@ -8,7 +8,7 @@ import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { ApiComponent } from '../componente/decorator/componente.decorator';
 import { EmpresaEntity } from '../empresa/entities/empresa.entity';
 import { PessoaEntity } from './entities/pessoa.entity';
-import { IsEmpresaAuth } from 'src/decorators/is-empresa-auth.decorator';
+import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { LiberarEmpresaAcessoDto } from './dto/liberar-empresa-acesso.dto';
@@ -17,7 +17,7 @@ import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 @ApiTags('Pessoas')
 @Controller('pessoas')
 @ApiBearerAuth()
-@IsEmpresaAuth()
+@ApiEmpresaAuth()
 @ApiComponent('PESFM001', 'Manutenção de pessoa')
 export class PessoaController {
   constructor(private readonly service: PessoaService) {}

@@ -3,10 +3,10 @@ import { Column, Entity, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 
-import { VendedorTipo } from '../enum/vendedor-tipo.enum';
+import { FuncionarioTipo } from '../enum/funcionario-tipo.enum';
 
-@Entity({ name: 'vendedores' })
-export class VendedorEntity extends BaseEntity {
+@Entity({ name: 'funcionarios' })
+export class FuncionarioEntity extends BaseEntity {
   @ApiProperty()
   @PrimaryColumn({ nullable: false })
   empresaId: number;
@@ -23,15 +23,15 @@ export class VendedorEntity extends BaseEntity {
   @Column({ nullable: true })
   pessoaId: number;
 
-  @ApiProperty({ enum: VendedorTipo })
+  @ApiProperty({ enum: FuncionarioTipo })
   @Column({ nullable: false })
-  tipo: VendedorTipo;
+  tipo: FuncionarioTipo;
 
   @ApiProperty({ default: false })
   @Column({ default: false })
   inativo: boolean;
 
-  constructor(partial?: Partial<VendedorEntity>) {
+  constructor(partial?: Partial<FuncionarioEntity>) {
     super();
     Object.assign(this, partial);
   }

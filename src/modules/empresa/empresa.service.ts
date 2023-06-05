@@ -14,7 +14,10 @@ export class EmpresaService {
   ) {}
 
   async create(createBranchDto: CreateEmpresaDto): Promise<EmpresaEntity> {
-    const branch = await this.repository.save(createBranchDto);
+    const branch = await this.repository.save({
+      ...createBranchDto,
+      data: new Date(),
+    });
 
     return this.findById(branch.id);
   }
