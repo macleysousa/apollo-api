@@ -71,7 +71,7 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
           {
             name: 'situacao',
             type: 'varchar',
-            default: '"Em Andamento"',
+            default: '"Em andamento"',
           },
           {
             name: 'criadoEm',
@@ -90,13 +90,6 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
             referencedTableName: 'empresas',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
-            onUpdate: 'CASCADE',
-          },
-          {
-            columnNames: ['caixaId'],
-            referencedTableName: 'caixas',
-            referencedColumnNames: ['id'],
-            onDelete: 'RESTRICT',
             onUpdate: 'CASCADE',
           },
           {

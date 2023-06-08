@@ -1,6 +1,6 @@
 export enum FuncionarioTipo {
   Comprador = 'Comprador',
-  Funcionario = 'Funcionario',
+  Vendedor = 'Vendedor',
   Caixa = 'Caixa',
   Gerente = 'Gerente',
 }

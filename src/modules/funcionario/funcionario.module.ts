@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { FuncionarioConstraint } from 'src/commons/validations/is-funcionario.validation';
@@ -13,4 +13,11 @@ import { FuncionarioService } from './funcionario.service';
   providers: [FuncionarioService, FuncionarioConstraint],
   exports: [FuncionarioService],
 })
-export class FuncionarioModule {}
+export class FuncionarioModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEnum, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsEnum, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
 
 import { IsEmpresa } from 'src/commons/validations/is-empresa.validation';
 import { IsPessoa } from 'src/commons/validations/is-pessoa.validation';
@@ -12,7 +12,7 @@ export class CreateFuncionarioDto {
   @IsEmpresa()
   empresaId: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsInt()
   id?: number;
@@ -21,18 +21,13 @@ export class CreateFuncionarioDto {
   @IsNotEmpty()
   nome: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsPessoa()
   pessoaId?: number;
 
-  @ApiProperty({ enum: FuncionarioTipo })
+  @ApiProperty({ enum: FuncionarioTipo, required: false })
   @IsOptional()
   @IsEnum(FuncionarioTipo)
   tipo?: FuncionarioTipo;
-
-  @ApiProperty({ default: false })
-  @IsOptional()
-  @IsBoolean()
-  inativo?: boolean;
 }
