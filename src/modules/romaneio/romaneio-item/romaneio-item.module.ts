@@ -1,13 +1,14 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { RomaneioModule } from '../romaneio.module';
 import { RomaneioItemEntity } from './entities/romaneio-item.entity';
 import { RomaneioItemController } from './romaneio-item.controller';
 import { RomaneioItemService } from './romaneio-item.service';
-import { RomaneioModule } from '../romaneio.module';
+import { RomaneioItemView } from './views/romaneio-item.view';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RomaneioItemEntity]), forwardRef(() => RomaneioModule)],
+  imports: [TypeOrmModule.forFeature([RomaneioItemEntity, RomaneioItemView]), forwardRef(() => RomaneioModule)],
   controllers: [RomaneioItemController],
   providers: [RomaneioItemService],
   exports: [RomaneioItemService],
