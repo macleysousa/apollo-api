@@ -14,6 +14,11 @@ export class TabelaDePrecoEntity extends BaseEntity {
   nome: string;
 
   @ApiProperty()
+  @Column('decimal')
+  terminador: number;
+
+  @ApiProperty()
+  @Column()
   inativa: boolean;
 
   constructor(partial?: Partial<TabelaDePrecoEntity>) {

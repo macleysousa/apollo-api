@@ -19,6 +19,11 @@ export class CreateTableTabelasDePrecos1685974699790 implements MigrationInterfa
             isNullable: false,
           },
           {
+            name: 'terminador',
+            type: 'decimal(3,2)',
+            default: 0.9,
+          },
+          {
             name: 'inativa',
             type: 'boolean',
             default: false,

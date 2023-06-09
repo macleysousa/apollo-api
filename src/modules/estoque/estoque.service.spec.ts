@@ -29,6 +29,7 @@ describe('EstoqueService', () => {
         {
           provide: getRepositoryToken(EstoqueView),
           useValue: {
+            findOne: jest.fn().mockResolvedValue(estoqueFakeRepository.findOne()),
             createQueryBuilder: jest.fn().mockReturnValue({
               where: jest.fn().mockReturnThis(),
               andWhere: jest.fn().mockReturnThis(),
@@ -108,6 +109,18 @@ describe('EstoqueService', () => {
       const limit = 100;
 
       const pagination = await service.find(filter, page, limit);
+
+      expect(pagination).toEqual(result);
+    });
+  });
+
+  describe('findByProdutoId', () => {
+    it('should return a EstoqueView with filter', async () => {
+      const result = estoqueFakeRepository.findOne();
+      const empresaId = 1;
+      const produtoId = 2;
+
+      const pagination = await service.findByProdutoId(empresaId, produtoId);
 
       expect(pagination).toEqual(result);
     });
