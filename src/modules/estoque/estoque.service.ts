@@ -58,4 +58,8 @@ export class EstoqueService {
 
     return paginate<EstoqueView>(queryBuilder, { page, limit });
   }
+
+  async findByProdutoId(empresaId: number, produtoId: number): Promise<EstoqueView> {
+    return this.view.findOne({ where: { empresaId, produtoId } });
+  }
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { EstoqueService } from './estoque.service';
@@ -10,5 +10,13 @@ import { EstoqueView } from './views/estoque.view';
   imports: [TypeOrmModule.forFeature([EstoqueEntity, EstoqueView])],
   controllers: [EstoqueController],
   providers: [EstoqueService],
+  exports: [EstoqueService],
 })
-export class EstoqueModule {}
+export class EstoqueModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

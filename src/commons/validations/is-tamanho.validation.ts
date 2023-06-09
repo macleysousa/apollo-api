@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } from 'class-validator';
 import { ValidatorConstraint, ValidationArguments } from 'class-validator';
+
 import { TamanhoService } from 'src/modules/tamanho/tamanho.service';
 
 @ValidatorConstraint({ async: true })
