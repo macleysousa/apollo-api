@@ -4,7 +4,7 @@ import { IsNotEmpty } from 'class-validator';
 import { IsBetween } from 'src/commons/validations/is-between.validation';
 import { IsProduto } from 'src/commons/validations/is-produto.validation';
 
-export class AddRemoveRomaneioItemDto {
+export class UpSertRemoveRomaneioItemDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsProduto()

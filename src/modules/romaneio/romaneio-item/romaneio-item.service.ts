@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { ContextService } from 'src/context/context.service';
 import { EstoqueService } from 'src/modules/estoque/estoque.service';
 
-import { AddRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
+import { UpSertRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
 import { RomaneioItemEntity } from './entities/romaneio-item.entity';
 import { RomaneioService } from '../romaneio.service';
 import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
@@ -26,7 +26,7 @@ export class RomaneioItemService {
     private readonly precoService: PrecoReferenciaService
   ) {}
 
-  async add(romaneioId: number, { produtoId, quantidade }: AddRemoveRomaneioItemDto): Promise<RomaneioItemView> {
+  async add(romaneioId: number, { produtoId, quantidade }: UpSertRemoveRomaneioItemDto): Promise<RomaneioItemView> {
     const usuario = this.contextService.currentUser();
     const empresa = this.contextService.currentBranch();
 
@@ -80,6 +80,17 @@ export class RomaneioItemService {
   }
 
   async remove(romaneioId: number, produtoId: number, quantidade: number): Promise<void> {
-    await this.repository.delete({});
+    const usuario = this.contextService.currentUser();
+    const item = await this.findByProdutoId(romaneioId, produtoId);
+
+    if (item.situacao !== SituacaoRomaneio.EmAndamento) {
+      throw new BadRequestException('Romaneio não está em andamento');
+    }
+
+    if (item.quantidade - quantidade <= 0) {
+      await this.repository.delete({ romaneioId, produtoId });
+    } else {
+      await this.repository.update({ romaneioId, produtoId }, { quantidade: item.quantidade - quantidade, operadorId: usuario.id });
+    }
   }
 }
