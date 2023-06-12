@@ -16,6 +16,8 @@ export class ParametroService {
       { id: 'CD_PRECO_PADRAO', descricao: 'Tabela de preço padrão', valorPadrao: '0' },
       { id: 'QT_DIAS_TROCA', descricao: 'Quantidade de dias para troca', valorPadrao: '60' },
       { id: 'QT_DIAS_DEVOLUCAO', descricao: 'Quantidade de dias para devolução', valorPadrao: '7' },
+      { id: 'OBS_PADRAO_COMPRA', descricao: 'Observação padrão para compra', valorPadrao: '' },
+      { id: 'OBS_PADRAO_VENDA', descricao: 'Observação padrão para venda', valorPadrao: '' },
     ];
     await this.repository.save(parametros);
   }

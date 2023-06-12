@@ -11,6 +11,7 @@ import { RomaneioService } from '../romaneio.service';
 import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
 import { PrecoReferenciaService } from 'src/modules/tabela-de-preco/referencia/referencia.service';
 import { RomaneioItemView } from './views/romaneio-item.view';
+import { ModalidadeRomaneio } from '../enum/modalidade-romaneio.enum';
 
 @Injectable()
 export class RomaneioItemService {
@@ -41,21 +42,21 @@ export class RomaneioItemService {
     const estoque = await this.estoqueService.findByProdutoId(empresa.id, produtoId);
     if (!estoque) {
       throw new BadRequestException('Produto não encontrado em estoque');
-    } else if (estoque.saldo < quantidade + (romaneioItem?.quantidade ?? 0)) {
+    } else if (estoque.saldo < quantidade + (romaneioItem?.quantidade ?? 0) && romaneio.modalidade == ModalidadeRomaneio.Saida) {
       throw new BadRequestException(`Saldo em estoque insuficiente para o produto ${produtoId}`);
     }
 
     const precoReferencia = await this.precoService.findByReferenciaId(empresa.id, estoque.referenciaId);
     if (!precoReferencia) {
-      throw new BadRequestException('Preço não encontrado para o produto');
+      throw new BadRequestException(`Preço não encontrado para a referência ${estoque.referenciaId}`);
     } else if (precoReferencia.preco === 0) {
-      throw new BadRequestException('Preço do produto não pode ser zero');
+      throw new BadRequestException(`Referência ${estoque.referenciaId} com preço 00,00`);
     }
 
     await this.repository.upsert(
       {
         empresaId: empresa.id,
-        romaneioId: romaneio.id,
+        romaneioId: romaneio.romaneioId,
         data: empresa.data,
         referenciaId: estoque.referenciaId,
         produtoId: estoque.produtoId,
@@ -74,7 +75,7 @@ export class RomaneioItemService {
     return this.view.find({ where: { romaneioId } });
   }
 
-  findByProdutoId(romaneioId: number, produtoId: number): Promise<RomaneioItemView> {
+  async findByProdutoId(romaneioId: number, produtoId: number): Promise<RomaneioItemView> {
     return this.view.findOne({ where: { romaneioId, produtoId } });
   }
 

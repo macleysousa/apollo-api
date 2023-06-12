@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { In, IsNull, Not, Repository } from 'typeorm';
@@ -7,6 +7,10 @@ import { CreateRomaneioDto } from './dto/create-romaneio.dto';
 import { RomaneioEntity } from './entities/romaneio.entity';
 import { SituacaoRomaneio } from './enum/situacao-romaneio.enum';
 import { ContextService } from 'src/context/context.service';
+import { RomaneioView } from './views/romaneio.view';
+import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';
+import { EmpresaParametroService } from '../empresa/parametro/parametro.service';
+import { OperacaoRomaneio } from './enum/operacao-romaneio.enum';
 
 interface filter {
   empresaIds: number[];
@@ -20,17 +24,32 @@ export class RomaneioService {
   constructor(
     @InjectRepository(RomaneioEntity)
     private readonly repository: Repository<RomaneioEntity>,
-    private readonly contextService: ContextService
+    @InjectRepository(RomaneioView)
+    private readonly view: Repository<RomaneioView>,
+    private readonly contextService: ContextService,
+    private readonly empresaParamService: EmpresaParametroService
   ) {}
 
-  async create(createRomaneioDto: CreateRomaneioDto): Promise<RomaneioEntity> {
+  async create(createRomaneioDto: CreateRomaneioDto): Promise<RomaneioView> {
     const usuario = this.contextService.currentUser();
     const empresa = this.contextService.currentBranch();
+    const parametro = await this.empresaParamService.find(empresa.id);
+
+    let observacao = '';
+    switch (createRomaneioDto.operacao) {
+      case OperacaoRomaneio.Compra:
+        observacao = parametro.find((p) => p.parametroId === 'OBS_PADRAO_COMPRA')?.valor ?? '';
+        break;
+      case OperacaoRomaneio.Venda:
+        observacao = parametro.find((p) => p.parametroId === 'OBS_PADRAO_VENDA')?.valor ?? '';
+        break;
+    }
 
     const romaneio = await this.repository.save({
       ...createRomaneioDto,
       empresaId: empresa.id,
       data: empresa.data,
+      observacao: observacao,
       operadorId: usuario.id,
       situacao: SituacaoRomaneio.EmAndamento,
     });
@@ -38,8 +57,8 @@ export class RomaneioService {
     return this.findById(romaneio.id);
   }
 
-  async find(filter?: filter, page = 1, limit = 100): Promise<Pagination<RomaneioEntity>> {
-    const queryBuilder = this.repository.createQueryBuilder('e');
+  async find(filter?: filter, page = 1, limit = 100): Promise<Pagination<RomaneioView>> {
+    const queryBuilder = this.view.createQueryBuilder('e');
     queryBuilder.where({ empresaId: Not(IsNull()) });
 
     if (filter?.empresaIds && filter.empresaIds.length > 0) {
@@ -58,14 +77,33 @@ export class RomaneioService {
       queryBuilder.andWhere('e.data <= :dataFinal', { dataFinal: filter.dataFinal });
     }
 
-    return paginate<RomaneioEntity>(queryBuilder, { page, limit });
+    return paginate<RomaneioView>(queryBuilder, { page, limit });
   }
 
-  async findById(id: number): Promise<RomaneioEntity> {
-    return this.repository.findOne({ where: { id } });
+  async findById(id: number): Promise<RomaneioView> {
+    return this.view.findOne({ where: { romaneioId: id } });
   }
 
-  async cancelar(id: number): Promise<RomaneioEntity> {
+  async observacao(id: number, { observacao }: OperacaoRomaneioDto): Promise<RomaneioView> {
+    const romaneio = await this.findById(id);
+
+    if (romaneio.situacao !== SituacaoRomaneio.EmAndamento) {
+      throw new BadRequestException('Romaneio não está em andamento');
+    }
+
+    await this.repository.update({ id }, { observacao });
+
+    return this.findById(id);
+  }
+
+  async cancelar(id: number): Promise<RomaneioView> {
+    const romaneio = await this.findById(id);
+    const empresa = this.contextService.currentBranch();
+
+    if (romaneio.data.getTime() !== empresa.data.getTime()) {
+      throw new BadRequestException('Romaneio não pode ser cancelado. Data diferente da data da empresa');
+    }
+
     await this.repository.update({ id }, { situacao: SituacaoRomaneio.Cancelado });
 
     return this.findById(id);

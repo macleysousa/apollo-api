@@ -26,15 +26,15 @@ export class RomaneioItemEntity extends BaseEntity {
   produtoId: number;
 
   @ApiProperty()
-  @Column()
+  @Column('decimal', { precision: 10, scale: 4 })
   quantidade: number;
 
   @ApiProperty()
-  @Column()
+  @Column('decimal', { precision: 10, scale: 4 })
   valorUnitario: number;
 
   @ApiProperty()
-  @Column()
+  @Column('decimal', { precision: 10, scale: 4 })
   valorUnitDesconto: number;
 
   @ApiProperty()
