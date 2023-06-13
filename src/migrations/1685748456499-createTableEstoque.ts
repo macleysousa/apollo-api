@@ -12,7 +12,7 @@ export class CreateTableEstoque1685748456499 implements MigrationInterface {
             isPrimary: true,
           },
           {
-            name: 'refereciaId',
+            name: 'referenciaId',
             type: 'int',
             isPrimary: true,
           },

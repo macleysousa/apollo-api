@@ -59,38 +59,41 @@ describe('RomaneioController', () => {
 
   describe('/:id (GET)', () => {
     it('should find a romaneio by id', async () => {
+      const empresa = { id: 1 } as any;
       const id = 1;
       const romaneioView = romaneioFakeRepository.findOneView();
 
-      const result = await controller.findOne(id);
+      const result = await controller.findOne(empresa, id);
 
-      expect(service.findById).toHaveBeenCalledWith(id);
+      expect(service.findById).toHaveBeenCalledWith(empresa.id, id);
       expect(result).toEqual(romaneioView);
     });
   });
 
   describe('/:id/observacao (PUT)', () => {
     it('should update a romaneio observacao', async () => {
+      const empresa = { id: 1 } as any;
       const id = 1;
       const observacao: OperacaoRomaneioDto = { observacao: 'observacao' };
       const romaneioView = romaneioFakeRepository.findOneView();
 
-      const result = await controller.observacao(id, observacao);
+      const result = await controller.observacao(empresa, id, observacao);
 
-      expect(service.observacao).toHaveBeenCalledWith(id, observacao);
+      expect(service.observacao).toHaveBeenCalledWith(empresa.id, id, observacao);
       expect(result).toEqual(romaneioView);
     });
   });
 
   describe('/:id/cancelar (PUT)', () => {
     it('should cancel a romaneio by id', async () => {
+      const empresa = { id: 1 } as any;
       const id = 1;
       const romaneioView = { ...romaneioFakeRepository.findOneView(), sutuacao: 'Cancelado' };
       jest.spyOn(service, 'cancelar').mockResolvedValueOnce(romaneioView);
 
-      const result = await controller.cancelar(id);
+      const result = await controller.cancelar(empresa, id);
 
-      expect(service.cancelar).toHaveBeenCalledWith(id);
+      expect(service.cancelar).toHaveBeenCalledWith(empresa.id, id);
       expect(result).toEqual(romaneioView);
     });
   });

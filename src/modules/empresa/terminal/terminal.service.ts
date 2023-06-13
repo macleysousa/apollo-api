@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -35,7 +35,7 @@ export class TerminalService {
 
   async delete(empresaId: number, id: number): Promise<void> {
     await this.repository.delete({ empresaId, id }).catch(() => {
-      throw new Error('Não foi possível excluir o terminal');
+      throw new BadRequestException('Não foi possível excluir o terminal');
     });
   }
 }

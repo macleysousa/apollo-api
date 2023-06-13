@@ -9,7 +9,7 @@ export class EstoqueEntity {
 
   @ApiProperty()
   @PrimaryColumn('int')
-  refereciaId: number;
+  referenciaId: number;
 
   @ApiProperty()
   @PrimaryColumn('bigint')

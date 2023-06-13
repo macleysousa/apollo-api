@@ -1,5 +1,5 @@
 export enum SituacaoRomaneio {
   EmAndamento = 'Em andamento',
-  Finalizado = 'Finalizado',
+  Encerrado = 'Encerrado',
   Cancelado = 'Cancelado',
 }

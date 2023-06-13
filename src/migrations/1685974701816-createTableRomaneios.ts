@@ -60,7 +60,8 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
           },
           {
             name: 'modalidade',
-            type: 'varchar',
+            type: 'enum',
+            enum: ['"Entrada"', '"Saída"'],
             isNullable: false,
           },
           {
@@ -70,7 +71,8 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
           },
           {
             name: 'situacao',
-            type: 'varchar',
+            type: 'enum',
+            enum: ['"Em andamento"', '"Encerrado"', '"Cancelado"'],
             default: '"Em andamento"',
           },
           {

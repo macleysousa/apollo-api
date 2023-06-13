@@ -1,15 +1,17 @@
-import { Body, Controller, Get, Param, Post, ParseIntPipe, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
+import { CurrentBranch } from 'src/decorators/current-auth.decorator';
 
 import { ApiComponent } from '../componente/decorator/componente.decorator';
+import { EmpresaEntity } from '../empresa/entities/empresa.entity';
 import { CreateRomaneioDto } from './dto/create-romaneio.dto';
+import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';
 import { RomaneioService } from './romaneio.service';
 import { RomaneioView } from './views/romaneio.view';
-import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';
 
 @ApiTags('Romaneios')
 @Controller('romaneios')
@@ -33,19 +35,23 @@ export class RomaneioController {
 
   @Get(':id')
   @ApiResponse({ status: 200, type: RomaneioView })
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<RomaneioView> {
-    return this.service.findById(id);
+  async findOne(@CurrentBranch() empresa: EmpresaEntity, @Param('id', ParseIntPipe) id: number): Promise<RomaneioView> {
+    return this.service.findById(empresa.id, id);
   }
 
   @Put(':id/observacao')
   @ApiResponse({ status: 200, type: RomaneioView })
-  async observacao(@Param('id', ParseIntPipe) id: number, @Body() observacao: OperacaoRomaneioDto): Promise<RomaneioView> {
-    return this.service.observacao(id, observacao);
+  async observacao(
+    @CurrentBranch() empresa: EmpresaEntity,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() observacao: OperacaoRomaneioDto
+  ): Promise<RomaneioView> {
+    return this.service.observacao(empresa.id, id, observacao);
   }
 
   @Put(':id/cancelar')
   @ApiResponse({ status: 200, type: RomaneioView })
-  async cancelar(@Param('id', ParseIntPipe) id: number): Promise<RomaneioView> {
-    return this.service.cancelar(id);
+  async cancelar(@CurrentBranch() empresa: EmpresaEntity, @Param('id', ParseIntPipe) id: number): Promise<RomaneioView> {
+    return this.service.cancelar(empresa.id, id);
   }
 }

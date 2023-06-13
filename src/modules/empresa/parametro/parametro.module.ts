@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { EmpresaParametroService } from './parametro.service';
@@ -12,4 +12,11 @@ import { EmpresaParametroView } from './views/paramentro.view';
   providers: [EmpresaParametroService],
   exports: [EmpresaParametroService],
 })
-export class ParametroModule {}
+export class ParametroModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

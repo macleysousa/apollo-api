@@ -1,17 +1,17 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
 import { EstoqueService } from 'src/modules/estoque/estoque.service';
+import { PrecoReferenciaService } from 'src/modules/tabela-de-preco/referencia/referencia.service';
 
+import { ModalidadeRomaneio } from '../enum/modalidade-romaneio.enum';
+import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
+import { RomaneioService } from '../romaneio.service';
 import { UpSertRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
 import { RomaneioItemEntity } from './entities/romaneio-item.entity';
-import { RomaneioService } from '../romaneio.service';
-import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
-import { PrecoReferenciaService } from 'src/modules/tabela-de-preco/referencia/referencia.service';
 import { RomaneioItemView } from './views/romaneio-item.view';
-import { ModalidadeRomaneio } from '../enum/modalidade-romaneio.enum';
 
 @Injectable()
 export class RomaneioItemService {
@@ -30,14 +30,14 @@ export class RomaneioItemService {
     const usuario = this.contextService.currentUser();
     const empresa = this.contextService.currentBranch();
 
-    const romaneio = await this.romaneioService.findById(romaneioId);
+    const romaneio = await this.romaneioService.findById(empresa.id, romaneioId);
     if (!romaneio) {
       throw new BadRequestException('Romaneio não encontrado');
     } else if (romaneio.situacao !== SituacaoRomaneio.EmAndamento) {
       throw new BadRequestException('Romaneio não está em andamento');
     }
 
-    const romaneioItem = await this.findByProdutoId(empresa.id, produtoId);
+    const romaneioItem = await this.findByProdutoId(romaneioId, produtoId);
 
     const estoque = await this.estoqueService.findByProdutoId(empresa.id, produtoId);
     if (!estoque) {
@@ -56,7 +56,7 @@ export class RomaneioItemService {
     await this.repository.upsert(
       {
         empresaId: empresa.id,
-        romaneioId: romaneio.romaneioId,
+        romaneioId: romaneioId,
         data: empresa.data,
         referenciaId: estoque.referenciaId,
         produtoId: estoque.produtoId,
@@ -68,7 +68,7 @@ export class RomaneioItemService {
       { conflictPaths: ['empresaId', 'romaneioId', 'produtoId'] }
     );
 
-    return this.findByProdutoId(empresa.id, produtoId);
+    return this.findByProdutoId(romaneioId, produtoId);
   }
 
   async find(romaneioId: number): Promise<RomaneioItemView[]> {

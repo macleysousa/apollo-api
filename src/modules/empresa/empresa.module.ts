@@ -11,7 +11,12 @@ import { EmpresaFormaPagamentoModule } from './forma-de-pagamento/forma-de-pagam
 import { ParametroModule } from './parametro/parametro.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EmpresaEntity]), TerminalModule, EmpresaFormaPagamentoModule, ParametroModule],
+  imports: [
+    TypeOrmModule.forFeature([EmpresaEntity]),
+    TerminalModule.forRoot(),
+    EmpresaFormaPagamentoModule.forRoot(),
+    ParametroModule.forRoot(),
+  ],
   controllers: [EmpresaController],
   providers: [EmpresaService, EmpresaConstraint],
   exports: [EmpresaService],

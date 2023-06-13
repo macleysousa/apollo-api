@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { EmpresaFormaPagamentoService } from './forma-de-pagamento.service';
@@ -10,4 +10,11 @@ import { EmpresaFormaPagamentoEntity } from './entities/forma-de-pagamento.entit
   controllers: [EmpresaFormaPagamentoController],
   providers: [EmpresaFormaPagamentoService],
 })
-export class EmpresaFormaPagamentoModule {}
+export class EmpresaFormaPagamentoModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

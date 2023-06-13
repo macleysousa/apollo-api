@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { romaneioFakeRepository } from 'src/base-fake/romaneio';
+import { ContextService } from 'src/context/context.service';
 
 import { RomaneioItemController } from './romaneio-item.controller';
 import { RomaneioItemService } from './romaneio-item.service';
@@ -26,6 +28,13 @@ describe('RomaneioItemController', () => {
           provide: RomaneioService,
           useValue: {
             findById: jest.fn().mockResolvedValue(romaneioFakeRepository.findOneView()),
+          },
+        },
+        {
+          provide: ContextService,
+          useValue: {
+            currentUser: jest.fn().mockReturnValue({ id: 1 }),
+            currentBranch: jest.fn().mockReturnValue({ id: 1, data: new Date('2023-06-13') }),
           },
         },
       ],
