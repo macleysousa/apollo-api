@@ -14,7 +14,7 @@ import { RomaneioItemView } from './views/romaneio-item.view';
 @ApiEmpresaAuth()
 @ApiTags('Romaneios Itens')
 @Controller('romaneios/:romaneioId/itens')
-@ApiComponent('ROMFP002', 'Lançamento de romaneios itens')
+@ApiComponent('ROMFP002', 'Lançamento de romaneios - itens')
 export class RomaneioItemController {
   constructor(private readonly service: RomaneioItemService) {}
 

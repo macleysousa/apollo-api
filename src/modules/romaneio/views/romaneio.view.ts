@@ -6,11 +6,11 @@ import { BaseEntity } from 'src/commons/base.entity';
 @ViewEntity({ name: 'view_romaneios' })
 export class RomaneioView extends BaseEntity {
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   empresaId: number;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   romaneioId: number;
 
   @ApiProperty()
@@ -18,7 +18,7 @@ export class RomaneioView extends BaseEntity {
   data: Date;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   pessoaId: number;
 
   @ApiProperty()
@@ -26,7 +26,7 @@ export class RomaneioView extends BaseEntity {
   pessoaNome: string;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   funcionarioId: number;
 
   @ApiProperty()
@@ -34,7 +34,7 @@ export class RomaneioView extends BaseEntity {
   funcionarioNome: string;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   tabelaPrecoId: number;
 
   @ApiProperty()
@@ -58,6 +58,14 @@ export class RomaneioView extends BaseEntity {
   acertoConsignacao: boolean;
 
   @ApiProperty()
+  @ViewColumn()
+  tipoFrete: string;
+
+  @ApiProperty()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  valorFrete: number;
+
+  @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   quantidade: number;
 
@@ -74,7 +82,7 @@ export class RomaneioView extends BaseEntity {
   valorLiquido: number;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   operadorId: number;
 
   constructor(partial?: Partial<RomaneioView>) {

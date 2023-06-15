@@ -1,4 +1,6 @@
 import { PaginatedDTO } from 'src/decorators/api-paginated-response.decorator';
+import { RomaneioFreteEntity } from 'src/modules/romaneio/romaneio-frete/entities/romaneio-frete.entity';
+import { FreteTipo } from 'src/modules/romaneio/romaneio-frete/enum/frete-tipo';
 import { RomaneioItemView } from 'src/modules/romaneio/romaneio-item/views/romaneio-item.view';
 import { RomaneioView } from 'src/modules/romaneio/views/romaneio.view';
 
@@ -134,6 +136,19 @@ export class RomaneioFakeRepository {
     });
 
     return item;
+  }
+
+  findFrete(): RomaneioFreteEntity {
+    return new RomaneioFreteEntity({
+      empresaId: 1,
+      romaneioId: 1,
+      tipo: FreteTipo.CIF,
+      valor: 1,
+      prazo: 0,
+      observacao: 'observacao',
+      criadoEm: new Date('2023-06-09T11:13:18.000Z'),
+      atualizadoEm: new Date('2023-06-09T11:13:18.000Z'),
+    });
   }
 }
 

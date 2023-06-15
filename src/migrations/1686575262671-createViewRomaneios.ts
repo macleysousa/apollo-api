@@ -18,6 +18,8 @@ r.operacao as operacao,
 r.situacao as situacao,
 r.pago as pago,
 r.acertoConsignacao as acertoConsignacao,
+rf.tipo as tipoFrete,
+ifnull(rf.valor,0) as valorFrete,
 sum(ifnull(ri.quantidade,0)) as quantidade,
 sum(ifnull(ri.valorUnitario * ri.quantidade,0)) as valorBruto,
 sum(ifnull(ri.valorUnitDesconto * ri.quantidade,0)) as valorDesconto,
@@ -28,6 +30,7 @@ r.atualizadoEm as atualizadoEm
 from romaneios r
 inner join pessoas p on p.id=r.pessoaId
 inner join funcionarios f on f.id=r.funcionarioId
+left join romaneios_fretes rf on rf.romaneioId=r.id
 left join romaneios_itens ri on ri.romaneioId=r.id
 group by r.id
 `);
