@@ -10,7 +10,7 @@ export class ParseUsuarioPipe implements PipeTransform<string, Promise<number>> 
     const parsedValue = parseInt(value, 10);
 
     if (isNaN(parsedValue)) {
-      throw new BadRequestException('O valor deve ser um número.');
+      throw new BadRequestException('O romaneio deve ser um número.');
     }
 
     const usuario = await this.service.findById(parsedValue);

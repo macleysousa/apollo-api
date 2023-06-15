@@ -23,25 +23,25 @@ export class RomaneioFreteController {
   @ApiResponse({ status: 201, type: RomaneioFreteEntity })
   create(
     @CurrentBranch() empresa: EmpresaEntity,
-    @Param('romanioId', ParseRomaneioEmAndamentoPipe) romanioId: number,
+    @Param('romaneioId', ParseRomaneioEmAndamentoPipe) romaneioId: number,
     @Body() createRomaneioFreteDto: CreateRomaneioFreteDto
   ): Promise<RomaneioFreteEntity> {
-    return this.service.upsert(empresa.id, romanioId, createRomaneioFreteDto);
+    return this.service.upsert(empresa.id, romaneioId, createRomaneioFreteDto);
   }
 
   @Get()
   async findByRomaneioId(
     @CurrentBranch() empresa: EmpresaEntity,
-    @Param('romanioId', ParseRomaneioEmAndamentoPipe) romanioId: number
+    @Param('romaneioId', ParseRomaneioEmAndamentoPipe) romaneioId: number
   ): Promise<RomaneioFreteEntity> {
-    return this.service.findByRomaneioId(empresa.id, romanioId);
+    return this.service.findByRomaneioId(empresa.id, romaneioId);
   }
 
   @Delete()
   async delete(
     @CurrentBranch() empresa: EmpresaEntity,
-    @Param('romanioId', ParseRomaneioEmAndamentoPipe) romanioId: number
+    @Param('romaneioId', ParseRomaneioEmAndamentoPipe) romaneioId: number
   ): Promise<void> {
-    return this.service.delete(empresa.id, romanioId);
+    return this.service.delete(empresa.id, romaneioId);
   }
 }

@@ -13,7 +13,7 @@ export class ParseRomaneioPipe implements PipeTransform<string, Promise<number>>
     const empresa = this.contextService.currentBranch();
 
     if (isNaN(parsedValue)) {
-      throw new BadRequestException('O valor deve ser um número.');
+      throw new BadRequestException('O romaneio deve ser um número.');
     }
 
     const romaneio = await this.service.findById(empresa.id, parsedValue);
@@ -36,8 +36,10 @@ export class ParseRomaneioEmAndamentoPipe implements PipeTransform<string, Promi
     const parsedValue = parseInt(value, 10);
     const empresa = this.contextService.currentBranch();
 
+    console.log('ParseRomaneioEmAndamentoPipe', value, parsedValue, empresa);
+
     if (isNaN(parsedValue)) {
-      throw new BadRequestException('O valor deve ser um número.');
+      throw new BadRequestException('O romaneio deve ser um número.');
     }
 
     const romaneio = await this.service.findById(empresa.id, parsedValue);
@@ -61,7 +63,7 @@ export class ParseRomaneioEncerradoPipe implements PipeTransform<string, Promise
     const empresa = this.contextService.currentBranch();
 
     if (isNaN(parsedValue)) {
-      throw new BadRequestException('O valor deve ser um número.');
+      throw new BadRequestException('O romaneio deve ser um número.');
     }
 
     const romaneio = await this.service.findById(empresa.id, parsedValue);

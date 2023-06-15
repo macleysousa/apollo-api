@@ -10,7 +10,7 @@ export class ParseEmpresaPipe implements PipeTransform<string, Promise<number>> 
     const parsedValue = parseInt(value, 10);
 
     if (isNaN(parsedValue)) {
-      throw new BadRequestException('O valor deve ser um número.');
+      throw new BadRequestException('O empresa deve ser um número.');
     }
 
     const empresa = await this.service.findById(parsedValue);
