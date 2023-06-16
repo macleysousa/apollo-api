@@ -29,6 +29,7 @@ import { FormaDePagamentoModule } from './modules/forma-de-pagamento/forma-de-pa
 import { EstoqueModule } from './modules/estoque/estoque.module';
 import { RomaneioModule } from './modules/romaneio/romaneio.module';
 import { TabelaDePrecoModule } from './modules/tabela-de-preco/tabela-de-preco.module';
+import { FaturaModule } from './modules/fatura/fatura.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { TabelaDePrecoModule } from './modules/tabela-de-preco/tabela-de-preco.m
     CaixaModule.forRoot(),
     PessoaModule.forRoot(),
     FuncionarioModule.forRoot(),
+    FaturaModule.forRoot(),
     MarcaModule.forRoot(),
     CorModule.forRoot(),
     TamanhoModule.forRoot(),
