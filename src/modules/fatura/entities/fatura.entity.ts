@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
+import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { TipoInclusao } from 'src/commons/enum/tipo-inclusao';
 import { PessoaEntity } from 'src/modules/pessoa/entities/pessoa.entity';
 
@@ -31,8 +32,20 @@ export class FaturaEntity extends BaseEntity {
   pessoa: PessoaEntity;
 
   @ApiProperty()
+  @Column('bigint')
+  romaneioId: number;
+
+  @ApiProperty()
   @Column('decimal', { precision: 10, scale: 4 })
   valor: number;
+
+  @ApiProperty()
+  @Column('int')
+  parcelas: number;
+
+  @ApiProperty({ enum: TipoDocumento })
+  @Column('enum', { enum: TipoDocumento })
+  tipoDocumento: TipoDocumento;
 
   @ApiProperty({ enum: TipoInclusao })
   @Column('enum', { enum: TipoInclusao })

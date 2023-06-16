@@ -1,14 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { FaturaController } from './fatura.controller';
-import { FaturaEntity } from './entities/fatura.entity';
-import { FaturaService } from './fatura.service';
-import { CreateFaturaDto } from './dto/create-fatura.dto';
+
 import { faturaFakeRepository } from 'src/base-fake/fatura';
+
+import { EmpresaService } from '../empresa/empresa.service';
+import { CreateFaturaDto } from './dto/create-fatura.dto';
 import { UpdateFaturaDto } from './dto/update-fatura.dto';
 import { FaturaSituacao } from './enum/fatura-situacao.enum';
-import { EmpresaService } from '../empresa/empresa.service';
+import { FaturaController } from './fatura.controller';
+import { FaturaService } from './fatura.service';
 
 describe('FaturaController', () => {
   let controller: FaturaController;
@@ -48,7 +47,7 @@ describe('FaturaController', () => {
 
   describe('create', () => {
     it('should create a new fatura', async () => {
-      const createFaturaDto: CreateFaturaDto = { pessoaId: 1, valor: 100, observacao: 'Observação' };
+      const createFaturaDto: CreateFaturaDto = { pessoaId: 1, parcelas: 1, valor: 100, observacao: 'Observação' };
       const fatura = faturaFakeRepository.findOne();
 
       jest.spyOn(service, 'createManual').mockResolvedValue(fatura);

@@ -24,6 +24,11 @@ export class CreateTableFaturas1686909578491 implements MigrationInterface {
             isPrimary: true,
           },
           {
+            name: 'romaneioId',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
             name: 'pessoaId',
             type: 'int',
             isNullable: false,
@@ -32,6 +37,16 @@ export class CreateTableFaturas1686909578491 implements MigrationInterface {
             name: 'valor',
             type: 'decimal(10,4)',
             isNullable: false,
+          },
+          {
+            name: 'parcelas',
+            type: 'int',
+            default: 1,
+          },
+          {
+            name: 'tipoDocumento',
+            type: 'varchar',
+            default: '"Fatura"',
           },
           {
             name: 'tipoInclusao',
@@ -76,6 +91,13 @@ export class CreateTableFaturas1686909578491 implements MigrationInterface {
           {
             columnNames: ['pessoaId'],
             referencedTableName: 'pessoas',
+            referencedColumnNames: ['id'],
+            onDelete: 'RESTRICT',
+            onUpdate: 'CASCADE',
+          },
+          {
+            columnNames: ['romaneioId'],
+            referencedTableName: 'romaneios',
             referencedColumnNames: ['id'],
             onDelete: 'RESTRICT',
             onUpdate: 'CASCADE',

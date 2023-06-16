@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { faturaFakeRepository } from 'src/base-fake/fatura';
+import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { TipoInclusao } from 'src/commons/enum/tipo-inclusao';
 import { ContextService } from 'src/context/context.service';
 
@@ -61,13 +62,14 @@ describe('FaturaService', () => {
     expect(contextService).toBeDefined();
   });
 
-  describe('find', () => {
+  describe('create', () => {
     it('should create a manual fatura', async () => {
       const usuario = contextService.currentUser();
       const empresa = contextService.currentBranch();
       const createFaturaDto: CreateFaturaDto = {
         pessoaId: 1,
         valor: 100,
+        parcelas: 1,
         observacao: 'Observação',
       };
       const faturaResult = { ...faturaFakeRepository.findOne(), tipoInclusao: TipoInclusao.Manual };
@@ -81,6 +83,7 @@ describe('FaturaService', () => {
         empresaId: empresa.id,
         data: expect.any(Date),
         operadorId: usuario.id,
+        tipoDocumento: TipoDocumento.Fatura,
         situacao: FaturaSituacao.Normal,
         tipoInclusao: TipoInclusao.Manual,
       });
@@ -93,6 +96,7 @@ describe('FaturaService', () => {
       const createFaturaDto: CreateFaturaDto = {
         pessoaId: 1,
         valor: 100,
+        parcelas: 1,
         observacao: 'Observação',
       };
       const faturaResult = { ...faturaFakeRepository.findOne(), tipoInclusao: TipoInclusao.Automatica };
@@ -106,6 +110,7 @@ describe('FaturaService', () => {
         empresaId: empresa.id,
         data: expect.any(Date),
         operadorId: usuario.id,
+        tipoDocumento: TipoDocumento.Fatura,
         situacao: FaturaSituacao.Normal,
         tipoInclusao: TipoInclusao.Automatica,
       });

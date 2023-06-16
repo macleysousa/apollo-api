@@ -4,6 +4,7 @@ import { isDate } from 'class-validator';
 import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { In, IsNull, Not, Repository } from 'typeorm';
 
+import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { TipoInclusao } from 'src/commons/enum/tipo-inclusao';
 import { ContextService } from 'src/context/context.service';
 
@@ -37,6 +38,7 @@ export class FaturaService {
       empresaId: empresa.id,
       data: empresa.data,
       operadorId: usuario.id,
+      tipoDocumento: TipoDocumento.Fatura,
       situacao: FaturaSituacao.Normal,
       tipoInclusao: TipoInclusao.Manual,
     });
@@ -53,6 +55,7 @@ export class FaturaService {
       empresaId: empresa.id,
       data: empresa.data,
       operadorId: usuario.id,
+      tipoDocumento: TipoDocumento.Fatura,
       situacao: FaturaSituacao.Normal,
       tipoInclusao: TipoInclusao.Automatica,
     });
