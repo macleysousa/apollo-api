@@ -1,37 +1,25 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreateTableFaturas1686909578491 implements MigrationInterface {
+export class CreateTableFaturasParcelas1686931296067 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'faturas',
+        name: 'faturas_parcelas',
         columns: [
-          {
-            name: 'id',
-            type: 'bigint',
-            isPrimary: true,
-            isGenerated: true,
-            generationStrategy: 'increment',
-          },
           {
             name: 'empresaId',
             type: 'int',
             isPrimary: true,
           },
           {
-            name: 'data',
-            type: 'date',
+            name: 'faturaId',
+            type: 'bigint',
             isPrimary: true,
           },
           {
-            name: 'romaneioId',
-            type: 'bigint',
-            isNullable: true,
-          },
-          {
-            name: 'pessoaId',
+            name: 'parcela',
             type: 'int',
-            isNullable: false,
+            isPrimary: true,
           },
           {
             name: 'valor',
@@ -39,24 +27,34 @@ export class CreateTableFaturas1686909578491 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'parcelas',
-            type: 'int',
-            default: 1,
+            name: 'vencimento',
+            type: 'date',
+            isNullable: false,
           },
           {
-            name: 'tipoDocumento',
-            type: 'varchar',
-            default: '"Fatura"',
+            name: 'valorDesconto',
+            type: 'decimal(10,4)',
+            default: 0,
           },
           {
-            name: 'tipoInclusao',
-            type: 'enum',
-            enum: ['Automática', 'Manual'],
+            name: 'caixaPagamento',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
+            name: 'valorPago',
+            type: 'decimal(10,4)',
+            isNullable: true,
+          },
+          {
+            name: 'pagamento',
+            type: 'date',
+            isNullable: true,
           },
           {
             name: 'situacao',
-            type: 'varchar',
-            default: '"Normal"',
+            type: 'enum',
+            enum: ['Normal', 'Paga', 'Cancelada'],
           },
           {
             name: 'observacao',
@@ -89,15 +87,15 @@ export class CreateTableFaturas1686909578491 implements MigrationInterface {
             onUpdate: 'CASCADE',
           },
           {
-            columnNames: ['pessoaId'],
-            referencedTableName: 'pessoas',
+            columnNames: ['faturaId'],
+            referencedTableName: 'faturas',
             referencedColumnNames: ['id'],
             onDelete: 'RESTRICT',
             onUpdate: 'CASCADE',
           },
           {
-            columnNames: ['romaneioId'],
-            referencedTableName: 'romaneios',
+            columnNames: ['caixaPagamento'],
+            referencedTableName: 'caixas',
             referencedColumnNames: ['id'],
             onDelete: 'RESTRICT',
             onUpdate: 'CASCADE',
@@ -115,6 +113,6 @@ export class CreateTableFaturas1686909578491 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('faturas');
+    await queryRunner.dropTable('faturas_parcelas');
   }
 }

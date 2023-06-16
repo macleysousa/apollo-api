@@ -8,7 +8,7 @@ export class CreateTableCaixas1685389836832 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'int',
+            type: 'bigint',
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'increment',

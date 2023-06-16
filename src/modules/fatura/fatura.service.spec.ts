@@ -37,7 +37,7 @@ describe('FaturaService', () => {
             createQueryBuilder: jest.fn().mockReturnValue({
               where: jest.fn().mockReturnThis(),
               andWhere: jest.fn().mockReturnThis(),
-              innerJoinAndSelect: jest.fn().mockReturnThis(),
+              leftJoinAndSelect: jest.fn().mockReturnThis(),
             }),
           },
         },
@@ -128,11 +128,12 @@ describe('FaturaService', () => {
         dataFim: new Date(),
       };
 
-      const result = await service.find(filter, 1, 100);
+      const result = await service.find(filter, 1, 100, ['itens']);
 
       expect(repository.createQueryBuilder).toHaveBeenCalledWith('f');
       expect(repository.createQueryBuilder().where).toHaveBeenCalledWith({ empresaId: expect.any(Object) });
-      expect(repository.createQueryBuilder().innerJoinAndSelect).toHaveBeenCalledWith('f.pessoa', 'p');
+      expect(repository.createQueryBuilder().leftJoinAndSelect).toHaveBeenCalledWith('f.pessoa', 'p');
+      expect(repository.createQueryBuilder().leftJoinAndSelect).toHaveBeenCalledWith('f.itens', 'i');
       expect(repository.createQueryBuilder().andWhere).toHaveBeenCalledWith({ empresaId: expect.any(Object) });
       expect(repository.createQueryBuilder().andWhere).toHaveBeenCalledWith({ id: expect.any(Object) });
       expect(repository.createQueryBuilder().andWhere).toHaveBeenCalledWith({ pessoaId: expect.any(Object) });
@@ -155,7 +156,7 @@ describe('FaturaService', () => {
 
       expect(repository.createQueryBuilder).toHaveBeenCalledWith('f');
       expect(repository.createQueryBuilder().where).toHaveBeenCalledWith({ empresaId: expect.any(Object) });
-      expect(repository.createQueryBuilder().innerJoinAndSelect).toHaveBeenCalledWith('f.pessoa', 'p');
+      expect(repository.createQueryBuilder().leftJoinAndSelect).toHaveBeenCalledWith('f.pessoa', 'p');
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ empresaId: expect.any(Object) });
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ id: expect.any(Object) });
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ pessoaId: expect.any(Object) });
@@ -174,7 +175,7 @@ describe('FaturaService', () => {
 
       expect(repository.createQueryBuilder).toHaveBeenCalledWith('f');
       expect(repository.createQueryBuilder().where).toHaveBeenCalledWith({ empresaId: expect.any(Object) });
-      expect(repository.createQueryBuilder().innerJoinAndSelect).toHaveBeenCalledWith('f.pessoa', 'p');
+      expect(repository.createQueryBuilder().leftJoinAndSelect).toHaveBeenCalledWith('f.pessoa', 'p');
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ empresaId: expect.any(Object) });
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ id: expect.any(Object) });
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ pessoaId: expect.any(Object) });

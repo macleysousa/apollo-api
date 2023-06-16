@@ -4,9 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FaturaService } from './fatura.service';
 import { FaturaController } from './fatura.controller';
 import { FaturaEntity } from './entities/fatura.entity';
+import { ParcelaModule } from './parcela/parcela.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FaturaEntity])],
+  imports: [TypeOrmModule.forFeature([FaturaEntity]), ParcelaModule],
   controllers: [FaturaController],
   providers: [FaturaService],
   exports: [FaturaService],

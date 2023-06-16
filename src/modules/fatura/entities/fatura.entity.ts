@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 import { TipoDocumento } from 'src/commons/enum/tipo-documento';
@@ -7,6 +7,7 @@ import { TipoInclusao } from 'src/commons/enum/tipo-inclusao';
 import { PessoaEntity } from 'src/modules/pessoa/entities/pessoa.entity';
 
 import { FaturaSituacao } from '../enum/fatura-situacao.enum';
+import { FaturaParcelaEntity } from '../parcela/entities/parcela.entity';
 
 @Entity({ name: 'faturas' })
 export class FaturaEntity extends BaseEntity {
@@ -36,7 +37,7 @@ export class FaturaEntity extends BaseEntity {
   romaneioId: number;
 
   @ApiProperty()
-  @Column('decimal', { precision: 10, scale: 4 })
+  @Column('decimal', { precision: 10, scale: 2, transformer: { from: (value) => parseFloat(value), to: (value) => value } })
   valor: number;
 
   @ApiProperty()
@@ -62,6 +63,10 @@ export class FaturaEntity extends BaseEntity {
   @ApiProperty()
   @Column('int')
   operadorId: number;
+
+  @ApiProperty()
+  @OneToMany(() => FaturaParcelaEntity, (faturaParcela) => faturaParcela.fatura)
+  itens: FaturaParcelaEntity[];
 
   constructor(partial?: Partial<FaturaEntity>) {
     super();

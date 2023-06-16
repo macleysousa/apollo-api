@@ -12,6 +12,7 @@ import { CreateFaturaDto } from './dto/create-fatura.dto';
 import { UpdateFaturaDto } from './dto/update-fatura.dto';
 import { FaturaEntity } from './entities/fatura.entity';
 import { FaturaService } from './fatura.service';
+import { Relations } from './relations/relations.type';
 
 @ApiTags('Faturas')
 @Controller('faturas')
@@ -33,6 +34,7 @@ export class FaturaController {
   @ApiQuery({ name: 'pessoaIds', required: false, isArray: true })
   @ApiQuery({ name: 'dataInicio', required: false })
   @ApiQuery({ name: 'dataFim', required: false })
+  @ApiQuery({ name: 'incluir', required: false, description: 'Opçoes: itens', isArray: true })
   @ApiQuery({ name: 'page', required: false, description: 'Value default: 1' })
   @ApiQuery({ name: 'limit', required: false, description: 'Value default: 100' })
   async find(
@@ -41,16 +43,22 @@ export class FaturaController {
     @Query('pessoaIds', new DefaultValuePipe([])) pessoaIds: number[],
     @Query('dataInicio', new DefaultValuePipe(Date)) dataInicio: Date,
     @Query('dataFim', new DefaultValuePipe(Date)) dataFim: Date,
+    @Query('incluir', new DefaultValuePipe([])) relations: Relations[],
     @Query('page', new DefaultValuePipe(1), new ParseBetweenPipe(1, 1000)) page: number,
     @Query('limit', new DefaultValuePipe(100), new ParseBetweenPipe(1, 1000)) limit: number
   ): Promise<Pagination<FaturaEntity>> {
-    return this.service.find({ empresaIds, faturaIds, pessoaIds, dataInicio, dataFim }, page, limit);
+    return this.service.find({ empresaIds, faturaIds, pessoaIds, dataInicio, dataFim }, page, limit, relations);
   }
 
   @Get(':id')
   @ApiResponse({ status: 200, type: FaturaEntity })
-  async findById(@CurrentBranch() empresa: EmpresaEntity, @Param('id', ParseIntPipe) id: number): Promise<FaturaEntity> {
-    return this.service.findById(empresa.id, id);
+  @ApiQuery({ name: 'incluir', required: false, description: 'Opçoes: itens', isArray: true })
+  async findById(
+    @CurrentBranch() empresa: EmpresaEntity,
+    @Param('id', ParseIntPipe) id: number,
+    @Query('incluir', new DefaultValuePipe([])) relations: Relations[]
+  ): Promise<FaturaEntity> {
+    return this.service.findById(empresa.id, id, relations);
   }
 
   @Put(':id')

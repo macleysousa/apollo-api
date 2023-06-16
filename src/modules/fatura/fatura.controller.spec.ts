@@ -66,11 +66,12 @@ describe('FaturaController', () => {
       const dataFim = new Date();
       const page = 1;
       const limit = 100;
+      const relations = ['itens'] as any;
       const faturas = faturaFakeRepository.findPaginate();
 
-      const result = await controller.find(empresaIds, faturaIds, pessoaIds, dataInicio, dataFim, page, limit);
+      const result = await controller.find(empresaIds, faturaIds, pessoaIds, dataInicio, dataFim, relations, page, limit);
 
-      expect(service.find).toHaveBeenCalledWith({ empresaIds, faturaIds, pessoaIds, dataInicio, dataFim }, page, limit);
+      expect(service.find).toHaveBeenCalledWith({ empresaIds, faturaIds, pessoaIds, dataInicio, dataFim }, page, limit, relations);
       expect(result).toEqual(faturas);
     });
   });
@@ -79,11 +80,12 @@ describe('FaturaController', () => {
     it('should find a fatura by id', async () => {
       const empresa = { id: 1 } as any;
       const id = 2;
+      const relations = ['itens'] as any;
       const fatura = faturaFakeRepository.findOne();
 
-      const result = await controller.findById(empresa, id);
+      const result = await controller.findById(empresa, id, relations);
 
-      expect(service.findById).toHaveBeenCalledWith(empresa.id, id);
+      expect(service.findById).toHaveBeenCalledWith(empresa.id, id, relations);
       expect(result).toEqual(fatura);
     });
   });

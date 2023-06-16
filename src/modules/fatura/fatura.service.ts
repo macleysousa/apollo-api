@@ -12,6 +12,7 @@ import { CreateFaturaDto } from './dto/create-fatura.dto';
 import { UpdateFaturaDto } from './dto/update-fatura.dto';
 import { FaturaEntity } from './entities/fatura.entity';
 import { FaturaSituacao } from './enum/fatura-situacao.enum';
+import { Relations } from './relations/relations.type';
 
 interface filter {
   empresaIds: number[];
@@ -63,10 +64,14 @@ export class FaturaService {
     return this.findById(empresa.id, fatura.id);
   }
 
-  async find(filter?: filter, page = 1, limit = 100): Promise<Pagination<FaturaEntity>> {
+  async find(filter?: filter, page = 1, limit = 100, relations?: Relations[]): Promise<Pagination<FaturaEntity>> {
     const queryBuilder = this.repository.createQueryBuilder('f');
     queryBuilder.where({ empresaId: Not(IsNull()) });
-    queryBuilder.innerJoinAndSelect('f.pessoa', 'p');
+    queryBuilder.leftJoinAndSelect('f.pessoa', 'p');
+
+    if (relations?.includes('itens')) {
+      queryBuilder.leftJoinAndSelect('f.itens', 'i');
+    }
 
     if (filter?.empresaIds && filter.empresaIds.length > 0) {
       queryBuilder.andWhere({ empresaId: In(filter.empresaIds) });
@@ -91,8 +96,8 @@ export class FaturaService {
     return paginate<FaturaEntity>(queryBuilder, { page, limit });
   }
 
-  async findById(empresaId: number, id: number): Promise<FaturaEntity> {
-    return this.repository.findOne({ where: { empresaId, id } });
+  async findById(empresaId: number, id: number, relations?: Relations[]): Promise<FaturaEntity> {
+    return this.repository.findOne({ where: { empresaId, id }, relations: relations });
   }
 
   async update(empresaId: number, id: number, updateFaturaDto: UpdateFaturaDto): Promise<FaturaEntity> {
