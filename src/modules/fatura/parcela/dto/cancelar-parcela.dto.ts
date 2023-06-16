@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, Length } from 'class-validator';
 
 import { IsBetween } from 'src/commons/validations/is-between.validation';
+import { IsCaixa } from 'src/commons/validations/is-caixa.validation';
 
 export class CancelarParcelaDto {
   @ApiProperty()
@@ -12,7 +13,7 @@ export class CancelarParcelaDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  //@IsCaixa()
+  @IsCaixa()
   caixaId: number;
 
   @ApiProperty()
