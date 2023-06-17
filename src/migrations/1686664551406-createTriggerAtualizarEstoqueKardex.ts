@@ -2,7 +2,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateTriggerAtualizarEstoqueKardex1686664551406 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TRIGGER atualiza_estoque_kardex`);
+    await queryRunner.query(`DROP TRIGGER IF EXISTS atualiza_estoque_kardex`);
 
     await queryRunner.query(`
 CREATE TRIGGER atualiza_estoque_kardex
@@ -25,6 +25,6 @@ END;
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TRIGGER atualiza_estoque_kardex`);
+    await queryRunner.query(`DROP TRIGGER IF EXISTS atualiza_estoque_kardex`);
   }
 }

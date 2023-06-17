@@ -50,6 +50,54 @@ export class FaturaParcelaEntity extends BaseEntity {
   situacao: ParcelaSituacao;
 
   @ApiProperty()
+  @Column('varchar', { length: 255 })
+  banco: string;
+
+  @ApiProperty()
+  @Column('varchar', { length: 255 })
+  agencia: string;
+
+  @ApiProperty()
+  @Column('varchar', { length: 255 })
+  conta: string;
+
+  @ApiProperty()
+  @Column('varchar', { length: 255 })
+  documento: string;
+
+  @ApiProperty()
+  @Column('varchar', { length: 255 })
+  nsu: string;
+
+  @ApiProperty()
+  @Column('varchar', { length: 255 })
+  autorizacao: string;
+
+  @ApiProperty()
+  @Column('int')
+  cheque: number;
+
+  @ApiProperty()
+  @Column('varchar', { length: 255 })
+  banda: string;
+
+  @ApiProperty()
+  @Column('boolean')
+  chequerTerceiro: boolean;
+
+  @ApiProperty()
+  @Column('varchar', { length: 255 })
+  cpfCnpjTerceiro: string;
+
+  @ApiProperty()
+  @Column('varchar', { length: 255 })
+  nomeTerceiro: string;
+
+  @ApiProperty()
+  @Column('varchar', { length: 255 })
+  telefoneTerceiro: string;
+
+  @ApiProperty()
   @Column('int')
   operadorId: number;
 

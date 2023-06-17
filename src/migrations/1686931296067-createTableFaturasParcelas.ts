@@ -55,6 +55,67 @@ export class CreateTableFaturasParcelas1686931296067 implements MigrationInterfa
             name: 'situacao',
             type: 'enum',
             enum: ['Normal', 'Paga', 'Cancelada'],
+            default: "'Normal'",
+          },
+          {
+            name: 'banco',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'agencia',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'conta',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'documento',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'nsu',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'autorizacao',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'cheque',
+            type: 'int',
+            isNullable: true,
+          },
+          {
+            name: 'banda',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'chequerTerceiro',
+            type: 'boolean',
+            isNullable: true,
+          },
+          {
+            name: 'cpfCnpjTerceiro',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'nomeTerceiro',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'telefoneTerceiro',
+            type: 'varchar',
+            isNullable: true,
           },
           {
             name: 'observacao',
