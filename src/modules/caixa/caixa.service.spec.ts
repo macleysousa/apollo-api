@@ -1,14 +1,14 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { BadRequestException } from '@nestjs/common';
 
-import { authRequestFake } from 'src/base-fake/auth-request';
 import { caixaFakeRepository } from 'src/base-fake/caixa';
+import { ContextService } from 'src/context/context.service';
 
 import { CaixaService } from './caixa.service';
-import { CaixaEntity } from './entities/caixa.entity';
 import { CreateCaixaDto } from './dto/create-caixa.dto';
+import { CaixaEntity } from './entities/caixa.entity';
 
 describe('CaixaService', () => {
   let service: CaixaService;
@@ -19,17 +19,18 @@ describe('CaixaService', () => {
       providers: [
         CaixaService,
         {
-          provide: 'REQUEST',
-          useValue: {
-            usuario: authRequestFake.usuario,
-          },
-        },
-        {
           provide: getRepositoryToken(CaixaEntity),
           useValue: {
             find: jest.fn().mockResolvedValue(caixaFakeRepository.caixas()),
             findOne: jest.fn().mockResolvedValue(caixaFakeRepository.caixaFechado()),
             save: jest.fn().mockResolvedValue(caixaFakeRepository.caixaAberto()),
+          },
+        },
+        {
+          provide: ContextService,
+          useValue: {
+            currentUser: jest.fn().mockReturnValue({ id: 1 }),
+            currentBranch: jest.fn().mockReturnValue({ id: 1, data: new Date('2023-06-18') }),
           },
         },
       ],
@@ -50,6 +51,9 @@ describe('CaixaService', () => {
         empresaId: 1,
         terminalId: 1,
       };
+      const data = new Date('2023-06-18');
+      const operadorAberturaId = 1;
+      const valorAbertura = 0;
 
       jest.spyOn(repository, 'findOne').mockResolvedValueOnce(undefined);
       jest.spyOn(service, 'findById').mockResolvedValueOnce(caixaFakeRepository.caixaAberto());
@@ -57,7 +61,7 @@ describe('CaixaService', () => {
       const result = await service.open(createCaixaDto);
 
       expect(repository.findOne).toHaveBeenCalledWith({ where: { empresaId: 1, terminalId: 1 }, order: { id: 'DESC' } });
-      expect(repository.save).toHaveBeenCalledWith({ empresaId: 1, valorAbertura: 0, operadorAberturaId: 1, terminalId: 1 });
+      expect(repository.save).toHaveBeenCalledWith({ empresaId: 1, data, valorAbertura, operadorAberturaId, terminalId: 1 });
       expect(service.findById).toHaveBeenCalledWith(1, 1);
 
       expect(result).toEqual(caixaFakeRepository.caixaAberto());
@@ -68,6 +72,9 @@ describe('CaixaService', () => {
         empresaId: 1,
         terminalId: 1,
       };
+      const data = new Date('2023-06-18');
+      const operadorAberturaId = 1;
+      const valorAbertura = 100;
 
       jest.spyOn(repository, 'findOne').mockResolvedValueOnce(caixaFakeRepository.caixaFechado());
       jest.spyOn(service, 'findById').mockResolvedValueOnce(caixaFakeRepository.caixaAberto());
@@ -75,7 +82,7 @@ describe('CaixaService', () => {
       const result = await service.open(createCaixaDto);
 
       expect(repository.findOne).toHaveBeenCalledWith({ where: { empresaId: 1, terminalId: 1 }, order: { id: 'DESC' } });
-      expect(repository.save).toHaveBeenCalledWith({ empresaId: 1, valorAbertura: 100, operadorAberturaId: 1, terminalId: 1 });
+      expect(repository.save).toHaveBeenCalledWith({ empresaId: 1, data, valorAbertura, operadorAberturaId, terminalId: 1 });
       expect(service.findById).toHaveBeenCalledWith(1, 1);
 
       expect(result).toEqual(caixaFakeRepository.caixaAberto());

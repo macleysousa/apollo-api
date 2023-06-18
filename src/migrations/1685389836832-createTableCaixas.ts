@@ -16,12 +16,17 @@ export class CreateTableCaixas1685389836832 implements MigrationInterface {
           {
             name: 'empresaId',
             type: 'int',
-            isNullable: false,
+            isPrimary: false,
+          },
+          {
+            name: 'data',
+            type: 'date',
+            isPrimary: false,
           },
           {
             name: 'terminalId',
             type: 'int',
-            isNullable: false,
+            isPrimary: false,
           },
           {
             name: 'abertura',
@@ -33,12 +38,12 @@ export class CreateTableCaixas1685389836832 implements MigrationInterface {
             type: 'decimal',
             precision: 10,
             scale: 2,
-            isNullable: true,
+            default: 0,
           },
           {
             name: 'operadorAberturaId',
             type: 'int',
-            isNullable: true,
+            isNullable: false,
           },
           {
             name: 'fechamento',

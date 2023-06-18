@@ -6,9 +6,10 @@ import { CaixaConstraint } from 'src/commons/validations/is-caixa.validation';
 import { CaixaService } from './caixa.service';
 import { CaixaController } from './caixa.controller';
 import { CaixaEntity } from './entities/caixa.entity';
+import { ExtratoModule } from './extrato/extrato.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CaixaEntity])],
+  imports: [TypeOrmModule.forFeature([CaixaEntity]), ExtratoModule],
   controllers: [CaixaController],
   providers: [CaixaService, CaixaConstraint],
   exports: [CaixaService],

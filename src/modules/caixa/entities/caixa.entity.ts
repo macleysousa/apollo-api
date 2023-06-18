@@ -1,48 +1,54 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Transform } from 'class-transformer';
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { CaixaSituacao } from '../enum/caixa-situacao.enum';
 
 @Entity({ name: 'caixas' })
 export class CaixaEntity {
   @ApiProperty()
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
 
   @ApiProperty()
-  @Column({ nullable: false })
+  @PrimaryColumn('int')
   empresaId: number;
 
   @ApiProperty()
-  @Column({ nullable: false })
+  @PrimaryColumn('date')
+  data: Date;
+
+  @ApiProperty()
+  @PrimaryColumn('int')
   terminalId: number;
 
   @ApiProperty()
-  @Column({ nullable: true })
+  @Column('timestamp')
   abertura: Date;
 
   @ApiProperty()
-  @Column({ type: 'decimal', nullable: true, precision: 10, scale: 2 })
+  @Column('decimal', { precision: 10, scale: 4 })
   valorAbertura: number;
 
   @ApiProperty()
-  @Column({ nullable: true })
+  @Column('int')
   operadorAberturaId: number;
 
   @ApiProperty()
-  @Column({ nullable: true })
+  @Column('timestamp', { nullable: true })
   fechamento: Date;
 
   @ApiProperty()
-  @Column({ type: 'decimal', nullable: true, precision: 10, scale: 2 })
+  @Column('decimal', { nullable: true, precision: 10, scale: 4 })
+  @Transform(({ value }) => (value ? parseFloat(value) : null))
   valorFechamento: number;
 
   @ApiProperty()
-  @Column({ nullable: true })
+  @Column('int', { nullable: true })
   operadorFechamentoId: number;
 
   @ApiProperty({ enum: CaixaSituacao, default: CaixaSituacao.Aberto })
-  @Column({ type: 'varchar', nullable: true, default: CaixaSituacao.Aberto })
+  @Column('varchar', { nullable: true, default: CaixaSituacao.Aberto })
   situacao: CaixaSituacao;
 
   constructor(partial?: Partial<CaixaEntity>) {

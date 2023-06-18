@@ -5,10 +5,13 @@ import { CaixaService } from './caixa.service';
 import { CreateCaixaDto } from './dto/create-caixa.dto';
 import { CaixaEntity } from './entities/caixa.entity';
 import { ApiComponent } from '../componente/decorator/componente.decorator';
+import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 
+@ApiBearerAuth()
+@ApiEmpresaAuth()
 @ApiTags('Caixas')
 @Controller('caixas')
-@ApiBearerAuth()
+@ApiComponent('FCXFM001', 'Manutenção de caixa')
 export class CaixaController {
   constructor(private readonly service: CaixaService) {}
 
