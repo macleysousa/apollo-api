@@ -8,8 +8,6 @@ import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 import { UpsertParcelaDto } from './dto/upsert-parcela.dto';
 import { FaturaParcelaEntity } from './entities/parcela.entity';
 import { FaturaParcelaService } from './parcela.service';
-import { ReceberParcelaDto } from './dto/receber-parcela.dto';
-import { CancelarParcelaDto } from './dto/cancelar-parcela.dto';
 
 @ApiTags('Faturas - Parcelas')
 @Controller('faturas/:faturaId/parcelas')
@@ -51,25 +49,5 @@ export class FaturaParcelaController {
     @Param('parcela', ParseIntPipe) id: number
   ): Promise<void> {
     return this.service.remove(empresa.id, faturaId, id);
-  }
-
-  @Post(':parcela/receber')
-  @ApiResponse({ status: 200 })
-  async receber(
-    @CurrentBranch() empresa: EmpresaEntity,
-    @Param('faturaId', ParseIntPipe) faturaId: number,
-    @Body() dto: ReceberParcelaDto
-  ): Promise<void> {
-    return this.service.receber(empresa.id, faturaId, dto);
-  }
-
-  @Post(':parcela/cancelar')
-  @ApiResponse({ status: 200 })
-  async cancelar(
-    @CurrentBranch() empresa: EmpresaEntity,
-    @Param('faturaId', ParseIntPipe) faturaId: number,
-    @Body() dto: CancelarParcelaDto
-  ): Promise<void> {
-    return this.service.cancelar(empresa.id, faturaId, dto);
   }
 }

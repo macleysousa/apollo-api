@@ -45,7 +45,7 @@ describe('FaturaService', () => {
           provide: ContextService,
           useValue: {
             currentUser: jest.fn().mockReturnValue({ id: 1 }),
-            currentBranch: jest.fn().mockReturnValue({ id: 1, data: new Date('16-06-2023') }),
+            currentBranch: jest.fn().mockReturnValue({ id: 1, data: new Date('2023-06-16') }),
           },
         },
       ],

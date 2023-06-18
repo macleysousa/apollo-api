@@ -50,6 +50,11 @@ export class CrateTableCaixasExtrato1687096975570 implements MigrationInterface 
             isNullable: true,
           },
           {
+            name: 'faturaParcela',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
             name: 'observacao',
             type: 'varchar',
             length: '500',
@@ -59,6 +64,12 @@ export class CrateTableCaixasExtrato1687096975570 implements MigrationInterface 
             name: 'cancelado',
             type: 'boolean',
             default: false,
+          },
+          {
+            name: 'motivoCancelamento',
+            type: 'varchar',
+            length: '255',
+            isNullable: true,
           },
           {
             name: 'operadorId',

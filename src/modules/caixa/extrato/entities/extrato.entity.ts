@@ -41,12 +41,20 @@ export class CaixaExtratoEntity extends BaseEntity {
   faturaId: number;
 
   @ApiProperty()
+  @Column('bigint')
+  faturaParcela: number;
+
+  @ApiProperty()
   @Column('varchar', { length: 500 })
   observacao: string;
 
   @ApiProperty()
   @Column('boolean')
   cancelado: boolean;
+
+  @ApiProperty()
+  @Column('varchar', { length: 255 })
+  motivoCancelamento: string;
 
   @ApiProperty()
   @Column('int')

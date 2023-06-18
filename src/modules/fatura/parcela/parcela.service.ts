@@ -6,8 +6,6 @@ import { ContextService } from 'src/context/context.service';
 
 import { FaturaSituacao } from '../enum/fatura-situacao.enum';
 import { FaturaService } from '../fatura.service';
-import { CancelarParcelaDto } from './dto/cancelar-parcela.dto';
-import { ReceberParcelaDto } from './dto/receber-parcela.dto';
 import { UpsertParcelaDto } from './dto/upsert-parcela.dto';
 import { FaturaParcelaEntity } from './entities/parcela.entity';
 import { ParcelaSituacao } from './enum/parcela-situacao.enum';
@@ -29,7 +27,7 @@ export class FaturaParcelaService {
     if (!fatura) {
       throw new BadRequestException('Fatura não encontrada.');
     } else if (fatura.situacao !== FaturaSituacao.Normal) {
-      throw new BadRequestException('Fatura não está aberta.');
+      throw new BadRequestException(`Fatura ${faturaId} não está com situação "normal".`);
     }
 
     const parcelas = await this.findByFaturaId(empresa.id, faturaId);
@@ -43,7 +41,7 @@ export class FaturaParcelaService {
     }
 
     const parcela = await this.findByParcela(empresa.id, faturaId, dto.parcela);
-    if (parcela?.situacao && parcela?.situacao !== ParcelaSituacao.Normal) {
+    if (parcela?.situacao && parcela.situacao !== ParcelaSituacao.Normal) {
       throw new BadRequestException('Parcela não está com situação "normal".');
     }
 
@@ -67,60 +65,13 @@ export class FaturaParcelaService {
     return this.repository.findOne({ where: { empresaId, faturaId, parcela } });
   }
 
-  async receber(empresaId: number, faturaId: number, { caixaId, parcela, valorDesconto }: ReceberParcelaDto): Promise<void> {
-    const usuario = this.contextService.currentUser();
-    const empresa = this.contextService.currentBranch();
-
-    const fatura = await this.faturaService.findById(empresaId, faturaId);
-    if (!fatura) throw new BadRequestException('Fatura não encontrada.');
-
-    const parcelaEntity = await this.findByParcela(empresa.id, faturaId, parcela);
-    if (!parcelaEntity) throw new BadRequestException('Parcela não encontrada.');
-    else if (parcelaEntity.situacao !== ParcelaSituacao.Normal) throw new BadRequestException('Parcela não está com situação "normal".');
-
-    const valorPago = parcelaEntity.valor - valorDesconto;
-    if (valorPago < 0) throw new BadRequestException('Valor do desconto maior que o valor da parcela.');
-
-    const dto = {
-      valorDesconto: valorDesconto,
-      caixaPagamento: caixaId,
-      valorPago: valorPago,
-      pagamento: empresa.data,
-      situacao: ParcelaSituacao.Paga,
-      operadorId: usuario.id,
-    };
-
-    await this.repository.update({ empresaId, faturaId, parcela }, dto).catch(() => {
-      throw new BadRequestException('Não foi possível receber a parcela.');
-    });
-  }
-
-  async cancelar(empresaId: number, faturaId: number, { caixaId, parcela, motivo }: CancelarParcelaDto): Promise<void> {
-    const usuario = this.contextService.currentUser();
-
-    const fatura = await this.faturaService.findById(empresaId, faturaId);
-    if (!fatura) throw new BadRequestException('Fatura não encontrada.');
-
-    const parcelaEntity = await this.findByParcela(empresaId, faturaId, parcela);
-    if (!parcelaEntity) throw new BadRequestException('Parcela não encontrada.');
-    else if (parcelaEntity.situacao !== ParcelaSituacao.Paga) throw new BadRequestException('Parcela não está com situação "paga".');
-    else if (parcelaEntity.caixaPagamento !== caixaId) throw new BadRequestException('Parcela não foi paga neste caixa.');
-
-    await this.repository
-      .update(
-        { empresaId, faturaId, parcela },
-        { situacao: ParcelaSituacao.Cancelada, observacao: `${parcelaEntity.observacao}\r${motivo}`.trim(), operadorId: usuario.id }
-      )
-      .catch(() => {
-        throw new BadRequestException('Não foi possível cancelar a parcela.');
-      });
-  }
-
   async remove(empresaId: number, faturaId: number, parcela: number): Promise<void> {
     const parcelaEntity = await this.findByParcela(empresaId, faturaId, parcela);
     if (!parcelaEntity) throw new BadRequestException('Parcela não encontrada.');
     else if (parcelaEntity.situacao !== ParcelaSituacao.Normal) throw new BadRequestException('Parcela não está com situação "normal".');
 
-    await this.repository.delete({ empresaId, faturaId, parcela });
+    await this.repository.delete({ empresaId, faturaId, parcela }).catch(() => {
+      throw new BadRequestException('Não foi possível remover a parcela.');
+    });
   }
 }
