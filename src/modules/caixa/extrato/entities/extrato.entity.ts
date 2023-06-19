@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
+import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
 
 import { TipoHistorico } from '../enum/tipo-historico.enum';
@@ -24,8 +25,12 @@ export class CaixaExtratoEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   documento: number;
 
+  @ApiProperty({ enum: TipoDocumento })
+  @Column('varchar', { length: 45 })
+  tipoDocumento: TipoDocumento;
+
   @ApiProperty({ enum: TipoHistorico })
-  @Column('varchar', { length: 255 })
+  @Column('varchar', { length: 45 })
   tipoHistorico: TipoHistorico;
 
   @ApiProperty({ enum: TipoMovimento })

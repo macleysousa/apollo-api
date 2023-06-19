@@ -27,8 +27,8 @@ AFTER INSERT ON caixas
 FOR EACH ROW
 BEGIN
     IF NEW.situacao = 'Aberto' THEN
-       INSERT INTO caixas_extrato(empresaId,data,caixaId,tipoHistorico,tipoMovimento,valor,operadorId)
-							VALUE(NEW.empresaId,NEW.data,NEW.id,'Abertura de Caixa','Crédito',NEW.valorAbertura,NEW.operadorAberturaId);
+       INSERT INTO caixas_extrato(empresaId,data,caixaId,tipoDocumento,tipoHistorico,tipoMovimento,valor,operadorId)
+							VALUE(NEW.empresaId,NEW.data,NEW.id,'Dinheiro','Abertura de Caixa','Crédito',NEW.valorAbertura,NEW.operadorAberturaId);
     END IF;
 END;
 `);
@@ -55,8 +55,8 @@ AFTER UPDATE ON caixas
 FOR EACH ROW
 BEGIN
     IF OLD.situacao='Aberto' AND NEW.situacao = 'Fechado' THEN
-       INSERT INTO caixas_extrato(empresaId,data,caixaId,tipoHistorico,tipoMovimento,valor,operadorId)
-							VALUE(NEW.empresaId,NEW.data,NEW.id,'Fechamento de Caixa','Débito',NEW.valorFechamento,NEW.operadorFechamentoId);
+       INSERT INTO caixas_extrato(empresaId,data,caixaId,tipoDocumento,tipoHistorico,tipoMovimento,valor,operadorId)
+							VALUE(NEW.empresaId,NEW.data,NEW.id,'Dinheiro','Fechamento de Caixa','Débito',NEW.valorFechamento,NEW.operadorFechamentoId);
     END IF;
 END;
 `);

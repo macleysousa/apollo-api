@@ -29,9 +29,14 @@ export class CrateTableCaixasExtrato1687096975570 implements MigrationInterface 
             isPrimary: true,
           },
           {
+            name: 'tipoDocumento',
+            type: 'varchar',
+            length: '45',
+          },
+          {
             name: 'tipoHistorico',
             type: 'varchar',
-            length: '255',
+            length: '45',
           },
           {
             name: 'tipoMovimento',
