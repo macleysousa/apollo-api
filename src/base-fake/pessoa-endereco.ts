@@ -1,6 +1,6 @@
 import { UF } from 'src/commons/enum/uf.enum';
-import { PessoaEnderecoEntity } from 'src/modules/pessoa/pessoa-endereco/entities/pessoa-endereco.entity';
-import { EnderecoTipo } from 'src/modules/pessoa/pessoa-endereco/enum/endereco-tipo.enum';
+import { PessoaEnderecoEntity } from 'src/modules/pessoa/endereco/entities/pessoa-endereco.entity';
+import { EnderecoTipo } from 'src/modules/pessoa/endereco/enum/endereco-tipo.enum';
 
 class PessoaEnderocoFakeRepository {
   find(): PessoaEnderecoEntity[] {

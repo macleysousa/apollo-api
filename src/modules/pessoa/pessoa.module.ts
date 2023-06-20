@@ -3,14 +3,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { IsPessoaConstraint } from 'src/commons/validations/is-pessoa.validation';
 
-import { PessoaService } from './pessoa.service';
-import { PessoaController } from './pessoa.controller';
-import { IsDocumentoConstraint } from './validation/is-documento-unique.validation';
+import { PessoaExtratoModule } from './extrato/pessoa-extrato.module';
+import { PessoaEnderecoModule } from './endereco/pessoa-endereco.module';
 import { PessoaEntity } from './entities/pessoa.entity';
-import { PessoaEnderecoModule } from './pessoa-endereco/pessoa-endereco.module';
+import { PessoaController } from './pessoa.controller';
+import { PessoaService } from './pessoa.service';
+import { IsDocumentoConstraint } from './validation/is-documento-unique.validation';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PessoaEntity]), PessoaEnderecoModule],
+  imports: [TypeOrmModule.forFeature([PessoaEntity]), PessoaEnderecoModule, PessoaExtratoModule],
   controllers: [PessoaController],
   providers: [PessoaService, IsPessoaConstraint, IsDocumentoConstraint],
   exports: [PessoaService],
