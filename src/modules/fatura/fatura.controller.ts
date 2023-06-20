@@ -8,8 +8,8 @@ import { CurrentBranch } from 'src/decorators/current-auth.decorator';
 
 import { ApiComponent } from '../componente/decorator/componente.decorator';
 import { EmpresaEntity } from '../empresa/entities/empresa.entity';
-import { CreateFaturaDto } from './dto/create-fatura.dto';
-import { UpdateFaturaDto } from './dto/update-fatura.dto';
+import { CreateFaturaManualDto } from './dto/create-fatura-manual.dto';
+import { UpdateFaturaManualDto } from './dto/update-fatura-manual.dto';
 import { FaturaEntity } from './entities/fatura.entity';
 import { FaturaService } from './fatura.service';
 import { Relations } from './relations/relations.type';
@@ -23,7 +23,7 @@ export class FaturaController {
 
   @Post()
   @ApiResponse({ status: 201, type: FaturaEntity })
-  async create(@Body() createFaturaDto: CreateFaturaDto): Promise<FaturaEntity> {
+  async create(@Body() createFaturaDto: CreateFaturaManualDto): Promise<FaturaEntity> {
     return this.service.createManual(createFaturaDto);
   }
 
@@ -62,7 +62,7 @@ export class FaturaController {
   }
 
   @Put(':id')
-  async update(@CurrentBranch() empresa: EmpresaEntity, @Param('id', ParseIntPipe) id: number, @Body() updateFaturaDto: UpdateFaturaDto) {
+  async update(@CurrentBranch() empresa: EmpresaEntity, @Param('id', ParseIntPipe) id: number, @Body() updateFaturaDto: UpdateFaturaManualDto) {
     return this.service.update(empresa.id, id, updateFaturaDto);
   }
 

@@ -5,8 +5,8 @@ import { ILike, Repository } from 'typeorm';
 import { CreateFormaDePagamentoDto } from './dto/create-forma-de-pagamento.dto';
 import { UpdateFormaDePagamentoDto } from './dto/update-forma-de-pagamento.dto';
 import { FormaDePagamentoEntity } from './entities/forma-de-pagamento.entity';
-import { PagamentoTipo } from './enum/pagamento-tipo.enum';
 import { FormaDePagamentoService } from './forma-de-pagamento.service';
+import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 
 describe('FormaDePagamentoService', () => {
   let service: FormaDePagamentoService;
@@ -39,7 +39,7 @@ describe('FormaDePagamentoService', () => {
 
   describe('add', () => {
     it('should add a new forma de pagamento', async () => {
-      const createFormaDePagamentoDto: CreateFormaDePagamentoDto = { descricao: 'Teste', tipo: PagamentoTipo.Dinheiro };
+      const createFormaDePagamentoDto: CreateFormaDePagamentoDto = { descricao: 'Teste', tipo: TipoDocumento.Dinheiro };
       const formaDePagamento = new FormaDePagamentoEntity();
       formaDePagamento.id = 1;
       formaDePagamento.descricao = 'Teste';

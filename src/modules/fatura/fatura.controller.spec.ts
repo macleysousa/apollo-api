@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { faturaFakeRepository } from 'src/base-fake/fatura';
 
 import { EmpresaService } from '../empresa/empresa.service';
-import { CreateFaturaDto } from './dto/create-fatura.dto';
-import { UpdateFaturaDto } from './dto/update-fatura.dto';
+import { CreateFaturaManualDto } from './dto/create-fatura-manual.dto';
+import { UpdateFaturaManualDto } from './dto/update-fatura-manual.dto';
 import { FaturaSituacao } from './enum/fatura-situacao.enum';
 import { FaturaController } from './fatura.controller';
 import { FaturaService } from './fatura.service';
@@ -47,7 +47,7 @@ describe('FaturaController', () => {
 
   describe('create', () => {
     it('should create a new fatura', async () => {
-      const createFaturaDto: CreateFaturaDto = { pessoaId: 1, parcelas: 1, valor: 100, observacao: 'Observação' };
+      const createFaturaDto: CreateFaturaManualDto = { pessoaId: 1, parcelas: 1, valor: 100, observacao: 'Observação' };
       const fatura = faturaFakeRepository.findOne();
 
       jest.spyOn(service, 'createManual').mockResolvedValue(fatura);
@@ -94,7 +94,7 @@ describe('FaturaController', () => {
     it('should update a fatura', async () => {
       const empresa = { id: 1 } as any;
       const id = 2;
-      const updateFaturaDto: UpdateFaturaDto = {};
+      const updateFaturaDto: UpdateFaturaManualDto = {};
       const fatura = faturaFakeRepository.findOne();
 
       const result = await controller.update(empresa, id, updateFaturaDto);

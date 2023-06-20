@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 
-export class createTableReferences1674135078364 implements MigrationInterface {
+export class createTableReferences1674216709811 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -44,7 +44,7 @@ export class createTableReferences1674135078364 implements MigrationInterface {
           {
             name: 'marcaId',
             type: 'int',
-            isNullable: false,
+            isNullable: true,
           },
           {
             name: 'criadoEm',

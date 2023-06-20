@@ -43,7 +43,7 @@ export class CreateTableEstoque1685748456499 implements MigrationInterface {
             onUpdate: 'CASCADE',
           },
           {
-            columnNames: ['refereciaId'],
+            columnNames: ['referenciaId'],
             referencedTableName: 'referencias',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',

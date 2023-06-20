@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsInt, IsNotEmpty, IsOptional, Length } from 'class-validator';
 
-import { PagamentoTipo } from '../enum/pagamento-tipo.enum';
+import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 
 export class CreateFormaDePagamentoDto {
   @ApiProperty()
@@ -19,8 +19,8 @@ export class CreateFormaDePagamentoDto {
   @IsInt()
   parcelas?: number;
 
-  @ApiProperty({ enum: PagamentoTipo })
+  @ApiProperty({ enum: TipoDocumento })
   @IsNotEmpty()
-  @IsEnum(PagamentoTipo)
-  tipo: PagamentoTipo;
+  @IsEnum(TipoDocumento)
+  tipo: TipoDocumento;
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { FormaPagamentoConstraint } from 'src/commons/validations/is-forma-pagamento.validation';
@@ -13,4 +13,11 @@ import { FormaDePagamentoService } from './forma-de-pagamento.service';
   providers: [FormaDePagamentoService, FormaPagamentoConstraint],
   exports: [FormaDePagamentoService],
 })
-export class FormaDePagamentoModule {}
+export class FormaDePagamentoModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { FaturaParcelaController } from './parcela.controller';
@@ -11,4 +11,11 @@ import { FaturaParcelaEntity } from './entities/parcela.entity';
   providers: [FaturaParcelaService],
   exports: [FaturaParcelaService],
 })
-export class ParcelaModule {}
+export class ParcelaModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

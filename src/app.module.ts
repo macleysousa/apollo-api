@@ -53,7 +53,7 @@ import { FaturaModule } from './modules/fatura/fatura.module';
     ProdutoModule.forRoot(),
     TabelaDePrecoModule.forRoot(),
     EstoqueModule.forRoot(),
-    FormaDePagamentoModule,
+    FormaDePagamentoModule.forRoot(),
     RomaneioModule,
   ],
   controllers: [],

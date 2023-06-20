@@ -7,9 +7,10 @@ import { CaixaService } from './caixa.service';
 import { CaixaController } from './caixa.controller';
 import { CaixaEntity } from './entities/caixa.entity';
 import { ExtratoModule } from './extrato/extrato.module';
+import { ReceberModule } from './receber/receber.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CaixaEntity]), ExtratoModule],
+  imports: [TypeOrmModule.forFeature([CaixaEntity]), ExtratoModule, ReceberModule],
   controllers: [CaixaController],
   providers: [CaixaService, CaixaConstraint],
   exports: [CaixaService],

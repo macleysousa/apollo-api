@@ -4,7 +4,7 @@ import { IsBetween } from 'src/commons/validations/is-between.validation';
 
 import { IsPessoa } from 'src/commons/validations/is-pessoa.validation';
 
-export class CreateFaturaDto {
+export class CreateFaturaManualDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsPessoa()

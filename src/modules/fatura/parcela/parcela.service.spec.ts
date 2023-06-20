@@ -87,7 +87,7 @@ describe('FaturaParcelaService', () => {
       const result = await service.add(faturaId, dto);
 
       expect(repository.upsert).toHaveBeenCalledWith(
-        { ...dto, empresaId, faturaId, operadorId: usuario.id },
+        { ...dto, empresaId, faturaId, vencimento: expect.any(Date), operadorId: usuario.id },
         { conflictPaths: ['empresaId', 'faturaId', 'parcela'] }
       );
       expect(result).toEqual({} as FaturaParcelaEntity);
@@ -132,7 +132,7 @@ describe('FaturaParcelaService', () => {
 
       await expect(service.add(faturaId, dto)).rejects.toThrowError('Não foi possível adicionar/alterar a parcela.');
       expect(repository.upsert).toHaveBeenCalledWith(
-        { ...dto, empresaId, faturaId, operadorId: usuario.id },
+        { ...dto, empresaId, faturaId, vencimento: expect.any(Date), operadorId: usuario.id },
         { conflictPaths: ['empresaId', 'faturaId', 'parcela'] }
       );
     });

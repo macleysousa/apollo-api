@@ -8,11 +8,12 @@ import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { TipoInclusao } from 'src/commons/enum/tipo-inclusao';
 import { ContextService } from 'src/context/context.service';
 
-import { CreateFaturaDto } from './dto/create-fatura.dto';
-import { UpdateFaturaDto } from './dto/update-fatura.dto';
+import { CreateFaturaManualDto } from './dto/create-fatura-manual.dto';
+import { UpdateFaturaManualDto } from './dto/update-fatura-manual.dto';
 import { FaturaEntity } from './entities/fatura.entity';
 import { FaturaSituacao } from './enum/fatura-situacao.enum';
 import { FaturaService } from './fatura.service';
+import { FaturaParcelaService } from './parcela/parcela.service';
 
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({
@@ -42,6 +43,12 @@ describe('FaturaService', () => {
           },
         },
         {
+          provide: FaturaParcelaService,
+          useValue: {
+            import: jest.fn().mockResolvedValue([{ id: 1 }, { id: 2 }]),
+          },
+        },
+        {
           provide: ContextService,
           useValue: {
             currentUser: jest.fn().mockReturnValue({ id: 1 }),
@@ -66,7 +73,7 @@ describe('FaturaService', () => {
     it('should create a manual fatura', async () => {
       const usuario = contextService.currentUser();
       const empresa = contextService.currentBranch();
-      const createFaturaDto: CreateFaturaDto = {
+      const createFaturaDto: CreateFaturaManualDto = {
         pessoaId: 1,
         valor: 100,
         parcelas: 1,
@@ -93,7 +100,7 @@ describe('FaturaService', () => {
     it('should create a automatica fatura', async () => {
       const usuario = contextService.currentUser();
       const empresa = contextService.currentBranch();
-      const createFaturaDto: CreateFaturaDto = {
+      const createFaturaDto: CreateFaturaManualDto = {
         pessoaId: 1,
         valor: 100,
         parcelas: 1,
@@ -110,7 +117,6 @@ describe('FaturaService', () => {
         empresaId: empresa.id,
         data: expect.any(Date),
         operadorId: usuario.id,
-        tipoDocumento: TipoDocumento.Fatura,
         situacao: FaturaSituacao.Normal,
         tipoInclusao: TipoInclusao.Automatica,
       });
@@ -203,7 +209,7 @@ describe('FaturaService', () => {
       const operadorId = 1;
       const empresaId = 1;
       const id = 1;
-      const updateFaturaDto: UpdateFaturaDto = { valor: 100 };
+      const updateFaturaDto: UpdateFaturaManualDto = { valor: 100 };
       const fatura = new FaturaEntity({ id: 1, empresaId: 1, valor: 100, situacao: FaturaSituacao.Normal });
 
       jest.spyOn(repository, 'findOne').mockResolvedValueOnce(fatura);
@@ -221,7 +227,7 @@ describe('FaturaService', () => {
     it('should throw BadRequestException if fatura is not found', async () => {
       const empresaId = 1;
       const id = 1;
-      const updateFaturaDto: UpdateFaturaDto = { valor: 100 };
+      const updateFaturaDto: UpdateFaturaManualDto = { valor: 100 };
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(undefined);
 
@@ -232,7 +238,7 @@ describe('FaturaService', () => {
     it('should throw BadRequestException if fatura is not in Normal situation', async () => {
       const empresaId = 1;
       const id = 1;
-      const updateFaturaDto: UpdateFaturaDto = { valor: 100 };
+      const updateFaturaDto: UpdateFaturaManualDto = { valor: 100 };
       const fatura = new FaturaEntity({ id: 1, empresaId: 1, valor: 100, situacao: FaturaSituacao.Cancelada });
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(fatura);
@@ -245,7 +251,7 @@ describe('FaturaService', () => {
       const operadorId = 1;
       const empresaId = 1;
       const id = 1;
-      const updateFaturaDto: UpdateFaturaDto = { valor: 100 };
+      const updateFaturaDto: UpdateFaturaManualDto = { valor: 100 };
       const fatura = new FaturaEntity({ id: 1, empresaId: 1, valor: 100, situacao: FaturaSituacao.Normal });
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(fatura);

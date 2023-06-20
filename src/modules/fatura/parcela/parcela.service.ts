@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -15,6 +15,7 @@ export class FaturaParcelaService {
   constructor(
     @InjectRepository(FaturaParcelaEntity)
     private readonly repository: Repository<FaturaParcelaEntity>,
+    @Inject(forwardRef(() => FaturaService))
     private readonly faturaService: FaturaService,
     private readonly contextService: ContextService
   ) {}
@@ -47,7 +48,7 @@ export class FaturaParcelaService {
 
     await this.repository
       .upsert(
-        { ...dto, empresaId: empresa.id, faturaId: faturaId, operadorId: usuario.id },
+        { ...dto, empresaId: empresa.id, faturaId: faturaId, vencimento: dto?.vencimento ?? empresa.data, operadorId: usuario.id },
         { conflictPaths: ['empresaId', 'faturaId', 'parcela'] }
       )
       .catch(() => {
@@ -55,6 +56,10 @@ export class FaturaParcelaService {
       });
 
     return this.findByParcela(empresa.id, faturaId, dto.parcela);
+  }
+
+  async import(faturaId: number, parcelas: UpsertParcelaDto[]): Promise<FaturaParcelaEntity[]> {
+    return Promise.all(parcelas.map((parcela) => this.add(faturaId, parcela)));
   }
 
   async findByFaturaId(empresaId: number, faturaId: number): Promise<FaturaParcelaEntity[]> {

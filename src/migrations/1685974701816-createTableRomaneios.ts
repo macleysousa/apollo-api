@@ -73,7 +73,7 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
             name: 'situacao',
             type: 'enum',
             enum: ['"Em andamento"', '"Encerrado"', '"Cancelado"'],
-            default: '"Em andamento"',
+            isNullable: false,
           },
           {
             name: 'criadoEm',

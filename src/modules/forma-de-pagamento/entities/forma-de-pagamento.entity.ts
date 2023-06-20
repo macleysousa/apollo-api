@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 
-import { PagamentoTipo } from '../enum/pagamento-tipo.enum';
+import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 
 @Entity({ name: 'formas_de_pagamento' })
 export class FormaDePagamentoEntity extends BaseEntity {
@@ -23,9 +23,9 @@ export class FormaDePagamentoEntity extends BaseEntity {
   @Column('int')
   parcelas: number;
 
-  @ApiProperty({ enum: PagamentoTipo })
+  @ApiProperty({ enum: TipoDocumento })
   @Column('varchar')
-  tipo: PagamentoTipo;
+  tipo: TipoDocumento;
 
   @ApiProperty()
   @Column()

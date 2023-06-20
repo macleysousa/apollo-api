@@ -8,11 +8,13 @@ import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { TipoInclusao } from 'src/commons/enum/tipo-inclusao';
 import { ContextService } from 'src/context/context.service';
 
-import { CreateFaturaDto } from './dto/create-fatura.dto';
-import { UpdateFaturaDto } from './dto/update-fatura.dto';
+import { CreateFaturaAutimaticaDto } from './dto/create-fatura-automatica.dto';
+import { CreateFaturaManualDto } from './dto/create-fatura-manual.dto';
+import { UpdateFaturaManualDto } from './dto/update-fatura-manual.dto';
 import { FaturaEntity } from './entities/fatura.entity';
 import { FaturaSituacao } from './enum/fatura-situacao.enum';
 import { Relations } from './relations/relations.type';
+import { FaturaParcelaService } from './parcela/parcela.service';
 
 interface filter {
   empresaIds: number[];
@@ -27,10 +29,11 @@ export class FaturaService {
   constructor(
     @InjectRepository(FaturaEntity)
     private readonly repository: Repository<FaturaEntity>,
+    private readonly parcelaService: FaturaParcelaService,
     private readonly contextService: ContextService
   ) {}
 
-  async createManual(createFaturaDto: CreateFaturaDto): Promise<FaturaEntity> {
+  async createManual(createFaturaDto: CreateFaturaManualDto): Promise<FaturaEntity> {
     const usuario = this.contextService.currentUser();
     const empresa = this.contextService.currentBranch();
 
@@ -47,7 +50,7 @@ export class FaturaService {
     return this.findById(empresa.id, fatura.id);
   }
 
-  async createAutomatica(createFaturaDto: CreateFaturaDto): Promise<FaturaEntity> {
+  async createAutomatica(createFaturaDto: CreateFaturaAutimaticaDto): Promise<FaturaEntity> {
     const usuario = this.contextService.currentUser();
     const empresa = this.contextService.currentBranch();
 
@@ -56,10 +59,13 @@ export class FaturaService {
       empresaId: empresa.id,
       data: empresa.data,
       operadorId: usuario.id,
-      tipoDocumento: TipoDocumento.Fatura,
       situacao: FaturaSituacao.Normal,
       tipoInclusao: TipoInclusao.Automatica,
     });
+
+    if (createFaturaDto?.itens && createFaturaDto.itens.length > 0) {
+      await this.parcelaService.import(fatura.id, createFaturaDto.itens);
+    }
 
     return this.findById(empresa.id, fatura.id);
   }
@@ -100,7 +106,7 @@ export class FaturaService {
     return this.repository.findOne({ where: { empresaId, id }, relations: relations });
   }
 
-  async update(empresaId: number, id: number, updateFaturaDto: UpdateFaturaDto): Promise<FaturaEntity> {
+  async update(empresaId: number, id: number, updateFaturaDto: UpdateFaturaManualDto): Promise<FaturaEntity> {
     const usuario = this.contextService.currentUser();
     const fatura = await this.findById(empresaId, id);
     if (!fatura) {
