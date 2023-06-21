@@ -98,12 +98,16 @@ export class FaturaParcelaEntity extends BaseEntity {
   telefoneTerceiro: string;
 
   @ApiProperty()
-  @Column('int')
-  operadorId: number;
+  @Column('varchar', { length: 500 })
+  observacao: string;
 
   @ApiProperty()
   @Column('varchar', { length: 500 })
-  observacao: string;
+  motivoCancelamento: string;
+
+  @ApiProperty()
+  @Column('int')
+  operadorId: number;
 
   @Exclude()
   @ManyToOne(() => FaturaEntity, (fatura) => fatura.id)

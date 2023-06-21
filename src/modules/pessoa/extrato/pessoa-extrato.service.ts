@@ -20,6 +20,19 @@ export class PessoaExtratoService {
     private repository: Repository<PessoaExtratoEntity>
   ) {}
 
+  async lancarMovimento(pessoaId: number, dto: any): Promise<PessoaExtratoEntity> {
+    const extrato = await this.repository.save({
+      pessoaId,
+      tipoDocumento: dto.tipoDocumento,
+      tipoHistorico: dto.tipoHistorico,
+      tipoMovimento: dto.tipoMovimento,
+      valor: dto.valor,
+      observacao: dto.observacao,
+    });
+
+    return this.repository.save(extrato);
+  }
+
   async find(filter?: filter): Promise<PessoaExtratoEntity[]> {
     const queryBuilder = this.repository.createQueryBuilder('p');
     queryBuilder.where({ empresaId: Not(IsNull()) });
@@ -45,5 +58,21 @@ export class PessoaExtratoService {
     }
 
     return queryBuilder.getMany();
+  }
+
+  async findSaldoAdiantamento(empresaId: number, pessoaId: number): Promise<number> {
+    const extrato = await this.repository.find({
+      where: { empresaId, pessoaId, tipoDocumento: TipoDocumento.Adiantamento, cancelado: false },
+    });
+
+    return extrato.sum((x) => x.valor);
+  }
+
+  async findSaldoCreditoDeDevolucao(empresaId: number, pessoaId: number): Promise<number> {
+    const extrato = await this.repository.find({
+      where: { empresaId, pessoaId, tipoDocumento: TipoDocumento.Credito_de_Devolucao, cancelado: false },
+    });
+
+    return extrato.sum((x) => x.valor);
   }
 }

@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, MaxLength, Validate, ValidateNested } from 'class-validator';
+import { ArrayMinSize, IsArray, IsNotEmpty, IsNumber, IsOptional, MaxLength, ValidateNested } from 'class-validator';
 
 import { IsPessoa } from 'src/commons/validations/is-pessoa.validation';
 
 import { PagamentoDto } from './pagamento.dto';
+import { Type } from 'class-transformer';
 
 export class ReceberAdiantamentoDto {
   @ApiProperty()
@@ -18,7 +19,7 @@ export class ReceberAdiantamentoDto {
 
   @ApiProperty({ type: [PagamentoDto] })
   @IsNotEmpty()
-  //@ValidateNested({ each: true })
+  @ArrayMinSize(1, { message: 'Deve haver pelo menos uma forma de pagamento.' })
   formasDePagamento: PagamentoDto[];
 
   @ApiProperty({ required: false })

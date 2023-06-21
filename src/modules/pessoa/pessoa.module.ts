@@ -11,7 +11,7 @@ import { PessoaService } from './pessoa.service';
 import { IsDocumentoConstraint } from './validation/is-documento-unique.validation';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PessoaEntity]), PessoaEnderecoModule, PessoaExtratoModule],
+  imports: [TypeOrmModule.forFeature([PessoaEntity]), PessoaEnderecoModule.forRoot(), PessoaExtratoModule.forRoot()],
   controllers: [PessoaController],
   providers: [PessoaService, IsPessoaConstraint, IsDocumentoConstraint],
   exports: [PessoaService],

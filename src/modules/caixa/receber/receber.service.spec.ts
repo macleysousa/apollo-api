@@ -5,6 +5,8 @@ import { FaturaService } from 'src/modules/fatura/fatura.service';
 import { FormaDePagamentoService } from 'src/modules/forma-de-pagamento/forma-de-pagamento.service';
 
 import { ReceberService } from './receber.service';
+import { PessoaExtratoService } from 'src/modules/pessoa/extrato/pessoa-extrato.service';
+import { CaixaExtratoService } from '../extrato/extrato.service';
 
 describe('ReceberService', () => {
   let service: ReceberService;
@@ -22,7 +24,15 @@ describe('ReceberService', () => {
           useValue: {},
         },
         {
+          provide: PessoaExtratoService,
+          useValue: {},
+        },
+        {
           provide: FaturaService,
+          useValue: {},
+        },
+        {
+          provide: CaixaExtratoService,
           useValue: {},
         },
       ],

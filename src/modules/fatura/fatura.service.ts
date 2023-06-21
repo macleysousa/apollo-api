@@ -67,7 +67,7 @@ export class FaturaService {
       await this.parcelaService.import(fatura.id, createFaturaDto.itens);
     }
 
-    return this.findById(empresa.id, fatura.id);
+    return this.findById(empresa.id, fatura.id, ['itens']);
   }
 
   async find(filter?: filter, page = 1, limit = 100, relations?: Relations[]): Promise<Pagination<FaturaEntity>> {

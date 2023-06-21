@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { DynamicModule, Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { PessoaEnderecoService } from './pessoa-endereco.service';
@@ -12,4 +12,11 @@ import { PessoaModule } from '../pessoa.module';
   providers: [PessoaEnderecoService],
   exports: [PessoaEnderecoService],
 })
-export class PessoaEnderecoModule {}
+export class PessoaEnderecoModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

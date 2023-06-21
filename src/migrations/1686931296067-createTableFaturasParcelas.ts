@@ -124,6 +124,12 @@ export class CreateTableFaturasParcelas1686931296067 implements MigrationInterfa
             isNullable: true,
           },
           {
+            name: 'motivoCancelamento',
+            type: 'varchar',
+            length: '500',
+            isNullable: true,
+          },
+          {
             name: 'operadorId',
             type: 'int',
             isNullable: false,

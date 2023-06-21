@@ -136,6 +136,13 @@ BEGIN
     ELSEIF NEW.tipoMovimento = 'Crédito' AND NEW.valor < 0 THEN
         SET NEW.valor = ABS(NEW.valor);
     END IF;
+
+    IF NEW.faturaId IS NOT NULL AND NEW.faturaParcela IS NOT NULL AND NEW.cancelado = 0 THEN
+		UPDATE faturas_parcelas SET situacao='Paga',
+                                caixaPagamento = NEW.caixaId,
+                                operadorId = NEW.operadorId
+                              WHERE faturaId = NEW.faturaId AND parcela = NEW.faturaParcela;
+	END IF;
 END;
 `);
 
@@ -150,6 +157,13 @@ BEGIN
     ELSEIF NEW.tipoMovimento = 'Crédito' AND NEW.valor < 0 THEN
         SET NEW.valor = ABS(NEW.valor);
     END IF;
+
+    IF NEW.faturaId IS NOT NULL AND NEW.faturaParcela IS NOT NULL AND NEW.cancelado = 0 THEN
+		UPDATE faturas_parcelas SET situacao='Paga',
+                                caixaPagamento = NEW.caixaId,
+                                operadorId = NEW.operadorId
+                              WHERE faturaId = NEW.faturaId AND parcela = NEW.faturaParcela;
+	END IF;
 END;
 `);
   }
