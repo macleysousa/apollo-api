@@ -22,24 +22,30 @@ export class CaixaExtratoService {
     return this.repository.findOne({ where: { empresaId, caixaId, documento } });
   }
 
-  async lancarMovimento(caixaId: number, dto: LancarMovimento): Promise<CaixaExtratoEntity> {
+  async findByLiquidacao(empresaId: number, caixaId: number, liquidacao: number): Promise<CaixaExtratoEntity[]> {
+    return this.repository.find({ where: { empresaId, caixaId, liquidacao } });
+  }
+
+  async newLiquidacaoId(): Promise<number> {
+    const rows = await this.repository.query(`SELECT FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000) AS timestamp`);
+    return rows[0].timestamp;
+  }
+
+  async lancarLiquidacao(caixaId: number, liquidacao: number, dto: LancarMovimento[]): Promise<CaixaExtratoEntity[]> {
     const usuario = this.contextService.currentUser();
     const empresa = this.contextService.currentBranch();
 
-    const extrato = await this.repository.save({
-      empresaId: empresa.id,
-      data: empresa.data,
-      caixaId: caixaId,
-      tipoDocumento: dto.tipoDocumento,
-      tipoHistorico: dto.tipoHistorico,
-      tipoMovimento: dto.tipoMovimento,
-      valor: dto.valor,
-      faturaId: dto.faturaId,
-      faturaParcela: dto.faturaParcela,
-      observacao: dto.observacao,
-      operadorId: usuario.id,
-    });
+    await this.repository.insert(
+      dto.map((item) => ({
+        ...item,
+        empresaId: empresa.id,
+        data: empresa.data,
+        caixaId: caixaId,
+        liquidacao: liquidacao,
+        operadorId: usuario.id,
+      }))
+    );
 
-    return this.findByDocumento(empresa.id, caixaId, extrato.documento);
+    return this.findByLiquidacao(empresa.id, caixaId, liquidacao);
   }
 }

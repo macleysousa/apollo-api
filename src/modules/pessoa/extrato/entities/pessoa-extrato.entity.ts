@@ -18,12 +18,12 @@ export class PessoaExtratoEntity extends BaseEntity {
   data: Date;
 
   @ApiProperty()
-  @PrimaryColumn('int')
-  pessoaId: number;
+  @PrimaryColumn('bigint')
+  liquidacao: number;
 
   @ApiProperty()
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  @PrimaryColumn('int')
+  pessoaId: number;
 
   @ApiProperty()
   @PrimaryColumn('bigint')
@@ -34,7 +34,7 @@ export class PessoaExtratoEntity extends BaseEntity {
   faturaParcela: number;
 
   @ApiProperty({ enum: TipoDocumento })
-  @Column('varchar', { length: 45 })
+  @Column('enum', { enum: TipoDocumento })
   tipoDocumento: TipoDocumento;
 
   @ApiProperty()

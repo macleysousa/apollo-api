@@ -25,6 +25,10 @@ export class CaixaExtratoEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   documento: number;
 
+  @ApiProperty()
+  @Column('bigint')
+  liquidacao: number;
+
   @ApiProperty({ enum: TipoDocumento })
   @Column('varchar', { length: 45 })
   tipoDocumento: TipoDocumento;

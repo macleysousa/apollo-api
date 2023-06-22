@@ -29,6 +29,11 @@ export class CrateTableCaixasExtrato1687096975570 implements MigrationInterface 
             isPrimary: true,
           },
           {
+            name: 'liquidacao',
+            type: 'bigint',
+            isNullable: false,
+          },
+          {
             name: 'tipoDocumento',
             type: 'varchar',
             length: '45',
@@ -124,48 +129,6 @@ export class CrateTableCaixasExtrato1687096975570 implements MigrationInterface 
         ],
       })
     );
-
-    await queryRunner.query(`DROP TRIGGER IF EXISTS caixas_extrato_before_insert`);
-    await queryRunner.query(`
-CREATE TRIGGER caixas_extrato_before_insert
-BEFORE INSERT ON caixas_extrato
-FOR EACH ROW
-BEGIN
-    IF NEW.tipoMovimento = 'Débito' AND NEW.valor > 0 THEN
-        SET NEW.valor = -NEW.valor;
-    ELSEIF NEW.tipoMovimento = 'Crédito' AND NEW.valor < 0 THEN
-        SET NEW.valor = ABS(NEW.valor);
-    END IF;
-
-    IF NEW.faturaId IS NOT NULL AND NEW.faturaParcela IS NOT NULL AND NEW.cancelado = 0 THEN
-		UPDATE faturas_parcelas SET situacao='Paga',
-                                caixaPagamento = NEW.caixaId,
-                                operadorId = NEW.operadorId
-                              WHERE faturaId = NEW.faturaId AND parcela = NEW.faturaParcela;
-	END IF;
-END;
-`);
-
-    await queryRunner.query(`DROP TRIGGER IF EXISTS caixas_extrato_before_update`);
-    await queryRunner.query(`
-CREATE TRIGGER caixas_extrato_before_update
-BEFORE UPDATE ON caixas_extrato
-FOR EACH ROW
-BEGIN
-    IF NEW.tipoMovimento = 'Débito' AND NEW.valor > 0 THEN
-        SET NEW.valor = -NEW.valor;
-    ELSEIF NEW.tipoMovimento = 'Crédito' AND NEW.valor < 0 THEN
-        SET NEW.valor = ABS(NEW.valor);
-    END IF;
-
-    IF NEW.faturaId IS NOT NULL AND NEW.faturaParcela IS NOT NULL AND NEW.cancelado = 0 THEN
-		UPDATE faturas_parcelas SET situacao='Paga',
-                                caixaPagamento = NEW.caixaId,
-                                operadorId = NEW.operadorId
-                              WHERE faturaId = NEW.faturaId AND parcela = NEW.faturaParcela;
-	END IF;
-END;
-`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

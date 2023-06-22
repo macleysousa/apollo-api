@@ -35,7 +35,7 @@ describe('PessoaExtratoController', () => {
     it('should return an array of PessoaExtratoEntity', async () => {
       const result: PessoaExtratoEntity[] = [
         new PessoaExtratoEntity({
-          id: 1,
+          liquidacao: 1,
           empresaId: 1,
           pessoaId: 1,
           tipoDocumento: TipoDocumento.Adiantamento,
@@ -54,7 +54,7 @@ describe('PessoaExtratoController', () => {
     it('should return an array of PessoaExtratoEntity with tipoDocumento = TipoDocumento.Adiantamento', async () => {
       const result: PessoaExtratoEntity[] = [
         new PessoaExtratoEntity({
-          id: 1,
+          liquidacao: 1,
           empresaId: 1,
           pessoaId: 1,
           tipoDocumento: TipoDocumento.Adiantamento,
@@ -80,7 +80,7 @@ describe('PessoaExtratoController', () => {
     it('should return an array of PessoaExtratoEntity with tipoDocumento = TipoDocumento.Credito_de_Devolucao', async () => {
       const result: PessoaExtratoEntity[] = [
         new PessoaExtratoEntity({
-          id: 1,
+          liquidacao: 1,
           empresaId: 1,
           pessoaId: 1,
           tipoDocumento: TipoDocumento.Credito_de_Devolucao,

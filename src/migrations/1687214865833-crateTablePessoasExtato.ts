@@ -7,13 +7,6 @@ export class CrateTablePessoasExtato1687214865833 implements MigrationInterface 
         name: 'pessoas_extrato',
         columns: [
           {
-            name: 'id',
-            type: 'bigint',
-            isGenerated: true,
-            generationStrategy: 'increment',
-            isPrimary: true,
-          },
-          {
             name: 'empresaId',
             type: 'int',
             isPrimary: true,
@@ -22,6 +15,11 @@ export class CrateTablePessoasExtato1687214865833 implements MigrationInterface 
             name: 'data',
             type: 'date',
             isPrimary: true,
+          },
+          {
+            name: 'liquidacao',
+            type: 'bigint',
+            isPrimary: false,
           },
           {
             name: 'pessoaId',
@@ -40,8 +38,8 @@ export class CrateTablePessoasExtato1687214865833 implements MigrationInterface 
           },
           {
             name: 'tipoDocumento',
-            type: 'varchar',
-            length: '45',
+            type: 'enum',
+            enum: ['Adiantamento', 'Crédito de Devolução'],
           },
           {
             name: 'valor',
@@ -138,11 +136,17 @@ CREATE TRIGGER pessoas_extrato_before_insert
 BEFORE INSERT ON pessoas_extrato
 FOR EACH ROW
 BEGIN
-    IF NEW.tipoMovimento = 'Débito' AND NEW.valor > 0 THEN
-        SET NEW.valor = -NEW.valor;
-    ELSEIF NEW.tipoMovimento = 'Crédito' AND NEW.valor < 0 THEN
-        SET NEW.valor = ABS(NEW.valor);
-    END IF;
+      IF NEW.tipoMovimento = 'Débito' AND NEW.valor > 0 THEN
+          SET NEW.valor = -NEW.valor;
+      ELSEIF NEW.tipoMovimento = 'Crédito' AND NEW.valor < 0 THEN
+          SET NEW.valor = ABS(NEW.valor);
+      END IF;
+
+      IF NEW.tipoMovimento = 'Débito' THEN
+        SET NEW.descricao = 'DEBITO EM ADIANTAMENTO';
+      ELSEIF NEW.tipoMovimento = 'Crédito' THEN
+        SET NEW.descricao = 'CREDITO EM ADIANTAMENTO';
+      END IF;
 END;
 `);
 
@@ -152,11 +156,17 @@ CREATE TRIGGER pessoas_extrato_before_update
 BEFORE UPDATE ON pessoas_extrato
 FOR EACH ROW
 BEGIN
-    IF NEW.tipoMovimento = 'Débito' AND NEW.valor > 0 THEN
-        SET NEW.valor = -NEW.valor;
-    ELSEIF NEW.tipoMovimento = 'Crédito' AND NEW.valor < 0 THEN
-        SET NEW.valor = ABS(NEW.valor);
-    END IF;
+      IF NEW.tipoMovimento = 'Débito' AND NEW.valor > 0 THEN
+          SET NEW.valor = -NEW.valor;
+      ELSEIF NEW.tipoMovimento = 'Crédito' AND NEW.valor < 0 THEN
+          SET NEW.valor = ABS(NEW.valor);
+      END IF;
+
+      IF NEW.tipoMovimento = 'Débito' THEN
+        SET NEW.descricao = 'DEBITO EM ADIANTAMENTO';
+      ELSEIF NEW.tipoMovimento = 'Crédito' THEN
+        SET NEW.descricao = 'CREDITO EM ADIANTAMENTO';
+      END IF;
 END;
 `);
   }

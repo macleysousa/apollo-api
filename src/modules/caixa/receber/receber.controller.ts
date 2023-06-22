@@ -22,8 +22,8 @@ export class ReceberController {
   async adiantamento(
     @Param('caixaId', ParseCaixaAbertoPipe) caixaId: number,
     @Body() adiantamentoDto: ReceberAdiantamentoDto
-  ): Promise<void> {
-    await this.service.adiantamento(caixaId, adiantamentoDto);
+  ): Promise<unknown> {
+    return this.service.adiantamento(caixaId, adiantamentoDto);
   }
 
   @Post('/fatura')

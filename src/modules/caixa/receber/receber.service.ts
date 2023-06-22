@@ -25,8 +25,7 @@ export class ReceberService {
     private readonly caixaExtratoService: CaixaExtratoService
   ) {}
 
-  async adiantamento(caixaId: number, dto: ReceberAdiantamentoDto): Promise<void> {
-    const usuario = this.contextService.currentUser();
+  async adiantamento(caixaId: number, dto: ReceberAdiantamentoDto): Promise<unknown> {
     const empresa = this.contextService.currentBranch();
 
     if (dto.formasDePagamento.sum((x) => x.valor) < dto.valor) {
@@ -34,24 +33,34 @@ export class ReceberService {
     }
 
     const faturas = await this.lancarFaturas(empresa.id, dto.pessoaId, dto.observacao, dto.formasDePagamento);
-    faturas.map(({ tipoDocumento, itens }) => {
-      return itens.map(({ faturaId, parcela, valor, observacao }) => {
-        return this.caixaExtratoService.lancarMovimento(caixaId, {
-          faturaId,
-          faturaParcela: parcela,
-          tipoDocumento,
-          tipoHistorico: TipoHistorico.Adiantamento,
-          tipoMovimento: TipoMovimento.Credito,
-          valor: valor,
-          observacao,
-        });
-      });
-    });
+    const liquidacao = await this.lancarLiquidacao(caixaId, TipoHistorico.Adiantamento, faturas);
+
+    return liquidacao;
   }
 
   async fatura(caixaId: number, faturaDto: ReceberFaturaDto) {}
 
   async romaneio(caixaId: number, romaneioDto: ReceberRomaneioDto) {}
+
+  async lancarLiquidacao(caixaId: number, tipoHistorico: TipoHistorico, faturas: FaturaEntity[]): Promise<unknown> {
+    const liquidacaoId = await this.caixaExtratoService.newLiquidacaoId();
+
+    const liquidacaoFatura = faturas
+      .map(({ tipoDocumento, itens, observacao }) => {
+        return itens.map(({ faturaId, parcela, valor }) => ({
+          faturaId: faturaId,
+          faturaParcela: parcela,
+          tipoDocumento: tipoDocumento,
+          tipoHistorico: tipoHistorico,
+          tipoMovimento: TipoMovimento.Credito,
+          valor: valor,
+          observacao: observacao,
+        }));
+      })
+      .flat();
+
+    return this.caixaExtratoService.lancarLiquidacao(caixaId, liquidacaoId, liquidacaoFatura);
+  }
 
   async lancarFaturas(empresaId: number, pessoaId: number, observacao: string, formasDePagamento: PagamentoDto[]): Promise<FaturaEntity[]> {
     const pagamentos = formasDePagamento

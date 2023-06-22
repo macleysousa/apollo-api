@@ -39,7 +39,7 @@ describe('PessoaExtratoService', () => {
 
       const result: PessoaExtratoEntity[] = [
         new PessoaExtratoEntity({
-          id: 1,
+          liquidacao: 1,
           empresaId: 1,
           pessoaId: 1,
           tipoDocumento: TipoDocumento.Adiantamento,
@@ -71,7 +71,7 @@ describe('PessoaExtratoService', () => {
 
       const result: PessoaExtratoEntity[] = [
         new PessoaExtratoEntity({
-          id: 1,
+          liquidacao: 1,
           empresaId: 1,
           pessoaId: 1,
           tipoDocumento: TipoDocumento.Adiantamento,
@@ -103,7 +103,7 @@ describe('PessoaExtratoService', () => {
 
       const result: PessoaExtratoEntity[] = [
         new PessoaExtratoEntity({
-          id: 1,
+          liquidacao: 1,
           empresaId: 1,
           pessoaId: 1,
           tipoDocumento: TipoDocumento.Adiantamento,
