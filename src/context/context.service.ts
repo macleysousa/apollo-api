@@ -19,6 +19,14 @@ export class ContextService {
     return RequestContext.currentContext.req['empresa'];
   }
 
+  empresaId(): number {
+    return RequestContext.currentContext.req['empresa'].id;
+  }
+
+  operadorId(): number {
+    return RequestContext.currentContext.req['usuario'].id;
+  }
+
   request(): Request {
     return RequestContext.currentContext.req as unknown as Request;
   }

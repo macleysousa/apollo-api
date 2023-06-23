@@ -11,7 +11,7 @@ import { ReceberModule } from './receber/receber.module';
 import { CancelarModule } from './cancelar/cancelar.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CaixaEntity]), ExtratoModule, ReceberModule, CancelarModule],
+  imports: [TypeOrmModule.forFeature([CaixaEntity]), ExtratoModule.forRoot(), ReceberModule, CancelarModule],
   controllers: [CaixaController],
   providers: [CaixaService, CaixaConstraint],
   exports: [CaixaService],

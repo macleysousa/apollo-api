@@ -51,6 +51,28 @@ describe('ContextService', () => {
     });
   });
 
+  describe('empresaId', () => {
+    it('should return the current empresa id', () => {
+      const empresa = { id: 1 } as any;
+      jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: { empresa }, res: undefined });
+
+      const result = service.empresaId();
+
+      expect(result).toEqual(1);
+    });
+  });
+
+  describe('operadorId', () => {
+    it('should return the current operador id', () => {
+      const usuario = { id: 1 } as any;
+      jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: { usuario }, res: undefined });
+
+      const result = service.operadorId();
+
+      expect(result).toEqual(1);
+    });
+  });
+
   describe('request', () => {
     it('should return the current request', () => {
       const request = {} as Request;

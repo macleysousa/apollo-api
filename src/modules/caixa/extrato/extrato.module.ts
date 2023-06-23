@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CaixaExtratoEntity } from './entities/extrato.entity';
@@ -11,4 +11,11 @@ import { CaixaExtratoService } from './extrato.service';
   providers: [CaixaExtratoService],
   exports: [CaixaExtratoService],
 })
-export class ExtratoModule {}
+export class ExtratoModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

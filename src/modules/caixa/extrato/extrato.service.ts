@@ -50,18 +50,19 @@ export class CaixaExtratoService {
     return this.findByLiquidacao(empresa.id, caixaId, liquidacao);
   }
 
-  async cancelarLiquidacao(empresaId: number, caixaId: number, liquidacao: number, motivo: string): Promise<void> {
+  async cancelarLiquidacao(empresaId: number, caixaId: number, liquidacao: number, motivoCancelamento: string): Promise<void> {
+    const operadorId = this.contextService.operadorId();
+
     const liquidacaoRows = await this.findByLiquidacao(empresaId, caixaId, liquidacao);
 
-    const historicosCancelaves = [TipoHistorico.Adiantamento, TipoHistorico.Suprimento, TipoHistorico.Sangria];
-    liquidacaoRows.map((item) => {
-      if (item.cancelado) {
-        throw new BadRequestException(`A liquidação ${liquidacao} já foi cancelada`);
-      } else if (!historicosCancelaves.includes(item.tipoHistorico)) {
-        throw new BadRequestException(`O tipo de liquidação ${item.tipoHistorico} não pode ser cancelado`);
-      }
-    });
+    if (liquidacaoRows.firstOrDefault().tipoHistorico == TipoHistorico.Abertura_de_caixa) {
+      throw new BadRequestException(`Não é possível cancelar liquidação de abertura de caixa`);
+    } else if (liquidacaoRows.firstOrDefault().tipoHistorico == TipoHistorico.Fechamento_de_caixa) {
+      throw new BadRequestException(`Não é possível cancelar liquidação de fechamento de caixa`);
+    } else if (liquidacaoRows.firstOrDefault().cancelado) {
+      throw new BadRequestException(`A liquidação ${liquidacao} já foi cancelada`);
+    }
 
-    await this.repository.update({ empresaId, caixaId, liquidacao }, { cancelado: true, motivoCancelamento: motivo });
+    await this.repository.update({ empresaId, caixaId, liquidacao }, { operadorId, motivoCancelamento, cancelado: true });
   }
 }
