@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { CaixaExtratoEntity } from './entities/extrato.entity';
 import { LancarMovimento } from './dto/lancar-movimento.dto';
 import { ContextService } from 'src/context/context.service';
+import { TipoHistorico } from './enum/tipo-historico.enum';
 
 @Injectable()
 export class CaixaExtratoService {
@@ -47,5 +48,20 @@ export class CaixaExtratoService {
     );
 
     return this.findByLiquidacao(empresa.id, caixaId, liquidacao);
+  }
+
+  async cancelarLiquidacao(empresaId: number, caixaId: number, liquidacao: number, motivo: string): Promise<void> {
+    const liquidacaoRows = await this.findByLiquidacao(empresaId, caixaId, liquidacao);
+
+    const historicosCancelaves = [TipoHistorico.Adiantamento, TipoHistorico.Suprimento, TipoHistorico.Sangria];
+    liquidacaoRows.map((item) => {
+      if (item.cancelado) {
+        throw new BadRequestException(`A liquidação ${liquidacao} já foi cancelada`);
+      } else if (!historicosCancelaves.includes(item.tipoHistorico)) {
+        throw new BadRequestException(`O tipo de liquidação ${item.tipoHistorico} não pode ser cancelado`);
+      }
+    });
+
+    await this.repository.update({ empresaId, caixaId, liquidacao }, { cancelado: true, motivoCancelamento: motivo });
   }
 }

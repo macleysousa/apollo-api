@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
+
+import { ApiComponent } from '../componente/decorator/componente.decorator';
 import { CaixaService } from './caixa.service';
 import { CreateCaixaDto } from './dto/create-caixa.dto';
 import { CaixaEntity } from './entities/caixa.entity';
-import { ApiComponent } from '../componente/decorator/componente.decorator';
-import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 
 @ApiBearerAuth()
 @ApiEmpresaAuth()

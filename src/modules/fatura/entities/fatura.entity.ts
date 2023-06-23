@@ -8,6 +8,7 @@ import { PessoaEntity } from 'src/modules/pessoa/entities/pessoa.entity';
 
 import { FaturaSituacao } from '../enum/fatura-situacao.enum';
 import { FaturaParcelaEntity } from '../parcela/entities/parcela.entity';
+import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
 
 @Entity({ name: 'faturas' })
 export class FaturaEntity extends BaseEntity {
@@ -47,6 +48,10 @@ export class FaturaEntity extends BaseEntity {
   @ApiProperty({ enum: TipoDocumento })
   @Column('enum', { enum: TipoDocumento })
   tipoDocumento: TipoDocumento;
+
+  @ApiProperty({ enum: TipoMovimento })
+  @Column('enum', { enum: TipoMovimento })
+  tipoMovimento: TipoMovimento;
 
   @ApiProperty({ enum: TipoInclusao })
   @Column('enum', { enum: TipoInclusao })

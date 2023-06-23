@@ -37,14 +37,14 @@ export class PessoaExtratoEntity extends BaseEntity {
   @Column('enum', { enum: TipoDocumento })
   tipoDocumento: TipoDocumento;
 
+  @ApiProperty({ enum: TipoMovimento })
+  @Column('enum', { enum: TipoMovimento })
+  tipoMovimento: TipoMovimento;
+
   @ApiProperty()
   @Column('decimal', { precision: 10, scale: 4 })
   @Transform(({ value }) => parseFloat(value))
   valor: number;
-
-  @ApiProperty({ enum: TipoMovimento })
-  @Column('enum', { enum: TipoMovimento })
-  tipoMovimento: TipoMovimento;
 
   @ApiProperty()
   @Column('varchar', { length: 45 })

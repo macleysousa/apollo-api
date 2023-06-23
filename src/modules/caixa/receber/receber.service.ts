@@ -14,6 +14,7 @@ import { ReceberFaturaDto } from './dto/receber-fatura.dto';
 import { ReceberRomaneioDto } from './dto/receber-romaneio.dto';
 import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
 import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
+import { RecebimentoDto } from './dto/recebimento.dto';
 
 @Injectable()
 export class ReceberService {
@@ -28,11 +29,7 @@ export class ReceberService {
   async adiantamento(caixaId: number, dto: ReceberAdiantamentoDto): Promise<unknown> {
     const empresa = this.contextService.currentBranch();
 
-    if (dto.formasDePagamento.sum((x) => x.valor) < dto.valor) {
-      throw new BadRequestException('O valor recebido não pode ser menor que o valor total.');
-    }
-
-    const faturas = await this.lancarFaturas(empresa.id, dto.pessoaId, dto.observacao, dto.formasDePagamento);
+    const faturas = await this.lancarFaturas(empresa.id, { ...dto }, dto.formasDePagamento);
     const liquidacao = await this.lancarLiquidacao(caixaId, TipoHistorico.Adiantamento, faturas);
 
     return liquidacao;
@@ -46,13 +43,13 @@ export class ReceberService {
     const liquidacaoId = await this.caixaExtratoService.newLiquidacaoId();
 
     const liquidacaoFatura = faturas
-      .map(({ tipoDocumento, itens, observacao }) => {
+      .map(({ tipoDocumento, itens, observacao, tipoMovimento }) => {
         return itens.map(({ faturaId, parcela, valor }) => ({
           faturaId: faturaId,
           faturaParcela: parcela,
           tipoDocumento: tipoDocumento,
           tipoHistorico: tipoHistorico,
-          tipoMovimento: TipoMovimento.Credito,
+          tipoMovimento: tipoMovimento,
           valor: valor,
           observacao: observacao,
         }));
@@ -62,14 +59,16 @@ export class ReceberService {
     return this.caixaExtratoService.lancarLiquidacao(caixaId, liquidacaoId, liquidacaoFatura);
   }
 
-  async lancarFaturas(empresaId: number, pessoaId: number, observacao: string, formasDePagamento: PagamentoDto[]): Promise<FaturaEntity[]> {
+  async lancarFaturas(empresaId: number, recebimento: RecebimentoDto, formasDePagamento: PagamentoDto[]): Promise<FaturaEntity[]> {
     const pagamentos = formasDePagamento
       .groupBy(({ controle, formaDePagamentoId }) => ({ controle, formaDePagamentoId }))
       .select((x) => ({
-        pessoaId,
+        pessoaId: recebimento.pessoaId,
         formaDePagamentoId: x.key.formaDePagamentoId,
+        tipoMovimento: TipoMovimento.Credito,
         valor: x.values.sum((y) => y.valor),
         parcelas: x.values.length,
+        observacao: recebimento?.observacao,
         itens: x.values
           .groupBy((item) => item.parcela)
           .select((y) => ({
@@ -77,7 +76,6 @@ export class ReceberService {
             parcela: y.key,
             valor: y.values.sum((z) => z.valor),
           })) as any,
-        observacao,
       }));
 
     const formasDePagamentos = await this.formaDePagamentoService.find();
@@ -89,23 +87,49 @@ export class ReceberService {
         valor: x.values.sum((y) => y.valor),
       }));
 
+    let faturaTroco: any = null;
+    if (pagamentos.sum((x) => x.valor) < recebimento.valor) {
+      throw new BadRequestException('Valor insuficiente para realizar o a operação.');
+    } else if (pagamentos.sum((x) => x.valor) > recebimento.valor) {
+      const valorTroco = pagamentos.sum((x) => x.valor) - recebimento.valor;
+      const valorDinherio = tipoDocumentos.filter((x) => x.tipoDocumento === TipoDocumento.Dinheiro).sum((x) => x.valor);
+      if (valorDinherio < valorTroco) {
+        throw new BadRequestException('Valor em dinheiro insuficiente para realizar o a operação com troco.');
+      } else {
+        faturaTroco = {
+          ...recebimento,
+          valor: valorTroco,
+          tipoMovimento: TipoMovimento.Debito,
+          tipoDocumento: TipoDocumento.Troco,
+          itens: [{ parcela: 1, valor: valorTroco }],
+        };
+      }
+    }
+
     const adiantamento = tipoDocumentos.firstOrDefault((x) => x.tipoDocumento === TipoDocumento.Adiantamento);
-    const saldoAdiantamento = await this.pessoaExtratoService.findSaldoAdiantamento(empresaId, pessoaId);
+    const saldoAdiantamento = await this.pessoaExtratoService.findSaldoAdiantamento(empresaId, recebimento.pessoaId);
     if (adiantamento && saldoAdiantamento < adiantamento.valor) {
       throw new BadRequestException('Saldo de adiantamento insuficiente para realizar o a operação.');
     }
 
     const creditoDeDevolucao = tipoDocumentos.firstOrDefault((x) => x.tipoDocumento === TipoDocumento.Credito_de_devolucao);
-    const saldoCreditoDeDevolucao = await this.pessoaExtratoService.findSaldoCreditoDeDevolucao(empresaId, pessoaId);
+    const saldoCreditoDeDevolucao = await this.pessoaExtratoService.findSaldoCreditoDeDevolucao(empresaId, recebimento.pessoaId);
     if (creditoDeDevolucao && saldoCreditoDeDevolucao < creditoDeDevolucao.valor) {
       throw new BadRequestException('Creditos de devolução insuficiente para realizar o a operação.');
     }
 
-    return Promise.all(
-      pagamentos.map(async (pagamento) => {
-        const formaDePagamento = await this.formaDePagamentoService.findById(pagamento.formaDePagamentoId);
-        return this.faturaService.createAutomatica({ ...pagamento, tipoDocumento: formaDePagamento.tipo });
-      })
-    );
+    const faturas: FaturaEntity[] = [];
+    for await (const pagamento of pagamentos) {
+      const formaDePagamento = await this.formaDePagamentoService.findById(pagamento.formaDePagamentoId);
+      const fatura = await this.faturaService.createAutomatica({ ...pagamento, tipoDocumento: formaDePagamento.tipo });
+      faturas.push(fatura);
+    }
+
+    if (faturaTroco) {
+      const fatura = await this.faturaService.createAutomatica(faturaTroco);
+      faturas.push(fatura);
+    }
+
+    return faturas;
   }
 }

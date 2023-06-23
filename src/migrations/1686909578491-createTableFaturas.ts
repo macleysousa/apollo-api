@@ -49,6 +49,12 @@ export class CreateTableFaturas1686909578491 implements MigrationInterface {
             default: '"Fatura"',
           },
           {
+            name: 'tipoMovimento',
+            type: 'enum',
+            enum: ['Crédito', 'Débito'],
+            default: '"Crédito"',
+          },
+          {
             name: 'tipoInclusao',
             type: 'enum',
             enum: ['Automática', 'Manual'],

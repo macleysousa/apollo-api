@@ -42,15 +42,15 @@ export class CrateTablePessoasExtato1687214865833 implements MigrationInterface 
             enum: ['Adiantamento', 'Crédito de Devolução'],
           },
           {
+            name: 'tipoMovimento',
+            type: 'enum',
+            enum: ['Crédito', 'Débito'],
+          },
+          {
             name: 'valor',
             type: 'decimal',
             precision: 10,
             scale: 4,
-          },
-          {
-            name: 'tipoMovimento',
-            type: 'enum',
-            enum: ['Crédito', 'Débito'],
           },
           {
             name: 'descricao',

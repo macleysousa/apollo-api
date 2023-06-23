@@ -8,9 +8,10 @@ import { CaixaController } from './caixa.controller';
 import { CaixaEntity } from './entities/caixa.entity';
 import { ExtratoModule } from './extrato/extrato.module';
 import { ReceberModule } from './receber/receber.module';
+import { CancelarModule } from './cancelar/cancelar.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CaixaEntity]), ExtratoModule, ReceberModule],
+  imports: [TypeOrmModule.forFeature([CaixaEntity]), ExtratoModule, ReceberModule, CancelarModule],
   controllers: [CaixaController],
   providers: [CaixaService, CaixaConstraint],
   exports: [CaixaService],
