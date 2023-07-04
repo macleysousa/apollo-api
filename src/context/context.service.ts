@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RequestContext } from 'nestjs-request-context';
+import { RequestContext } from 'nestjs-easy-context';
 
 import { AuthRequest } from 'src/decorators/current-auth.decorator';
 import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
