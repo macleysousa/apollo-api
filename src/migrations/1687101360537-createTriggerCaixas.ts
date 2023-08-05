@@ -41,7 +41,7 @@ FOR EACH ROW
 BEGIN
     IF NEW.situacao = 'Fechado' THEN
        SET NEW.fechamento = CURRENT_TIMESTAMP;
-	ELSEIF NEW.situacao = 'Fechado' AND NEW.operadorFechamentoId is null THEN
+	  ELSEIF NEW.situacao = 'Fechado' AND NEW.operadorFechamentoId is null THEN
 	   -- Lançar uma exceção
 	   SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Erro: Essa operação não é permitida (operador de fechamento não informado)';
     END IF;

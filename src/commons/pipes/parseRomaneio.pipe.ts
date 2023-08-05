@@ -6,7 +6,10 @@ import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
 
 @Injectable()
 export class ParseRomaneioPipe implements PipeTransform<string, Promise<number>> {
-  constructor(private readonly service: RomaneioService, private readonly contextService: ContextService) {}
+  constructor(
+    private readonly service: RomaneioService,
+    private readonly contextService: ContextService
+  ) {}
 
   async transform(value: string): Promise<number> {
     const parsedValue = parseInt(value, 10);
@@ -30,7 +33,10 @@ export class ParseRomaneioPipe implements PipeTransform<string, Promise<number>>
 
 @Injectable()
 export class ParseRomaneioEmAndamentoPipe implements PipeTransform<string, Promise<number>> {
-  constructor(private readonly service: RomaneioService, private readonly contextService: ContextService) {}
+  constructor(
+    private readonly service: RomaneioService,
+    private readonly contextService: ContextService
+  ) {}
 
   async transform(value: string): Promise<number> {
     const parsedValue = parseInt(value, 10);
@@ -56,7 +62,10 @@ export class ParseRomaneioEmAndamentoPipe implements PipeTransform<string, Promi
 
 @Injectable()
 export class ParseRomaneioEncerradoPipe implements PipeTransform<string, Promise<number>> {
-  constructor(private readonly service: RomaneioService, private readonly contextService: ContextService) {}
+  constructor(
+    private readonly service: RomaneioService,
+    private readonly contextService: ContextService
+  ) {}
 
   async transform(value: string): Promise<number> {
     const parsedValue = parseInt(value, 10);

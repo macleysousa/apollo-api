@@ -9,7 +9,11 @@ import { UsuarioEntity } from '../usuario/entities/usuario.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(private jwtService: JwtService, private userService: UsuarioService, private branchService: EmpresaService) {}
+  constructor(
+    private jwtService: JwtService,
+    private userService: UsuarioService,
+    private branchService: EmpresaService
+  ) {}
 
   async login({ usuario, senha, empresaId }: LoginDTO): Promise<{ token: string; refreshToken: string }> {
     const user = await this.userService.validateUser(usuario, senha);

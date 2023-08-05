@@ -47,6 +47,18 @@ export class ReferenciaEntity extends BaseEntity {
   @Column()
   marcaId: number;
 
+  @ApiProperty()
+  @Column()
+  descricao: string;
+
+  @ApiProperty()
+  @Column()
+  composicao: string;
+
+  @ApiProperty()
+  @Column()
+  cuidados: string;
+
   constructor(partial?: Partial<ReferenciaEntity>) {
     super();
     Object.assign(this, partial);

@@ -9,7 +9,10 @@ import { AuthService } from '../modules/auth/auth.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(private reflector: Reflector, private authService: AuthService) {
+  constructor(
+    private reflector: Reflector,
+    private authService: AuthService
+  ) {
     super();
   }
 

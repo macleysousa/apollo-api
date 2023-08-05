@@ -15,7 +15,10 @@ import { CaixaSituacao } from 'src/modules/caixa/enum/caixa-situacao.enum';
 @Injectable()
 export class CaixaConstraint implements ValidatorConstraintInterface {
   messageError: string;
-  constructor(private readonly caixaService: CaixaService, private readonly contextService: ContextService) {}
+  constructor(
+    private readonly caixaService: CaixaService,
+    private readonly contextService: ContextService
+  ) {}
 
   async validate(value: number, args?: ValidationArguments): Promise<boolean> {
     const usuario = this.contextService.currentUser();

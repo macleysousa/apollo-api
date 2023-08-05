@@ -6,7 +6,10 @@ import { COMPONENT_KEY } from 'src/modules/componente/decorator/componente.decor
 import { Role } from 'src/modules/usuario/enums/usuario-tipo.enum';
 @Injectable()
 export class ComponentGuard implements CanActivate {
-  constructor(private reflector: Reflector, private authService: AuthService) {}
+  constructor(
+    private reflector: Reflector,
+    private authService: AuthService
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const componentId = this.reflector.getAllAndOverride<string>(COMPONENT_KEY, [context.getHandler(), context.getClass()]);

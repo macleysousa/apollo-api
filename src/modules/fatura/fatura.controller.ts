@@ -62,7 +62,11 @@ export class FaturaController {
   }
 
   @Put(':id')
-  async update(@CurrentBranch() empresa: EmpresaEntity, @Param('id', ParseIntPipe) id: number, @Body() updateFaturaDto: UpdateFaturaManualDto) {
+  async update(
+    @CurrentBranch() empresa: EmpresaEntity,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateFaturaDto: UpdateFaturaManualDto
+  ) {
     return this.service.update(empresa.id, id, updateFaturaDto);
   }
 

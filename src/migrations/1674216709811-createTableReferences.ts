@@ -47,6 +47,21 @@ export class createTableReferences1674216709811 implements MigrationInterface {
             isNullable: true,
           },
           {
+            name: 'descricao',
+            type: 'text',
+            isNullable: true,
+          },
+          {
+            name: 'composicao',
+            type: 'text',
+            isNullable: true,
+          },
+          {
+            name: 'cuidados',
+            type: 'text',
+            isNullable: true,
+          },
+          {
             name: 'criadoEm',
             type: 'timestamp',
             default: 'now()',

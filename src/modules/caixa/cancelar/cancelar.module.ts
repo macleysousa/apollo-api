@@ -4,6 +4,6 @@ import { CancelarController } from './cancelar.controller';
 
 @Module({
   controllers: [CancelarController],
-  providers: [CancelarService]
+  providers: [CancelarService],
 })
 export class CancelarModule {}

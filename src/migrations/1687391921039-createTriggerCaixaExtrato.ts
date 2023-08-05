@@ -8,9 +8,9 @@ CREATE TRIGGER caixas_extrato_before_insert
 BEFORE INSERT ON caixas_extrato
 FOR EACH ROW
 BEGIN
-    IF NEW.tipoMovimento = 'Troco' THEN
-      SET NEW.tipoMovimento = 'Débito';
-    END IF;
+      IF NEW.tipoMovimento = 'Troco' THEN
+        SET NEW.tipoMovimento = 'Débito';
+      END IF;
 
       IF NEW.tipoMovimento = 'Débito' AND NEW.valor > 0 THEN
           SET NEW.valor = -NEW.valor;
@@ -49,9 +49,9 @@ CREATE TRIGGER caixas_extrato_before_update
 BEFORE UPDATE ON caixas_extrato
 FOR EACH ROW
 BEGIN
-    IF NEW.tipoMovimento = 'Troco' THEN
-      SET NEW.tipoMovimento = 'Débito';
-    END IF;
+      IF NEW.tipoMovimento = 'Troco' THEN
+        SET NEW.tipoMovimento = 'Débito';
+      END IF;
 
       IF NEW.tipoMovimento = 'Débito' AND NEW.valor > 0 THEN
           SET NEW.valor = -NEW.valor;
