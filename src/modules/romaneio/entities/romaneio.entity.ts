@@ -10,55 +10,55 @@ import { OperacaoRomaneio } from '../enum/operacao-romaneio.enum';
 @Entity({ name: 'romaneios' })
 export class RomaneioEntity extends BaseEntity {
   @ApiProperty()
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
   @ApiProperty()
-  @Column()
+  @Column('int')
   empresaId: number;
 
   @ApiProperty()
-  @Column()
+  @Column('date')
   data: Date;
 
   @ApiProperty()
-  @Column()
+  @Column('int')
   pessoaId: number;
 
   @ApiProperty()
-  @Column()
+  @Column('int')
   funcionarioId: number;
 
   @ApiProperty()
-  @Column()
+  @Column('int')
   tabelaPrecoId: number;
 
   @ApiProperty()
-  @Column()
+  @Column('boolean')
   pago: boolean;
 
   @ApiProperty()
-  @Column()
+  @Column('boolean')
   acertoConsignacao: boolean;
 
   @ApiProperty()
-  @Column()
+  @Column('int')
   operadorId: number;
 
   @ApiProperty()
-  @Column()
+  @Column('text')
   observacao: string;
 
   @ApiProperty({ enum: ModalidadeRomaneio })
-  @Column()
+  @Column('varchar')
   modalidade: ModalidadeRomaneio;
 
   @ApiProperty({ enum: OperacaoRomaneio })
-  @Column()
+  @Column('varchar')
   operacao: OperacaoRomaneio;
 
   @ApiProperty({ enum: SituacaoRomaneio })
-  @Column()
+  @Column('varchar')
   situacao: SituacaoRomaneio;
 
   constructor(partial?: Partial<RomaneioEntity>) {

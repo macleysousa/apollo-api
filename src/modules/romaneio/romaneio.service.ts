@@ -59,7 +59,7 @@ export class RomaneioService {
 
   async find(filter?: filter, page = 1, limit = 100): Promise<Pagination<RomaneioView>> {
     const queryBuilder = this.view.createQueryBuilder('e');
-    queryBuilder.where({ empresaId: Not(IsNull()) });
+    queryBuilder.where('e.empresaId IS NOT NULL');
 
     if (filter?.empresaIds && filter.empresaIds.length > 0) {
       queryBuilder.andWhere({ empresaId: In(filter.empresaIds) });

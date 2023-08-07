@@ -235,7 +235,7 @@ describe('RomaneioService', () => {
       const result = await service.find(filter, page, limit);
 
       expect(view.createQueryBuilder).toHaveBeenCalledWith('e');
-      expect(view.createQueryBuilder().where).toHaveBeenCalledWith({ empresaId: Not(IsNull()) });
+      expect(view.createQueryBuilder().where).toHaveBeenCalledWith('e.empresaId IS NOT NULL');
       expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith({ empresaId: In(filter.empresaIds) });
       expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith({ funcionarioId: In(filter.funcionarioIds) });
       expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.data >= :dataInicial', { dataInicial: filter.dataInicial });
@@ -252,7 +252,7 @@ describe('RomaneioService', () => {
       const result = await service.find(filter, page, limit);
 
       expect(view.createQueryBuilder).toHaveBeenCalledWith('e');
-      expect(view.createQueryBuilder().where).toHaveBeenCalledWith({ empresaId: Not(IsNull()) });
+      expect(view.createQueryBuilder().where).toHaveBeenCalledWith('e.empresaId IS NOT NULL');
       expect(view.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ empresaId: In(filter.empresaIds) });
       expect(view.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ funcionarioId: In(filter.funcionarioIds) });
       expect(view.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('e.data >= :dataInicial', { dataInicial: filter.dataInicial });
@@ -269,7 +269,7 @@ describe('RomaneioService', () => {
       const result = await service.find(filter, page, limit);
 
       expect(view.createQueryBuilder).toHaveBeenCalledWith('e');
-      expect(view.createQueryBuilder().where).toHaveBeenCalledWith({ empresaId: Not(IsNull()) });
+      expect(view.createQueryBuilder().where).toHaveBeenCalledWith('e.empresaId IS NOT NULL');
       expect(result).toEqual(romaneioFakeRepository.findViewPaginate());
     });
   });
