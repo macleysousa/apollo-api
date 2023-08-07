@@ -98,14 +98,14 @@ export class RomaneioService {
     return this.findById(empresaId, id);
   }
 
-  async encerrar(empresaId: number, id: number): Promise<void> {
+  async encerrar(empresaId: number, caixaId: number, id: number): Promise<void> {
     const romaneio = await this.findById(empresaId, id);
 
     if (romaneio.situacao !== SituacaoRomaneio.EmAndamento) {
       throw new BadRequestException('Romaneio não está em andamento');
     }
 
-    await this.repository.update({ id }, { situacao: SituacaoRomaneio.Encerrado }).catch(() => {
+    await this.repository.update({ id }, { caixaId, situacao: SituacaoRomaneio.Encerrado }).catch(() => {
       throw new BadRequestException('Não foi possível encerrar o romaneio');
     });
   }

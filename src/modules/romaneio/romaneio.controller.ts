@@ -48,10 +48,4 @@ export class RomaneioController {
   ): Promise<RomaneioView> {
     return this.service.observacao(empresa.id, id, observacao);
   }
-
-  @Put(':id/cancelar')
-  @ApiResponse({ status: 200, type: RomaneioView })
-  async cancelar(@CurrentBranch() empresa: EmpresaEntity, @Param('id', ParseIntPipe) id: number): Promise<RomaneioView> {
-    return this.service.cancelar(empresa.id, id);
-  }
 }

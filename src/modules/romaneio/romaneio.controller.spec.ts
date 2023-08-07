@@ -83,18 +83,4 @@ describe('RomaneioController', () => {
       expect(result).toEqual(romaneioView);
     });
   });
-
-  describe('/:id/cancelar (PUT)', () => {
-    it('should cancel a romaneio by id', async () => {
-      const empresa = { id: 1 } as any;
-      const id = 1;
-      const romaneioView = { ...romaneioFakeRepository.findOneView(), sutuacao: 'Cancelado' };
-      jest.spyOn(service, 'cancelar').mockResolvedValueOnce(romaneioView);
-
-      const result = await controller.cancelar(empresa, id);
-
-      expect(service.cancelar).toHaveBeenCalledWith(empresa.id, id);
-      expect(result).toEqual(romaneioView);
-    });
-  });
 });

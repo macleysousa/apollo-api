@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { RomaneioService } from './romaneio.service';
@@ -14,4 +14,11 @@ import { RomaneioFreteModule } from './romaneio-frete/romaneio-frete.module';
   providers: [RomaneioService],
   exports: [RomaneioService],
 })
-export class RomaneioModule {}
+export class RomaneioModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

@@ -12,9 +12,9 @@ export class LancarMovimento {
 
   valor: number;
 
-  faturaId: number;
+  faturaId?: number;
 
-  faturaParcela: number;
+  faturaParcela?: number;
 
-  observacao: string;
+  observacao?: string;
 }

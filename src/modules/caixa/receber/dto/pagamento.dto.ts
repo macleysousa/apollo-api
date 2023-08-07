@@ -6,74 +6,76 @@ import { IsFormaPagamento } from 'src/commons/validations/is-forma-pagamento.val
 
 export class PagamentoDto {
   @ApiProperty()
-  @IsNotEmpty()
-  @IsInt()
+  @IsNotEmpty({ message: 'O campo controle é obrigatório.' })
+  @IsInt({ message: 'O controle deve ser um número inteiro.' })
+  @IsBetween(1, 999, { message: 'O controle deve ser um número entre 1 e 999.' })
   controle: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'O campo formaDePagamentoId é obrigatório.' })
   @IsFormaPagamento()
   formaDePagamentoId: number;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsInt()
-  @IsBetween(1, 72, { message: 'O número de parcelas deve ser entre 1 e 72.' })
+  @IsNotEmpty({ message: 'O campo parcela é obrigatório.' })
+  @IsInt({ message: 'O número de parcelas deve ser um número inteiro.' })
+  @IsBetween(1, 360, { message: 'O número de parcelas deve ser entre 1 e 360.' })
   parcela: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'O campo valor é obrigatório.' })
+  @IsBetween(0.01, 1000000, { message: 'O valor deve ser entre 0,01 e 1000000' })
   valor: number;
 
   @ApiProperty({ type: Date, format: 'date', required: false })
   @IsOptional()
-  vencimento: Date;
+  vencimento?: Date;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  banco: string;
+  banco?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  agencia: string;
+  agencia?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  conta: string;
+  conta?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  documento: string;
+  documento?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  nsu: string;
+  nsu?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  autorizacao: string;
+  autorizacao?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  cheque: number;
+  cheque?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  banda: string;
+  banda?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  chequerTerceiro: boolean;
+  chequerTerceiro?: boolean;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  cpfCnpjTerceiro: string;
+  cpfCnpjTerceiro?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  nomeTerceiro: string;
+  nomeTerceiro?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  telefoneTerceiro: string;
+  telefoneTerceiro?: string;
 }

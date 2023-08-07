@@ -32,7 +32,7 @@ export class ReceberController {
   }
 
   @Post('/romaneio')
-  async romaneio(@Param('caixaId', ParseCaixaAbertoPipe) caixaId: number, @Body() romaneioDto: ReceberRomaneioDto): Promise<void> {
+  async romaneio(@Param('caixaId', ParseCaixaAbertoPipe) caixaId: number, @Body() romaneioDto: ReceberRomaneioDto): Promise<unknown> {
     return this.service.romaneio(caixaId, romaneioDto);
   }
 }

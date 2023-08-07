@@ -49,6 +49,11 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
             default: false,
           },
           {
+            name: 'caixaId',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
             name: 'operadorId',
             type: 'int',
             isNullable: false,
@@ -109,6 +114,13 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
           {
             columnNames: ['tabelaPrecoId'],
             referencedTableName: 'tabelas_de_precos',
+            referencedColumnNames: ['id'],
+            onDelete: 'RESTRICT',
+            onUpdate: 'CASCADE',
+          },
+          {
+            columnNames: ['caixaId'],
+            referencedTableName: 'caixas',
             referencedColumnNames: ['id'],
             onDelete: 'RESTRICT',
             onUpdate: 'CASCADE',

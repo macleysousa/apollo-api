@@ -42,6 +42,10 @@ export class RomaneioEntity extends BaseEntity {
   acertoConsignacao: boolean;
 
   @ApiProperty()
+  @Column('bigint')
+  caixaId: number;
+
+  @ApiProperty()
   @Column('int')
   operadorId: number;
 

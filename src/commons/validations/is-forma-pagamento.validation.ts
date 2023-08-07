@@ -10,7 +10,8 @@ export class FormaPagamentoConstraint implements ValidatorConstraintInterface {
   constructor(private readonly service: FormaDePagamentoService) {}
 
   async validate(value: number, args?: ValidationArguments): Promise<boolean> {
-    return (await this.service.findById(value)) ? true : false;
+    const forma = await this.service.findById(value);
+    return forma ? true : false;
   }
 
   defaultMessage(_validationArguments?: ValidationArguments): string {

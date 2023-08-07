@@ -15,6 +15,9 @@ import { ReceberRomaneioDto } from './dto/receber-romaneio.dto';
 import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
 import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
 import { RecebimentoDto } from './dto/recebimento.dto';
+import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
+import { OperacaoRomaneio } from 'src/modules/romaneio/enum/operacao-romaneio.enum';
+import { validateSync } from 'class-validator';
 
 @Injectable()
 export class ReceberService {
@@ -23,7 +26,8 @@ export class ReceberService {
     private readonly formaDePagamentoService: FormaDePagamentoService,
     private readonly pessoaExtratoService: PessoaExtratoService,
     private readonly faturaService: FaturaService,
-    private readonly caixaExtratoService: CaixaExtratoService
+    private readonly caixaExtratoService: CaixaExtratoService,
+    private readonly romaneioService: RomaneioService
   ) {}
 
   async adiantamento(caixaId: number, dto: ReceberAdiantamentoDto): Promise<unknown> {
@@ -37,7 +41,17 @@ export class ReceberService {
 
   async fatura(caixaId: number, faturaDto: ReceberFaturaDto) {}
 
-  async romaneio(caixaId: number, romaneioDto: ReceberRomaneioDto) {}
+  async romaneio(caixaId: number, romaneioDto: ReceberRomaneioDto) {
+    const empresa = this.contextService.currentBranch();
+    const romaneio = await this.romaneioService.findById(empresa.id, romaneioDto.romaneioId);
+
+    switch (romaneio.operacao) {
+      case OperacaoRomaneio.Outros:
+        return this.romaneioService.encerrar(empresa.id, romaneioDto.romaneioId, caixaId);
+    }
+
+    return romaneio;
+  }
 
   async lancarLiquidacao(caixaId: number, tipoHistorico: TipoHistorico, faturas: FaturaEntity[]): Promise<unknown> {
     const liquidacaoId = await this.caixaExtratoService.newLiquidacaoId();

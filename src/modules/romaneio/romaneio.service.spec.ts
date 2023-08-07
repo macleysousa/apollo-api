@@ -1,7 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { In, IsNull, Not, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { romaneioFakeRepository } from 'src/base-fake/romaneio';
 import { ContextService } from 'src/context/context.service';
@@ -333,40 +333,43 @@ describe('RomaneioService', () => {
   describe('encerrar', () => {
     it('should throw BadRequestException if romaneio is not in EmAndamento state', async () => {
       const empresaId = 1;
+      const caixaId = 1;
       const id = 1;
       const romaneio = { situacao: SituacaoRomaneio.Encerrado } as any;
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
 
-      await expect(service.encerrar(empresaId, id)).rejects.toThrow(BadRequestException);
+      await expect(service.encerrar(empresaId, caixaId, id)).rejects.toThrow(BadRequestException);
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
     });
 
     it('should update romaneio situacao to Encerrado if operacao is Outros', async () => {
       const empresaId = 1;
+      const caixaId = 1;
       const id = 1;
       const romaneio = { id: 1, situacao: SituacaoRomaneio.EmAndamento, operacao: OperacaoRomaneio.Outros } as any;
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
       jest.spyOn(repository, 'update').mockResolvedValueOnce({} as any);
 
-      await service.encerrar(empresaId, id);
+      await service.encerrar(empresaId, caixaId, id);
 
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
-      expect(repository.update).toHaveBeenCalledWith({ id }, { situacao: SituacaoRomaneio.Encerrado });
+      expect(repository.update).toHaveBeenCalledWith({ id }, { caixaId, situacao: SituacaoRomaneio.Encerrado });
     });
 
     it('should throw BadRequestException if update situacao', async () => {
       const empresaId = 1;
+      const caixaId = 1;
       const id = 1;
       const romaneio = { id: 1, situacao: SituacaoRomaneio.EmAndamento, operacao: OperacaoRomaneio.Outros } as any;
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
       jest.spyOn(repository, 'update').mockRejectedValueOnce(new Error());
 
-      await expect(service.encerrar(empresaId, id)).rejects.toThrow(BadRequestException);
+      await expect(service.encerrar(empresaId, caixaId, id)).rejects.toThrow(BadRequestException);
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
-      expect(repository.update).toHaveBeenCalledWith({ id }, { situacao: SituacaoRomaneio.Encerrado });
+      expect(repository.update).toHaveBeenCalledWith({ id }, { caixaId, situacao: SituacaoRomaneio.Encerrado });
     });
   });
 

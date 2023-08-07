@@ -7,6 +7,7 @@ import { FormaDePagamentoService } from 'src/modules/forma-de-pagamento/forma-de
 import { ReceberService } from './receber.service';
 import { PessoaExtratoService } from 'src/modules/pessoa/extrato/pessoa-extrato.service';
 import { CaixaExtratoService } from '../extrato/extrato.service';
+import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
 
 describe('ReceberService', () => {
   let service: ReceberService;
@@ -33,6 +34,10 @@ describe('ReceberService', () => {
         },
         {
           provide: CaixaExtratoService,
+          useValue: {},
+        },
+        {
+          provide: RomaneioService,
           useValue: {},
         },
       ],
