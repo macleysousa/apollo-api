@@ -9,8 +9,8 @@ import {
 
 import { ProdutoService } from 'src/modules/produto/produto.service';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class ProdutoConstraint implements ValidatorConstraintInterface {
   constructor(private readonly service: ProdutoService) {}
 

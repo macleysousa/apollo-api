@@ -3,8 +3,8 @@ import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } fr
 import { ValidatorConstraint, ValidationArguments } from 'class-validator';
 import { CategoriaService } from 'src/modules/categoria/categoria.service';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class CategoriaConstraint implements ValidatorConstraintInterface {
   constructor(private readonly service: CategoriaService) {}
 

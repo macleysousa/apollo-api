@@ -4,8 +4,8 @@ import { ValidatorConstraint, ValidationArguments } from 'class-validator';
 
 import { FormaDePagamentoService } from 'src/modules/forma-de-pagamento/forma-de-pagamento.service';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class FormaPagamentoConstraint implements ValidatorConstraintInterface {
   constructor(private readonly service: FormaDePagamentoService) {}
 

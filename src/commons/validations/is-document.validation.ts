@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { registerDecorator, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import { cpf, cnpj } from 'cpf-cnpj-validator';
 
+@Injectable()
 @ValidatorConstraint({ async: false })
 export class IsValidDocumentConstraint implements ValidatorConstraintInterface {
   messageError: string;

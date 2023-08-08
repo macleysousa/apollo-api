@@ -4,8 +4,8 @@ import { ValidatorConstraint, ValidationArguments } from 'class-validator';
 
 import { FuncionarioService } from 'src/modules/funcionario/funcionario.service';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class FuncionarioConstraint implements ValidatorConstraintInterface {
   constructor(private readonly service: FuncionarioService) {}
 

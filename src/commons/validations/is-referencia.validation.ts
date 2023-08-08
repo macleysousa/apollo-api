@@ -3,8 +3,8 @@ import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } fr
 import { ValidatorConstraint, ValidationArguments } from 'class-validator';
 import { ReferenciaService } from 'src/modules/referencia/referencia.service';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class ReferenciaConstraint implements ValidatorConstraintInterface {
   constructor(private readonly service: ReferenciaService) {}
 

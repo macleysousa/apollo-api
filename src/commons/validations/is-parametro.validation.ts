@@ -9,8 +9,8 @@ import {
 
 import { ParametroService } from 'src/modules/parametro/parametro.service';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class ParametroConstraint implements ValidatorConstraintInterface {
   constructor(private readonly service: ParametroService) {}
 

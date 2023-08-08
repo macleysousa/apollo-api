@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import {
   registerDecorator,
   ValidationOptions,
@@ -6,6 +7,7 @@ import {
   ValidationArguments,
 } from 'class-validator';
 
+@Injectable()
 @ValidatorConstraint({ async: false })
 export class IsBetweenConstraint implements ValidatorConstraintInterface {
   validate(value: any, args: ValidationArguments) {

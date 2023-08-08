@@ -42,15 +42,15 @@ export class RomaneioView extends BaseEntity {
 
   @ApiProperty({ enum: ModalidadeRomaneio })
   @ViewColumn()
-  modalidade: ModalidadeRomaneio | string;
+  modalidade: ModalidadeRomaneio;
 
   @ApiProperty({ enum: OperacaoRomaneio })
   @ViewColumn()
-  operacao: OperacaoRomaneio | string;
+  operacao: OperacaoRomaneio;
 
   @ApiProperty({ enum: SituacaoRomaneio })
   @ViewColumn()
-  situacao: SituacaoRomaneio | string;
+  situacao: SituacaoRomaneio;
 
   @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => Boolean(value), to: (value) => Boolean(value) } })

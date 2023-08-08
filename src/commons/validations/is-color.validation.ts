@@ -3,8 +3,8 @@ import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } fr
 import { ValidatorConstraint, ValidationArguments } from 'class-validator';
 import { CorService } from '../../modules/cor/cor.service';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class ColorConstraint implements ValidatorConstraintInterface {
   constructor(private readonly service: CorService) {}
 

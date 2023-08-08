@@ -10,8 +10,8 @@ import { ContextService } from 'src/context/context.service';
 
 import { TerminalService } from 'src/modules/empresa/terminal/terminal.service';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class TerminalConstraint implements ValidatorConstraintInterface {
   messageError: string;
   constructor(

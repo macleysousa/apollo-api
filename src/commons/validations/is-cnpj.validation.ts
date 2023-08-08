@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } from 'class-validator';
 import { ValidatorConstraint, ValidationArguments } from 'class-validator';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class IsCnpjValidConstraint implements ValidatorConstraintInterface {
   calculateDigitVerifier(cnpj: string, weights: number[]): string {
     let sum = 0;

@@ -3,8 +3,8 @@ import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } fr
 import { ValidatorConstraint, ValidationArguments } from 'class-validator';
 import { EmpresaService } from 'src/modules/empresa/empresa.service';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class EmpresaConstraint implements ValidatorConstraintInterface {
   constructor(private readonly branchService: EmpresaService) {}
 

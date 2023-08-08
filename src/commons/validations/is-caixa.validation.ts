@@ -11,8 +11,8 @@ import { ContextService } from 'src/context/context.service';
 import { CaixaService } from 'src/modules/caixa/caixa.service';
 import { CaixaSituacao } from 'src/modules/caixa/enum/caixa-situacao.enum';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class CaixaConstraint implements ValidatorConstraintInterface {
   messageError: string;
   constructor(

@@ -4,8 +4,8 @@ import { ValidatorConstraint, ValidationArguments } from 'class-validator';
 
 import { TamanhoService } from 'src/modules/tamanho/tamanho.service';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class TamanhoConstraint implements ValidatorConstraintInterface {
   constructor(private readonly service: TamanhoService) {}
 

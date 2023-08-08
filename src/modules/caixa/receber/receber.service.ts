@@ -47,7 +47,7 @@ export class ReceberService {
 
     switch (romaneio.operacao) {
       case OperacaoRomaneio.Outros:
-        return this.romaneioService.encerrar(empresa.id, romaneioDto.romaneioId, caixaId);
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
     }
 
     return romaneio;

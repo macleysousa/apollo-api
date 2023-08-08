@@ -4,8 +4,8 @@ import { ValidatorConstraint, ValidationArguments } from 'class-validator';
 
 import { MarcaService } from 'src/modules/marca/marca.service';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class MarcaConstraint implements ValidatorConstraintInterface {
   constructor(private readonly service: MarcaService) {}
 

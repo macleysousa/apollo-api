@@ -4,8 +4,8 @@ import { ValidatorConstraint, ValidationArguments } from 'class-validator';
 
 import { TabelaDePrecoService } from 'src/modules/tabela-de-preco/tabela-de-preco.service';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class TabelaDePrecoConstraint implements ValidatorConstraintInterface {
   constructor(private readonly service: TabelaDePrecoService) {}
 

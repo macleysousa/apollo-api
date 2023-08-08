@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import {
   registerDecorator,
   ValidationArguments,
@@ -8,6 +9,7 @@ import {
 
 import { PessoaService } from 'src/modules/pessoa/pessoa.service';
 
+@Injectable()
 @ValidatorConstraint({ async: false })
 export class IsPessoaConstraint implements ValidatorConstraintInterface {
   constructor(private readonly service: PessoaService) {}

@@ -1,4 +1,7 @@
 import { PaginatedDTO } from 'src/decorators/api-paginated-response.decorator';
+import { ModalidadeRomaneio } from 'src/modules/romaneio/enum/modalidade-romaneio.enum';
+import { OperacaoRomaneio } from 'src/modules/romaneio/enum/operacao-romaneio.enum';
+import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
 import { RomaneioFreteEntity } from 'src/modules/romaneio/romaneio-frete/entities/romaneio-frete.entity';
 import { FreteTipo } from 'src/modules/romaneio/romaneio-frete/enum/frete-tipo';
 import { RomaneioItemView } from 'src/modules/romaneio/romaneio-item/views/romaneio-item.view';
@@ -15,9 +18,9 @@ export class RomaneioFakeRepository {
       funcionarioId: 1,
       funcionarioNome: 'Funcionario 1',
       tabelaPrecoId: 1,
-      modalidade: 'Saída',
-      operacao: 'Venda',
-      situacao: 'Em andamento',
+      modalidade: ModalidadeRomaneio.Saida,
+      operacao: OperacaoRomaneio.Venda,
+      situacao: SituacaoRomaneio.EmAndamento,
       pago: false,
       acertoConsignacao: false,
       quantidade: 1,
@@ -56,9 +59,9 @@ export class RomaneioFakeRepository {
       funcionarioId: 1,
       funcionarioNome: 'Funcionario 1',
       tabelaPrecoId: 1,
-      modalidade: 'Saída',
-      operacao: 'Venda',
-      situacao: 'Em andamento',
+      modalidade: ModalidadeRomaneio.Saida,
+      operacao: OperacaoRomaneio.Venda,
+      situacao: SituacaoRomaneio.EmAndamento,
       pago: false,
       acertoConsignacao: false,
       quantidade: 1,
