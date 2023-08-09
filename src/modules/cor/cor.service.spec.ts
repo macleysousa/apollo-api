@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { ILike, In, Repository } from 'typeorm';
+
 import { colorFakeRepository } from 'src/base-fake/color';
-import { ILike, Repository } from 'typeorm';
+
 import { CorService } from './cor.service';
 import { CreateCorDto } from './dto/create-cor.dto';
 import { UpdateCorDto } from './dto/update-cor.dto';
@@ -34,6 +36,20 @@ describe('ColorService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
+  });
+
+  describe('upsert', () => {
+    it('should create a color', async () => {
+      //Arrange
+      const colors: CreateCorDto[] = [{ nome: 'black' }, { nome: 'blue' }, { nome: 'green' }];
+
+      // Act
+      const result = await service.upsert(colors);
+
+      // Assert
+      expect(repository.save).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(colorFakeRepository.find());
+    });
   });
 
   describe('create', () => {
@@ -99,6 +115,38 @@ describe('ColorService', () => {
       expect(repository.findOne).toHaveBeenCalledWith({ where: { id } });
 
       expect(result).toEqual(colorFakeRepository.findOne());
+    });
+  });
+
+  describe('findByName', () => {
+    it('should return a color', async () => {
+      // Arrange
+      const name = 'red';
+
+      // Act
+      const result = await service.findByName(name);
+
+      // Assert
+      expect(repository.findOne).toHaveBeenCalledTimes(1);
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { nome: name } });
+
+      expect(result).toEqual(colorFakeRepository.findOne());
+    });
+  });
+
+  describe('findByNames', () => {
+    it('should return a color list', async () => {
+      // Arrange
+      const names = ['red', 'blue'];
+
+      // Act
+      const result = await service.findByNames(names);
+
+      // Assert
+      expect(repository.find).toHaveBeenCalledTimes(1);
+      expect(repository.find).toHaveBeenCalledWith({ where: { nome: In(names) } });
+
+      expect(result).toEqual(colorFakeRepository.find());
     });
   });
 

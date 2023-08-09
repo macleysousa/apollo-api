@@ -55,11 +55,11 @@ export class CaixaExtratoService {
 
     const liquidacaoRows = await this.findByLiquidacao(empresaId, caixaId, liquidacao);
 
-    if (liquidacaoRows.firstOrDefault().tipoHistorico == TipoHistorico.Abertura_de_caixa) {
+    if (liquidacaoRows.first().tipoHistorico == TipoHistorico.Abertura_de_caixa) {
       throw new BadRequestException(`Não é possível cancelar liquidação de abertura de caixa`);
-    } else if (liquidacaoRows.firstOrDefault().tipoHistorico == TipoHistorico.Fechamento_de_caixa) {
+    } else if (liquidacaoRows.first().tipoHistorico == TipoHistorico.Fechamento_de_caixa) {
       throw new BadRequestException(`Não é possível cancelar liquidação de fechamento de caixa`);
-    } else if (liquidacaoRows.firstOrDefault().cancelado) {
+    } else if (liquidacaoRows.first().cancelado) {
       throw new BadRequestException(`A liquidação ${liquidacao} já foi cancelada`);
     }
 

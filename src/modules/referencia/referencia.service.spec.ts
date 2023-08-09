@@ -20,6 +20,7 @@ describe('ReferenceService', () => {
         {
           provide: getRepositoryToken(ReferenciaEntity),
           useValue: {
+            upsert: jest.fn().mockResolvedValue(undefined),
             save: jest.fn().mockResolvedValue(referenceFakeRepository.findOne()),
             findOne: jest.fn().mockResolvedValue(referenceFakeRepository.findOne()),
             find: jest.fn().mockResolvedValue(referenceFakeRepository.find()),
@@ -37,6 +38,22 @@ describe('ReferenceService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
+  });
+
+  describe('upsert', () => {
+    it('should upsert a reference', async () => {
+      // Arrange
+      const referencias: CreateReferenciaDto[] = [{ id: 1, nome: 'reference', idExterno: '0001', marcaId: 1 }];
+
+      // Act
+      const result = await service.upsert(referencias);
+
+      // Assert
+      expect(repository.upsert).toHaveBeenCalledTimes(1);
+      expect(repository.upsert).toHaveBeenCalledWith(referencias, { conflictPaths: ['id'] });
+
+      expect(result).toEqual(referenceFakeRepository.find());
+    });
   });
 
   describe('create', () => {

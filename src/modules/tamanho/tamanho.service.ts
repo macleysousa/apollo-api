@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 
 import { CreateTamanhoDto } from './dto/create-tamanho.dto';
 import { UpdateTamanhoDto } from './dto/update-tamanho.dto';
@@ -12,6 +12,14 @@ export class TamanhoService {
     @InjectRepository(TamanhoEntity)
     private readonly repository: Repository<TamanhoEntity>
   ) {}
+
+  async upsert(dto: CreateTamanhoDto[]): Promise<TamanhoEntity[]> {
+    const tamanhos = await this.findByNames(dto.map((a) => a.nome));
+
+    await this.repository.save(dto.map((a) => tamanhos.find((b) => b.nome == a.nome) ?? a).filter((c) => c));
+
+    return this.findByNames(dto.map((a) => a.nome));
+  }
 
   async create(createSizeDto: CreateTamanhoDto): Promise<TamanhoEntity> {
     const sizeById = await this.findById(createSizeDto.id);
@@ -41,6 +49,10 @@ export class TamanhoService {
 
   async findByName(name: string): Promise<TamanhoEntity> {
     return this.repository.findOne({ where: { nome: name } });
+  }
+
+  async findByNames(names: string[]): Promise<TamanhoEntity[]> {
+    return this.repository.find({ where: { nome: In(names) } });
   }
 
   async update(id: number, updateSizeDto: UpdateTamanhoDto): Promise<TamanhoEntity> {

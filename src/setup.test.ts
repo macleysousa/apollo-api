@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
 
-import 'src/extensions/array-extension';
+import 'system-x64';
 
 dotenv.config({ path: '.env.test' });

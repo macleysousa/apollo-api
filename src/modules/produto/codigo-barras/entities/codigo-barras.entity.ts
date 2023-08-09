@@ -10,12 +10,16 @@ export class CodigoBarrasEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @ApiProperty({ enum: ['EAN13', 'RFID'] })
+  @Column('varchar')
+  tipo: 'EAN13' | 'RFID';
+
   @ApiProperty()
-  @Column()
+  @Column('varchar')
   codigo: string;
 
   @Exclude()
-  @Column()
+  @Column('bigint')
   produtoId: number;
 
   @Exclude()

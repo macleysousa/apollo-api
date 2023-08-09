@@ -1,27 +1,27 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query, DefaultValuePipe } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { ParseArrayPipe, ParseIntPipe } from '@nestjs/common/pipes';
+import { ApiBearerAuth, ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { ParseIntPipe } from '@nestjs/common/pipes';
-import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 
-import { ProdutoService } from './produto.service';
+import { ApiComponent } from '../componente/decorator/componente.decorator';
 import { CreateProdutoDto } from './dto/create-produto.dto';
+import { ImportProdutoDto } from './dto/import-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';
 import { ProdutoEntity } from './entities/produto.entity';
-import { ApiComponent } from '../componente/decorator/componente.decorator';
-import { IsPublic } from 'src/decorators/is-public.decorator';
+import { ProdutoService } from './produto.service';
 
 @ApiTags('Produtos')
 @Controller('produtos')
 @ApiBearerAuth()
 @ApiComponent('PRDFM008', 'Manutenção de produto')
 export class ProdutoController {
-  constructor(private readonly productService: ProdutoService) {}
+  constructor(private readonly service: ProdutoService) {}
 
   @Post()
   @ApiResponse({ status: 201, type: ProdutoEntity })
   async create(@Body() createProductDto: CreateProdutoDto): Promise<ProdutoEntity> {
-    return this.productService.create(createProductDto);
+    return this.service.create(createProductDto);
   }
 
   @Get()
@@ -34,23 +34,30 @@ export class ProdutoController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number
   ): Promise<Pagination<ProdutoEntity>> {
-    return this.productService.find(searchTerm, page, limit);
+    return this.service.find(searchTerm, page, limit);
   }
 
   @Get(':id')
   @ApiResponse({ status: 200, type: ProdutoEntity })
   async findById(@Param('id', ParseIntPipe) id: number): Promise<ProdutoEntity> {
-    return this.productService.findById(id);
+    return this.service.findById(id);
   }
 
   @Put(':id')
   @ApiResponse({ status: 200, type: ProdutoEntity })
   async update(@Param('id', ParseIntPipe) id: number, @Body() updateProductDto: UpdateProdutoDto): Promise<ProdutoEntity> {
-    return this.productService.update(id, updateProductDto);
+    return this.service.update(id, updateProductDto);
   }
 
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.productService.remove(id);
+    return this.service.remove(id);
+  }
+
+  @Post('/import')
+  @ApiResponse({ status: 200 })
+  @ApiBody({ type: ImportProdutoDto, isArray: true })
+  async import(@Body(new ParseArrayPipe({ items: ImportProdutoDto })) importProdutoDto: ImportProdutoDto[]): Promise<void> {
+    return this.service.import(importProdutoDto);
   }
 }

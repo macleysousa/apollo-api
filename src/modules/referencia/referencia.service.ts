@@ -14,6 +14,12 @@ export class ReferenciaService {
     private referenceRepository: Repository<ReferenciaEntity>
   ) {}
 
+  async upsert(createReferenceDto: CreateReferenciaDto[]): Promise<ReferenciaEntity[]> {
+    await this.referenceRepository.upsert(createReferenceDto, { conflictPaths: ['id'] });
+
+    return this.referenceRepository.find({ where: createReferenceDto.map((ref) => ({ id: ref.id })) });
+  }
+
   async create(createReferenceDto: CreateReferenciaDto): Promise<ReferenciaEntity> {
     const reference = await this.referenceRepository.save(createReferenceDto);
 

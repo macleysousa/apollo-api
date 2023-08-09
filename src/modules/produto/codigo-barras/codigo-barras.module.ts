@@ -9,5 +9,6 @@ import { CodigoBarrasEntity } from './entities/codigo-barras.entity';
   imports: [TypeOrmModule.forFeature([CodigoBarrasEntity])],
   controllers: [CodigoBarrasController],
   providers: [CodigoBarrasService],
+  exports: [CodigoBarrasService],
 })
 export class CodigoBarraseModule {}

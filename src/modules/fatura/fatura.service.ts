@@ -63,7 +63,7 @@ export class FaturaService {
       tipoInclusao: TipoInclusao.Automatica,
     });
 
-    if (createFaturaDto?.itens && createFaturaDto.itens.length > 0) {
+    if (createFaturaDto.itens && createFaturaDto.itens.length > 0) {
       await this.parcelaService.import(fatura.id, createFaturaDto.itens);
     }
 

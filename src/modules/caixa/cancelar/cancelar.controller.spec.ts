@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException } from '@nestjs/common';
+import { caixaFakeRepository } from 'src/base-fake/caixa';
+import { ContextService } from 'src/context/context.service';
+
+import { CaixaService } from '../caixa.service';
 import { CancelarController } from './cancelar.controller';
 import { CancelarService } from './cancelar.service';
 import { CancelarAdiantamentoDto } from './dto/cancelar-adianteamento.dto';
-import { CaixaService } from '../caixa.service';
-import { caixaFakeRepository } from 'src/base-fake/caixa';
-import { ContextService } from 'src/context/context.service';
 
 describe('CancelarController', () => {
   let controller: CancelarController;

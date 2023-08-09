@@ -3,8 +3,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import 'src/extensions/array-extension';
-
 import { ContextService } from 'src/context/context.service';
 
 import { FaturaSituacao } from '../enum/fatura-situacao.enum';

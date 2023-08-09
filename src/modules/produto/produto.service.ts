@@ -1,18 +1,38 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { ILike, IsNull, Not, Repository } from 'typeorm';
+import { Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { ILike, In, IsNull, Not, Repository } from 'typeorm';
 
+import { CategoriaService } from '../categoria/categoria.service';
+import { SubCategoriaService } from '../categoria/sub/sub.service';
+import { CorService } from '../cor/cor.service';
+import { CreateReferenciaDto } from '../referencia/dto/create-referencia.dto';
+import { ReferenciaService } from '../referencia/referencia.service';
+import { TamanhoService } from '../tamanho/tamanho.service';
 import { CreateProdutoDto } from './dto/create-produto.dto';
+import { ImportProdutoDto } from './dto/import-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';
 import { ProdutoEntity } from './entities/produto.entity';
+import { CodigoBarrasService } from './codigo-barras/codigo-barras.service';
 
 @Injectable()
 export class ProdutoService {
   constructor(
     @InjectRepository(ProdutoEntity)
-    private repository: Repository<ProdutoEntity>
+    private repository: Repository<ProdutoEntity>,
+    private categoriaService: CategoriaService,
+    private subCategoriaService: SubCategoriaService,
+    private referenciaService: ReferenciaService,
+    private corService: CorService,
+    private tamanhoService: TamanhoService,
+    private codigoBarrasService: CodigoBarrasService
   ) {}
+
+  async upsert(dto: CreateProdutoDto[]): Promise<ProdutoEntity[]> {
+    await this.repository.upsert(dto, { conflictPaths: ['id'] });
+
+    return this.repository.find({ where: { id: In(dto.map((x) => x.id)) } });
+  }
 
   async create(createDto: CreateProdutoDto): Promise<ProdutoEntity> {
     const valueById = await this.findById(createDto.id);
@@ -60,6 +80,84 @@ export class ProdutoService {
   async remove(id: number): Promise<void> {
     await this.repository.delete({ id }).catch(() => {
       throw new BadRequestException(`Unable to delete product with id ${id}`);
+    });
+  }
+
+  async import(dto: ImportProdutoDto[]): Promise<void> {
+    const categoriasDto = dto
+      .filter((x) => x.categoriaNome)
+      .map((item) => item.categoriaNome.trim())
+      .groupBy((item) => item)
+      .select((x) => ({ nome: x.key }));
+
+    const categorias = await this.categoriaService.upsert(categoriasDto);
+
+    const subCategoriasDto = dto
+      .filter((x) => x.categoriaNome && x.subCategoriaNome)
+      .groupBy(({ categoriaNome, subCategoriaNome }) => ({
+        categoriaNome: categoriaNome.trim(),
+        subCategoriaNome: subCategoriaNome.trim(),
+      }))
+      .select((x) => ({
+        categoriaId: categorias.find((c) => c.nome == x.key.categoriaNome).id,
+        nome: x.key.subCategoriaNome,
+      }));
+
+    const subCategorias = await this.subCategoriaService.upsert(subCategoriasDto);
+
+    const referenciasDto: CreateReferenciaDto[] = dto
+      .groupBy((x) => x.referenciaId)
+      .select((x) => ({
+        id: x.key,
+        idExterno: x.values.first().referenciaNome,
+        nome: x.values.first().referenciaNome,
+        unidadeMedida: x.values.first().unidadeMedida,
+        categoriaId: categorias.find((c) => c.nome == x.values.first().categoriaNome)?.id,
+        subCategoriaId: subCategorias.find((c) => c.nome == x.values.first().subCategoriaNome)?.id,
+        marcaId: x.values.first().marcaId,
+        descricao: x.values.first().descricao,
+        composicao: x.values.first().composicao,
+        cuidados: x.values.first().cuidados,
+      }));
+
+    await this.referenciaService.upsert(referenciasDto);
+
+    const coresDto = dto
+      .filter((x) => x.corNome)
+      .groupBy(({ corNome }) => corNome.trim())
+      .select((x) => ({ nome: x.key }));
+
+    const cores = await this.corService.upsert(coresDto);
+
+    const tamanhoDto = dto
+      .filter((x) => x.tamanhoNome)
+      .groupBy(({ tamanhoNome }) => tamanhoNome.trim())
+      .select((x) => ({ nome: x.key }));
+
+    const tamanhos = await this.tamanhoService.upsert(tamanhoDto);
+
+    const produtos = dto
+      .groupBy(({ produtoId }) => ({ produtoId }))
+      .select((item) => ({
+        id: item.key.produtoId,
+        referenciaId: item.values.first().referenciaId,
+        idExterno: item.values.first().produtoIdExterno,
+        corId: cores.find((x) => x.nome == item.values.first().corNome?.trim())?.id,
+        tamanhoId: tamanhos.find((x) => x.nome == item.values.first().tamanhoNome?.trim())?.id,
+      }));
+
+    produtos.chunk(500).forEach(async (produtos) => {
+      await this.upsert(produtos);
+    });
+
+    const codigosDto = dto
+      .filter((x) => x.codigoBarras)
+      .groupBy(({ produtoId, codigoBarras }) => ({ produtoId, codigoBarras }))
+      .select((x) => x.key.codigoBarras.map((y) => ({ produtoId: x.key.produtoId, ...y })))
+      .flat();
+
+    codigosDto.chunk(500).forEach(async (codigos) => {
+      await this.codigoBarrasService.upsert(codigos);
     });
   }
 }

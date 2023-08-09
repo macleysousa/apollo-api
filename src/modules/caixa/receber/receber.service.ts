@@ -86,7 +86,7 @@ export class ReceberService {
         itens: x.values
           .groupBy((item) => item.parcela)
           .select((y) => ({
-            ...y.values.firstOrDefault(),
+            ...y.values.first(),
             parcela: y.key,
             valor: y.values.sum((z) => z.valor),
           })) as any,
@@ -97,7 +97,7 @@ export class ReceberService {
       .groupBy((x) => x.formaDePagamentoId)
       .select((x) => ({
         id: x.key,
-        tipoDocumento: formasDePagamentos.firstOrDefault((b) => b.id === x.key).tipo,
+        tipoDocumento: formasDePagamentos.first((b) => b.id === x.key).tipo,
         valor: x.values.sum((y) => y.valor),
       }));
 
@@ -120,13 +120,13 @@ export class ReceberService {
       }
     }
 
-    const adiantamento = tipoDocumentos.firstOrDefault((x) => x.tipoDocumento === TipoDocumento.Adiantamento);
+    const adiantamento = tipoDocumentos.first((x) => x.tipoDocumento === TipoDocumento.Adiantamento);
     const saldoAdiantamento = await this.pessoaExtratoService.findSaldoAdiantamento(empresaId, recebimento.pessoaId);
     if (adiantamento && saldoAdiantamento < adiantamento.valor) {
       throw new BadRequestException('Saldo de adiantamento insuficiente para realizar o a operação.');
     }
 
-    const creditoDeDevolucao = tipoDocumentos.firstOrDefault((x) => x.tipoDocumento === TipoDocumento.Credito_de_devolucao);
+    const creditoDeDevolucao = tipoDocumentos.first((x) => x.tipoDocumento === TipoDocumento.Credito_de_devolucao);
     const saldoCreditoDeDevolucao = await this.pessoaExtratoService.findSaldoCreditoDeDevolucao(empresaId, recebimento.pessoaId);
     if (creditoDeDevolucao && saldoCreditoDeDevolucao < creditoDeDevolucao.valor) {
       throw new BadRequestException('Creditos de devolução insuficiente para realizar o a operação.');

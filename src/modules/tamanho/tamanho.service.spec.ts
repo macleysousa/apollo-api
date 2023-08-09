@@ -2,7 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { sizeFakeRepository } from 'src/base-fake/size';
-import { ILike, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 import { CreateTamanhoDto } from './dto/create-tamanho.dto';
 import { UpdateTamanhoDto } from './dto/update-tamanho.dto';
 import { TamanhoEntity } from './entities/tamanho.entity';
@@ -37,6 +37,20 @@ describe('SizeService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
+  });
+
+  describe('upsert', () => {
+    it('should upsert a size', async () => {
+      // Arrange
+      const size: CreateTamanhoDto[] = [{ nome: 'P' }, { nome: 'M' }];
+
+      // Act
+      const result = await service.upsert(size);
+
+      // Assert
+      expect(repository.save).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(sizeFakeRepository.find());
+    });
   });
 
   describe('create', () => {
@@ -141,6 +155,22 @@ describe('SizeService', () => {
       expect(repository.findOne).toHaveBeenCalledWith({ where: { nome } });
 
       expect(result).toEqual(sizeFakeRepository.findOne());
+    });
+  });
+
+  describe('findByNames', () => {
+    it('should find a size by names', async () => {
+      // Arrange
+      const names = ['P', 'M'];
+
+      // Act
+      const result = await service.findByNames(names);
+
+      // Assert
+      expect(repository.find).toHaveBeenCalledTimes(1);
+      expect(repository.find).toHaveBeenCalledWith({ where: { nome: In(names) } });
+
+      expect(result).toEqual(sizeFakeRepository.find());
     });
   });
 

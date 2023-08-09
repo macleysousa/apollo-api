@@ -1,16 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsBoolean, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateTamanhoDto {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
-  id: number;
+  @IsInt({ message: 'O campo "id" deve ser um número inteiro' })
+  id?: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'O campo "nome" é obrigatório' })
   nome: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false, default: false })
   @IsOptional()
-  inativo: boolean;
+  @IsBoolean({ message: 'O campo "inativo" deve ser um booleano' })
+  inativo?: boolean;
 }

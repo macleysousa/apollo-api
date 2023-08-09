@@ -4,7 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import { NextFunction } from 'express';
 
-import 'src/extensions/array-extension';
+import 'system-x64';
 
 import { AppModule } from './app.module';
 import { ValidationExceptionFactory } from './exceptions/validations.exception';

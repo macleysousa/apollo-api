@@ -35,7 +35,7 @@ describe('BarcodeController', () => {
     it('should create a barcode', async () => {
       // Arrange
       const productId = 1;
-      const barcode: CreateCodigoBarrasDto = { codigo: '123456' };
+      const barcode: CreateCodigoBarrasDto = { tipo: 'EAN13', codigo: '123456' };
 
       // Act
       await controller.create(productId, barcode);

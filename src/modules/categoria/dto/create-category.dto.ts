@@ -4,7 +4,7 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 export class CreateCategoriaDto {
   @ApiProperty()
   @IsOptional()
-  id: number;
+  id?: number;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -12,5 +12,5 @@ export class CreateCategoriaDto {
 
   @ApiProperty()
   @IsOptional()
-  inativa: boolean;
+  inativa?: boolean;
 }

@@ -36,5 +36,17 @@ export class CreateReferenciaDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsMarca()
-  marcaId: number;
+  marcaId?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  descricao?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  composicao?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  cuidados?: string;
 }

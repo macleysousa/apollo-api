@@ -1,8 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { ILike, In, Repository } from 'typeorm';
+
 import { categoryFakeRepository } from 'src/base-fake/category';
-import { ILike, Repository } from 'typeorm';
+
 import { CategoriaService } from './categoria.service';
 import { CreateCategoriaDto } from './dto/create-category.dto';
 import { UpdateCategoriaDto } from './dto/update-category.dto';
@@ -36,6 +38,20 @@ describe('CategoryService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
+  });
+
+  describe('upsert', () => {
+    it('should upsert a category', async () => {
+      // Arrange
+      const categories: CreateCategoriaDto[] = [{ nome: 'Name' }, { nome: 'Name 2' }];
+
+      // Act
+      const result = await service.upsert(categories);
+
+      // Assert
+      expect(repository.save).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(categoryFakeRepository.find());
+    });
   });
 
   describe('create', () => {
@@ -141,6 +157,22 @@ describe('CategoryService', () => {
       expect(repository.findOne).toHaveBeenCalledWith({ where: { nome } });
 
       expect(result).toEqual(categoryFakeRepository.findOne());
+    });
+  });
+
+  describe('findByNames', () => {
+    it('should find a category by names', async () => {
+      // Arrange
+      const nomes = ['Name1', 'Name2'];
+
+      // Act
+      const result = await service.findByNames(nomes);
+
+      // Assert
+      expect(repository.find).toHaveBeenCalledTimes(1);
+      expect(repository.find).toHaveBeenCalledWith({ where: { nome: In(nomes) } });
+
+      expect(result).toEqual(categoryFakeRepository.find());
     });
   });
 

@@ -22,6 +22,7 @@ jest.mock('nestjs-typeorm-paginate', () => ({
 describe('FaturaService', () => {
   let service: FaturaService;
   let repository: Repository<FaturaEntity>;
+  let parcelaService: FaturaParcelaService;
   let contextService: ContextService;
 
   beforeEach(async () => {
@@ -60,12 +61,14 @@ describe('FaturaService', () => {
 
     service = module.get<FaturaService>(FaturaService);
     repository = module.get<Repository<FaturaEntity>>(getRepositoryToken(FaturaEntity));
+    parcelaService = module.get<FaturaParcelaService>(FaturaParcelaService);
     contextService = module.get<ContextService>(ContextService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
+    expect(parcelaService).toBeDefined();
     expect(contextService).toBeDefined();
   });
 
@@ -97,7 +100,7 @@ describe('FaturaService', () => {
       expect(result).toEqual(faturaResult);
     });
 
-    it('should create a automatica fatura', async () => {
+    it('should create a automatica fatura with itens', async () => {
       const usuario = contextService.currentUser();
       const empresa = contextService.currentBranch();
       const createFaturaDto: CreateFaturaManualDto = {
@@ -105,6 +108,7 @@ describe('FaturaService', () => {
         valor: 100,
         parcelas: 1,
         observacao: 'Observação',
+        itens: [{ parcela: 1 }] as any,
       };
       const faturaResult = { ...faturaFakeRepository.findOne(), tipoInclusao: TipoInclusao.Automatica };
 
@@ -120,6 +124,35 @@ describe('FaturaService', () => {
         situacao: FaturaSituacao.Normal,
         tipoInclusao: TipoInclusao.Automatica,
       });
+      expect(parcelaService.import).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(faturaResult);
+    });
+
+    it('should create a automatica fatura without itens', async () => {
+      const usuario = contextService.currentUser();
+      const empresa = contextService.currentBranch();
+      const createFaturaDto: CreateFaturaManualDto = {
+        pessoaId: 1,
+        valor: 100,
+        parcelas: 1,
+        observacao: 'Observação',
+        itens: [] as any,
+      };
+      const faturaResult = { ...faturaFakeRepository.findOne(), tipoInclusao: TipoInclusao.Automatica };
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(faturaResult);
+
+      const result = await service.createAutomatica(createFaturaDto);
+
+      expect(repository.save).toHaveBeenCalledWith({
+        ...createFaturaDto,
+        empresaId: empresa.id,
+        data: expect.any(Date),
+        operadorId: usuario.id,
+        situacao: FaturaSituacao.Normal,
+        tipoInclusao: TipoInclusao.Automatica,
+      });
+      expect(parcelaService.import).toHaveBeenCalledTimes(0);
       expect(result).toEqual(faturaResult);
     });
   });

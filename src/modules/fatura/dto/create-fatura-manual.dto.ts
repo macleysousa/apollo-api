@@ -1,8 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { IsInt, IsNotEmpty, IsNumber, IsOptional, MaxLength } from 'class-validator';
-import { IsBetween } from 'src/commons/validations/is-between.validation';
 
+import { IsBetween } from 'src/commons/validations/is-between.validation';
 import { IsPessoa } from 'src/commons/validations/is-pessoa.validation';
+
+import { FaturaParcelaEntity } from '../parcela/entities/parcela.entity';
 
 export class CreateFaturaManualDto {
   @ApiProperty()
@@ -25,5 +28,9 @@ export class CreateFaturaManualDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @MaxLength(500, { message: 'O campo "observacao" deve ter no máximo 500 caracteres.' })
-  observacao: string;
+  observacao?: string;
+
+  @Exclude()
+  @IsOptional()
+  itens?: FaturaParcelaEntity[];
 }

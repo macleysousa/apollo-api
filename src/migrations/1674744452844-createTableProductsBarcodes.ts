@@ -15,6 +15,11 @@ export class createTableProductsBarcodes1674744452844 implements MigrationInterf
             generationStrategy: 'uuid',
           },
           {
+            name: 'tipo',
+            type: 'varchar',
+            default: '"EAN13"',
+          },
+          {
             name: 'codigo',
             type: 'varchar',
             length: '255',

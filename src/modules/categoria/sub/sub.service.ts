@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 
 import { CreateSubCategoriaDto } from './dto/create-sub.dto';
 import { UpdateSubCategoriaDto } from './dto/update-sub.dto';
@@ -12,6 +12,23 @@ export class SubCategoriaService {
     @InjectRepository(SubCategoriaEntity)
     private repository: Repository<SubCategoriaEntity>
   ) {}
+
+  async upsert(dto: CreateSubCategoriaDto[]): Promise<SubCategoriaEntity[]> {
+    const subs = await this.findByNames(
+      undefined,
+      dto.map((c) => c.nome)
+    );
+
+    await this.repository.save(
+      dto.map((c) => subs.find((cat) => cat.categoriaId == c.categoriaId && cat.nome == c.nome) ?? c).filter((c) => c)
+    );
+
+    return this.findByNames(
+      null,
+      dto.map((c) => c.nome)
+    );
+  }
+
   async create(categoriaId: number, createSubDto: CreateSubCategoriaDto): Promise<SubCategoriaEntity> {
     const subByName = await this.findByName(categoriaId, createSubDto.nome);
     if (subByName) {
@@ -33,6 +50,10 @@ export class SubCategoriaService {
 
   async findByName(categoryId: number, name: string): Promise<SubCategoriaEntity> {
     return this.repository.findOne({ where: { categoriaId: categoryId, nome: name } });
+  }
+
+  async findByNames(categoriaId: number, names: string[]): Promise<SubCategoriaEntity[]> {
+    return this.repository.find({ where: { categoriaId, nome: In(names) } });
   }
 
   async update(categoryId: number, id: number, updateSubDto: UpdateSubCategoriaDto): Promise<SubCategoriaEntity> {

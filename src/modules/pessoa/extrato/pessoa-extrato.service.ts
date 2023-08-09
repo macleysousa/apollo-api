@@ -21,7 +21,7 @@ export class PessoaExtratoService {
   ) {}
 
   async lancarMovimento(pessoaId: number, dto: any): Promise<PessoaExtratoEntity> {
-    const extrato = await this.repository.save({
+    return this.repository.save({
       pessoaId,
       tipoDocumento: dto.tipoDocumento,
       tipoHistorico: dto.tipoHistorico,
@@ -29,8 +29,6 @@ export class PessoaExtratoService {
       valor: dto.valor,
       observacao: dto.observacao,
     });
-
-    return this.repository.save(extrato);
   }
 
   async find(filter?: filter): Promise<PessoaExtratoEntity[]> {

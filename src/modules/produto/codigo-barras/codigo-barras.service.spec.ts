@@ -17,6 +17,7 @@ describe('BarcodeService', () => {
         {
           provide: getRepositoryToken(CodigoBarrasEntity),
           useValue: {
+            find: jest.fn(),
             upsert: jest.fn(),
             delete: jest.fn(),
           },
@@ -33,11 +34,25 @@ describe('BarcodeService', () => {
     expect(repository).toBeDefined();
   });
 
+  describe('upsert', () => {
+    it('should upsert a barcode', async () => {
+      // Arrange
+      const create: CreateCodigoBarrasDto[] = [{ produtoId: 1, tipo: 'EAN13', codigo: '123' }];
+
+      // Act
+      await service.upsert(create);
+
+      // Assert
+      expect(repository.upsert).toHaveBeenCalledTimes(1);
+      expect(repository.find).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('create', () => {
     it('should create a barcode', async () => {
       // Arrange
       const produtoId = 1;
-      const create: CreateCodigoBarrasDto = { codigo: '123' };
+      const create: CreateCodigoBarrasDto = { tipo: 'EAN13', codigo: '123' };
 
       // Act
       await service.create(produtoId, create);

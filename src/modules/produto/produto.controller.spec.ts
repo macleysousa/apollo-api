@@ -5,6 +5,8 @@ import { UpdateProdutoDto } from './dto/update-produto.dto';
 
 import { ProdutoController } from './produto.controller';
 import { ProdutoService } from './produto.service';
+import { ImportProdutoDto } from './dto/import-produto.dto';
+import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
 
 describe('ProductController', () => {
   let controller: ProdutoController;
@@ -22,6 +24,7 @@ describe('ProductController', () => {
             findById: jest.fn().mockResolvedValue(productFakeRepository.findOne()),
             update: jest.fn().mockResolvedValue(productFakeRepository.findOne()),
             remove: jest.fn(),
+            import: jest.fn(),
           },
         },
       ],
@@ -114,6 +117,43 @@ describe('ProductController', () => {
       // Assert
       expect(service.remove).toHaveBeenCalledTimes(1);
       expect(service.remove).toHaveBeenCalledWith(id);
+    });
+  });
+
+  describe('/import (POST)', () => {
+    it('should import a list of products', async () => {
+      // Arrange
+      const importDto: ImportProdutoDto[] = [
+        {
+          referenciaId: 415,
+          referenciaIdExterno: '400001',
+          referenciaNome: 'LINGERIE KIT CALCA BASIC',
+          unidadeMedida: UnidadeMedida.UN,
+          categoriaNome: 'CALCINHA',
+          subCategoriaNome: 'KIT CALCA',
+          marcaId: null,
+          descricao: null,
+          composicao: null,
+          cuidados: null,
+          produtoId: 1630,
+          produtoIdExterno: '1630',
+          corNome: 'SORTIDAS',
+          tamanhoNome: 'P',
+          codigoBarras: [
+            {
+              tipo: 'EAN13',
+              codigo: '9990232165268',
+            },
+          ],
+        },
+      ];
+
+      // Act
+      await controller.import(importDto);
+
+      // Assert
+      expect(service.import).toHaveBeenCalledTimes(1);
+      expect(service.import).toHaveBeenCalledWith(importDto);
     });
   });
 });

@@ -21,9 +21,9 @@ export class CancelarService {
     const liquidacao = await this.caixaExtratoService.findByLiquidacao(empresaId, caixaId, dto.liquidacao);
     if (!liquidacao) {
       throw new BadRequestException(`A liquidação ${dto.liquidacao} não foi encontrada`);
-    } else if (liquidacao.firstOrDefault().tipoHistorico != TipoHistorico.Adiantamento) {
+    } else if (liquidacao.first().tipoHistorico != TipoHistorico.Adiantamento) {
       throw new BadRequestException(`A liquidação ${dto.liquidacao} não é um adiantamento`);
-    } else if (liquidacao.firstOrDefault().cancelado) {
+    } else if (liquidacao.first().cancelado) {
       throw new BadRequestException(`A liquidação ${dto.liquidacao} já foi cancelada`);
     }
 

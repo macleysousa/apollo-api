@@ -1,14 +1,22 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 
 import { productFakeRepository } from 'src/base-fake/product';
+import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
 
+import { CategoriaService } from '../categoria/categoria.service';
+import { SubCategoriaService } from '../categoria/sub/sub.service';
+import { CorService } from '../cor/cor.service';
+import { ReferenciaService } from '../referencia/referencia.service';
+import { TamanhoService } from '../tamanho/tamanho.service';
+import { CodigoBarrasService } from './codigo-barras/codigo-barras.service';
 import { CreateProdutoDto } from './dto/create-produto.dto';
+import { ImportProdutoDto } from './dto/import-produto.dto';
+import { UpdateProdutoDto } from './dto/update-produto.dto';
 import { ProdutoEntity } from './entities/produto.entity';
 import { ProdutoService } from './produto.service';
-import { UpdateProdutoDto } from './dto/update-produto.dto';
 
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({
@@ -18,6 +26,12 @@ jest.mock('nestjs-typeorm-paginate', () => ({
 describe('ProductService', () => {
   let service: ProdutoService;
   let repository: Repository<ProdutoEntity>;
+  let categoriaService: CategoriaService;
+  let subCategoriaService: SubCategoriaService;
+  let referenciaService: ReferenciaService;
+  let corService: CorService;
+  let tamanhoService: TamanhoService;
+  let codigoBarrasService: CodigoBarrasService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,6 +40,7 @@ describe('ProductService', () => {
         {
           provide: getRepositoryToken(ProdutoEntity),
           useValue: {
+            upsert: jest.fn().mockResolvedValue(undefined),
             save: jest.fn().mockResolvedValue(productFakeRepository.findOne()),
             find: jest.fn().mockResolvedValue(productFakeRepository.find()),
             findOne: jest.fn().mockResolvedValue(productFakeRepository.findOne()),
@@ -46,16 +61,139 @@ describe('ProductService', () => {
             }),
           },
         },
+        {
+          provide: CategoriaService,
+          useValue: {
+            upsert: jest.fn().mockResolvedValue([{ id: 1, nome: 'CALCINHA' }]),
+          },
+        },
+        {
+          provide: SubCategoriaService,
+          useValue: {
+            upsert: jest.fn().mockResolvedValue([{ categoriaId: 1, id: 1, nome: 'KIT CALCA' }]),
+          },
+        },
+        {
+          provide: ReferenciaService,
+          useValue: {
+            upsert: jest.fn().mockResolvedValue([{ id: 1, nome: 'LINGERIE KIT CALCA BASIC' }]),
+          },
+        },
+        {
+          provide: CorService,
+          useValue: {
+            upsert: jest.fn().mockResolvedValue([{ id: 1, nome: 'SORTIDAS' }]),
+          },
+        },
+        {
+          provide: TamanhoService,
+          useValue: {
+            upsert: jest.fn().mockResolvedValue([{ id: 1, nome: 'P' }]),
+          },
+        },
+        {
+          provide: CodigoBarrasService,
+          useValue: {
+            upsert: jest.fn().mockReturnValue([{ produtoId: 1, code: '9990232165268', tipo: 'EAN13' }]),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<ProdutoService>(ProdutoService);
     repository = module.get<Repository<ProdutoEntity>>(getRepositoryToken(ProdutoEntity));
+    categoriaService = module.get<CategoriaService>(CategoriaService);
+    subCategoriaService = module.get<SubCategoriaService>(SubCategoriaService);
+    referenciaService = module.get<ReferenciaService>(ReferenciaService);
+    corService = module.get<CorService>(CorService);
+    tamanhoService = module.get<TamanhoService>(TamanhoService);
+    codigoBarrasService = module.get<CodigoBarrasService>(CodigoBarrasService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
+    expect(categoriaService).toBeDefined();
+    expect(subCategoriaService).toBeDefined();
+    expect(referenciaService).toBeDefined();
+    expect(corService).toBeDefined();
+    expect(tamanhoService).toBeDefined();
+    expect(codigoBarrasService).toBeDefined();
+  });
+
+  describe('upsert', () => {
+    it('should upsert a product (full)', async () => {
+      // Arrange
+      const importDto: ImportProdutoDto[] = [
+        {
+          referenciaId: 415,
+          referenciaIdExterno: '400001',
+          referenciaNome: 'LINGERIE KIT CALCA BASIC',
+          unidadeMedida: UnidadeMedida.UN,
+          categoriaNome: 'CALCINHA',
+          subCategoriaNome: 'KIT CALCA',
+          marcaId: null,
+          descricao: null,
+          composicao: null,
+          cuidados: null,
+          produtoId: 1630,
+          produtoIdExterno: '1630',
+          corNome: 'SORTIDAS',
+          tamanhoNome: 'P',
+          codigoBarras: [
+            {
+              tipo: 'EAN13',
+              codigo: '9990232165268',
+            },
+          ],
+        },
+      ];
+
+      // Act
+      await service.import(importDto);
+
+      // Assert
+      expect(categoriaService.upsert).toHaveBeenCalledTimes(1);
+      expect(subCategoriaService.upsert).toHaveBeenCalledTimes(1);
+      expect(referenciaService.upsert).toHaveBeenCalledTimes(1);
+      expect(corService.upsert).toHaveBeenCalledTimes(1);
+      expect(tamanhoService.upsert).toHaveBeenCalledTimes(1);
+      expect(codigoBarrasService.upsert).toHaveBeenCalledTimes(1);
+    });
+
+    it('should upsert a product (optional)', async () => {
+      // Arrange
+      const importDto: ImportProdutoDto[] = [
+        {
+          referenciaId: 415,
+          referenciaIdExterno: null,
+          referenciaNome: null,
+          unidadeMedida: null,
+          categoriaNome: null,
+          subCategoriaNome: null,
+          marcaId: null,
+          descricao: null,
+          composicao: null,
+          cuidados: null,
+          produtoId: 1630,
+          produtoIdExterno: '1630',
+          corNome: null,
+          tamanhoNome: null,
+          codigoBarras: null,
+        },
+      ];
+
+      // Act
+      await service.import(importDto);
+
+      // Assert
+      expect(categoriaService.upsert).toHaveBeenCalledTimes(1);
+      expect(subCategoriaService.upsert).toHaveBeenCalledTimes(1);
+      expect(referenciaService.upsert).toHaveBeenCalledTimes(1);
+      expect(corService.upsert).toHaveBeenCalledTimes(1);
+      expect(tamanhoService.upsert).toHaveBeenCalledTimes(1);
+      expect(codigoBarrasService.upsert).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe('create', () => {
