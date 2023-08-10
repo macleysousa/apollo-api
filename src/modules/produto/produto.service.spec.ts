@@ -21,7 +21,7 @@ import { ProdutoService } from './produto.service';
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({ paginate: jest.fn().mockResolvedValue(productFakeRepository.findPaginate()) }));
 
-jest.mock('src/commons/parse/csv-to-object', () => ({ parseCsvToObjet: jest.fn() }));
+jest.mock('src/commons/parses/csv-to-object', () => ({ parseCsvToProduto: jest.fn() }));
 
 describe('ProductService', () => {
   let service: ProdutoService;
@@ -277,16 +277,16 @@ describe('ProductService', () => {
 
   describe('importCsv', () => {
     let mockSerice: jest.SpyInstance;
-    let mockParseCsv: { parseCsvToObjet: jest.Mock<any, any> };
+    let mockParseCsv: { parseCsvToProduto: jest.Mock };
 
     beforeEach(() => {
       mockSerice = jest.spyOn(service, 'import').mockResolvedValueOnce();
-      mockParseCsv = require('src/commons/parse/csv-to-object');
+      mockParseCsv = require('src/commons/parses/csv-to-object');
     });
 
     afterEach(() => {
       mockSerice.mockRestore();
-      jest.requireMock('src/commons/parse/csv-to-object').parseCsvToObjet.mockRestore();
+      mockParseCsv.parseCsvToProduto.mockRestore();
     });
 
     it('should throw BadRequestException if no files are sent', async () => {
@@ -326,12 +326,12 @@ describe('ProductService', () => {
         },
       ];
 
-      jest.spyOn(mockParseCsv, 'parseCsvToObjet').mockReturnValueOnce(produtsDto);
+      jest.spyOn(mockParseCsv, 'parseCsvToProduto').mockReturnValueOnce(produtsDto);
 
       await service.importCsv(files);
 
-      expect(mockParseCsv.parseCsvToObjet).toHaveBeenCalledTimes(1);
-      expect(mockParseCsv.parseCsvToObjet).toHaveBeenCalledWith(expect.anything());
+      expect(mockParseCsv.parseCsvToProduto).toHaveBeenCalledTimes(1);
+      expect(mockParseCsv.parseCsvToProduto).toHaveBeenCalledWith(expect.anything());
       expect(mockSerice).toHaveBeenCalledTimes(1);
       expect(mockSerice).toHaveBeenCalledWith(produtsDto);
     });
@@ -340,11 +340,11 @@ describe('ProductService', () => {
       const files = [{ mimetype: 'text/csv' }] as any;
       const mockParseCsvToObjet = [{ name: 'Product 1', description: 'Description 1', price: 10.0 }];
 
-      jest.spyOn(mockParseCsv, 'parseCsvToObjet').mockReturnValueOnce(mockParseCsvToObjet);
+      jest.spyOn(mockParseCsv, 'parseCsvToProduto').mockReturnValueOnce(mockParseCsvToObjet);
 
       await expect(service.importCsv(files)).rejects.toThrow(BadRequestException);
-      expect(mockParseCsv.parseCsvToObjet).toHaveBeenCalledTimes(1);
-      expect(mockParseCsv.parseCsvToObjet).toHaveBeenCalledWith(expect.anything());
+      expect(mockParseCsv.parseCsvToProduto).toHaveBeenCalledTimes(1);
+      expect(mockParseCsv.parseCsvToProduto).toHaveBeenCalledWith(expect.anything());
     });
   });
 

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { ILike, In, IsNull, Not, Repository } from 'typeorm';
 
-import { parseCsvToObjet } from 'src/commons/parse/csv-to-object';
+import { parseCsvToProduto } from 'src/commons/parses/csv-to-object';
 
 import { CategoriaService } from '../categoria/categoria.service';
 import { SubCategoriaService } from '../categoria/sub/sub.service';
@@ -97,7 +97,7 @@ export class ProdutoService {
       throw new BadRequestException('Todos os arquivos devem ser do tipo CSV');
     }
 
-    const values = (await Promise.all(files.map(async (file) => parseCsvToObjet<ImportProdutoDto>(file)))).flat();
+    const values = (await Promise.all(files.map(async (file) => parseCsvToProduto<ImportProdutoDto>(file)))).flat();
 
     const errors = await Promise.all(
       values.map(async (value) => {
