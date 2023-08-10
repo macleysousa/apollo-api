@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { ILike, In, IsNull, Not, Repository } from 'typeorm';
 
+import { parseCsvToObjet } from 'src/commons/parse/csv-to-object';
+
 import { CategoriaService } from '../categoria/categoria.service';
 import { SubCategoriaService } from '../categoria/sub/sub.service';
 import { CorService } from '../cor/cor.service';
@@ -14,6 +16,8 @@ import { ImportProdutoDto } from './dto/import-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';
 import { ProdutoEntity } from './entities/produto.entity';
 import { CodigoBarrasService } from './codigo-barras/codigo-barras.service';
+import { validate } from 'class-validator';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class ProdutoService {
@@ -81,6 +85,32 @@ export class ProdutoService {
     await this.repository.delete({ id }).catch(() => {
       throw new BadRequestException(`Unable to delete product with id ${id}`);
     });
+  }
+
+  async importCsv(files: Array<Express.Multer.File>): Promise<void> {
+    if (!files || files.length === 0) {
+      throw new BadRequestException('Nenhum arquivo enviado');
+    }
+
+    const isCsv = files.every((file) => file.mimetype === 'text/csv');
+    if (!isCsv) {
+      throw new BadRequestException('Todos os arquivos devem ser do tipo CSV');
+    }
+
+    const values = (await Promise.all(files.map(async (file) => parseCsvToObjet<ImportProdutoDto>(file)))).flat();
+
+    const errors = await Promise.all(
+      values.map(async (value) => {
+        const importProdutoDto = plainToClass(ImportProdutoDto, value);
+        return await validate(importProdutoDto);
+      })
+    ).then((x) => x.flat());
+
+    if (errors.length > 0) {
+      throw new BadRequestException(errors);
+    } else {
+      this.import(values);
+    }
   }
 
   async import(dto: ImportProdutoDto[]): Promise<void> {

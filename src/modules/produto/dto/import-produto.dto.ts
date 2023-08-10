@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, ValidateNested } from 'class-validator';
 
 import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
 import { IsMarca } from 'src/commons/validations/is-marca.validation';
@@ -13,17 +13,12 @@ export class ImportProdutoDto {
   referenciaId: number;
 
   @ApiProperty()
-  @IsOptional()
-  referenciaIdExterno?: string;
+  @IsNotEmpty({ message: 'O campo "referenciaIdExterno" é obrigatório.' })
+  referenciaIdExterno: string;
 
   @ApiProperty()
-  @IsOptional()
-  referenciaNome?: string;
-
-  @ApiProperty({ enum: UnidadeMedida })
-  @IsOptional()
-  @IsEnum(UnidadeMedida)
-  unidadeMedida?: UnidadeMedida;
+  @IsNotEmpty({ message: 'O campo "referenciaNome" é obrigatório.' })
+  referenciaNome: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -32,6 +27,24 @@ export class ImportProdutoDto {
   @ApiProperty({ required: false })
   @IsOptional()
   subCategoriaNome?: string;
+
+  @ApiProperty({ enum: UnidadeMedida })
+  @IsOptional()
+  @IsEnum(UnidadeMedida)
+  unidadeMedida?: UnidadeMedida;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  cst?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  ncm?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 4 }, { message: 'O campo "peso" deve ser um número com no máximo 4 casas decimais.' })
+  peso?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()

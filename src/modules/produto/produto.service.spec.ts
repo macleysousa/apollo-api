@@ -1,7 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 
 import { productFakeRepository } from 'src/base-fake/product';
 import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
@@ -19,9 +19,9 @@ import { ProdutoEntity } from './entities/produto.entity';
 import { ProdutoService } from './produto.service';
 
 // Mock the external module and the paginate function
-jest.mock('nestjs-typeorm-paginate', () => ({
-  paginate: jest.fn().mockResolvedValue(productFakeRepository.findPaginate()),
-}));
+jest.mock('nestjs-typeorm-paginate', () => ({ paginate: jest.fn().mockResolvedValue(productFakeRepository.findPaginate()) }));
+
+jest.mock('src/commons/parse/csv-to-object', () => ({ parseCsvToObjet: jest.fn() }));
 
 describe('ProductService', () => {
   let service: ProdutoService;
@@ -122,77 +122,26 @@ describe('ProductService', () => {
   });
 
   describe('upsert', () => {
-    it('should upsert a product (full)', async () => {
+    it('should upsert a product', async () => {
       // Arrange
-      const importDto: ImportProdutoDto[] = [
+      const dto: CreateProdutoDto[] = [
         {
           referenciaId: 415,
-          referenciaIdExterno: '400001',
-          referenciaNome: 'LINGERIE KIT CALCA BASIC',
-          unidadeMedida: UnidadeMedida.UN,
-          categoriaNome: 'CALCINHA',
-          subCategoriaNome: 'KIT CALCA',
-          marcaId: null,
-          descricao: null,
-          composicao: null,
-          cuidados: null,
-          produtoId: 1630,
-          produtoIdExterno: '1630',
-          corNome: 'SORTIDAS',
-          tamanhoNome: 'P',
-          codigoBarras: [
-            {
-              tipo: 'EAN13',
-              codigo: '9990232165268',
-            },
-          ],
+          id: 1,
+          idExterno: '1',
+          corId: 1,
+          tamanhoId: 1,
         },
       ];
 
       // Act
-      await service.import(importDto);
+      const response = await service.upsert(dto);
 
       // Assert
-      expect(categoriaService.upsert).toHaveBeenCalledTimes(1);
-      expect(subCategoriaService.upsert).toHaveBeenCalledTimes(1);
-      expect(referenciaService.upsert).toHaveBeenCalledTimes(1);
-      expect(corService.upsert).toHaveBeenCalledTimes(1);
-      expect(tamanhoService.upsert).toHaveBeenCalledTimes(1);
-      expect(codigoBarrasService.upsert).toHaveBeenCalledTimes(1);
-    });
+      expect(repository.upsert).toHaveBeenCalledTimes(1);
+      expect(repository.find).toHaveBeenCalledWith({ where: { id: In(dto.map((x) => x.id)) } });
 
-    it('should upsert a product (optional)', async () => {
-      // Arrange
-      const importDto: ImportProdutoDto[] = [
-        {
-          referenciaId: 415,
-          referenciaIdExterno: null,
-          referenciaNome: null,
-          unidadeMedida: null,
-          categoriaNome: null,
-          subCategoriaNome: null,
-          marcaId: null,
-          descricao: null,
-          composicao: null,
-          cuidados: null,
-          produtoId: 1630,
-          produtoIdExterno: '1630',
-          corNome: null,
-          tamanhoNome: null,
-          codigoBarras: null,
-        },
-      ];
-
-      // Act
-      await service.import(importDto);
-
-      // Assert
-      expect(categoriaService.upsert).toHaveBeenCalledTimes(1);
-      expect(subCategoriaService.upsert).toHaveBeenCalledTimes(1);
-      expect(referenciaService.upsert).toHaveBeenCalledTimes(1);
-      expect(corService.upsert).toHaveBeenCalledTimes(1);
-      expect(tamanhoService.upsert).toHaveBeenCalledTimes(1);
-      expect(codigoBarrasService.upsert).toHaveBeenCalledTimes(0);
+      expect(response).toEqual(productFakeRepository.find());
     });
   });
 
@@ -323,6 +272,154 @@ describe('ProductService', () => {
 
       // Assert
       expect(service.remove(productId)).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('importCsv', () => {
+    let mockSerice: jest.SpyInstance;
+    let mockParseCsv: { parseCsvToObjet: jest.Mock<any, any> };
+
+    beforeEach(() => {
+      mockSerice = jest.spyOn(service, 'import').mockResolvedValueOnce();
+      mockParseCsv = require('src/commons/parse/csv-to-object');
+    });
+
+    afterEach(() => {
+      mockSerice.mockRestore();
+      jest.requireMock('src/commons/parse/csv-to-object').parseCsvToObjet.mockRestore();
+    });
+
+    it('should throw BadRequestException if no files are sent', async () => {
+      await expect(service.importCsv(null)).rejects.toThrow(BadRequestException);
+      await expect(service.importCsv([])).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException if any file is not CSV', async () => {
+      const files = [{ mimetype: 'text/csv' }, { mimetype: 'text/csv' }, { mimetype: 'application/json' }] as any;
+      await expect(service.importCsv(files)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should import products from CSV file', async () => {
+      const files = [{ mimetype: 'text/csv' }] as any;
+      const produtsDto: ImportProdutoDto[] = [
+        {
+          referenciaId: 415,
+          referenciaIdExterno: '400001',
+          referenciaNome: 'LINGERIE KIT CALCA BASIC',
+          unidadeMedida: UnidadeMedida.UN,
+          categoriaNome: 'CALCINHA',
+          subCategoriaNome: 'KIT CALCA',
+          marcaId: null,
+          descricao: null,
+          composicao: null,
+          cuidados: null,
+          produtoId: 1630,
+          produtoIdExterno: '1630',
+          corNome: 'SORTIDAS',
+          tamanhoNome: 'P',
+          codigoBarras: [
+            {
+              tipo: 'EAN13',
+              codigo: '9990232165268',
+            },
+          ],
+        },
+      ];
+
+      jest.spyOn(mockParseCsv, 'parseCsvToObjet').mockReturnValueOnce(produtsDto);
+
+      await service.importCsv(files);
+
+      expect(mockParseCsv.parseCsvToObjet).toHaveBeenCalledTimes(1);
+      expect(mockParseCsv.parseCsvToObjet).toHaveBeenCalledWith(expect.anything());
+      expect(mockSerice).toHaveBeenCalledTimes(1);
+      expect(mockSerice).toHaveBeenCalledWith(produtsDto);
+    });
+
+    it('should throw BadRequestException if any product is invalid', async () => {
+      const files = [{ mimetype: 'text/csv' }] as any;
+      const mockParseCsvToObjet = [{ name: 'Product 1', description: 'Description 1', price: 10.0 }];
+
+      jest.spyOn(mockParseCsv, 'parseCsvToObjet').mockReturnValueOnce(mockParseCsvToObjet);
+
+      await expect(service.importCsv(files)).rejects.toThrow(BadRequestException);
+      expect(mockParseCsv.parseCsvToObjet).toHaveBeenCalledTimes(1);
+      expect(mockParseCsv.parseCsvToObjet).toHaveBeenCalledWith(expect.anything());
+    });
+  });
+
+  describe('import', () => {
+    it('should import a product (full)', async () => {
+      // Arrange
+      const importDto: ImportProdutoDto[] = [
+        {
+          referenciaId: 415,
+          referenciaIdExterno: '400001',
+          referenciaNome: 'LINGERIE KIT CALCA BASIC',
+          unidadeMedida: UnidadeMedida.UN,
+          categoriaNome: 'CALCINHA',
+          subCategoriaNome: 'KIT CALCA',
+          marcaId: null,
+          descricao: null,
+          composicao: null,
+          cuidados: null,
+          produtoId: 1630,
+          produtoIdExterno: '1630',
+          corNome: 'SORTIDAS',
+          tamanhoNome: 'P',
+          codigoBarras: [
+            {
+              tipo: 'EAN13',
+              codigo: '9990232165268',
+            },
+          ],
+        },
+      ];
+
+      // Act
+      await service.import(importDto);
+
+      // Assert
+      expect(categoriaService.upsert).toHaveBeenCalledTimes(1);
+      expect(subCategoriaService.upsert).toHaveBeenCalledTimes(1);
+      expect(referenciaService.upsert).toHaveBeenCalledTimes(1);
+      expect(corService.upsert).toHaveBeenCalledTimes(1);
+      expect(tamanhoService.upsert).toHaveBeenCalledTimes(1);
+      expect(codigoBarrasService.upsert).toHaveBeenCalledTimes(1);
+    });
+
+    it('should import a product (optional)', async () => {
+      // Arrange
+      const importDto: ImportProdutoDto[] = [
+        {
+          referenciaId: 415,
+          referenciaIdExterno: null,
+          referenciaNome: null,
+          unidadeMedida: null,
+          categoriaNome: null,
+          subCategoriaNome: null,
+          marcaId: null,
+          descricao: null,
+          composicao: null,
+          cuidados: null,
+          produtoId: 1630,
+          produtoIdExterno: '1630',
+          corNome: null,
+          tamanhoNome: null,
+          codigoBarras: null,
+        },
+      ];
+
+      // Act
+      await service.import(importDto);
+
+      // Assert
+      expect(categoriaService.upsert).toHaveBeenCalledTimes(1);
+      expect(subCategoriaService.upsert).toHaveBeenCalledTimes(1);
+      expect(referenciaService.upsert).toHaveBeenCalledTimes(1);
+      expect(corService.upsert).toHaveBeenCalledTimes(1);
+      expect(tamanhoService.upsert).toHaveBeenCalledTimes(1);
+      expect(codigoBarrasService.upsert).toHaveBeenCalledTimes(0);
     });
   });
 });

@@ -1,7 +1,9 @@
-import { Body, Controller, DefaultValuePipe, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, Get, Param, Post, Put, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { ParseArrayPipe, ParseIntPipe } from '@nestjs/common/pipes';
-import { ApiBearerAuth, ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
+import { FilesInterceptor } from '@nestjs/platform-express';
+
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 
 import { ApiComponent } from '../componente/decorator/componente.decorator';
@@ -59,5 +61,14 @@ export class ProdutoController {
   @ApiBody({ type: ImportProdutoDto, isArray: true })
   async import(@Body(new ParseArrayPipe({ items: ImportProdutoDto })) importProdutoDto: ImportProdutoDto[]): Promise<void> {
     return this.service.import(importProdutoDto);
+  }
+
+  @Post('/import/csv')
+  @ApiResponse({ status: 200 })
+  @ApiConsumes('multipart/form-data')
+  @ApiParam({ type: 'file', name: 'file', format: 'csv' })
+  @UseInterceptors(FilesInterceptor('file'))
+  async importCsv(@UploadedFiles() files: Array<Express.Multer.File>): Promise<void> {
+    await this.service.importCsv(files);
   }
 }
