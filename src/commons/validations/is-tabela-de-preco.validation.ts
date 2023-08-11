@@ -13,8 +13,8 @@ export class TabelaDePrecoConstraint implements ValidatorConstraintInterface {
     return (await this.service.findById(value)) ? true : false;
   }
 
-  defaultMessage(_validationArguments?: ValidationArguments): string {
-    return 'Tabela de preço não encontrada';
+  defaultMessage(_validationArguments: ValidationArguments): string {
+    return `Tabela de preço "${_validationArguments.value}" não encontrada`;
   }
 }
 

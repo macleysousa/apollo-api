@@ -35,6 +35,9 @@ export class ProdutoService {
   async upsert(dto: CreateProdutoDto[]): Promise<ProdutoEntity[]> {
     await this.repository.upsert(dto, { conflictPaths: ['id'] });
 
+    const codigoBarrasDto = dto.filter((x) => x.codigoBarras).map((x) => x.codigoBarras);
+    await this.codigoBarrasService.upsert(codigoBarrasDto.flat());
+
     return this.repository.find({ where: { id: In(dto.map((x) => x.id)) } });
   }
 
@@ -45,6 +48,78 @@ export class ProdutoService {
     }
     const product = await this.repository.save(createDto);
     return this.findById(product.id);
+  }
+
+  async createMany(dto: ImportProdutoDto[]): Promise<void> {
+    const categoriasDto = dto
+      .filter((x) => x.categoriaNome)
+      .map((item) => item.categoriaNome.trim())
+      .groupBy((item) => item)
+      .select((x) => ({ nome: x.key }));
+
+    const categorias = await this.categoriaService.upsert(categoriasDto);
+
+    const subCategoriasDto = dto
+      .filter((x) => x.categoriaNome && x.subCategoriaNome)
+      .groupBy(({ categoriaNome, subCategoriaNome }) => ({
+        categoriaNome: categoriaNome.trim(),
+        subCategoriaNome: subCategoriaNome.trim(),
+      }))
+      .select((x) => ({
+        categoriaId: categorias.find((c) => c.nome == x.key.categoriaNome).id,
+        nome: x.key.subCategoriaNome,
+      }));
+
+    const subCategorias = await this.subCategoriaService.upsert(subCategoriasDto);
+
+    const referenciasDto: CreateReferenciaDto[] = dto
+      .groupBy((x) => x.referenciaId)
+      .select((x) => ({
+        id: x.key,
+        idExterno: x.values.first().referenciaIdExterno,
+        nome: x.values.first().referenciaNome,
+        unidadeMedida: x.values.first().unidadeMedida,
+        categoriaId: categorias.find((c) => c.nome == x.values.first().categoriaNome)?.id,
+        subCategoriaId: subCategorias.find((c) => c.nome == x.values.first().subCategoriaNome)?.id,
+        marcaId: x.values.first().marcaId,
+      }));
+
+    await this.referenciaService.upsert(referenciasDto);
+
+    const coresDto = dto
+      .filter((x) => x.corNome)
+      .groupBy(({ corNome }) => corNome.trim())
+      .select((x) => ({ nome: x.key }));
+
+    const cores = await this.corService.upsert(coresDto);
+
+    const tamanhoDto = dto
+      .filter((x) => x.tamanhoNome)
+      .groupBy(({ tamanhoNome }) => tamanhoNome.trim())
+      .select((x) => ({ nome: x.key }));
+
+    const tamanhos = await this.tamanhoService.upsert(tamanhoDto);
+
+    const codigoBarrasDto = dto
+      .filter((x) => x.codigoBarras)
+      .groupBy(({ produtoId, codigoBarras }) => ({ produtoId, codigoBarras }))
+      .select((x) => x.key.codigoBarras.map((y) => ({ produtoId: x.key.produtoId, ...y })))
+      .flat();
+
+    const produtos = dto
+      .groupBy(({ produtoId }) => ({ produtoId }))
+      .select((item) => ({
+        id: item.key.produtoId,
+        referenciaId: item.values.first().referenciaId,
+        idExterno: item.values.first().produtoIdExterno,
+        corId: cores.find((x) => x.nome == item.values.first().corNome?.trim())?.id,
+        tamanhoId: tamanhos.find((x) => x.nome == item.values.first().tamanhoNome?.trim())?.id,
+        codigoBarras: codigoBarrasDto.filter((x) => x.produtoId == item.key.produtoId),
+      }));
+
+    produtos.chunk(500).forEach(async (chunk) => {
+      await this.upsert(chunk);
+    });
   }
 
   async find(searchTerm?: string, page = 1, limit = 100): Promise<Pagination<ProdutoEntity>> {
@@ -84,110 +159,6 @@ export class ProdutoService {
   async remove(id: number): Promise<void> {
     await this.repository.delete({ id }).catch(() => {
       throw new BadRequestException(`Unable to delete product with id ${id}`);
-    });
-  }
-
-  async importCsv(files: Array<Express.Multer.File>): Promise<void> {
-    if (!files || files.length === 0) {
-      throw new BadRequestException('Nenhum arquivo enviado');
-    }
-
-    const isCsv = files.every((file) => file.mimetype === 'text/csv');
-    if (!isCsv) {
-      throw new BadRequestException('Todos os arquivos devem ser do tipo CSV');
-    }
-
-    const values = (await Promise.all(files.map(async (file) => parseCsvToProduto<ImportProdutoDto>(file)))).flat();
-
-    const errors = await Promise.all(
-      values.map(async (value) => {
-        const importProdutoDto = plainToClass(ImportProdutoDto, value);
-        return await validate(importProdutoDto);
-      })
-    ).then((x) => x.flat());
-
-    if (errors.length > 0) {
-      throw new BadRequestException(errors);
-    } else {
-      this.import(values);
-    }
-  }
-
-  async import(dto: ImportProdutoDto[]): Promise<void> {
-    const categoriasDto = dto
-      .filter((x) => x.categoriaNome)
-      .map((item) => item.categoriaNome.trim())
-      .groupBy((item) => item)
-      .select((x) => ({ nome: x.key }));
-
-    const categorias = await this.categoriaService.upsert(categoriasDto);
-
-    const subCategoriasDto = dto
-      .filter((x) => x.categoriaNome && x.subCategoriaNome)
-      .groupBy(({ categoriaNome, subCategoriaNome }) => ({
-        categoriaNome: categoriaNome.trim(),
-        subCategoriaNome: subCategoriaNome.trim(),
-      }))
-      .select((x) => ({
-        categoriaId: categorias.find((c) => c.nome == x.key.categoriaNome).id,
-        nome: x.key.subCategoriaNome,
-      }));
-
-    const subCategorias = await this.subCategoriaService.upsert(subCategoriasDto);
-
-    const referenciasDto: CreateReferenciaDto[] = dto
-      .groupBy((x) => x.referenciaId)
-      .select((x) => ({
-        id: x.key,
-        idExterno: x.values.first().referenciaNome,
-        nome: x.values.first().referenciaNome,
-        unidadeMedida: x.values.first().unidadeMedida,
-        categoriaId: categorias.find((c) => c.nome == x.values.first().categoriaNome)?.id,
-        subCategoriaId: subCategorias.find((c) => c.nome == x.values.first().subCategoriaNome)?.id,
-        marcaId: x.values.first().marcaId,
-        descricao: x.values.first().descricao,
-        composicao: x.values.first().composicao,
-        cuidados: x.values.first().cuidados,
-      }));
-
-    await this.referenciaService.upsert(referenciasDto);
-
-    const coresDto = dto
-      .filter((x) => x.corNome)
-      .groupBy(({ corNome }) => corNome.trim())
-      .select((x) => ({ nome: x.key }));
-
-    const cores = await this.corService.upsert(coresDto);
-
-    const tamanhoDto = dto
-      .filter((x) => x.tamanhoNome)
-      .groupBy(({ tamanhoNome }) => tamanhoNome.trim())
-      .select((x) => ({ nome: x.key }));
-
-    const tamanhos = await this.tamanhoService.upsert(tamanhoDto);
-
-    const produtos = dto
-      .groupBy(({ produtoId }) => ({ produtoId }))
-      .select((item) => ({
-        id: item.key.produtoId,
-        referenciaId: item.values.first().referenciaId,
-        idExterno: item.values.first().produtoIdExterno,
-        corId: cores.find((x) => x.nome == item.values.first().corNome?.trim())?.id,
-        tamanhoId: tamanhos.find((x) => x.nome == item.values.first().tamanhoNome?.trim())?.id,
-      }));
-
-    produtos.chunk(500).forEach(async (produtos) => {
-      await this.upsert(produtos);
-    });
-
-    const codigosDto = dto
-      .filter((x) => x.codigoBarras)
-      .groupBy(({ produtoId, codigoBarras }) => ({ produtoId, codigoBarras }))
-      .select((x) => x.key.codigoBarras.map((y) => ({ produtoId: x.key.produtoId, ...y })))
-      .flat();
-
-    codigosDto.chunk(500).forEach(async (codigos) => {
-      await this.codigoBarrasService.upsert(codigos);
     });
   }
 }

@@ -1,11 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
 import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
 import { IsMarca } from 'src/commons/validations/is-marca.validation';
+import { ImportPrecoDto } from 'src/modules/tabela-de-preco/referencia/dto/import-precos.dto';
 
 import { CreateCodigoBarrasDto } from '../codigo-barras/dto/create-codigo-barras.dto';
-import { Type } from 'class-transformer';
 
 export class ImportProdutoDto {
   @ApiProperty()
@@ -84,4 +85,10 @@ export class ImportProdutoDto {
   @ValidateNested({ each: true })
   @Type(() => CreateCodigoBarrasDto)
   codigoBarras?: CreateCodigoBarrasDto[];
+
+  @ApiProperty({ type: [ImportPrecoDto], required: false })
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => ImportPrecoDto)
+  precos?: ImportPrecoDto[];
 }

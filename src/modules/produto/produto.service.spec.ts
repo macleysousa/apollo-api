@@ -21,8 +21,6 @@ import { ProdutoService } from './produto.service';
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({ paginate: jest.fn().mockResolvedValue(productFakeRepository.findPaginate()) }));
 
-jest.mock('src/commons/parses/csv-to-object', () => ({ parseCsvToProduto: jest.fn() }));
-
 describe('ProductService', () => {
   let service: ProdutoService;
   let repository: Repository<ProdutoEntity>;
@@ -275,79 +273,6 @@ describe('ProductService', () => {
     });
   });
 
-  describe('importCsv', () => {
-    let mockSerice: jest.SpyInstance;
-    let mockParseCsv: { parseCsvToProduto: jest.Mock };
-
-    beforeEach(() => {
-      mockSerice = jest.spyOn(service, 'import').mockResolvedValueOnce();
-      mockParseCsv = require('src/commons/parses/csv-to-object');
-    });
-
-    afterEach(() => {
-      mockSerice.mockRestore();
-      mockParseCsv.parseCsvToProduto.mockRestore();
-    });
-
-    it('should throw BadRequestException if no files are sent', async () => {
-      await expect(service.importCsv(null)).rejects.toThrow(BadRequestException);
-      await expect(service.importCsv([])).rejects.toThrow(BadRequestException);
-    });
-
-    it('should throw BadRequestException if any file is not CSV', async () => {
-      const files = [{ mimetype: 'text/csv' }, { mimetype: 'text/csv' }, { mimetype: 'application/json' }] as any;
-      await expect(service.importCsv(files)).rejects.toThrow(BadRequestException);
-    });
-
-    it('should import products from CSV file', async () => {
-      const files = [{ mimetype: 'text/csv' }] as any;
-      const produtsDto: ImportProdutoDto[] = [
-        {
-          referenciaId: 415,
-          referenciaIdExterno: '400001',
-          referenciaNome: 'LINGERIE KIT CALCA BASIC',
-          unidadeMedida: UnidadeMedida.UN,
-          categoriaNome: 'CALCINHA',
-          subCategoriaNome: 'KIT CALCA',
-          marcaId: null,
-          descricao: null,
-          composicao: null,
-          cuidados: null,
-          produtoId: 1630,
-          produtoIdExterno: '1630',
-          corNome: 'SORTIDAS',
-          tamanhoNome: 'P',
-          codigoBarras: [
-            {
-              tipo: 'EAN13',
-              codigo: '9990232165268',
-            },
-          ],
-        },
-      ];
-
-      jest.spyOn(mockParseCsv, 'parseCsvToProduto').mockReturnValueOnce(produtsDto);
-
-      await service.importCsv(files);
-
-      expect(mockParseCsv.parseCsvToProduto).toHaveBeenCalledTimes(1);
-      expect(mockParseCsv.parseCsvToProduto).toHaveBeenCalledWith(expect.anything());
-      expect(mockSerice).toHaveBeenCalledTimes(1);
-      expect(mockSerice).toHaveBeenCalledWith(produtsDto);
-    });
-
-    it('should throw BadRequestException if any product is invalid', async () => {
-      const files = [{ mimetype: 'text/csv' }] as any;
-      const mockParseCsvToObjet = [{ name: 'Product 1', description: 'Description 1', price: 10.0 }];
-
-      jest.spyOn(mockParseCsv, 'parseCsvToProduto').mockReturnValueOnce(mockParseCsvToObjet);
-
-      await expect(service.importCsv(files)).rejects.toThrow(BadRequestException);
-      expect(mockParseCsv.parseCsvToProduto).toHaveBeenCalledTimes(1);
-      expect(mockParseCsv.parseCsvToProduto).toHaveBeenCalledWith(expect.anything());
-    });
-  });
-
   describe('import', () => {
     it('should import a product (full)', async () => {
       // Arrange
@@ -376,8 +301,10 @@ describe('ProductService', () => {
         },
       ];
 
+      jest.spyOn(service, 'upsert').mockResolvedValueOnce(undefined);
+
       // Act
-      await service.import(importDto);
+      await service.createMany(importDto);
 
       // Assert
       expect(categoriaService.upsert).toHaveBeenCalledTimes(1);
@@ -385,7 +312,7 @@ describe('ProductService', () => {
       expect(referenciaService.upsert).toHaveBeenCalledTimes(1);
       expect(corService.upsert).toHaveBeenCalledTimes(1);
       expect(tamanhoService.upsert).toHaveBeenCalledTimes(1);
-      expect(codigoBarrasService.upsert).toHaveBeenCalledTimes(1);
+      expect(service.upsert).toHaveBeenCalledTimes(1);
     });
 
     it('should import a product (optional)', async () => {
@@ -410,8 +337,10 @@ describe('ProductService', () => {
         },
       ];
 
+      jest.spyOn(service, 'upsert').mockResolvedValueOnce(undefined);
+
       // Act
-      await service.import(importDto);
+      await service.createMany(importDto);
 
       // Assert
       expect(categoriaService.upsert).toHaveBeenCalledTimes(1);
@@ -419,7 +348,7 @@ describe('ProductService', () => {
       expect(referenciaService.upsert).toHaveBeenCalledTimes(1);
       expect(corService.upsert).toHaveBeenCalledTimes(1);
       expect(tamanhoService.upsert).toHaveBeenCalledTimes(1);
-      expect(codigoBarrasService.upsert).toHaveBeenCalledTimes(0);
+      expect(service.upsert).toHaveBeenCalledTimes(1);
     });
   });
 });

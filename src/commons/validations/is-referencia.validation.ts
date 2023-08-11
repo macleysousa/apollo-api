@@ -12,8 +12,8 @@ export class ReferenciaConstraint implements ValidatorConstraintInterface {
     return (await this.service.findById(value)) ? true : false;
   }
 
-  defaultMessage(_validationArguments?: ValidationArguments): string {
-    return 'Referência não encontrada';
+  defaultMessage(_validationArguments: ValidationArguments): string {
+    return `Referência "${_validationArguments.value}" não encontrada`;
   }
 }
 

@@ -3,6 +3,7 @@ import { referenceFakeRepository } from 'src/base-fake/reference';
 import { ReferenciaService } from 'src/modules/referencia/referencia.service';
 
 import { ReferenciaConstraint } from './is-referencia.validation';
+import { ValidationArguments } from 'class-validator';
 
 describe('Reference validation', () => {
   let constraint: ReferenciaConstraint;
@@ -56,11 +57,12 @@ describe('Reference validation', () => {
 
   describe('default message', () => {
     it('should return the default message', () => {
+      const validationArguments = { value: 1, constraints: [] } as ValidationArguments;
       // Act
-      const result = constraint.defaultMessage();
+      const result = constraint.defaultMessage(validationArguments);
 
       // Assert
-      expect(result).toEqual('Referência não encontrada');
+      expect(result).toEqual(`Referência "${validationArguments.value}" não encontrada`);
     });
   });
 });

@@ -5,11 +5,13 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const { DB_TYPE, DB_DATABASE, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_PORT, DB_TIMEZONE, DB_ENTITIES, DB_MIGRATIONS } = process.env;
+const { DB_TYPE, DB_DATABASE, DB_HOSTNAME, DB_USERNAME, DB_ENTITIES, DB_MIGRATIONS } = process.env;
 
 if (!DB_TYPE || !DB_HOSTNAME || !DB_DATABASE || !DB_USERNAME || !DB_ENTITIES || !DB_MIGRATIONS) {
   throw new Error('Database variable DB_* has not been set properly');
 }
+
+const { ORM_LOGGING, DB_PASSWORD, DB_PORT, DB_TIMEZONE } = process.env;
 
 export default {
   type: DB_TYPE,
@@ -20,7 +22,7 @@ export default {
   port: +DB_PORT || 3306,
   autoLoadEntities: true,
   synchronize: false,
-  logging: true,
+  logging: ORM_LOGGING === 'true' ? true : false,
   entities: [join(__dirname, DB_ENTITIES)],
   migrations: [join(__dirname, DB_MIGRATIONS)],
   migrationsRun: true,

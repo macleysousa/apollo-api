@@ -30,6 +30,7 @@ import { EstoqueModule } from './modules/estoque/estoque.module';
 import { RomaneioModule } from './modules/romaneio/romaneio.module';
 import { TabelaDePrecoModule } from './modules/tabela-de-preco/tabela-de-preco.module';
 import { FaturaModule } from './modules/fatura/fatura.module';
+import { ImportModule } from './modules/import/import.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { FaturaModule } from './modules/fatura/fatura.module';
     EstoqueModule.forRoot(),
     FormaDePagamentoModule.forRoot(),
     RomaneioModule.forRoot(),
+    ImportModule,
   ],
   controllers: [],
   providers: [

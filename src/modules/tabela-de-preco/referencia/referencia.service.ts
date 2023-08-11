@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { In, Repository } from 'typeorm';
-import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 
 import { ContextService } from 'src/context/context.service';
 
+import { TabelaDePrecoService } from '../tabela-de-preco.service';
+import { ImportPrecoDto } from './dto/import-precos.dto';
 import { UpSertPrecoReferenciaDto } from './dto/upsert-referencia.dto';
 import { PrecoReferencia } from './entities/referencia.entity';
 import { PrecoReferenciaView } from './views/referencia.view';
-import { TabelaDePrecoService } from '../tabela-de-preco.service';
 
 interface FindOptions {
   referenciaIds?: number[];
@@ -27,6 +28,18 @@ export class PrecoReferenciaService {
     private readonly tabelaService: TabelaDePrecoService,
     private readonly contextService: ContextService
   ) {}
+
+  async upsert(dto: ImportPrecoDto[]): Promise<PrecoReferenciaView[]> {
+    const operadorId = this.contextService.operadorId();
+
+    const precos = dto.map((x) => ({ ...x, operadorId }));
+
+    await this.repository.upsert(precos, { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] });
+
+    return this.view.find({
+      where: { tabelaDePrecoId: In(dto.map((x) => x.tabelaPrecoId)), referenciaId: In(dto.map((x) => x.referenciaId)) },
+    });
+  }
 
   async add(tabelaDePrecoId: number, { referenciaId, preco }: UpSertPrecoReferenciaDto): Promise<PrecoReferenciaView> {
     const operadorId = this.contextService.currentUser().id;

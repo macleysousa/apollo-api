@@ -52,11 +52,11 @@ describe('TabelaDePrecoConstraint', () => {
 
   describe('defaultMessage', () => {
     it('should return default message', () => {
-      const validationArguments = {} as ValidationArguments;
+      const validationArguments = { value: 1 } as ValidationArguments;
 
       const result = constraint.defaultMessage(validationArguments);
 
-      expect(result).toBe('Tabela de preço não encontrada');
+      expect(result).toBe(`Tabela de preço "${validationArguments.value}" não encontrada`);
     });
   });
 });

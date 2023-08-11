@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { Exclude, Type } from 'class-transformer';
+import { IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
 
 import { IsColor } from 'src/commons/validations/is-color.validation';
 import { IsReferencia } from 'src/commons/validations/is-referencia.validation';
 import { IsTamanho } from 'src/commons/validations/is-tamanho.validation';
+import { CreateCodigoBarrasDto } from '../codigo-barras/dto/create-codigo-barras.dto';
 
 export class CreateProdutoDto {
   @ApiProperty({ required: false })
@@ -28,4 +30,10 @@ export class CreateProdutoDto {
   @IsOptional()
   @IsTamanho()
   tamanhoId?: number;
+
+  @Exclude()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => CreateCodigoBarrasDto)
+  codigoBarras?: CreateCodigoBarrasDto[];
 }
