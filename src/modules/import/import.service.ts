@@ -8,6 +8,8 @@ import { ImportProdutoDto } from '../produto/dto/import-produto.dto';
 import { ProdutoService } from '../produto/produto.service';
 import { UpSertPrecoReferenciaDto } from '../tabela-de-preco/referencia/dto/upsert-referencia.dto';
 import { PrecoReferenciaService } from '../tabela-de-preco/referencia/referencia.service';
+import { validateDto } from 'src/commons/validete';
+import { ValidationExceptionFactory } from 'src/exceptions/validations.exception';
 
 @Injectable()
 export class ImportService {
@@ -28,7 +30,11 @@ export class ImportService {
 
     const values = (await Promise.all(files.map(async (file) => parseCsvToProduto<ImportProdutoDto>(file)))).flat();
 
-    this.produtoService.createMany(values);
+    const errors = await validateDto(ImportProdutoDto, values);
+
+    ValidationExceptionFactory(errors);
+
+    // this.produtoService.createMany(values);
   }
 
   async referenciasPrecoCsv(files: Express.Multer.File[]): Promise<void> {

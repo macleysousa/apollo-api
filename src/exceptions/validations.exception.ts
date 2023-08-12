@@ -1,25 +1,24 @@
-import { BadRequestException, ValidationError, HttpStatus } from '@nestjs/common';
+import { BadRequestException, ValidationError } from '@nestjs/common';
 
-export const ValidationExceptionFactory = (validationErrors: ValidationError[], errMessage?: any, parentField?: string) => {
+export const ErrorFormatter = (errors: ValidationError[], errMessage?: any, parentField?: string) => {
   const message = errMessage ?? {};
 
-  validationErrors.forEach((error) => {
-    const errorField = parentField ? `${parentField}.${error.property}` : error?.property;
-
+  errors.forEach((error) => {
+    const errorField = (parentField ? `${parentField}.${error.property}` : error?.property).replaceAll(/\.\d+/g, '');
     if (!error?.constraints && error?.children?.length) {
-      ValidationExceptionFactory(error?.children, message, errorField);
-    } else if (error?.constraints) {
-      if (!message[errorField]) {
-        message[errorField] = [];
-      }
+      ErrorFormatter(error.children, message, errorField);
+    } else {
       const validationsList = Object.values(error?.constraints);
-      message[errorField].push(...validationsList);
+      if (!message[errorField]) message[errorField] = validationsList;
+      else if (!message[errorField].includes(validationsList[0])) message[errorField].push(validationsList[0]);
     }
   });
 
-  throw new BadRequestException({
-    statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-    message: 'Validation errors',
-    errors: message,
-  });
+  return message;
+};
+
+export const ValidationExceptionFactory = (validationErrors: ValidationError[]) => {
+  const message = ErrorFormatter(validationErrors);
+
+  throw new BadRequestException([message]);
 };
