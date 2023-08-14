@@ -4,6 +4,7 @@ import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.en
 import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
 
 import { RomaneioConstraint } from './is-romaneio.validation';
+import { ValidationArguments } from 'class-validator';
 
 describe('RomaneioConstraint', () => {
   let constraint: RomaneioConstraint;
@@ -62,5 +63,19 @@ describe('RomaneioConstraint', () => {
     const result = await constraint.validate(romaneioId, { constraints: [situacao] } as any);
     expect(result).toBe(false);
     expect(constraint.messageError).toBe(`Romaneio ${romaneioId} não está com a situação ${situacao}`);
+  });
+
+  describe('default message', () => {
+    it('should return the default message', () => {
+      // Arrange
+      constraint.messageError = `Romaneio não encontrado`;
+      const validationArguments = { value: 1, constraints: [] } as ValidationArguments;
+
+      // Act
+      const result = constraint.defaultMessage(validationArguments);
+
+      // Assert
+      expect(result).toEqual(`Romaneio não encontrado`);
+    });
   });
 });

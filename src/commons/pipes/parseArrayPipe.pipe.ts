@@ -1,6 +1,6 @@
 import { ArgumentMetadata, BadRequestException, Injectable, ParseArrayOptions, PipeTransform } from '@nestjs/common';
 
-import { validateDto } from '../validete';
+import { validateDto } from '../validate-dto';
 import { ValidationExceptionFactory } from 'src/exceptions/validations.exception';
 
 @Injectable()

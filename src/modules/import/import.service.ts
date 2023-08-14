@@ -3,13 +3,14 @@ import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 
 import { parseCsvToProduto, parseCsvToRefereciaPreco } from 'src/commons/parses/csv-to-object';
+import { validateDto } from 'src/commons/validate-dto';
+import { ValidationExceptionFactory } from 'src/exceptions/validations.exception';
 
 import { ImportProdutoDto } from '../produto/dto/import-produto.dto';
 import { ProdutoService } from '../produto/produto.service';
 import { AddPrecoReferenciaDto } from '../tabela-de-preco/referencia/dto/add-referencia.dto';
 import { PrecoReferenciaService } from '../tabela-de-preco/referencia/referencia.service';
-import { validateDto } from 'src/commons/validete';
-import { ValidationExceptionFactory } from 'src/exceptions/validations.exception';
+import { ImportPrecoDto } from '../tabela-de-preco/referencia/dto/import-precos.dto';
 
 @Injectable()
 export class ImportService {
@@ -46,19 +47,11 @@ export class ImportService {
       throw new BadRequestException('Todos os arquivos devem ser do tipo CSV');
     }
 
-    const values = (await Promise.all(files.map(async (file) => parseCsvToRefereciaPreco<AddPrecoReferenciaDto>(file)))).flat();
+    const values = (await Promise.all(files.map(async (file) => parseCsvToRefereciaPreco<ImportPrecoDto>(file)))).flat();
 
-    const errors = await Promise.all(
-      values.map(async (value) => {
-        const importDto = plainToClass(AddPrecoReferenciaDto, value);
-        return validate(importDto);
-      })
-    ).then((x) => x.flat());
+    const errors = await validateDto(ImportPrecoDto, values);
+    if (errors.length > 0) return ValidationExceptionFactory(errors);
 
-    if (errors.length > 0) {
-      throw new BadRequestException(errors);
-    } else {
-      this.precoReferenciaService.upsert(values);
-    }
+    this.precoReferenciaService.upsert(values);
   }
 }

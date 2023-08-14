@@ -3,21 +3,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { ILike, In, IsNull, Not, Repository } from 'typeorm';
 
-import { parseCsvToProduto } from 'src/commons/parses/csv-to-object';
-
 import { CategoriaService } from '../categoria/categoria.service';
 import { SubCategoriaService } from '../categoria/sub/sub.service';
 import { CorService } from '../cor/cor.service';
 import { CreateReferenciaDto } from '../referencia/dto/create-referencia.dto';
 import { ReferenciaService } from '../referencia/referencia.service';
 import { TamanhoService } from '../tamanho/tamanho.service';
+import { CodigoBarrasService } from './codigo-barras/codigo-barras.service';
 import { CreateProdutoDto } from './dto/create-produto.dto';
 import { ImportProdutoDto } from './dto/import-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';
 import { ProdutoEntity } from './entities/produto.entity';
-import { CodigoBarrasService } from './codigo-barras/codigo-barras.service';
-import { validate } from 'class-validator';
-import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class ProdutoService {

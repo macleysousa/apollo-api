@@ -324,6 +324,12 @@ describe('ProductService', () => {
               codigo: '9990232165268',
             },
           ],
+          precos: [
+            {
+              tabelaDePrecoId: 1,
+              preco: 10.0,
+            },
+          ],
         },
       ];
 
