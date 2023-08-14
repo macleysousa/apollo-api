@@ -113,6 +113,7 @@ export class RomaneioFakeRepository {
       empresaId: 1,
       romaneioId: 1,
       data: new Date('2023-06-09'),
+      sequencia: 1,
       referenciaId: 1,
       referenciaIdExterno: '1',
       referenciaNome: 'Referencia 1',

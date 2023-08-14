@@ -6,23 +6,27 @@ import { BaseEntity } from 'src/commons/base.entity';
 @Entity({ name: 'romaneios_itens' })
 export class RomaneioItemEntity extends BaseEntity {
   @ApiProperty()
-  @PrimaryColumn()
+  @PrimaryColumn('int')
   empresaId: number;
 
   @ApiProperty()
-  @PrimaryColumn()
+  @PrimaryColumn('bigint')
   romaneioId: number;
 
   @ApiProperty()
-  @PrimaryColumn()
+  @PrimaryColumn('date')
   data: Date;
 
   @ApiProperty()
-  @PrimaryColumn()
+  @PrimaryColumn('int')
+  sequencia: number;
+
+  @ApiProperty()
+  @PrimaryColumn('int')
   referenciaId: number;
 
   @ApiProperty()
-  @PrimaryColumn()
+  @PrimaryColumn('bigint')
   produtoId: number;
 
   @ApiProperty()
@@ -38,14 +42,14 @@ export class RomaneioItemEntity extends BaseEntity {
   valorUnitDesconto: number;
 
   @ApiProperty()
-  @Column()
+  @Column('boolean')
   emPromocao: boolean;
 
   @ApiProperty()
-  @Column()
+  @Column('int')
   cupomId: number;
 
   @ApiProperty()
-  @Column()
+  @Column('int')
   operadorId: number;
 }

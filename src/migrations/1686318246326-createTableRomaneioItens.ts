@@ -22,6 +22,11 @@ export class CreateTableRomaneioItens1686318246326 implements MigrationInterface
             isPrimary: true,
           },
           {
+            name: 'sequencia',
+            type: 'int',
+            isPrimary: true,
+          },
+          {
             name: `referenciaId`,
             type: `int`,
             isPrimary: true,
@@ -72,6 +77,7 @@ export class CreateTableRomaneioItens1686318246326 implements MigrationInterface
             default: 'now()',
           },
         ],
+        uniques: [{ columnNames: [`romaneioId`, `sequencia`, `produtoId`] }],
         foreignKeys: [
           {
             columnNames: [`empresaId`, `romaneioId`],

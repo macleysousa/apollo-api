@@ -19,6 +19,10 @@ export class RomaneioItemView extends BaseEntity {
 
   @ApiProperty()
   @ViewColumn()
+  sequencia: number;
+
+  @ApiProperty()
+  @ViewColumn()
   referenciaId: number;
 
   @ApiProperty()

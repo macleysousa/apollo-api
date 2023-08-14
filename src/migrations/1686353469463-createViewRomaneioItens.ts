@@ -8,6 +8,7 @@ SELECT
 ro.empresaId as empresaId,
 ro.id as romaneioId,
 ro.data as data,
+ri.sequencia as sequencia,
 r.id as referenciaId,
 r.idExterno as referenciaIdExterno,
 r.nome as referenciaNome,

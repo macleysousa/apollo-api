@@ -38,11 +38,12 @@ export class RomaneioItemService {
     }
 
     const romaneioItem = await this.findByProdutoId(romaneioId, produtoId);
+    const romaneioItemQuantidade = romaneioItem?.sum((x) => x.quantidade) ?? 0;
 
     const estoque = await this.estoqueService.findByProdutoId(empresa.id, produtoId);
     if (!estoque) {
       throw new BadRequestException('Produto não encontrado em estoque');
-    } else if (estoque.saldo < quantidade + (romaneioItem?.quantidade ?? 0) && romaneio.modalidade == ModalidadeRomaneio.Saida) {
+    } else if (estoque.saldo < quantidade + romaneioItemQuantidade && romaneio.modalidade == ModalidadeRomaneio.Saida) {
       throw new BadRequestException(`Saldo em estoque insuficiente para o produto ${produtoId}`);
     }
 
@@ -53,44 +54,65 @@ export class RomaneioItemService {
       throw new BadRequestException(`Referência ${estoque.referenciaId} com preço 00,00`);
     }
 
-    await this.repository.upsert(
-      {
-        empresaId: empresa.id,
-        romaneioId: romaneioId,
-        data: empresa.data,
-        referenciaId: estoque.referenciaId,
-        produtoId: estoque.produtoId,
-        valorUnitario: precoReferencia.preco,
-        emPromocao: false,
-        quantidade: quantidade + (romaneioItem?.quantidade ?? 0),
-        operadorId: usuario.id,
-      },
-      { conflictPaths: ['empresaId', 'romaneioId', 'produtoId'] }
-    );
+    const sequencia = await this.repository
+      .createQueryBuilder()
+      .select('coalesce(max(sequencia), 0) + 1', 'sequencia')
+      .where({ empresaId: empresa.id, romaneioId: romaneioId })
+      .getRawOne()
+      .then((r) => r.sequencia);
 
-    return this.findByProdutoId(romaneioId, produtoId);
+    await this.repository.insert({
+      empresaId: empresa.id,
+      romaneioId: romaneioId,
+      data: empresa.data,
+      sequencia: sequencia,
+      referenciaId: estoque.referenciaId,
+      produtoId: estoque.produtoId,
+      valorUnitario: precoReferencia.preco,
+      emPromocao: false,
+      quantidade: quantidade,
+      operadorId: usuario.id,
+    });
+
+    return this.view.findOne({ where: { romaneioId: romaneioId, sequencia: sequencia, produtoId: produtoId } });
   }
 
   async find(romaneioId: number): Promise<RomaneioItemView[]> {
     return this.view.find({ where: { romaneioId } });
   }
 
-  async findByProdutoId(romaneioId: number, produtoId: number): Promise<RomaneioItemView> {
-    return this.view.findOne({ where: { romaneioId, produtoId } });
+  async findByProdutoId(romaneioId: number, produtoId: number): Promise<RomaneioItemView[]> {
+    return this.view.find({ where: { romaneioId, produtoId } });
+  }
+
+  async clear(romaneioId: number): Promise<void> {
+    const empresaId = this.contextService.empresaId();
+    const romaneio = await this.romaneioService.findById(empresaId, romaneioId);
+
+    if (romaneio.situacao !== SituacaoRomaneio.EmAndamento) {
+      throw new BadRequestException('Romaneio não está em andamento');
+    }
+
+    await this.repository.delete({ romaneioId });
   }
 
   async remove(romaneioId: number, produtoId: number, quantidade: number): Promise<void> {
     const usuario = this.contextService.currentUser();
-    const item = await this.findByProdutoId(romaneioId, produtoId);
+    const item = await this.view.findOne({ where: { romaneioId, produtoId }, order: { sequencia: 'DESC' } });
 
-    if (item.situacao !== SituacaoRomaneio.EmAndamento) {
+    if (!item) {
+      throw new BadRequestException('Item não encontrado');
+    } else if (item.situacao !== SituacaoRomaneio.EmAndamento) {
       throw new BadRequestException('Romaneio não está em andamento');
     }
 
     if (item.quantidade - quantidade <= 0) {
-      await this.repository.delete({ romaneioId, produtoId });
+      await this.repository.delete({ romaneioId, produtoId, sequencia: item.sequencia });
     } else {
-      await this.repository.update({ romaneioId, produtoId }, { quantidade: item.quantidade - quantidade, operadorId: usuario.id });
+      await this.repository.update(
+        { romaneioId, produtoId, sequencia: item.sequencia },
+        { quantidade: item.quantidade - quantidade, operadorId: usuario.id }
+      );
     }
   }
 }

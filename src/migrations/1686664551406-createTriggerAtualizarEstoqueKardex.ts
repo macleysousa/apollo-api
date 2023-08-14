@@ -14,9 +14,10 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Erro: Essa operação não é permitida';
     ELSEIF OLD.situacao <> 'Encerrado' AND NEW.situacao = 'Encerrado' THEN
         REPLACE INTO estoque_kardex (empresaId, data, romaneioId, referenciaId, produtoId, quantidade)
-        SELECT empresaId, data, romaneioId, referenciaId, produtoId, IF(modalidade = 'Entrada', quantidade, quantidade * -1) AS quantidade
+        SELECT empresaId, data, romaneioId, referenciaId, produtoId,SUM(IF(modalidade = 'Entrada', quantidade, quantidade * -1)) AS quantidade
         FROM view_romaneios_itens
-        WHERE romaneioId = NEW.id;
+        WHERE romaneioId = NEW.id
+		    GROUP BY empresaId, data, romaneioId, referenciaId, produtoId;
     ELSEIF OLD.situacao = 'Encerrado' AND NEW.situacao = 'Cancelado' THEN
         UPDATE estoque_kardex  SET cancelado = 1, atualizadoEm = now() WHERE romaneioId = NEW.id;
     END IF;
