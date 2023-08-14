@@ -7,7 +7,7 @@ import { ContextService } from 'src/context/context.service';
 
 import { TabelaDePrecoService } from '../tabela-de-preco.service';
 import { ImportPrecoDto } from './dto/import-precos.dto';
-import { UpSertPrecoReferenciaDto } from './dto/upsert-referencia.dto';
+import { AddPrecoReferenciaDto } from './dto/add-referencia.dto';
 import { PrecoReferencia } from './entities/referencia.entity';
 import { PrecoReferenciaView } from './views/referencia.view';
 
@@ -37,11 +37,11 @@ export class PrecoReferenciaService {
     await this.repository.upsert(precos, { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] });
 
     return this.view.find({
-      where: { tabelaDePrecoId: In(dto.map((x) => x.tabelaPrecoId)), referenciaId: In(dto.map((x) => x.referenciaId)) },
+      where: { tabelaDePrecoId: In(dto.map((x) => x.tabelaDePrecoId)), referenciaId: In(dto.map((x) => x.referenciaId)) },
     });
   }
 
-  async add(tabelaDePrecoId: number, { referenciaId, preco }: UpSertPrecoReferenciaDto): Promise<PrecoReferenciaView> {
+  async add(tabelaDePrecoId: number, { referenciaId, preco }: AddPrecoReferenciaDto): Promise<PrecoReferenciaView> {
     const operadorId = this.contextService.currentUser().id;
     const { terminador } = await this.tabelaService.findById(tabelaDePrecoId);
 

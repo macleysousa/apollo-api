@@ -6,7 +6,7 @@ import { parseCsvToProduto, parseCsvToRefereciaPreco } from 'src/commons/parses/
 
 import { ImportProdutoDto } from '../produto/dto/import-produto.dto';
 import { ProdutoService } from '../produto/produto.service';
-import { UpSertPrecoReferenciaDto } from '../tabela-de-preco/referencia/dto/upsert-referencia.dto';
+import { AddPrecoReferenciaDto } from '../tabela-de-preco/referencia/dto/add-referencia.dto';
 import { PrecoReferenciaService } from '../tabela-de-preco/referencia/referencia.service';
 import { validateDto } from 'src/commons/validete';
 import { ValidationExceptionFactory } from 'src/exceptions/validations.exception';
@@ -31,10 +31,9 @@ export class ImportService {
     const values = (await Promise.all(files.map(async (file) => parseCsvToProduto<ImportProdutoDto>(file)))).flat();
 
     const errors = await validateDto(ImportProdutoDto, values);
+    if (errors.length > 0) return ValidationExceptionFactory(errors);
 
-    ValidationExceptionFactory(errors);
-
-    // this.produtoService.createMany(values);
+    this.produtoService.createMany(values);
   }
 
   async referenciasPrecoCsv(files: Express.Multer.File[]): Promise<void> {
@@ -47,11 +46,11 @@ export class ImportService {
       throw new BadRequestException('Todos os arquivos devem ser do tipo CSV');
     }
 
-    const values = (await Promise.all(files.map(async (file) => parseCsvToRefereciaPreco<UpSertPrecoReferenciaDto>(file)))).flat();
+    const values = (await Promise.all(files.map(async (file) => parseCsvToRefereciaPreco<AddPrecoReferenciaDto>(file)))).flat();
 
     const errors = await Promise.all(
       values.map(async (value) => {
-        const importDto = plainToClass(UpSertPrecoReferenciaDto, value);
+        const importDto = plainToClass(AddPrecoReferenciaDto, value);
         return validate(importDto);
       })
     ).then((x) => x.flat());

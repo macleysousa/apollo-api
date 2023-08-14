@@ -9,6 +9,7 @@ import { PrecoReferencia } from './entities/referencia.entity';
 import { PrecoReferenciaView } from './views/referencia.view';
 import { TabelaDePrecoService } from '../tabela-de-preco.service';
 import { PrecoReferenciaService } from './referencia.service';
+import { ImportPrecoDto } from './dto/import-precos.dto';
 
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({
@@ -58,6 +59,7 @@ describe('PrecoReferenciaService', () => {
           provide: ContextService,
           useValue: {
             currentUser: jest.fn().mockReturnValue({ id: 1 }),
+            operadorId: jest.fn().mockReturnValue(1),
           },
         },
       ],
@@ -76,6 +78,25 @@ describe('PrecoReferenciaService', () => {
     expect(view).toBeDefined();
     expect(tabelaService).toBeDefined();
     expect(contextService).toBeDefined();
+  });
+
+  describe('upsert', () => {
+    it('should upsert the precos and return the corresponding PrecoReferenciaView entities', async () => {
+      const dto: ImportPrecoDto[] = [{ tabelaDePrecoId: 1, referenciaId: 2, preco: 10.0 }];
+      const operadorId = 1;
+      const precos = dto.map((x) => ({ ...x, operadorId }));
+      const expected = [{ tabelaDePrecoId: 1, referenciaId: 2, preco: 10.0 }] as PrecoReferenciaView[];
+
+      jest.spyOn(contextService, 'operadorId').mockReturnValue(operadorId);
+      jest.spyOn(repository, 'upsert').mockResolvedValue(undefined);
+      jest.spyOn(view, 'find').mockResolvedValue(expected);
+
+      const result = await service.upsert(dto);
+
+      expect(repository.upsert).toHaveBeenCalledWith(precos, { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] });
+      expect(view.find).toHaveBeenCalledWith({ where: { tabelaDePrecoId: In([1]), referenciaId: In([2]) } });
+      expect(result).toEqual(expected);
+    });
   });
 
   describe('add', () => {

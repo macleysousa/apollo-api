@@ -31,8 +31,6 @@ export class CreateProdutoDto {
   @IsTamanho()
   tamanhoId?: number;
 
-  @Exclude()
-  @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => CreateCodigoBarrasDto)
   codigoBarras?: CreateCodigoBarrasDto[];

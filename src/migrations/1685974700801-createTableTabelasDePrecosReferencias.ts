@@ -49,7 +49,7 @@ export class CreateTableTabelasDePrecosReferencias1685974700801 implements Migra
             columnNames: ['referenciaId'],
             referencedTableName: 'referencias',
             referencedColumnNames: ['id'],
-            onDelete: 'RESTRICT',
+            onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           },
           {

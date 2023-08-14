@@ -33,7 +33,7 @@ export async function parseCsvToProduto<T>(file: Express.Multer.File): Promise<T
 
       if (columns[0] === 'REFERENCIA_PRECO') {
         const value = {
-          tabelaPrecoId: Convert.toNumber(columns[1], { culture: 'pt-BR' }),
+          tabelaDePrecoId: Convert.toNumber(columns[1], { culture: 'pt-BR' }),
           referenciaId: Convert.toNumber(columns[2], { culture: 'pt-BR' }),
           preco: Convert.toDecimal(columns[3], { culture: 'pt-BR', default: 0 }),
         };

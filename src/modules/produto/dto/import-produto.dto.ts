@@ -1,12 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, ValidateNested } from 'class-validator';
 
 import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
 import { IsMarca } from 'src/commons/validations/is-marca.validation';
-import { ImportPrecoDto } from 'src/modules/tabela-de-preco/referencia/dto/import-precos.dto';
 
+import { IsTabelaDePreco } from 'src/commons/validations/is-tabela-de-preco.validation';
 import { CreateCodigoBarrasDto } from '../codigo-barras/dto/create-codigo-barras.dto';
+
+export class ImportProdutoPrecosDto {
+  @ApiProperty()
+  @IsNotEmpty({ message: 'Campo "tabelaDePrecoId" é obrigatório.' })
+  @IsTabelaDePreco()
+  tabelaDePrecoId?: number;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'O campo "preço" é obrigatório' })
+  @IsNumber({ maxDecimalPlaces: 4 }, { message: 'O campo preço deve ser um número valido e com no máximo 4 casas decimais' })
+  preco: number;
+}
 
 export class ImportProdutoDto {
   @ApiProperty()
@@ -86,9 +98,10 @@ export class ImportProdutoDto {
   @Type(() => CreateCodigoBarrasDto)
   codigoBarras?: CreateCodigoBarrasDto[];
 
-  @ApiProperty({ type: [ImportPrecoDto], required: false })
+  @ApiProperty({ type: [ImportProdutoPrecosDto], required: false })
   @IsOptional()
   @ValidateNested({ each: true })
-  @Type(() => ImportPrecoDto)
-  precos?: ImportPrecoDto[];
+  @Type(() => ImportProdutoPrecosDto)
+  @IsArray({ message: 'O campo "precos" deve ser um array.' })
+  precos?: ImportProdutoPrecosDto[];
 }

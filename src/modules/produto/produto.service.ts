@@ -72,6 +72,11 @@ export class ProdutoService {
 
     const subCategorias = await this.subCategoriaService.upsert(subCategoriasDto);
 
+    const precosDto = dto
+      .filter((x) => x.precos)
+      .select((x) => x.precos.map((y) => ({ ...y, referenciaId: x.referenciaId })))
+      .flat();
+
     const referenciasDto: CreateReferenciaDto[] = dto
       .groupBy((x) => x.referenciaId)
       .select((x) => ({
@@ -82,6 +87,7 @@ export class ProdutoService {
         categoriaId: categorias.find((c) => c.nome == x.values.first().categoriaNome)?.id,
         subCategoriaId: subCategorias.find((c) => c.nome == x.values.first().subCategoriaNome)?.id,
         marcaId: x.values.first().marcaId,
+        precos: precosDto.filter((y) => y.referenciaId == x.key),
       }));
 
     await this.referenciaService.upsert(referenciasDto);

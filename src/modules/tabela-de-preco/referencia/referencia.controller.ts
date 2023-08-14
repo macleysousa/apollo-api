@@ -6,7 +6,7 @@ import { ParseBetweenPipe } from 'src/commons/pipes/parseBetween.pipe';
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
 
-import { UpSertPrecoReferenciaDto } from './dto/upsert-referencia.dto';
+import { AddPrecoReferenciaDto } from './dto/add-referencia.dto';
 import { PrecoReferenciaService } from './referencia.service';
 import { PrecoReferenciaView } from './views/referencia.view';
 
@@ -21,7 +21,7 @@ export class PrecoReferenciaController {
   @ApiResponse({ status: 201, type: PrecoReferenciaView })
   async add(
     @Param('tabelaDePrecoId', ParseIntPipe) tabelaDePrecoId: number,
-    @Body() upSertPrecoReferenciaDto: UpSertPrecoReferenciaDto
+    @Body() upSertPrecoReferenciaDto: AddPrecoReferenciaDto
   ): Promise<PrecoReferenciaView> {
     return this.service.add(tabelaDePrecoId, upSertPrecoReferenciaDto);
   }

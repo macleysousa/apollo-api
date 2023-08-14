@@ -6,16 +6,21 @@ import { ILike, Repository } from 'typeorm';
 import { CreateReferenciaDto } from './dto/create-referencia.dto';
 import { UpdateReferenciaDto } from './dto/update-referencia.dto';
 import { ReferenciaEntity } from './entities/referencia.entity';
+import { PrecoReferenciaService } from '../tabela-de-preco/referencia/referencia.service';
 
 @Injectable()
 export class ReferenciaService {
   constructor(
     @InjectRepository(ReferenciaEntity)
-    private referenceRepository: Repository<ReferenciaEntity>
+    private referenceRepository: Repository<ReferenciaEntity>,
+    private precoReferenciaService: PrecoReferenciaService
   ) {}
 
   async upsert(createReferenceDto: CreateReferenciaDto[]): Promise<ReferenciaEntity[]> {
     await this.referenceRepository.upsert(createReferenceDto, { conflictPaths: ['id'] });
+
+    const precos = createReferenceDto.filter((r) => r.precos).map((r) => r.precos);
+    await this.precoReferenciaService.upsert(precos.flat());
 
     return this.referenceRepository.find({ where: createReferenceDto.map((ref) => ({ id: ref.id })) });
   }

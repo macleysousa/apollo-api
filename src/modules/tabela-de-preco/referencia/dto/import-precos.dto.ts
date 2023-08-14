@@ -3,11 +3,11 @@ import { IsNotEmpty } from 'class-validator';
 
 import { IsTabelaDePreco } from 'src/commons/validations/is-tabela-de-preco.validation';
 
-import { UpSertPrecoReferenciaDto } from './upsert-referencia.dto';
+import { AddPrecoReferenciaDto } from './add-referencia.dto';
 
-export class ImportPrecoDto extends UpSertPrecoReferenciaDto {
+export class ImportPrecoDto extends AddPrecoReferenciaDto {
   @ApiProperty()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Campo "tabelaDePrecoId" é obrigatório.' })
   @IsTabelaDePreco()
-  tabelaPrecoId?: number;
+  tabelaDePrecoId?: number;
 }

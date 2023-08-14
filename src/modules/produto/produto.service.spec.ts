@@ -120,7 +120,7 @@ describe('ProductService', () => {
   });
 
   describe('upsert', () => {
-    it('should upsert a product', async () => {
+    it('should upsert a product without codigoBarras', async () => {
       // Arrange
       const dto: CreateProdutoDto[] = [
         {
@@ -136,6 +136,32 @@ describe('ProductService', () => {
       const response = await service.upsert(dto);
 
       // Assert
+      expect(repository.upsert).toHaveBeenCalledTimes(1);
+      expect(repository.find).toHaveBeenCalledWith({ where: { id: In(dto.map((x) => x.id)) } });
+
+      expect(response).toEqual(productFakeRepository.find());
+    });
+
+    it('should upsert a product with codigoBarras', async () => {
+      // Arrange
+      const dto: CreateProdutoDto[] = [
+        {
+          referenciaId: 415,
+          id: 1,
+          idExterno: '1',
+          corId: 1,
+          tamanhoId: 1,
+          codigoBarras: [{ tipo: 'EAN13', codigo: '9990232165268' }],
+        },
+      ];
+
+      // Act
+      const response = await service.upsert(dto);
+
+      // Assert
+      expect(codigoBarrasService.upsert).toHaveBeenCalledTimes(1);
+      expect(codigoBarrasService.upsert).toHaveBeenCalledWith(dto[0].codigoBarras);
+
       expect(repository.upsert).toHaveBeenCalledTimes(1);
       expect(repository.find).toHaveBeenCalledWith({ where: { id: In(dto.map((x) => x.id)) } });
 
