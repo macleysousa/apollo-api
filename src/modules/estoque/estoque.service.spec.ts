@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { estoqueFakeRepository } from 'src/base-fake/estoque';
 
@@ -30,6 +30,7 @@ describe('EstoqueService', () => {
           provide: getRepositoryToken(EstoqueView),
           useValue: {
             findOne: jest.fn().mockResolvedValue(estoqueFakeRepository.findOne()),
+            find: jest.fn().mockResolvedValue(estoqueFakeRepository.find()),
             createQueryBuilder: jest.fn().mockReturnValue({
               where: jest.fn().mockReturnThis(),
               andWhere: jest.fn().mockReturnThis(),
@@ -123,6 +124,19 @@ describe('EstoqueService', () => {
       const pagination = await service.findByProdutoId(empresaId, produtoId);
 
       expect(pagination).toEqual(result);
+    });
+  });
+
+  describe('findProdutoIds', () => {
+    it('should return a array of produtoIds', async () => {
+      const empresaId = 1;
+      const produtoIds = [2, 3];
+
+      const result = await service.findProdutoIds(empresaId, produtoIds);
+
+      expect(view.find).toHaveBeenCalledTimes(1);
+      expect(view.find).toHaveBeenCalledWith({ where: { empresaId, produtoId: In(produtoIds) } });
+      expect(result).toEqual(estoqueFakeRepository.find());
     });
   });
 });

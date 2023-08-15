@@ -79,6 +79,11 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
             isNullable: false,
           },
           {
+            name: 'motivoCancelamento',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
             name: 'criadoEm',
             type: 'timestamp',
             default: 'now()',

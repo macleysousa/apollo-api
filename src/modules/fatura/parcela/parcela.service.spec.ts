@@ -28,6 +28,7 @@ describe('FaturaParcelaService', () => {
             find: jest.fn(),
             findOne: jest.fn(),
             upsert: jest.fn(),
+            update: jest.fn(),
             delete: jest.fn(),
           },
         },
@@ -74,9 +75,28 @@ describe('FaturaParcelaService', () => {
       { parcela: 2, valor: 200, situacao: ParcelaSituacao.Normal },
     ] as any;
 
-    const dto: UpsertParcelaDto = { parcela, valor } as any;
+    it('should add a new parcela without vencimento', async () => {
+      const dto: UpsertParcelaDto = { parcela, valor, vencimento: null } as any;
 
-    it('should add a new parcela', async () => {
+      jest.spyOn(faturaService, 'findById').mockResolvedValueOnce(fatura);
+      jest.spyOn(service, 'findByFaturaId').mockResolvedValueOnce(parcelas);
+      jest.spyOn(service, 'findByParcela').mockResolvedValueOnce(undefined);
+      jest.spyOn(service, 'findByParcela').mockResolvedValueOnce({} as any);
+
+      jest.spyOn(repository, 'upsert').mockResolvedValueOnce(undefined);
+
+      const result = await service.add(faturaId, dto);
+
+      expect(repository.upsert).toHaveBeenCalledWith(
+        { ...dto, empresaId, faturaId, vencimento: expect.any(Date), operadorId: usuario.id },
+        { conflictPaths: ['empresaId', 'faturaId', 'parcela'] }
+      );
+      expect(result).toEqual({} as FaturaParcelaEntity);
+    });
+
+    it('should add a new parcela with vencimento', async () => {
+      const dto: UpsertParcelaDto = { parcela, valor, vencimento: new Date('2023-01-01') } as any;
+
       jest.spyOn(faturaService, 'findById').mockResolvedValueOnce(fatura);
       jest.spyOn(service, 'findByFaturaId').mockResolvedValueOnce(parcelas);
       jest.spyOn(service, 'findByParcela').mockResolvedValueOnce(undefined);
@@ -94,18 +114,24 @@ describe('FaturaParcelaService', () => {
     });
 
     it('should throw BadRequestException if fatura is not found', async () => {
+      const dto: UpsertParcelaDto = { parcela, valor } as any;
+
       jest.spyOn(faturaService, 'findById').mockResolvedValueOnce(undefined);
 
       await expect(service.add(faturaId, dto)).rejects.toThrowError('Fatura não encontrada.');
     });
 
     it('should throw BadRequestException if fatura is not in "normal" situation', async () => {
+      const dto: UpsertParcelaDto = { parcela, valor } as any;
+
       jest.spyOn(faturaService, 'findById').mockResolvedValueOnce({ situacao: FaturaSituacao.Cancelada } as any);
 
       await expect(service.add(faturaId, dto)).rejects.toThrowError(`Fatura ${faturaId} não está com situação "normal".`);
     });
 
     it('should throw BadRequestException if parcela already exists and is not in "normal" situation', async () => {
+      const dto: UpsertParcelaDto = { parcela, valor } as any;
+
       jest.spyOn(faturaService, 'findById').mockResolvedValueOnce({ situacao: FaturaSituacao.Normal } as any);
       jest.spyOn(service, 'findByFaturaId').mockResolvedValueOnce([]);
       jest.spyOn(service, 'findByParcela').mockResolvedValueOnce({ situacao: ParcelaSituacao.Paga } as any);
@@ -114,6 +140,8 @@ describe('FaturaParcelaService', () => {
     });
 
     it('should throw BadRequestException if sum of parcelas value is greater than fatura value', async () => {
+      const dto: UpsertParcelaDto = { parcela, valor } as any;
+
       const parcelaDto = { parcela: 3, valor: 300 } as any;
 
       jest.spyOn(faturaService, 'findById').mockResolvedValue(fatura);
@@ -123,6 +151,8 @@ describe('FaturaParcelaService', () => {
     });
 
     it('should throw BadRequestExceptio: Não foi possível adicionar/alterar a parcela.', async () => {
+      const dto: UpsertParcelaDto = { parcela, valor } as any;
+
       jest.spyOn(faturaService, 'findById').mockResolvedValueOnce(fatura);
       jest.spyOn(service, 'findByFaturaId').mockResolvedValueOnce(parcelas);
       jest.spyOn(service, 'findByParcela').mockResolvedValueOnce(undefined);
@@ -135,6 +165,20 @@ describe('FaturaParcelaService', () => {
         { ...dto, empresaId, faturaId, vencimento: expect.any(Date), operadorId: usuario.id },
         { conflictPaths: ['empresaId', 'faturaId', 'parcela'] }
       );
+    });
+  });
+
+  describe('import', () => {
+    it('should import parcelas', async () => {
+      const faturaId = 1;
+      const parcelas = [{ parcela: 1, valor: 100 }] as FaturaParcelaEntity[];
+
+      jest.spyOn(service, 'add').mockResolvedValueOnce({ parcela: 1, valor: 100 } as any);
+
+      const result = await service.import(faturaId, parcelas);
+
+      expect(service.add).toHaveBeenCalledWith(faturaId, { parcela: 1, valor: 100 });
+      expect(result).toEqual(parcelas);
     });
   });
 
@@ -209,6 +253,75 @@ describe('FaturaParcelaService', () => {
       jest.spyOn(repository, 'delete').mockRejectedValueOnce(new Error());
 
       await expect(service.remove(empresaId, faturaId, parcela)).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('receber', () => {
+    it('should receive a parcela', async () => {
+      const usuarioId = 1;
+      const empresaId = 1;
+      const caixaId = 1;
+      const faturaId = 2;
+      const parcela = 1;
+
+      const parcelaEntity = { id: 1, parcela, valor: 100, situacao: ParcelaSituacao.Normal } as any;
+
+      jest.spyOn(service, 'findByParcela').mockResolvedValueOnce(parcelaEntity);
+      jest.spyOn(repository, 'update').mockResolvedValueOnce({} as any);
+
+      await service.receber(empresaId, caixaId, faturaId, parcela);
+
+      expect(repository.update).toHaveBeenCalledTimes(1);
+      expect(repository.update).toHaveBeenCalledWith(
+        { empresaId, faturaId, parcela },
+        {
+          situacao: ParcelaSituacao.Paga,
+          caixaPagamento: caixaId,
+          operadorId: usuarioId,
+          valorPago: parcelaEntity.valor - parcelaEntity.valorDesconto,
+          pagamento: 'now()',
+        }
+      );
+    });
+
+    it('should throw NotFoundException if parcela is not found', async () => {
+      const empresaId = 1;
+      const caixaId = 1;
+      const faturaId = 2;
+      const parcela = 1;
+
+      jest.spyOn(service, 'findByParcela').mockResolvedValueOnce(undefined);
+
+      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrowError('Parcela não encontrada.');
+
+      expect(repository.update).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException if fatura is not in "normal" situation', async () => {
+      const empresaId = 1;
+      const caixaId = 1;
+      const faturaId = 2;
+      const parcela = 1;
+
+      jest.spyOn(service, 'findByParcela').mockResolvedValueOnce({ situacao: FaturaSituacao.Cancelada } as any);
+
+      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrowError('Parcela não está com situação "normal".');
+
+      expect(repository.update).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException if Não foi possível receber a parcela.', async () => {
+      const empresaId = 1;
+      const caixaId = 1;
+      const faturaId = 2;
+      const parcela = 1;
+
+      const parcelaEntity = { id: 1, parcela, valor: 100, situacao: ParcelaSituacao.Normal } as any;
+
+      jest.spyOn(service, 'findByParcela').mockResolvedValueOnce(parcelaEntity);
+      jest.spyOn(repository, 'update').mockRejectedValueOnce(new Error());
+
+      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrowError('Não foi possível receber a parcela.');
     });
   });
 });

@@ -14,6 +14,7 @@ import { FaturaEntity } from './entities/fatura.entity';
 import { FaturaSituacao } from './enum/fatura-situacao.enum';
 import { FaturaService } from './fatura.service';
 import { FaturaParcelaService } from './parcela/parcela.service';
+import { CreateFaturaAutimaticaDto } from './dto/create-fatura-automatica.dto';
 
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({
@@ -103,21 +104,22 @@ describe('FaturaService', () => {
     it('should create a automatica fatura with itens', async () => {
       const usuario = contextService.currentUser();
       const empresa = contextService.currentBranch();
-      const createFaturaDto: CreateFaturaManualDto = {
+      const dto: CreateFaturaAutimaticaDto = new CreateFaturaAutimaticaDto({
         pessoaId: 1,
         valor: 100,
         parcelas: 1,
         observacao: 'Observação',
         itens: [{ parcela: 1 }] as any,
-      };
+      });
+
       const faturaResult = { ...faturaFakeRepository.findOne(), tipoInclusao: TipoInclusao.Automatica };
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(faturaResult);
 
-      const result = await service.createAutomatica(createFaturaDto);
+      const result = await service.createAutomatica(dto);
 
       expect(repository.save).toHaveBeenCalledWith({
-        ...createFaturaDto,
+        ...dto,
         empresaId: empresa.id,
         data: expect.any(Date),
         operadorId: usuario.id,
@@ -131,21 +133,23 @@ describe('FaturaService', () => {
     it('should create a automatica fatura without itens', async () => {
       const usuario = contextService.currentUser();
       const empresa = contextService.currentBranch();
-      const createFaturaDto: CreateFaturaManualDto = {
+
+      const dto: CreateFaturaAutimaticaDto = new CreateFaturaAutimaticaDto({
         pessoaId: 1,
         valor: 100,
         parcelas: 1,
         observacao: 'Observação',
-        itens: [] as any,
-      };
+        itens: [],
+      });
+
       const faturaResult = { ...faturaFakeRepository.findOne(), tipoInclusao: TipoInclusao.Automatica };
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(faturaResult);
 
-      const result = await service.createAutomatica(createFaturaDto);
+      const result = await service.createAutomatica(dto);
 
       expect(repository.save).toHaveBeenCalledWith({
-        ...createFaturaDto,
+        ...dto,
         empresaId: empresa.id,
         data: expect.any(Date),
         operadorId: usuario.id,

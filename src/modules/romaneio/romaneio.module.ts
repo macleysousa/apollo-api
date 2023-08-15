@@ -11,7 +11,7 @@ import { RomaneioView } from './views/romaneio.view';
 import { RomaneioFreteModule } from './romaneio-frete/romaneio-frete.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RomaneioEntity, RomaneioView]), RomaneioItemModule, RomaneioFreteModule],
+  imports: [TypeOrmModule.forFeature([RomaneioEntity, RomaneioView]), RomaneioItemModule.forRoot(), RomaneioFreteModule],
   controllers: [RomaneioController],
   providers: [RomaneioService, RomaneioConstraint],
   exports: [RomaneioService],

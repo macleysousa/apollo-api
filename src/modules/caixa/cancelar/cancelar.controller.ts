@@ -7,6 +7,7 @@ import { ApiComponent } from 'src/modules/componente/decorator/componente.decora
 
 import { CancelarService } from './cancelar.service';
 import { CancelarAdiantamentoDto } from './dto/cancelar-adianteamento.dto';
+import { CancelarRomaneioDto } from './dto/cancelar-romaneio.dto';
 
 @ApiBearerAuth()
 @ApiEmpresaAuth()
@@ -20,5 +21,12 @@ export class CancelarController {
   @ApiResponse({ status: 200, description: 'Adiantamento cancelado com sucesso' })
   async adiantamento(@Param('caixaId', ParseCaixaAbertoPipe) caixaId: number, @Body() dto: CancelarAdiantamentoDto): Promise<void> {
     await this.service.adiantamento(caixaId, dto);
+  }
+
+  @Put('romaneio')
+  @ApiComponent('FCXFP004', 'Cancelar romaneio')
+  @ApiResponse({ status: 200, description: 'Romaneio cancelado com sucesso' })
+  async romaneio(@Param('caixaId', ParseCaixaAbertoPipe) caixaId: number, @Body() dto: CancelarRomaneioDto): Promise<void> {
+    await this.service.romaneio(caixaId, dto);
   }
 }

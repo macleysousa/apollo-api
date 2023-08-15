@@ -55,6 +55,7 @@ describe('RomaneioService', () => {
           useValue: {
             currentUser: jest.fn().mockReturnValue({ id: 1 }),
             currentBranch: jest.fn().mockReturnValue({ id: 1, data: new Date('2023-06-05') }),
+            operadorId: jest.fn().mockReturnValue(1),
           },
         },
         {
@@ -375,15 +376,20 @@ describe('RomaneioService', () => {
 
   describe('cancelar', () => {
     it('should cancel a romaneio', async () => {
+      const operadorId = 1;
       const empresaId = 1;
       const id = 1;
+      const motivo = 'Teste';
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneioFakeRepository.findOneView());
       jest.spyOn(repository, 'update').mockResolvedValueOnce({} as any);
 
-      const result = await service.cancelar(empresaId, id);
+      const result = await service.cancelar(empresaId, id, motivo);
 
-      expect(repository.update).toHaveBeenCalledWith({ id }, { situacao: SituacaoRomaneio.Cancelado });
+      expect(repository.update).toHaveBeenCalledWith(
+        { id },
+        { situacao: SituacaoRomaneio.Cancelado, motivoCancelamento: motivo, operadorId }
+      );
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(result).toEqual(romaneioFakeRepository.findOneView());
     });
@@ -391,24 +397,30 @@ describe('RomaneioService', () => {
     it('should not cancel romaneio', async () => {
       const empresaId = 1;
       const id = 1;
+      const motivo = 'Teste';
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce({ ...romaneioFakeRepository.findOneView(), data: new Date('2023-06-04') });
 
-      expect(service.cancelar(empresaId, id)).rejects.toThrow(BadRequestException);
+      expect(service.cancelar(empresaId, id, motivo)).rejects.toThrow(BadRequestException);
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(repository.update).not.toHaveBeenCalled();
     });
 
     it('should throw BadRequestException if cancelar fails', async () => {
+      const operadorId = 1;
       const empresaId = 1;
       const id = 1;
+      const motivo = 'Teste';
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneioFakeRepository.findOneView());
       jest.spyOn(repository, 'update').mockRejectedValueOnce(new Error());
 
-      await expect(service.cancelar(empresaId, id)).rejects.toThrow(BadRequestException);
+      await expect(service.cancelar(empresaId, id, motivo)).rejects.toThrow(BadRequestException);
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
-      expect(repository.update).toHaveBeenCalledWith({ id }, { situacao: SituacaoRomaneio.Cancelado });
+      expect(repository.update).toHaveBeenCalledWith(
+        { id },
+        { situacao: SituacaoRomaneio.Cancelado, motivoCancelamento: motivo, operadorId }
+      );
     });
   });
 });

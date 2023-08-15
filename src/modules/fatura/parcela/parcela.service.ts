@@ -49,7 +49,7 @@ export class FaturaParcelaService {
           ...dto,
           empresaId: empresa.id,
           faturaId: faturaId,
-          vencimento: dto?.vencimento ?? empresa.data,
+          vencimento: dto.vencimento ?? empresa.data,
           operadorId: usuario.id,
         },
         { conflictPaths: ['empresaId', 'faturaId', 'parcela'] }

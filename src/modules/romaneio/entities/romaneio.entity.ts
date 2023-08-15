@@ -65,6 +65,10 @@ export class RomaneioEntity extends BaseEntity {
   @Column('varchar')
   situacao: SituacaoRomaneio;
 
+  @ApiProperty()
+  @Column('varchar')
+  motivoCancelamento: string;
+
   constructor(partial?: Partial<RomaneioEntity>) {
     super();
     Object.assign(this, partial);

@@ -7,17 +7,30 @@ import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
 import { CaixaExtratoService } from '../extrato/extrato.service';
 import { CancelarService } from './cancelar.service';
 import { CancelarAdiantamentoDto } from './dto/cancelar-adianteamento.dto';
+import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
+import { RomaneioItemService } from 'src/modules/romaneio/romaneio-item/romaneio-item.service';
+import { EstoqueService } from 'src/modules/estoque/estoque.service';
 
 describe('CancelarService', () => {
   let service: CancelarService;
+  let contextService: ContextService;
   let caixaExtratoService: CaixaExtratoService;
   let pessoaExtratoService: PessoaExtratoService;
-  let contextService: ContextService;
+  let romaneioService: RomaneioService;
+  let romaneioItemService: RomaneioItemService;
+  let estoqueService: EstoqueService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CancelarService,
+        {
+          provide: ContextService,
+          useValue: {
+            empresaId: jest.fn().mockReturnValue(1),
+            operadorId: jest.fn().mockReturnValue(1),
+          },
+        },
         {
           provide: CaixaExtratoService,
           useValue: {
@@ -32,18 +45,27 @@ describe('CancelarService', () => {
           },
         },
         {
-          provide: ContextService,
-          useValue: {
-            empresaId: jest.fn().mockReturnValue(1),
-          },
+          provide: RomaneioService,
+          useValue: {},
+        },
+        {
+          provide: RomaneioItemService,
+          useValue: {},
+        },
+        {
+          provide: EstoqueService,
+          useValue: {},
         },
       ],
     }).compile();
 
     service = module.get<CancelarService>(CancelarService);
+    contextService = module.get<ContextService>(ContextService);
     caixaExtratoService = module.get<CaixaExtratoService>(CaixaExtratoService);
     pessoaExtratoService = module.get<PessoaExtratoService>(PessoaExtratoService);
-    contextService = module.get<ContextService>(ContextService);
+    romaneioService = module.get<RomaneioService>(RomaneioService);
+    romaneioItemService = module.get<RomaneioItemService>(RomaneioItemService);
+    estoqueService = module.get<EstoqueService>(EstoqueService);
   });
 
   it('should be defined', () => {
@@ -51,6 +73,9 @@ describe('CancelarService', () => {
     expect(caixaExtratoService).toBeDefined();
     expect(pessoaExtratoService).toBeDefined();
     expect(contextService).toBeDefined();
+    expect(romaneioService).toBeDefined();
+    expect(romaneioItemService).toBeDefined();
+    expect(estoqueService).toBeDefined();
   });
 
   describe('adiantamento', () => {

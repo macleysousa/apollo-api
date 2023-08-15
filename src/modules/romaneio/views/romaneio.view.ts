@@ -2,8 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ViewColumn, ViewEntity } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
-import { OperacaoRomaneio } from '../enum/operacao-romaneio.enum';
+
 import { ModalidadeRomaneio } from '../enum/modalidade-romaneio.enum';
+import { OperacaoRomaneio } from '../enum/operacao-romaneio.enum';
 import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
 
 @ViewEntity({ name: 'view_romaneios' })
@@ -59,6 +60,10 @@ export class RomaneioView extends BaseEntity {
   @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => Boolean(value), to: (value) => Boolean(value) } })
   acertoConsignacao: boolean;
+
+  @ApiProperty()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  caixaId: number;
 
   @ApiProperty()
   @ViewColumn()

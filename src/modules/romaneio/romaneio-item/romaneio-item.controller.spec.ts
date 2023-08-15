@@ -62,7 +62,7 @@ describe('RomaneioItemController', () => {
     });
   });
 
-  describe('find', () => {
+  describe('findByRomaneioId', () => {
     it('should call service find method with correct parameters', async () => {
       const romaneioId = 1;
       const romaneioItemViews = romaneioFakeRepository.findViewItens();
@@ -74,7 +74,7 @@ describe('RomaneioItemController', () => {
     });
   });
 
-  describe('remove', () => {
+  describe('removeByRomaneioId', () => {
     it('should call service remove method with correct parameters', async () => {
       const romaneioId = 1;
       const removeDto = { produtoId: 2, quantidade: 3 } as UpSertRemoveRomaneioItemDto;

@@ -3,6 +3,7 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 
 import { IsBetween } from 'src/commons/validations/is-between.validation';
 import { IsPessoa } from 'src/commons/validations/is-pessoa.validation';
+import { IsRomaneio } from 'src/commons/validations/is-romaneio.validation';
 
 export class RecebimentoDto {
   @ApiProperty()
@@ -17,7 +18,7 @@ export class RecebimentoDto {
 
   @ApiProperty()
   @IsOptional()
-  //@IsRomaneio()
+  @IsRomaneio()
   romaneioId?: number;
 
   @ApiProperty()
