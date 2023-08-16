@@ -17,4 +17,8 @@ export class LancarMovimento {
   faturaParcela?: number;
 
   observacao?: string;
+
+  constructor(data?: LancarMovimento) {
+    Object.assign(this, data);
+  }
 }

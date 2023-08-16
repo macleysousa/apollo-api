@@ -28,4 +28,8 @@ export class ReceberAdiantamentoDto {
   @IsOptional()
   @MaxLength(500, { message: 'A observação deve ter no máximo 500 caracteres.' })
   observacao: string;
+
+  constructor(partial?: Partial<ReceberAdiantamentoDto>) {
+    Object.assign(this, partial);
+  }
 }

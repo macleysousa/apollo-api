@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { caixaFakeRepository } from 'src/base-fake/caixa';
 import { ContextService } from 'src/context/context.service';
 
@@ -19,6 +20,7 @@ describe('CancelarController', () => {
           provide: CancelarService,
           useValue: {
             adiantamento: jest.fn().mockResolvedValue(undefined),
+            romaneio: jest.fn().mockResolvedValue(undefined),
           },
         },
         {
@@ -54,6 +56,17 @@ describe('CancelarController', () => {
       await controller.adiantamento(caixaId, dto);
 
       expect(service.adiantamento).toHaveBeenCalledWith(caixaId, dto);
+    });
+  });
+
+  describe('/romaneio (PUT)', () => {
+    it('should call service.romaneio with the correct arguments', async () => {
+      const caixaId = 1;
+      const dto = { romaneioId: 2, motivo: 'Motivo' };
+
+      await controller.romaneio(caixaId, dto);
+
+      expect(service.romaneio).toHaveBeenCalledWith(caixaId, dto);
     });
   });
 });

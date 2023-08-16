@@ -52,4 +52,12 @@ export class RomaneioItemEntity extends BaseEntity {
   @ApiProperty()
   @Column('int')
   operadorId: number;
+
+  @ApiProperty()
+  @Column('boolean')
+  devolvido: boolean;
+
+  @ApiProperty()
+  @Column('bigint')
+  romaneioDevolucaoId: number;
 }

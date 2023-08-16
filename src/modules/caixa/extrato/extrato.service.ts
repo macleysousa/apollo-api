@@ -33,7 +33,7 @@ export class CaixaExtratoService {
   }
 
   async lancarLiquidacao(caixaId: number, liquidacao: number, dto: LancarMovimento[]): Promise<CaixaExtratoEntity[]> {
-    const usuario = this.contextService.currentUser();
+    const operadorId = this.contextService.operadorId();
     const empresa = this.contextService.currentBranch();
 
     await this.repository.insert(
@@ -43,7 +43,7 @@ export class CaixaExtratoService {
         data: empresa.data,
         caixaId: caixaId,
         liquidacao: liquidacao,
-        operadorId: usuario.id,
+        operadorId: operadorId,
       }))
     );
 

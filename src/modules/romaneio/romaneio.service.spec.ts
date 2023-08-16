@@ -394,29 +394,15 @@ describe('RomaneioService', () => {
       expect(result).toEqual(romaneioFakeRepository.findOneView());
     });
 
-    it('should not cancel romaneio', async () => {
-      const empresaId = 1;
-      const id = 1;
-      const motivo = 'Teste';
-
-      jest.spyOn(service, 'findById').mockResolvedValueOnce({ ...romaneioFakeRepository.findOneView(), data: new Date('2023-06-04') });
-
-      expect(service.cancelar(empresaId, id, motivo)).rejects.toThrow(BadRequestException);
-      expect(service.findById).toHaveBeenCalledWith(empresaId, id);
-      expect(repository.update).not.toHaveBeenCalled();
-    });
-
     it('should throw BadRequestException if cancelar fails', async () => {
       const operadorId = 1;
       const empresaId = 1;
       const id = 1;
       const motivo = 'Teste';
 
-      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneioFakeRepository.findOneView());
       jest.spyOn(repository, 'update').mockRejectedValueOnce(new Error());
 
       await expect(service.cancelar(empresaId, id, motivo)).rejects.toThrow(BadRequestException);
-      expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(repository.update).toHaveBeenCalledWith(
         { id },
         { situacao: SituacaoRomaneio.Cancelado, motivoCancelamento: motivo, operadorId }

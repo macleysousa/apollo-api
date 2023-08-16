@@ -105,6 +105,14 @@ export class RomaneioItemView extends BaseEntity {
   @ViewColumn()
   operadorId: number;
 
+  @ApiProperty()
+  @ViewColumn({ transformer: { from: (value) => Boolean(value), to: (value) => Boolean(value) } })
+  devolvido: boolean;
+
+  @ApiProperty()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  romaneioDevolucaoId: number;
+
   constructor(partial?: Partial<RomaneioItemView>) {
     super();
     Object.assign(this, partial);

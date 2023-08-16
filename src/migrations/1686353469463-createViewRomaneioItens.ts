@@ -30,6 +30,8 @@ ri.valorUnitDesconto as valorUnitDesconto,
 (ri.quantidade * ri.valorUnitario) - (ri.quantidade * ri.valorUnitDesconto) as valorTotalLiquido,
 ri.cupomId as cupomId,
 ri.operadorId as operadorId,
+ri.devolvido as devolvido,
+ri.romaneioDevolucaoId as romaneioDevolucaoId,
 ri.criadoEm as criadoEm,
 ri.atualizadoEm as atualizadoEm
 FROM romaneios ro

@@ -50,11 +50,11 @@ export class CancelarService {
 
     const romaneio = await this.romaneioService.findById(empresaId, dto.romaneioId);
     if (!romaneio) {
-      throw new BadRequestException(`O romaneio ${dto.romaneioId} não foi encontrado`);
+      throw new BadRequestException(`O romaneio "${dto.romaneioId}" não foi encontrado`);
     } else if (romaneio.situacao == SituacaoRomaneio.Cancelado) {
-      throw new BadRequestException(`O romaneio ${dto.romaneioId} já foi cancelado`);
+      throw new BadRequestException(`O romaneio "${dto.romaneioId}" já foi cancelado`);
     } else if (romaneio.situacao == SituacaoRomaneio.Encerrado && romaneio.caixaId != caixaId) {
-      throw new BadRequestException(`O romaneio ${dto.romaneioId} não pertence ao caixa ${caixaId}`);
+      throw new BadRequestException(`O romaneio "${dto.romaneioId}" não pertence ao caixa "${caixaId}"`);
     }
 
     if (romaneio.situacao == SituacaoRomaneio.Encerrado && romaneio.modalidade == ModalidadeRomaneio.Entrada) {
@@ -77,6 +77,14 @@ export class CancelarService {
       }
     }
 
-    // await this.romaneioService.cancelar(empresaId, dto.romaneioId, dto.motivo);
+    if (romaneio.situacao == SituacaoRomaneio.Encerrado && romaneio.operacao == OperacaoRomaneio.Venda) {
+      const romaneioItens = await this.romaneioItemService.find(dto.romaneioId);
+      const produtoDevolucaoIds = romaneioItens.filter((x) => x.devolvido).map((x) => x.produtoId);
+      if (produtoDevolucaoIds.length > 0) {
+        throw new BadRequestException(`O romaneio "${dto.romaneioId}" já possui produtos devolvidos, não é possível cancelar`);
+      }
+    }
+
+    await this.romaneioService.cancelar(empresaId, dto.romaneioId, dto.motivo);
   }
 }

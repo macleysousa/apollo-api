@@ -1,23 +1,23 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
+import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { ContextService } from 'src/context/context.service';
+import { FaturaEntity } from 'src/modules/fatura/entities/fatura.entity';
 import { FaturaService } from 'src/modules/fatura/fatura.service';
 import { FormaDePagamentoService } from 'src/modules/forma-de-pagamento/forma-de-pagamento.service';
-import { TipoDocumento } from 'src/commons/enum/tipo-documento';
-import { FaturaEntity } from 'src/modules/fatura/entities/fatura.entity';
 import { PessoaExtratoService } from 'src/modules/pessoa/extrato/pessoa-extrato.service';
 
+import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
+import { OperacaoRomaneio } from 'src/modules/romaneio/enum/operacao-romaneio.enum';
+import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
+import { RomaneioView } from 'src/modules/romaneio/views/romaneio.view';
+import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
 import { CaixaExtratoService } from '../extrato/extrato.service';
 import { PagamentoDto } from './dto/pagamento.dto';
 import { ReceberAdiantamentoDto } from './dto/receber-adiantamento.dto';
 import { ReceberFaturaDto } from './dto/receber-fatura.dto';
 import { ReceberRomaneioDto } from './dto/receber-romaneio.dto';
-import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
-import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
 import { RecebimentoDto } from './dto/recebimento.dto';
-import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
-import { OperacaoRomaneio } from 'src/modules/romaneio/enum/operacao-romaneio.enum';
-import { validateSync } from 'class-validator';
 
 @Injectable()
 export class ReceberService {
@@ -39,9 +39,11 @@ export class ReceberService {
     return liquidacao;
   }
 
-  async fatura(caixaId: number, faturaDto: ReceberFaturaDto) {}
+  async fatura(caixaId: number, faturaDto: ReceberFaturaDto): Promise<FaturaEntity> {
+    return;
+  }
 
-  async romaneio(caixaId: number, romaneioDto: ReceberRomaneioDto) {
+  async romaneio(caixaId: number, romaneioDto: ReceberRomaneioDto): Promise<RomaneioView> {
     const empresa = this.contextService.currentBranch();
     const romaneio = await this.romaneioService.findById(empresa.id, romaneioDto.romaneioId);
 

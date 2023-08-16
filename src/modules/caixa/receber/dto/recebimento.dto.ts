@@ -24,4 +24,8 @@ export class RecebimentoDto {
   @ApiProperty()
   @IsOptional()
   observacao?: string;
+
+  constructor(partial?: Partial<RecebimentoDto>) {
+    Object.assign(this, partial);
+  }
 }

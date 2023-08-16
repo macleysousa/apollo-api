@@ -27,7 +27,7 @@ export class ReceberController {
   }
 
   @Post('/fatura')
-  async fatura(@Param('caixaId', ParseCaixaAbertoPipe) caixaId: number, @Body() faturaDto: ReceberFaturaDto): Promise<void> {
+  async fatura(@Param('caixaId', ParseCaixaAbertoPipe) caixaId: number, @Body() faturaDto: ReceberFaturaDto): Promise<unknown> {
     return this.service.fatura(caixaId, faturaDto);
   }
 

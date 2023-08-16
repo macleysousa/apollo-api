@@ -67,6 +67,16 @@ export class CreateTableRomaneioItens1686318246326 implements MigrationInterface
             isNullable: true,
           },
           {
+            name: `devolvido`,
+            type: `boolean`,
+            default: false,
+          },
+          {
+            name: `romaneioDevolucaoId`,
+            type: `bigint`,
+            isNullable: true,
+          },
+          {
             name: 'criadoEm',
             type: 'timestamp',
             default: 'now()',
@@ -105,6 +115,13 @@ export class CreateTableRomaneioItens1686318246326 implements MigrationInterface
             referencedTableName: `usuarios`,
             referencedColumnNames: [`id`],
             onDelete: `RESTRICT`,
+            onUpdate: `CASCADE`,
+          },
+          {
+            columnNames: [`romaneioDevolucaoId`],
+            referencedTableName: `romaneios`,
+            referencedColumnNames: [`id`],
+            onDelete: `SET NULL`,
             onUpdate: `CASCADE`,
           },
         ],

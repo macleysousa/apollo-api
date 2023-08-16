@@ -98,7 +98,7 @@ export class RomaneioService {
     return this.findById(empresaId, id);
   }
 
-  async encerrar(empresaId: number, caixaId: number, id: number): Promise<void> {
+  async encerrar(empresaId: number, caixaId: number, id: number): Promise<RomaneioView> {
     const romaneio = await this.findById(empresaId, id);
 
     if (romaneio.situacao !== SituacaoRomaneio.EmAndamento) {
@@ -108,16 +108,12 @@ export class RomaneioService {
     await this.repository.update({ id }, { caixaId, situacao: SituacaoRomaneio.Encerrado }).catch(() => {
       throw new BadRequestException('Não foi possível encerrar o romaneio');
     });
+
+    return this.findById(empresaId, id);
   }
 
   async cancelar(empresaId: number, id: number, motivo: string): Promise<RomaneioView> {
-    const romaneio = await this.findById(empresaId, id);
-    const empresa = this.contextService.currentBranch();
     const operadorId = this.contextService.currentUser().id;
-
-    if (romaneio.data.getTime() !== empresa.data.getTime()) {
-      throw new BadRequestException('Romaneio não pode ser cancelado. Data diferente da data da empresa');
-    }
 
     await this.repository.update({ id }, { situacao: SituacaoRomaneio.Cancelado, motivoCancelamento: motivo, operadorId }).catch(() => {
       throw new BadRequestException('Não foi possível cancelar o romaneio');
