@@ -1,4 +1,4 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
 export const REQUEST_CONTEXT = '_requestContext';
@@ -8,7 +8,9 @@ export class InjectRequestInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest();
 
-    request.body[REQUEST_CONTEXT] = { user: request.user, params: request.params };
+    Logger.log(`${request.method} ${request.url}`, 'Router');
+
+    request.body[REQUEST_CONTEXT] = { usuario: request.usuario, params: request.params };
 
     return next.handle();
   }

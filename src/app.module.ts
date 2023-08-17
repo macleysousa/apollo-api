@@ -3,7 +3,7 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import ormConfig from './config/orm.config';
-import { InjectRequestInterceptor } from './commons/interceptors/inject-request.interceptor';
+import { InjectRequestInterceptor } from './interceptors/inject-request.interceptor';
 import { AllExceptionsFilter } from './exceptions/all-exceptions.filter';
 import { UsuarioModule } from './modules/usuario/usuario.module';
 import { RolesGuard } from './guards/roles.guard';
