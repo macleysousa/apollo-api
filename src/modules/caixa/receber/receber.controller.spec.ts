@@ -56,14 +56,15 @@ describe('ReceberController', () => {
     it('should call service.adiantamento', async () => {
       const adiantamentoDto = { valor: 10 } as any;
       const caixaId = 1;
+      const extrato = { liquidacao: 1 } as any;
 
-      jest.spyOn(service, 'adiantamento').mockResolvedValue({ liquidacao: 1 });
+      jest.spyOn(service, 'adiantamento').mockResolvedValue(extrato);
 
       const result = await controller.adiantamento(caixaId, adiantamentoDto);
 
       expect(service.adiantamento).toBeCalledWith(caixaId, adiantamentoDto);
 
-      expect(result).toEqual({ liquidacao: 1 });
+      expect(result).toEqual(extrato);
     });
   });
 

@@ -1,16 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { TipoDocumento } from 'src/commons/enum/tipo-documento';
+import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
 import { ContextService } from 'src/context/context.service';
 import { FaturaEntity } from 'src/modules/fatura/entities/fatura.entity';
 import { FaturaService } from 'src/modules/fatura/fatura.service';
 import { FormaDePagamentoService } from 'src/modules/forma-de-pagamento/forma-de-pagamento.service';
 import { PessoaExtratoService } from 'src/modules/pessoa/extrato/pessoa-extrato.service';
-
-import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
 import { OperacaoRomaneio } from 'src/modules/romaneio/enum/operacao-romaneio.enum';
 import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
 import { RomaneioView } from 'src/modules/romaneio/views/romaneio.view';
+import { CreateFaturaAutimaticaDto } from 'src/modules/fatura/dto/create-fatura-automatica.dto';
+import { FaturaParcelaEntity } from 'src/modules/fatura/parcela/entities/parcela.entity';
+
 import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
 import { CaixaExtratoService } from '../extrato/extrato.service';
 import { PagamentoDto } from './dto/pagamento.dto';
@@ -18,6 +20,7 @@ import { ReceberAdiantamentoDto } from './dto/receber-adiantamento.dto';
 import { ReceberFaturaDto } from './dto/receber-fatura.dto';
 import { ReceberRomaneioDto } from './dto/receber-romaneio.dto';
 import { RecebimentoDto } from './dto/recebimento.dto';
+import { CaixaExtratoEntity } from '../extrato/entities/extrato.entity';
 
 @Injectable()
 export class ReceberService {
@@ -30,10 +33,10 @@ export class ReceberService {
     private readonly romaneioService: RomaneioService
   ) {}
 
-  async adiantamento(caixaId: number, dto: ReceberAdiantamentoDto): Promise<unknown> {
-    const empresa = this.contextService.currentBranch();
+  async adiantamento(caixaId: number, { formasDePagamento, ...recebimento }: ReceberAdiantamentoDto): Promise<CaixaExtratoEntity[]> {
+    const empresaId = this.contextService.empresaId();
 
-    const faturas = await this.lancarFaturas(empresa.id, { ...dto }, dto.formasDePagamento);
+    const faturas = await this.lancarFaturas(empresaId, recebimento, formasDePagamento);
     const liquidacao = await this.lancarLiquidacao(caixaId, TipoHistorico.Adiantamento, faturas);
 
     return liquidacao;
@@ -55,7 +58,7 @@ export class ReceberService {
     return romaneio;
   }
 
-  async lancarLiquidacao(caixaId: number, tipoHistorico: TipoHistorico, faturas: FaturaEntity[]): Promise<unknown> {
+  async lancarLiquidacao(caixaId: number, tipoHistorico: TipoHistorico, faturas: FaturaEntity[]): Promise<CaixaExtratoEntity[]> {
     const liquidacaoId = await this.caixaExtratoService.newLiquidacaoId();
 
     const liquidacaoFatura = faturas
@@ -84,7 +87,7 @@ export class ReceberService {
         tipoMovimento: TipoMovimento.Credito,
         valor: x.values.sum((y) => y.valor),
         parcelas: x.values.length,
-        observacao: recebimento?.observacao,
+        observacao: recebimento.observacao,
         itens: x.values
           .groupBy((item) => item.parcela)
           .select((y) => ({
@@ -99,16 +102,16 @@ export class ReceberService {
       .groupBy((x) => x.formaDePagamentoId)
       .select((x) => ({
         id: x.key,
-        tipoDocumento: formasDePagamentos.first((b) => b.id === x.key).tipo,
+        tipoDocumento: formasDePagamentos.first((b) => b.id == x.key).tipo,
         valor: x.values.sum((y) => y.valor),
       }));
 
-    let faturaTroco: any = null;
+    let faturaTroco: CreateFaturaAutimaticaDto = null;
     if (pagamentos.sum((x) => x.valor) < recebimento.valor) {
       throw new BadRequestException('Valor insuficiente para realizar o a operação.');
     } else if (pagamentos.sum((x) => x.valor) > recebimento.valor) {
       const valorTroco = pagamentos.sum((x) => x.valor) - recebimento.valor;
-      const valorDinherio = tipoDocumentos.filter((x) => x.tipoDocumento === TipoDocumento.Dinheiro).sum((x) => x.valor);
+      const valorDinherio = tipoDocumentos.filter((x) => x.tipoDocumento == TipoDocumento.Dinheiro).sum((x) => x.valor);
       if (valorDinherio < valorTroco) {
         throw new BadRequestException('Valor em dinheiro insuficiente para realizar o a operação com troco.');
       } else {
@@ -117,18 +120,18 @@ export class ReceberService {
           valor: valorTroco,
           tipoMovimento: TipoMovimento.Debito,
           tipoDocumento: TipoDocumento.Troco,
-          itens: [{ parcela: 1, valor: valorTroco }],
+          itens: [new FaturaParcelaEntity({ parcela: 1, valor: valorTroco })],
         };
       }
     }
 
-    const adiantamento = tipoDocumentos.first((x) => x.tipoDocumento === TipoDocumento.Adiantamento);
+    const adiantamento = tipoDocumentos.first((x) => x.tipoDocumento == TipoDocumento.Adiantamento);
     const saldoAdiantamento = await this.pessoaExtratoService.findSaldoAdiantamento(empresaId, recebimento.pessoaId);
     if (adiantamento && saldoAdiantamento < adiantamento.valor) {
       throw new BadRequestException('Saldo de adiantamento insuficiente para realizar o a operação.');
     }
 
-    const creditoDeDevolucao = tipoDocumentos.first((x) => x.tipoDocumento === TipoDocumento.Credito_de_devolucao);
+    const creditoDeDevolucao = tipoDocumentos.first((x) => x.tipoDocumento == TipoDocumento.Credito_de_devolucao);
     const saldoCreditoDeDevolucao = await this.pessoaExtratoService.findSaldoCreditoDeDevolucao(empresaId, recebimento.pessoaId);
     if (creditoDeDevolucao && saldoCreditoDeDevolucao < creditoDeDevolucao.valor) {
       throw new BadRequestException('Creditos de devolução insuficiente para realizar o a operação.');
@@ -136,7 +139,7 @@ export class ReceberService {
 
     const faturas: FaturaEntity[] = [];
     for await (const pagamento of pagamentos) {
-      const formaDePagamento = await this.formaDePagamentoService.findById(pagamento.formaDePagamentoId);
+      const formaDePagamento = formasDePagamentos.first((x) => x.id == pagamento.formaDePagamentoId);
       const fatura = await this.faturaService.createAutomatica({ ...pagamento, tipoDocumento: formaDePagamento.tipo });
       faturas.push(fatura);
     }
