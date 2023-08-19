@@ -6,6 +6,7 @@ import { BaseEntity } from 'src/commons/base.entity';
 import { ModalidadeRomaneio } from '../enum/modalidade-romaneio.enum';
 import { OperacaoRomaneio } from '../enum/operacao-romaneio.enum';
 import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
+import { TipoFrete } from 'src/commons/enum/tipo-frete';
 
 @ViewEntity({ name: 'view_romaneios' })
 export class RomaneioView extends BaseEntity {
@@ -65,9 +66,9 @@ export class RomaneioView extends BaseEntity {
   @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   caixaId: number;
 
-  @ApiProperty()
+  @ApiProperty({ enum: TipoFrete })
   @ViewColumn()
-  tipoFrete: string;
+  tipoFrete: TipoFrete;
 
   @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })

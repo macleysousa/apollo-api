@@ -21,6 +21,8 @@ import { ReceberFaturaDto } from './dto/receber-fatura.dto';
 import { ReceberRomaneioDto } from './dto/receber-romaneio.dto';
 import { RecebimentoDto } from './dto/recebimento.dto';
 import { CaixaExtratoEntity } from '../extrato/entities/extrato.entity';
+import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
+import { TipoFrete } from 'src/commons/enum/tipo-frete';
 
 @Injectable()
 export class ReceberService {
@@ -53,6 +55,23 @@ export class ReceberService {
     switch (romaneio.operacao) {
       case OperacaoRomaneio.Outros:
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
+      case OperacaoRomaneio.Venda:
+        const valorPago = romaneioDto.formasDePagamento.sum((x) => x.valor);
+        const valorRomaneio = romaneio.valorLiquido + (romaneio.tipoFrete == TipoFrete.FOB ? romaneio.valorFrete : 0);
+
+        if (!romaneioDto.formasDePagamento) {
+          throw new BadRequestException('Nenhuma forma de pagamento informada');
+        } else if (romaneio.situacao != SituacaoRomaneio.EmAndamento) {
+          throw new BadRequestException('Romaneio não está em andamento');
+        } else if (valorRomaneio > valorPago) {
+          throw new BadRequestException('O valor pago é insuficiente para encerrar o romaneio');
+        }
+        const recebimento: RecebimentoDto = { pessoaId: romaneio.pessoaId, valor: romaneio.valorLiquido, romaneioId: romaneio.romaneioId };
+        const faturas = await this.lancarFaturas(empresa.id, recebimento, romaneioDto.formasDePagamento);
+        const liquidacao = await this.lancarLiquidacao(caixaId, TipoHistorico.Venda, faturas);
+        const liquidacaoId = liquidacao.first().liquidacao;
+
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId, liquidacaoId);
     }
 
     return romaneio;

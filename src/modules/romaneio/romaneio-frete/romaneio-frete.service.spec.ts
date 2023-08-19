@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 
 import { CreateRomaneioFreteDto } from './dto/create-romaneio-frete.dto';
 import { RomaneioFreteEntity } from './entities/romaneio-frete.entity';
-import { FreteTipo } from './enum/frete-tipo';
+import { TipoFrete } from '../../../commons/enum/tipo-frete';
 import { RomaneioFreteService } from './romaneio-frete.service';
 
 describe('RomaneioFreteService', () => {
@@ -20,7 +20,7 @@ describe('RomaneioFreteService', () => {
           provide: getRepositoryToken(RomaneioFreteEntity),
           useValue: {
             upsert: jest.fn().mockResolvedValue(undefined),
-            findOne: jest.fn().mockResolvedValue({ empresaId: 1, romaneioId: 1, tipo: FreteTipo.CIF, valor: 100, prazo: 10 }),
+            findOne: jest.fn().mockResolvedValue({ empresaId: 1, romaneioId: 1, tipo: TipoFrete.CIF, valor: 100, prazo: 10 }),
             delete: jest.fn().mockResolvedValue(undefined),
           },
         },
@@ -40,7 +40,7 @@ describe('RomaneioFreteService', () => {
     it('should call repository.upsert() with the correct parameters', async () => {
       const empresaId = 1;
       const romaneioId = 1;
-      const createRomaneioFreteDto: CreateRomaneioFreteDto = { tipo: FreteTipo.CIF, valor: 100, prazo: 10, observacao: 'Observação' };
+      const createRomaneioFreteDto: CreateRomaneioFreteDto = { tipo: TipoFrete.CIF, valor: 100, prazo: 10, observacao: 'Observação' };
       const romaneioFreteResult = { empresaId: 1, romaneioId: 1, ...createRomaneioFreteDto } as any;
 
       jest.spyOn(service, 'findByRomaneioId').mockResolvedValueOnce(romaneioFreteResult);
@@ -61,7 +61,7 @@ describe('RomaneioFreteService', () => {
     it('should call repository.findOne() with the correct parameters', async () => {
       const empresaId = 1;
       const romaneioId = 1;
-      const romaneioFreteResult = { empresaId: 1, romaneioId: 1, tipo: FreteTipo.CIF, valor: 100, prazo: 10 } as any;
+      const romaneioFreteResult = { empresaId: 1, romaneioId: 1, tipo: TipoFrete.CIF, valor: 100, prazo: 10 } as any;
 
       jest.spyOn(repository, 'findOne').mockResolvedValueOnce(romaneioFreteResult);
 

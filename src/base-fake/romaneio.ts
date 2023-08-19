@@ -3,7 +3,7 @@ import { ModalidadeRomaneio } from 'src/modules/romaneio/enum/modalidade-romanei
 import { OperacaoRomaneio } from 'src/modules/romaneio/enum/operacao-romaneio.enum';
 import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
 import { RomaneioFreteEntity } from 'src/modules/romaneio/romaneio-frete/entities/romaneio-frete.entity';
-import { FreteTipo } from 'src/modules/romaneio/romaneio-frete/enum/frete-tipo';
+import { TipoFrete } from 'src/commons/enum/tipo-frete';
 import { RomaneioItemView } from 'src/modules/romaneio/romaneio-item/views/romaneio-item.view';
 import { RomaneioView } from 'src/modules/romaneio/views/romaneio.view';
 
@@ -146,7 +146,7 @@ export class RomaneioFakeRepository {
     return new RomaneioFreteEntity({
       empresaId: 1,
       romaneioId: 1,
-      tipo: FreteTipo.CIF,
+      tipo: TipoFrete.CIF,
       valor: 1,
       prazo: 0,
       observacao: 'observacao',

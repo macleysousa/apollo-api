@@ -98,7 +98,7 @@ export class RomaneioService {
     return this.findById(empresaId, id);
   }
 
-  async encerrar(empresaId: number, caixaId: number, id: number): Promise<RomaneioView> {
+  async encerrar(empresaId: number, caixaId: number, id: number, liquidacao?: number): Promise<RomaneioView> {
     const romaneio = await this.findById(empresaId, id);
 
     if (romaneio.situacao !== SituacaoRomaneio.EmAndamento) {

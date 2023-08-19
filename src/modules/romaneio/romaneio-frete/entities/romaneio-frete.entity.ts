@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 
-import { FreteTipo } from '../enum/frete-tipo';
+import { TipoFrete } from '../../../../commons/enum/tipo-frete';
 
 @Entity({ name: 'romaneios_fretes' })
 export class RomaneioFreteEntity extends BaseEntity {
@@ -17,7 +17,7 @@ export class RomaneioFreteEntity extends BaseEntity {
 
   @ApiProperty()
   @Column()
-  tipo: FreteTipo;
+  tipo: TipoFrete;
 
   @ApiProperty()
   @Column('decimal', { precision: 10, scale: 4 })
