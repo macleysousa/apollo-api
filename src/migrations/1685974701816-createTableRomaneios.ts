@@ -138,6 +138,15 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
             onUpdate: 'CASCADE',
           },
         ],
+        indices: [
+          {
+            columnNames: ['data'],
+          },
+
+          {
+            columnNames: ['situacao'],
+          },
+        ],
       })
     );
   }

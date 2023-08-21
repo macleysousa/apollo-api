@@ -1,23 +1,19 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { In, IsNull, Not, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
-import { CreateRomaneioDto } from './dto/create-romaneio.dto';
-import { RomaneioEntity } from './entities/romaneio.entity';
-import { SituacaoRomaneio } from './enum/situacao-romaneio.enum';
 import { ContextService } from 'src/context/context.service';
-import { RomaneioView } from './views/romaneio.view';
-import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';
-import { EmpresaParametroService } from '../empresa/parametro/parametro.service';
-import { OperacaoRomaneio } from './enum/operacao-romaneio.enum';
 
-interface filter {
-  empresaIds: number[];
-  funcionarioIds: number[];
-  dataInicial: Date;
-  dataFinal: Date;
-}
+import { EmpresaParametroService } from '../empresa/parametro/parametro.service';
+import { CreateRomaneioDto } from './dto/create-romaneio.dto';
+import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';
+import { RomaneioEntity } from './entities/romaneio.entity';
+import { OperacaoRomaneio } from './enum/operacao-romaneio.enum';
+import { SituacaoRomaneio } from './enum/situacao-romaneio.enum';
+import { RomaneioView } from './views/romaneio.view';
+import { RomaneioInclude } from './includes/romaneio.include';
+import { RomaneioFilter } from './filters/romaneio.filter';
 
 @Injectable()
 export class RomaneioService {
@@ -57,17 +53,9 @@ export class RomaneioService {
     return this.findById(romaneio.empresaId, romaneio.id);
   }
 
-  async find(filter?: filter, page = 1, limit = 100): Promise<Pagination<RomaneioView>> {
+  async find(filter?: RomaneioFilter, page = 1, limit = 100): Promise<Pagination<RomaneioView>> {
     const queryBuilder = this.view.createQueryBuilder('e');
     queryBuilder.where('e.empresaId IS NOT NULL');
-
-    if (filter?.empresaIds && filter.empresaIds.length > 0) {
-      queryBuilder.andWhere({ empresaId: In(filter.empresaIds) });
-    }
-
-    if (filter?.funcionarioIds && filter.funcionarioIds.length > 0) {
-      queryBuilder.andWhere({ funcionarioId: In(filter.funcionarioIds) });
-    }
 
     if (filter?.dataInicial) {
       queryBuilder.andWhere('e.data >= :dataInicial', { dataInicial: filter.dataInicial });
@@ -77,11 +65,41 @@ export class RomaneioService {
       queryBuilder.andWhere('e.data <= :dataFinal', { dataFinal: filter.dataFinal });
     }
 
+    if (filter?.empresaIds && filter.empresaIds.length > 0) {
+      queryBuilder.andWhere('e.empresaId IN (:...empresaIds)', { empresaIds: filter.empresaIds });
+    }
+
+    if (filter?.pessoaIds && filter.pessoaIds.length > 0) {
+      queryBuilder.andWhere('e.pessoaId IN (:...pessoaIds)', { pessoaIds: filter.pessoaIds });
+    }
+
+    if (filter?.funcionarioIds && filter.funcionarioIds.length > 0) {
+      queryBuilder.andWhere('e.funcionarioId IN (:...funcionarioIds)', { funcionarioIds: filter.funcionarioIds });
+    }
+
+    if (filter?.modalidades && filter.modalidades.length > 0) {
+      queryBuilder.andWhere('e.modalidade IN (:...modalidades)', { modalidades: filter.modalidades });
+    }
+
+    if (filter?.operacoes && filter.operacoes.length > 0) {
+      queryBuilder.andWhere('e.operacao IN (:...operacoes)', { operacoes: filter.operacoes });
+    }
+
+    if (filter?.situacoes && filter.situacoes.length > 0) {
+      queryBuilder.andWhere('e.situacao IN (:...situacoes)', { situacoes: filter.situacoes });
+    }
+
+    if (filter?.incluir && filter.incluir.includes('itens')) {
+      queryBuilder.leftJoinAndSelect('e.itens', 'i');
+    }
+
     return paginate<RomaneioView>(queryBuilder, { page, limit });
   }
 
-  async findById(empresaId: number, id: number): Promise<RomaneioView> {
-    return this.view.findOne({ where: { empresaId: empresaId, romaneioId: id } });
+  async findById(empresaId: number, id: number, relations?: RomaneioInclude[]): Promise<RomaneioView> {
+    // usado find porque o findOne estava retornando erro ao passar as relations
+    const romaneio = await this.view.find({ where: { empresaId: empresaId, romaneioId: id }, relations });
+    return romaneio.first();
   }
 
   async observacao(empresaId: number, id: number, { observacao }: OperacaoRomaneioDto): Promise<RomaneioView> {

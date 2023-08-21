@@ -15,6 +15,7 @@ import { OperacaoRomaneio } from './enum/operacao-romaneio.enum';
 import { SituacaoRomaneio } from './enum/situacao-romaneio.enum';
 import { RomaneioService } from './romaneio.service';
 import { RomaneioView } from './views/romaneio.view';
+import { RomaneioFilter } from './filters/romaneio.filter';
 
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({
@@ -47,6 +48,7 @@ describe('RomaneioService', () => {
             createQueryBuilder: jest.fn().mockReturnValue({
               where: jest.fn().mockReturnThis(),
               andWhere: jest.fn().mockReturnThis(),
+              leftJoinAndSelect: jest.fn().mockReturnThis(),
             }),
           },
         },
@@ -229,7 +231,17 @@ describe('RomaneioService', () => {
 
   describe('find', () => {
     it('should find romaneios with filter', async () => {
-      const filter = { empresaIds: [1], funcionarioIds: [1], dataInicial: new Date(), dataFinal: new Date() };
+      const filter: RomaneioFilter = {
+        dataInicial: new Date(),
+        dataFinal: new Date(),
+        empresaIds: [1],
+        pessoaIds: [1],
+        funcionarioIds: [1],
+        modalidades: ['Entrada'],
+        operacoes: ['Compra'],
+        situacoes: ['Encerrado'],
+        incluir: ['itens'],
+      };
       const page = 1;
       const limit = 100;
 
@@ -237,10 +249,18 @@ describe('RomaneioService', () => {
 
       expect(view.createQueryBuilder).toHaveBeenCalledWith('e');
       expect(view.createQueryBuilder().where).toHaveBeenCalledWith('e.empresaId IS NOT NULL');
-      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith({ empresaId: In(filter.empresaIds) });
-      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith({ funcionarioId: In(filter.funcionarioIds) });
       expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.data >= :dataInicial', { dataInicial: filter.dataInicial });
       expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.data <= :dataFinal', { dataFinal: filter.dataFinal });
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.empresaId IN (:...empresaIds)', { empresaIds: filter.empresaIds });
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.pessoaId IN (:...pessoaIds)', { pessoaIds: filter.pessoaIds });
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.funcionarioId IN (:...funcionarioIds)', {
+        funcionarioIds: filter.funcionarioIds,
+      });
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.modalidade IN (:...modalidades)', {
+        modalidades: filter.modalidades,
+      });
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.operacao IN (:...operacoes)', { operacoes: filter.operacoes });
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.situacao IN (:...situacoes)', { situacoes: filter.situacoes });
 
       expect(result).toEqual(romaneioFakeRepository.findViewPaginate());
     });
@@ -279,10 +299,11 @@ describe('RomaneioService', () => {
     it('should find a romaneio by id', async () => {
       const empresaId = 1;
       const id = 1;
+      const relations = ['itens'] as any;
 
-      const result = await service.findById(empresaId, id);
+      const result = await service.findById(empresaId, id, relations);
 
-      expect(view.findOne).toHaveBeenCalledWith({ where: { empresaId: empresaId, romaneioId: id } });
+      expect(view.find).toHaveBeenCalledWith({ where: { empresaId: empresaId, romaneioId: id }, relations });
       expect(result).toEqual(romaneioFakeRepository.findOneView());
     });
   });

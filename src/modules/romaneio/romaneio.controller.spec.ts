@@ -1,10 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { romaneioFakeRepository } from 'src/base-fake/romaneio';
+
 import { CreateRomaneioDto } from './dto/create-romaneio.dto';
 import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';
 import { RomaneioController } from './romaneio.controller';
 import { RomaneioService } from './romaneio.service';
+import { RomaneioFilter } from './filters/romaneio.filter';
 
 describe('RomaneioController', () => {
   let controller: RomaneioController;
@@ -50,7 +52,21 @@ describe('RomaneioController', () => {
 
   describe('/ (GET)', () => {
     it('should find romaneios', async () => {
-      const result = await controller.find();
+      const filter: RomaneioFilter = {
+        dataInicial: new Date(),
+        dataFinal: new Date(),
+        empresaIds: [1],
+        pessoaIds: [1],
+        funcionarioIds: [1],
+        modalidades: ['Entrada'],
+        operacoes: ['Compra'],
+        situacoes: ['Encerrado'],
+        incluir: ['itens'],
+      };
+      const page = 1;
+      const limit = 100;
+
+      const result = await controller.find(filter, page, limit);
 
       expect(service.find).toHaveBeenCalled();
       expect(result).toEqual(romaneioFakeRepository.findViewPaginate());
@@ -63,9 +79,9 @@ describe('RomaneioController', () => {
       const id = 1;
       const romaneioView = romaneioFakeRepository.findOneView();
 
-      const result = await controller.findOne(empresa, id);
+      const result = await controller.findOne(empresa, id, ['itens'] as any);
 
-      expect(service.findById).toHaveBeenCalledWith(empresa.id, id);
+      expect(service.findById).toHaveBeenCalledWith(empresa.id, id, ['itens']);
       expect(result).toEqual(romaneioView);
     });
   });

@@ -1,10 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ViewColumn, ViewEntity } from 'typeorm';
+import { Exclude } from 'class-transformer';
+import { JoinColumn, ManyToOne, ViewColumn, ViewEntity } from 'typeorm';
 
-import { BaseEntity } from 'src/commons/base.entity';
+import { BaseView } from 'src/commons/base.view';
+
+import { RomaneioView } from '../../views/romaneio.view';
 
 @ViewEntity({ name: 'view_romaneios_itens' })
-export class RomaneioItemView extends BaseEntity {
+export class RomaneioItemView extends BaseView {
   @ApiProperty()
   @ViewColumn()
   empresaId: number;
@@ -112,6 +115,11 @@ export class RomaneioItemView extends BaseEntity {
   @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   romaneioDevolucaoId: number;
+
+  @Exclude()
+  @ManyToOne(() => RomaneioView, (romaneio) => romaneio.itens)
+  @JoinColumn({ name: 'romaneioId', referencedColumnName: 'romaneioId' })
+  romaneio: RomaneioView;
 
   constructor(partial?: Partial<RomaneioItemView>) {
     super();

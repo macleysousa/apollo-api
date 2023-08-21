@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
@@ -10,8 +10,11 @@ import { ApiComponent } from '../componente/decorator/componente.decorator';
 import { EmpresaEntity } from '../empresa/entities/empresa.entity';
 import { CreateRomaneioDto } from './dto/create-romaneio.dto';
 import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';
+import { RomaneioFilter } from './filters/romaneio.filter';
+import { RomaneioIncludeEnum } from './includes/romaneio.include';
 import { RomaneioService } from './romaneio.service';
 import { RomaneioView } from './views/romaneio.view';
+import { ApiQueryEnum } from 'src/decorators/api-query-enum.decorator';
 
 @ApiTags('Romaneios')
 @Controller('romaneios')
@@ -29,14 +32,25 @@ export class RomaneioController {
 
   @Get()
   @ApiPaginatedResponse(RomaneioView)
-  async find(): Promise<Pagination<RomaneioView>> {
-    return this.service.find();
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Padrão: 1' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Padrão: 100' })
+  async find(
+    @Body() filter: RomaneioFilter,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number
+  ): Promise<Pagination<RomaneioView>> {
+    return this.service.find(filter, page, limit);
   }
 
   @Get(':id')
   @ApiResponse({ status: 200, type: RomaneioView })
-  async findOne(@CurrentBranch() empresa: EmpresaEntity, @Param('id', ParseIntPipe) id: number): Promise<RomaneioView> {
-    return this.service.findById(empresa.id, id);
+  @ApiQueryEnum({ name: 'incluir', required: false, enum: RomaneioIncludeEnum, isArray: true })
+  async findOne(
+    @CurrentBranch() empresa: EmpresaEntity,
+    @Param('id', ParseIntPipe) id: number,
+    @Query('incluir', new DefaultValuePipe([])) relations: RomaneioIncludeEnum[]
+  ): Promise<RomaneioView> {
+    return this.service.findById(empresa.id, id, relations);
   }
 
   @Put(':id/observacao')

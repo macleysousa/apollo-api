@@ -1,15 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ViewColumn, ViewEntity } from 'typeorm';
+import { JoinColumn, OneToMany, ViewColumn, ViewEntity } from 'typeorm';
 
-import { BaseEntity } from 'src/commons/base.entity';
+import { BaseView } from 'src/commons/base.view';
+import { TipoFrete } from 'src/commons/enum/tipo-frete';
 
 import { ModalidadeRomaneio } from '../enum/modalidade-romaneio.enum';
 import { OperacaoRomaneio } from '../enum/operacao-romaneio.enum';
 import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
-import { TipoFrete } from 'src/commons/enum/tipo-frete';
+import { RomaneioItemView } from '../romaneio-item/views/romaneio-item.view';
 
 @ViewEntity({ name: 'view_romaneios' })
-export class RomaneioView extends BaseEntity {
+export class RomaneioView extends BaseView {
   @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   empresaId: number;
@@ -93,6 +94,11 @@ export class RomaneioView extends BaseEntity {
   @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   operadorId: number;
+
+  @ApiProperty()
+  @OneToMany(() => RomaneioItemView, ({ romaneio }) => romaneio)
+  @JoinColumn({ name: 'romaneioId', referencedColumnName: 'romaneioId' })
+  itens: RomaneioItemView[];
 
   constructor(partial?: Partial<RomaneioView>) {
     super();
