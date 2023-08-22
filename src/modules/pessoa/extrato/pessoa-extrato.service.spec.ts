@@ -39,6 +39,7 @@ describe('PessoaExtratoService', () => {
     it('should return a PessoaExtratoEntity', async () => {
       const pessoaId = 1;
       const dto = {
+        pessoaId,
         tipoDocumento: TipoDocumento.Adiantamento,
         tipoHistorico: TipoHistorico.Adiantamento,
         tipoMovimento: TipoMovimento.Credito,
@@ -57,7 +58,7 @@ describe('PessoaExtratoService', () => {
 
       jest.spyOn(repository, 'save').mockResolvedValueOnce(pessoa);
 
-      const result = await service.lancarMovimento(pessoaId, dto);
+      const result = await service.lancarMovimento(dto);
 
       expect(repository.save).toHaveBeenCalledTimes(1);
       expect(result).toEqual(pessoa);

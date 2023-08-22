@@ -70,7 +70,7 @@ export class CancelarService {
       });
     }
 
-    if (romaneio.situacao == SituacaoRomaneio.Encerrado && romaneio.operacao == OperacaoRomaneio.Devolucao) {
+    if (romaneio.situacao == SituacaoRomaneio.Encerrado && romaneio.operacao == OperacaoRomaneio.Devolucao_Venda) {
       const saldoCredev = await this.pessoaExtratoService.findSaldoCreditoDeDevolucao(empresaId, romaneio.pessoaId);
       if (saldoCredev < romaneio.valorLiquido) {
         throw new BadRequestException(`Saldo de crédito de devolução insuficiente para realizar o cancelamento`);

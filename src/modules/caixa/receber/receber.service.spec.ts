@@ -165,7 +165,7 @@ describe('ReceberService', () => {
 
       jest.spyOn(formaDePagamentoService, 'find').mockResolvedValueOnce([
         { id: 1, tipo: TipoDocumento.Adiantamento },
-        { id: 2, tipo: TipoDocumento.Credito_de_devolucao },
+        { id: 2, tipo: TipoDocumento.Credito_de_Devolucao },
         { id: 3, tipo: TipoDocumento.Dinheiro },
       ] as any);
 
@@ -181,7 +181,7 @@ describe('ReceberService', () => {
 
       jest.spyOn(formaDePagamentoService, 'find').mockResolvedValueOnce([
         { id: 1, tipo: TipoDocumento.Adiantamento },
-        { id: 2, tipo: TipoDocumento.Credito_de_devolucao },
+        { id: 2, tipo: TipoDocumento.Credito_de_Devolucao },
         { id: 3, tipo: TipoDocumento.Dinheiro },
       ] as any);
 
@@ -197,7 +197,7 @@ describe('ReceberService', () => {
 
       jest.spyOn(formaDePagamentoService, 'find').mockResolvedValueOnce([
         { id: 1, tipo: TipoDocumento.Adiantamento },
-        { id: 2, tipo: TipoDocumento.Credito_de_devolucao },
+        { id: 2, tipo: TipoDocumento.Credito_de_Devolucao },
         { id: 3, tipo: TipoDocumento.Dinheiro },
       ] as any);
 
@@ -215,7 +215,7 @@ describe('ReceberService', () => {
 
       jest.spyOn(formaDePagamentoService, 'find').mockResolvedValueOnce([
         { id: 1, tipo: TipoDocumento.Adiantamento },
-        { id: 2, tipo: TipoDocumento.Credito_de_devolucao },
+        { id: 2, tipo: TipoDocumento.Credito_de_Devolucao },
         { id: 3, tipo: TipoDocumento.Dinheiro },
       ] as any);
 
@@ -233,7 +233,7 @@ describe('ReceberService', () => {
 
       jest.spyOn(formaDePagamentoService, 'find').mockResolvedValueOnce([
         { id: 1, tipo: TipoDocumento.Adiantamento },
-        { id: 2, tipo: TipoDocumento.Credito_de_devolucao },
+        { id: 2, tipo: TipoDocumento.Credito_de_Devolucao },
         { id: 3, tipo: TipoDocumento.Dinheiro },
       ] as any);
 
@@ -276,7 +276,7 @@ describe('ReceberService', () => {
 
       jest.spyOn(formaDePagamentoService, 'find').mockResolvedValueOnce([
         { id: 1, tipo: TipoDocumento.Adiantamento },
-        { id: 2, tipo: TipoDocumento.Credito_de_devolucao },
+        { id: 2, tipo: TipoDocumento.Credito_de_Devolucao },
         { id: 3, tipo: TipoDocumento.Dinheiro },
         { id: 4, tipo: TipoDocumento.Cartao },
       ] as any);

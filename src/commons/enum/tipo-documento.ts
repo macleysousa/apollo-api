@@ -8,5 +8,5 @@ export enum TipoDocumento {
   Voucher = 'Voucher',
   Ted_Doc = 'TED/DOC',
   Adiantamento = 'Adiantamento',
-  Credito_de_devolucao = 'Crédito de devolução',
+  Credito_de_Devolucao = 'Crédito de devolução',
 }

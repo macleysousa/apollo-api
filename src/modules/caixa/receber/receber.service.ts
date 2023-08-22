@@ -91,6 +91,16 @@ export class ReceberService {
         const liquidacaoId = liquidacao.first().liquidacao;
 
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId, liquidacaoId);
+      case OperacaoRomaneio.Devolucao_Venda:
+        await this.pessoaExtratoService.lancarMovimento({
+          pessoaId: romaneio.pessoaId,
+          valor: romaneio.valorLiquido,
+          tipoDocumento: TipoDocumento.Credito_de_Devolucao as any,
+          tipoMovimento: TipoMovimento.Credito,
+          observacao: `Crédito de devolução gerado a partir do romaneio ${romaneio.romaneioId}`,
+        });
+
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
     }
 
     return romaneio;
@@ -169,7 +179,7 @@ export class ReceberService {
       throw new BadRequestException('Saldo de adiantamento insuficiente para realizar o a operação.');
     }
 
-    const creditoDeDevolucao = tipoDocumentos.first((x) => x.tipoDocumento == TipoDocumento.Credito_de_devolucao);
+    const creditoDeDevolucao = tipoDocumentos.first((x) => x.tipoDocumento == TipoDocumento.Credito_de_Devolucao);
     const saldoCreditoDeDevolucao = await this.pessoaExtratoService.findSaldoCreditoDeDevolucao(empresaId, recebimento.pessoaId);
     if (creditoDeDevolucao && saldoCreditoDeDevolucao < creditoDeDevolucao.valor) {
       throw new BadRequestException('Creditos de devolução insuficiente para realizar o a operação.');

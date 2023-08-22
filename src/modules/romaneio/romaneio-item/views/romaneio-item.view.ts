@@ -109,8 +109,8 @@ export class RomaneioItemView extends BaseView {
   operadorId: number;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Boolean(value), to: (value) => Boolean(value) } })
-  devolvido: boolean;
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  devolvido: number;
 
   @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })

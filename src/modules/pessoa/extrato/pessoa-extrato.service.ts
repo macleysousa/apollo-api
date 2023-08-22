@@ -4,6 +4,16 @@ import { In, Repository, Not, IsNull } from 'typeorm';
 
 import { PessoaExtratoEntity } from './entities/pessoa-extrato.entity';
 import { TipoDocumento } from './enum/tipo-documento.enum';
+import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
+import { ContextService } from 'src/context/context.service';
+
+interface dto {
+  pessoaId: number;
+  tipoDocumento: TipoDocumento;
+  tipoMovimento: TipoMovimento;
+  valor: number;
+  observacao: string;
+}
 
 interface filter {
   empresaIds?: number[];
@@ -20,15 +30,14 @@ export class PessoaExtratoService {
     private repository: Repository<PessoaExtratoEntity>
   ) {}
 
-  async lancarMovimento(pessoaId: number, dto: any): Promise<PessoaExtratoEntity> {
+  async lancarMovimento(dto: dto): Promise<PessoaExtratoEntity> {
     return this.repository.save({
-      pessoaId,
+      pessoaId: dto.pessoaId,
       tipoDocumento: dto.tipoDocumento,
-      tipoHistorico: dto.tipoHistorico,
       tipoMovimento: dto.tipoMovimento,
       valor: dto.valor,
       observacao: dto.observacao,
-    });
+    } as any);
   }
 
   async find(filter?: filter): Promise<PessoaExtratoEntity[]> {

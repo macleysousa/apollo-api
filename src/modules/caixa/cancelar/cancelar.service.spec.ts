@@ -197,7 +197,7 @@ describe('CancelarService', () => {
     it('should throw BadRequestException if romaneio have credito de devolução insufficient', async () => {
       const caixaId = 1;
       const dto: CancelarRomaneioDto = { romaneioId: 1, motivo: 'Motivo' };
-      const romaneio = { caixaId: 1, situacao: SituacaoRomaneio.Encerrado, operacao: OperacaoRomaneio.Devolucao, valorLiquido: 100 } as any;
+      const romaneio = { caixaId: 1, situacao: SituacaoRomaneio.Encerrado, operacao: OperacaoRomaneio.Devolucao_Venda, valorLiquido: 100 } as any;
       const error = new BadRequestException(`Saldo de crédito de devolução insuficiente para realizar o cancelamento`);
 
       jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);

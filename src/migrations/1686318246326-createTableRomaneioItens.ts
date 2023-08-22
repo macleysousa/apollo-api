@@ -68,7 +68,7 @@ export class CreateTableRomaneioItens1686318246326 implements MigrationInterface
           },
           {
             name: `devolvido`,
-            type: `boolean`,
+            type: `decimal(10,4)`,
             default: false,
           },
           {
