@@ -123,7 +123,7 @@ export class RomaneioService {
       throw new BadRequestException('Romaneio não está em andamento');
     }
 
-    await this.repository.update({ id }, { caixaId, situacao: SituacaoRomaneio.Encerrado }).catch(() => {
+    await this.repository.update({ id }, { caixaId, situacao: SituacaoRomaneio.Encerrado, liquidacao }).catch(() => {
       throw new BadRequestException('Não foi possível encerrar o romaneio');
     });
 

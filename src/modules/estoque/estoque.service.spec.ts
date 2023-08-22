@@ -132,7 +132,7 @@ describe('EstoqueService', () => {
       const empresaId = 1;
       const produtoIds = [2, 3];
 
-      const result = await service.findProdutoIds(empresaId, produtoIds);
+      const result = await service.findByProdutoIds(empresaId, produtoIds);
 
       expect(view.find).toHaveBeenCalledTimes(1);
       expect(view.find).toHaveBeenCalledWith({ where: { empresaId, produtoId: In(produtoIds) } });

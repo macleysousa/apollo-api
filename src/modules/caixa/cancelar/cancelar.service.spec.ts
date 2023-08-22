@@ -65,7 +65,7 @@ describe('CancelarService', () => {
         {
           provide: EstoqueService,
           useValue: {
-            findProdutoIds: jest.fn(),
+            findByProdutoIds: jest.fn(),
           },
         },
       ],
@@ -189,7 +189,7 @@ describe('CancelarService', () => {
 
       jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
       jest.spyOn(romaneioItemService, 'find').mockResolvedValue(romaneioItens);
-      jest.spyOn(estoqueService, 'findProdutoIds').mockResolvedValue(estoque);
+      jest.spyOn(estoqueService, 'findByProdutoIds').mockResolvedValue(estoque);
 
       await expect(service.romaneio(caixaId, dto)).rejects.toThrow(error);
     });
@@ -216,7 +216,7 @@ describe('CancelarService', () => {
 
       jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
       jest.spyOn(romaneioItemService, 'find').mockResolvedValue(romaneioItens);
-      jest.spyOn(estoqueService, 'findProdutoIds').mockResolvedValue(estoque);
+      jest.spyOn(estoqueService, 'findByProdutoIds').mockResolvedValue(estoque);
       jest.spyOn(pessoaExtratoService, 'findSaldoCreditoDeDevolucao').mockResolvedValue(100);
 
       await expect(service.romaneio(caixaId, dto)).rejects.toThrow(error);

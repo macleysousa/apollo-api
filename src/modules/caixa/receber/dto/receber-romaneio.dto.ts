@@ -13,7 +13,7 @@ export class ReceberRomaneioDto {
   @IsRomaneio(SituacaoRomaneio.EmAndamento, { message: 'Romaneio não está Em Andamento' })
   romaneioId: number;
 
-  @ApiProperty()
+  @ApiProperty({ type: [PagamentoDto] })
   @IsOptional()
   @ArrayMinSize(1, { message: 'Deve haver pelo menos uma forma de pagamento.' })
   @ValidateNested({ each: true })

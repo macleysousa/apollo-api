@@ -61,7 +61,7 @@ export class CancelarService {
       const romaneioItens = await this.romaneioItemService.find(dto.romaneioId);
       const produtoIds = romaneioItens.map((x) => x.produtoId);
 
-      const estoque = await this.estoqueService.findProdutoIds(empresaId, produtoIds);
+      const estoque = await this.estoqueService.findByProdutoIds(empresaId, produtoIds);
       estoque.forEach((x) => {
         const quantidade = romaneioItens.filter((y) => y.produtoId == x.produtoId).sum((y) => y.quantidade);
         if (quantidade > x.saldo) {

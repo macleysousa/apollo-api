@@ -63,7 +63,7 @@ export class EstoqueService {
     return this.view.findOne({ where: { empresaId, produtoId } });
   }
 
-  async findProdutoIds(empresaId: number, produtoIds: number[]): Promise<EstoqueView[]> {
+  async findByProdutoIds(empresaId: number, produtoIds: number[]): Promise<EstoqueView[]> {
     return this.view.find({ where: { empresaId, produtoId: In(produtoIds) } });
   }
 }

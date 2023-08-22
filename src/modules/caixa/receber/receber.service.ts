@@ -23,6 +23,8 @@ import { RecebimentoDto } from './dto/recebimento.dto';
 import { CaixaExtratoEntity } from '../extrato/entities/extrato.entity';
 import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
 import { TipoFrete } from 'src/commons/enum/tipo-frete';
+import { ModalidadeRomaneio } from 'src/modules/romaneio/enum/modalidade-romaneio.enum';
+import { EstoqueService } from 'src/modules/estoque/estoque.service';
 
 @Injectable()
 export class ReceberService {
@@ -32,7 +34,8 @@ export class ReceberService {
     private readonly pessoaExtratoService: PessoaExtratoService,
     private readonly faturaService: FaturaService,
     private readonly caixaExtratoService: CaixaExtratoService,
-    private readonly romaneioService: RomaneioService
+    private readonly romaneioService: RomaneioService,
+    private readonly estoqueService: EstoqueService
   ) {}
 
   async adiantamento(caixaId: number, { formasDePagamento, ...recebimento }: ReceberAdiantamentoDto): Promise<CaixaExtratoEntity[]> {
@@ -50,20 +53,36 @@ export class ReceberService {
 
   async romaneio(caixaId: number, romaneioDto: ReceberRomaneioDto): Promise<RomaneioView> {
     const empresa = this.contextService.currentBranch();
-    const romaneio = await this.romaneioService.findById(empresa.id, romaneioDto.romaneioId);
+    const romaneio = await this.romaneioService.findById(empresa.id, romaneioDto.romaneioId, ['itens']);
+    if (!romaneio) {
+      throw new BadRequestException('Romaneio não encontrado');
+    } else if (romaneio.itens.length == 0) {
+      throw new BadRequestException('Romaneio não possui itens');
+    } else if (romaneio.modalidade == ModalidadeRomaneio.Saida) {
+      const produtos = romaneio.itens
+        .groupBy((x) => x.produtoId)
+        .map((x) => ({ produtoId: x.key, quantidade: x.values.sum((y) => y.quantidade) }));
+
+      const produtoIds = produtos.map((x) => x.produtoId);
+      const estoque = await this.estoqueService.findByProdutoIds(empresa.id, produtoIds);
+
+      const estInsuficiente = estoque.filter((x) => x.saldo < produtos.find((y) => y.produtoId == x.produtoId).quantidade);
+      if (estInsuficiente.length > 0) {
+        throw new BadRequestException(`Estoque insuficiente para os produtos: ${estInsuficiente.map((x) => x.produtoId).join(', ')}`);
+      }
+    }
 
     switch (romaneio.operacao) {
       case OperacaoRomaneio.Outros:
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
       case OperacaoRomaneio.Venda:
-        const valorPago = romaneioDto.formasDePagamento.sum((x) => x.valor);
         const valorRomaneio = romaneio.valorLiquido + (romaneio.tipoFrete == TipoFrete.FOB ? romaneio.valorFrete : 0);
 
         if (!romaneioDto.formasDePagamento) {
           throw new BadRequestException('Nenhuma forma de pagamento informada');
         } else if (romaneio.situacao != SituacaoRomaneio.EmAndamento) {
           throw new BadRequestException('Romaneio não está em andamento');
-        } else if (valorRomaneio > valorPago) {
+        } else if (valorRomaneio > romaneioDto.formasDePagamento.sum((x) => x.valor)) {
           throw new BadRequestException('O valor pago é insuficiente para encerrar o romaneio');
         }
         const recebimento: RecebimentoDto = { pessoaId: romaneio.pessoaId, valor: romaneio.valorLiquido, romaneioId: romaneio.romaneioId };

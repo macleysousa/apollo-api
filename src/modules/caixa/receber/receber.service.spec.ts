@@ -17,6 +17,7 @@ import { ReceberService } from './receber.service';
 import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
 import { CaixaExtratoEntity } from '../extrato/entities/extrato.entity';
 import { ReceberAdiantamentoDto } from './dto/receber-adiantamento.dto';
+import { EstoqueService } from 'src/modules/estoque/estoque.service';
 
 describe('ReceberService', () => {
   let service: ReceberService;
@@ -25,6 +26,7 @@ describe('ReceberService', () => {
   let faturaService: FaturaService;
   let caixaExtratoService: CaixaExtratoService;
   let romaneioService: RomaneioService;
+  let estoqueService: EstoqueService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -70,6 +72,12 @@ describe('ReceberService', () => {
             create: jest.fn(),
           },
         },
+        {
+          provide: EstoqueService,
+          useValue: {
+            findByProdutoIds: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -79,6 +87,7 @@ describe('ReceberService', () => {
     faturaService = module.get<FaturaService>(FaturaService);
     caixaExtratoService = module.get<CaixaExtratoService>(CaixaExtratoService);
     romaneioService = module.get<RomaneioService>(RomaneioService);
+    estoqueService = module.get<EstoqueService>(EstoqueService);
   });
 
   it('should be defined', () => {
@@ -88,6 +97,7 @@ describe('ReceberService', () => {
     expect(faturaService).toBeDefined();
     expect(caixaExtratoService).toBeDefined();
     expect(romaneioService).toBeDefined();
+    expect(estoqueService).toBeDefined();
   });
 
   describe('adiantamento', () => {

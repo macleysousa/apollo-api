@@ -9,11 +9,11 @@ import { RomaneioView } from '../../views/romaneio.view';
 @ViewEntity({ name: 'view_romaneios_itens' })
 export class RomaneioItemView extends BaseView {
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   empresaId: number;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   romaneioId: number;
 
   @ApiProperty()
@@ -21,59 +21,59 @@ export class RomaneioItemView extends BaseView {
   data: Date;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   sequencia: number;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   referenciaId: number;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => String(value), to: (value) => String(value) } })
   referenciaIdExterno: string;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => String(value), to: (value) => String(value) } })
   referenciaNome: string;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   produtoId: number;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => String(value), to: (value) => String(value) } })
   produtoIdExterno: string;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   corId: number;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => String(value), to: (value) => String(value) } })
   corNome: string;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   tamanhoId: number;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => String(value), to: (value) => String(value) } })
   tamanhoNome: string;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => String(value), to: (value) => String(value) } })
   modalidade: string;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => String(value), to: (value) => String(value) } })
   operacao: string;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => String(value), to: (value) => String(value) } })
   situacao: string;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Boolean(value), to: (value) => Boolean(value) } })
   emPromocao: boolean;
 
   @ApiProperty()
@@ -101,11 +101,11 @@ export class RomaneioItemView extends BaseView {
   valorTotalLiquido: number;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   cupomId: number;
 
   @ApiProperty()
-  @ViewColumn()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   operadorId: number;
 
   @ApiProperty()

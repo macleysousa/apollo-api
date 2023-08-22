@@ -67,6 +67,10 @@ export class RomaneioView extends BaseView {
   @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   caixaId: number;
 
+  @ApiProperty()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  liquidacao: number;
+
   @ApiProperty({ enum: TipoFrete })
   @ViewColumn()
   tipoFrete: TipoFrete;

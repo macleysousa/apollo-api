@@ -54,6 +54,11 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
             isNullable: true,
           },
           {
+            name: 'liquidacao',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
             name: 'operadorId',
             type: 'int',
             isNullable: false,
