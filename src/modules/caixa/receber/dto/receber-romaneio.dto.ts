@@ -3,12 +3,12 @@ import { Type } from 'class-transformer';
 import { ArrayMinSize, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
 
 import { IsRomaneio } from 'src/commons/validations/is-romaneio.validation';
-
 import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
+
 import { PagamentoDto } from './pagamento.dto';
 
 export class ReceberRomaneioDto {
-  @ApiProperty()
+  @ApiProperty({ type: Number })
   @IsNotEmpty()
   @IsRomaneio(SituacaoRomaneio.EmAndamento, { message: 'Romaneio não está Em Andamento' })
   romaneioId: number;
@@ -19,4 +19,9 @@ export class ReceberRomaneioDto {
   @ValidateNested({ each: true })
   @Type(() => PagamentoDto)
   formasDePagamento?: PagamentoDto[];
+
+  @ApiProperty({ type: [Number] })
+  @IsOptional()
+  @IsRomaneio(SituacaoRomaneio.Encerrado, { each: true })
+  romaneiosDevolucao?: number[];
 }

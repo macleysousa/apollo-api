@@ -19,7 +19,7 @@ BEGIN
       END IF;
 
       IF NEW.faturaId IS NOT NULL AND NEW.faturaParcela IS NOT NULL AND NEW.cancelado = 0 THEN
-      UPDATE faturas_parcelas SET situacao='Paga',
+      UPDATE faturas_parcelas SET situacao='Encerrada',
                                   caixaPagamento = NEW.caixaId,
                                   operadorId = NEW.operadorId
                                   WHERE faturaId = NEW.faturaId AND parcela = NEW.faturaParcela;
@@ -60,7 +60,7 @@ BEGIN
       END IF;
 
       IF NEW.faturaId IS NOT NULL AND NEW.faturaParcela IS NOT NULL AND NEW.cancelado = 0 THEN
-      UPDATE faturas_parcelas SET situacao='Paga',
+      UPDATE faturas_parcelas SET situacao='Encerrada',
                                   caixaPagamento = NEW.caixaId,
                                   operadorId = NEW.operadorId
                                   WHERE faturaId = NEW.faturaId AND parcela = NEW.faturaParcela;

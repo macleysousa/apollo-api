@@ -53,8 +53,7 @@ export class CreateTableFaturasParcelas1686931296067 implements MigrationInterfa
           },
           {
             name: 'situacao',
-            type: 'enum',
-            enum: ['Normal', 'Paga', 'Cancelada'],
+            type: 'varchar',
             default: "'Normal'",
           },
           {
@@ -157,14 +156,14 @@ export class CreateTableFaturasParcelas1686931296067 implements MigrationInterfa
             columnNames: ['faturaId'],
             referencedTableName: 'faturas',
             referencedColumnNames: ['id'],
-            onDelete: 'RESTRICT',
+            onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           },
           {
             columnNames: ['caixaPagamento'],
             referencedTableName: 'caixas',
             referencedColumnNames: ['id'],
-            onDelete: 'RESTRICT',
+            onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           },
           {

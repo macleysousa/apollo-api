@@ -134,7 +134,7 @@ describe('FaturaParcelaService', () => {
 
       jest.spyOn(faturaService, 'findById').mockResolvedValueOnce({ situacao: FaturaSituacao.Normal } as any);
       jest.spyOn(service, 'findByFaturaId').mockResolvedValueOnce([]);
-      jest.spyOn(service, 'findByParcela').mockResolvedValueOnce({ situacao: ParcelaSituacao.Paga } as any);
+      jest.spyOn(service, 'findByParcela').mockResolvedValueOnce({ situacao: ParcelaSituacao.Encerrada } as any);
 
       await expect(service.add(faturaId, dto)).rejects.toThrowError('Parcela não está com situação "normal".');
     });
@@ -242,7 +242,7 @@ describe('FaturaParcelaService', () => {
     });
 
     it('should throw BadRequestException if parcela is not in "normal" situation', async () => {
-      jest.spyOn(service, 'findByParcela').mockResolvedValueOnce({ situacao: ParcelaSituacao.Paga } as any);
+      jest.spyOn(service, 'findByParcela').mockResolvedValueOnce({ situacao: ParcelaSituacao.Encerrada } as any);
 
       await expect(service.remove(empresaId, faturaId, parcela)).rejects.toThrow(BadRequestException);
     });
@@ -275,7 +275,7 @@ describe('FaturaParcelaService', () => {
       expect(repository.update).toHaveBeenCalledWith(
         { empresaId, faturaId, parcela },
         {
-          situacao: ParcelaSituacao.Paga,
+          situacao: ParcelaSituacao.Encerrada,
           caixaPagamento: caixaId,
           operadorId: usuarioId,
           valorPago: parcelaEntity.valor - parcelaEntity.valorDesconto,

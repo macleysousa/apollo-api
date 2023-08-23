@@ -1,15 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PessoaExtratoService } from './pessoa-extrato.service';
-import { PessoaExtratoEntity } from './entities/pessoa-extrato.entity';
-import { In, IsNull, Not, Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { TipoDocumento } from './enum/tipo-documento.enum';
-import { TipoHistorico } from 'src/modules/caixa/extrato/enum/tipo-historico.enum';
+import { In, IsNull, Not, Repository } from 'typeorm';
+
 import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
+import { ContextService } from 'src/context/context.service';
+
+import { LancarMovimentoPessoaDto } from './dto/lancar-movimento.dto';
+import { PessoaExtratoEntity } from './entities/pessoa-extrato.entity';
+import { TipoDocumento } from './enum/tipo-documento.enum';
+import { PessoaExtratoService } from './pessoa-extrato.service';
 
 describe('PessoaExtratoService', () => {
   let service: PessoaExtratoService;
   let repository: Repository<PessoaExtratoEntity>;
+  let contextService: ContextService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,29 +27,40 @@ describe('PessoaExtratoService', () => {
             find: jest.fn(),
           },
         },
+        {
+          provide: ContextService,
+          useValue: {
+            operadorId: jest.fn().mockReturnValue(1),
+            currentBranch: jest.fn().mockReturnValue({ id: 1, data: new Date('2023-08-16') }),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<PessoaExtratoService>(PessoaExtratoService);
     repository = module.get<Repository<PessoaExtratoEntity>>(getRepositoryToken(PessoaExtratoEntity));
+    contextService = module.get<ContextService>(ContextService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
+    expect(contextService).toBeDefined();
   });
 
   describe('lancarMovimento', () => {
     it('should return a PessoaExtratoEntity', async () => {
       const pessoaId = 1;
-      const dto = {
+      const dto = new LancarMovimentoPessoaDto({
         pessoaId,
         tipoDocumento: TipoDocumento.Adiantamento,
-        tipoHistorico: TipoHistorico.Adiantamento,
         tipoMovimento: TipoMovimento.Credito,
+        liquidacao: 1,
+        faturaId: 1,
+        faturaParcela: 1,
         valor: 100,
         observacao: 'Teste',
-      };
+      });
 
       const pessoa: PessoaExtratoEntity = new PessoaExtratoEntity({
         liquidacao: 1,

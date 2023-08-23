@@ -1,5 +1,5 @@
 export enum ParcelaSituacao {
   Normal = 'Normal',
-  Paga = 'Paga',
+  Encerrada = 'Encerrada',
   Cancelada = 'Cancelada',
 }

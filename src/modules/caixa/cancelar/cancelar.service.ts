@@ -79,7 +79,7 @@ export class CancelarService {
 
     if (romaneio.situacao == SituacaoRomaneio.Encerrado && romaneio.operacao == OperacaoRomaneio.Venda) {
       const romaneioItens = await this.romaneioItemService.find(dto.romaneioId);
-      const produtoDevolucaoIds = romaneioItens.filter((x) => x.devolvido).map((x) => x.produtoId);
+      const produtoDevolucaoIds = romaneioItens.filter((x) => x.devolvido > 0).map((x) => x.produtoId);
       if (produtoDevolucaoIds.length > 0) {
         throw new BadRequestException(`O romaneio "${dto.romaneioId}" já possui produtos devolvidos, não é possível cancelar`);
       }

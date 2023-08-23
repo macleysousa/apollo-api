@@ -73,13 +73,13 @@ describe('ReceberController', () => {
       const faturaDto = { valor: 10 } as any;
       const caixaId = 1;
 
-      jest.spyOn(service, 'fatura').mockResolvedValue({ situacao: FaturaSituacao.Atendida } as any);
+      jest.spyOn(service, 'fatura').mockResolvedValue({ situacao: FaturaSituacao.Encerrada } as any);
 
       const result = await controller.fatura(caixaId, faturaDto);
 
       expect(service.fatura).toBeCalledWith(caixaId, faturaDto);
 
-      expect(result).toEqual({ situacao: FaturaSituacao.Atendida });
+      expect(result).toEqual({ situacao: FaturaSituacao.Encerrada });
     });
   });
 

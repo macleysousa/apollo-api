@@ -94,7 +94,7 @@ export class FaturaParcelaService {
       .update(
         { empresaId, faturaId, parcela },
         {
-          situacao: ParcelaSituacao.Paga,
+          situacao: ParcelaSituacao.Encerrada,
           caixaPagamento: caixaId,
           operadorId: usuario.id,
           valorPago: parcelaEntity.valor - parcelaEntity.valorDesconto,

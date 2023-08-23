@@ -47,7 +47,7 @@ export class FaturaParcelaEntity extends BaseEntity {
 
   @ApiProperty()
   @Column('enum', { enum: ParcelaSituacao })
-  situacao: ParcelaSituacao;
+  situacao: ParcelaSituacao | keyof typeof ParcelaSituacao;
 
   @ApiProperty()
   @Column('varchar', { length: 255 })

@@ -28,8 +28,9 @@ export class CaixaExtratoService {
   }
 
   async newLiquidacaoId(): Promise<number> {
-    const rows = await this.repository.query(`SELECT FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000) AS timestamp`);
-    return rows[0].timestamp;
+    const queryBuilder = this.repository.createQueryBuilder().select(`SELECT FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000) AS timestamp`);
+    const { timestamp } = await queryBuilder.getRawOne();
+    return timestamp;
   }
 
   async lancarLiquidacao(caixaId: number, liquidacao: number, dto: LancarMovimento[]): Promise<CaixaExtratoEntity[]> {

@@ -1,5 +1,5 @@
 export enum FaturaSituacao {
   Normal = 'Normal',
-  Atendida = 'Atendida',
+  Encerrada = 'Encerrada',
   Cancelada = 'Cancelada',
 }

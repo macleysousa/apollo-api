@@ -2,18 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository, Not, IsNull } from 'typeorm';
 
-import { PessoaExtratoEntity } from './entities/pessoa-extrato.entity';
-import { TipoDocumento } from './enum/tipo-documento.enum';
-import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
 import { ContextService } from 'src/context/context.service';
 
-interface dto {
-  pessoaId: number;
-  tipoDocumento: TipoDocumento;
-  tipoMovimento: TipoMovimento;
-  valor: number;
-  observacao: string;
-}
+import { PessoaExtratoEntity } from './entities/pessoa-extrato.entity';
+import { TipoDocumento } from './enum/tipo-documento.enum';
+import { LancarMovimentoPessoaDto } from './dto/lancar-movimento.dto';
 
 interface filter {
   empresaIds?: number[];
@@ -27,17 +20,20 @@ interface filter {
 export class PessoaExtratoService {
   constructor(
     @InjectRepository(PessoaExtratoEntity)
-    private repository: Repository<PessoaExtratoEntity>
+    private repository: Repository<PessoaExtratoEntity>,
+    private contextService: ContextService
   ) {}
 
-  async lancarMovimento(dto: dto): Promise<PessoaExtratoEntity> {
+  async lancarMovimento(dto: LancarMovimentoPessoaDto): Promise<PessoaExtratoEntity> {
+    const operadorId = this.contextService.operadorId();
+    const empresa = this.contextService.currentBranch();
+
     return this.repository.save({
-      pessoaId: dto.pessoaId,
-      tipoDocumento: dto.tipoDocumento,
-      tipoMovimento: dto.tipoMovimento,
-      valor: dto.valor,
-      observacao: dto.observacao,
-    } as any);
+      ...dto,
+      empresaId: empresa.id,
+      data: empresa.data,
+      operadorId,
+    });
   }
 
   async find(filter?: filter): Promise<PessoaExtratoEntity[]> {

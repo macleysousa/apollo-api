@@ -25,7 +25,10 @@ describe('CaixaExtratoService', () => {
           useValue: {
             find: jest.fn(),
             findOne: jest.fn(),
-            query: jest.fn(),
+            createQueryBuilder: jest.fn(() => ({
+              select: jest.fn().mockReturnThis(),
+              getRawOne: jest.fn(),
+            })),
             insert: jest.fn(),
             update: jest.fn(),
           },
@@ -101,11 +104,15 @@ describe('CaixaExtratoService', () => {
     it('should return a number', async () => {
       const timestamp = 1692187175889;
 
-      jest.spyOn(repository, 'query').mockResolvedValue([{ timestamp }]);
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValue({
+        select: jest.fn().mockReturnThis(),
+        getRawOne: jest.fn().mockResolvedValue({ timestamp }),
+      } as any);
 
       const result = await service.newLiquidacaoId();
 
-      expect(repository.query).toHaveBeenCalledWith(`SELECT FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000) AS timestamp`);
+      expect(repository.createQueryBuilder).toHaveBeenCalledTimes(1);
+      expect(repository.createQueryBuilder().select).toHaveBeenCalledWith(`SELECT FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000) AS timestamp`);
       expect(result).toEqual(timestamp);
     });
   });

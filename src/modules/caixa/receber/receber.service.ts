@@ -92,9 +92,23 @@ export class ReceberService {
 
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId, liquidacaoId);
       case OperacaoRomaneio.Devolucao_Venda:
+        const fatura = await this.faturaService.createAutomatica({
+          pessoaId: romaneio.pessoaId,
+          parcelas: 1,
+          romaneioId: romaneio.romaneioId,
+          valor: romaneio.valorLiquido,
+          tipoDocumento: TipoDocumento.Credito_de_Devolucao,
+          tipoMovimento: TipoMovimento.Credito,
+          observacao: `Crédito de devolução gerado a partir do romaneio ${romaneio.romaneioId}`,
+          itens: [{ parcela: 1, valor: romaneio.valorLiquido, caixaPagamento: caixaId, situacao: 'Encerrada' } as FaturaParcelaEntity],
+        });
+
         await this.pessoaExtratoService.lancarMovimento({
           pessoaId: romaneio.pessoaId,
+          faturaId: fatura.id,
+          faturaParcela: fatura.itens.first().parcela,
           valor: romaneio.valorLiquido,
+          liquidacao: await this.caixaExtratoService.newLiquidacaoId(),
           tipoDocumento: TipoDocumento.Credito_de_Devolucao as any,
           tipoMovimento: TipoMovimento.Credito,
           observacao: `Crédito de devolução gerado a partir do romaneio ${romaneio.romaneioId}`,
