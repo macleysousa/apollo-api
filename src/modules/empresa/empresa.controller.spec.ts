@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { empresaFakeRepository } from 'src/base-fake/empresa';
+
 import { EmpresaController } from './empresa.controller';
 import { EmpresaService } from './empresa.service';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
@@ -54,13 +56,14 @@ describe('BranchController', () => {
     it('should get branches no filter', async () => {
       // Arrange
       const filter = '';
+      const incluir = ['terminais'] as any;
 
       // Act
-      const result = await controller.find(filter);
+      const result = await controller.find(filter, incluir);
 
       // Assert
       expect(service.find).toHaveBeenCalledTimes(1);
-      expect(service.find).toHaveBeenCalledWith(filter);
+      expect(service.find).toHaveBeenCalledWith(filter, incluir);
 
       expect(result).toEqual(empresaFakeRepository.find());
     });
@@ -68,13 +71,14 @@ describe('BranchController', () => {
     it('should get branches with filter', async () => {
       // Arrange
       const filter = 'filter';
+      const incluir = ['terminais'] as any;
 
       // Act
-      const result = await controller.find(filter);
+      const result = await controller.find(filter, incluir);
 
       // Assert
       expect(service.find).toHaveBeenCalledTimes(1);
-      expect(service.find).toHaveBeenCalledWith(filter);
+      expect(service.find).toHaveBeenCalledWith(filter, incluir);
 
       expect(result).toEqual(empresaFakeRepository.find());
     });
@@ -84,13 +88,14 @@ describe('BranchController', () => {
     it('should get a branch by id', async () => {
       // Arrange
       const id = 1;
+      const incluir = ['terminais'] as any;
 
       // Act
-      const result = await controller.findById(id);
+      const result = await controller.findById(id, incluir);
 
       // Assert
       expect(service.findById).toHaveBeenCalledTimes(1);
-      expect(service.findById).toHaveBeenCalledWith(id);
+      expect(service.findById).toHaveBeenCalledWith(id, incluir);
 
       expect(result).toEqual(empresaFakeRepository.findOne());
     });

@@ -5,6 +5,7 @@ import { ILike, Repository } from 'typeorm';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
 import { EmpresaEntity } from './entities/empresa.entity';
+import { EmpresaInclude } from './includes/empresa.include';
 
 @Injectable()
 export class EmpresaService {
@@ -22,18 +23,18 @@ export class EmpresaService {
     return this.findById(branch.id);
   }
 
-  /** filter by cnpj or name */
-  async find(filter?: string): Promise<EmpresaEntity[]> {
+  async find(filter?: string, relations?: EmpresaInclude[]): Promise<EmpresaEntity[]> {
     return this.repository.find({
       where: {
         cnpj: ILike(`%${filter ?? ''}%`),
         nome: ILike(`%${filter ?? ''}%`),
       },
+      relations,
     });
   }
 
-  async findById(id: number): Promise<EmpresaEntity> {
-    return this.repository.findOne({ where: { id } });
+  async findById(id: number, relations?: EmpresaInclude[]): Promise<EmpresaEntity> {
+    return this.repository.findOne({ where: { id }, relations });
   }
 
   async update(id: number, updateBranchDto: UpdateEmpresaDto): Promise<EmpresaEntity> {

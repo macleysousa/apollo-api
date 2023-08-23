@@ -127,6 +127,7 @@ describe('AuthService', () => {
       expect(jwtService.decode).toHaveBeenCalledTimes(2);
       expect(jwtService.decode).toHaveBeenCalledWith(token);
 
+      expect(branchService.findById).toHaveBeenCalledWith(1, ['parametros']);
       expect(response).toEqual({ usuario: userFakeRepository.findOne(), empresa: empresaFakeRepository.findOne() });
     });
 

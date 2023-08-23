@@ -6,6 +6,7 @@ import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 import { UsuarioEntity } from 'src/modules/usuario/entities/usuario.entity';
 
 import { ContextService } from './context.service';
+import { describe } from 'node:test';
 
 describe('ContextService', () => {
   let service: ContextService;
@@ -21,6 +22,7 @@ describe('ContextService', () => {
   describe('currentAuth', () => {
     it('should return the current auth request', () => {
       const authRequest = {} as AuthRequest;
+
       jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: authRequest, res: undefined });
 
       const result = service.currentAuth();
@@ -32,6 +34,7 @@ describe('ContextService', () => {
   describe('currentUser', () => {
     it('should return the current user', () => {
       const usuario = {} as UsuarioEntity;
+
       jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: { usuario }, res: undefined });
 
       const result = service.currentUser();
@@ -43,6 +46,7 @@ describe('ContextService', () => {
   describe('currentBranch', () => {
     it('should return the current branch', () => {
       const empresa = {} as EmpresaEntity;
+
       jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: { empresa }, res: undefined });
 
       const result = service.currentBranch();
@@ -54,6 +58,7 @@ describe('ContextService', () => {
   describe('empresaId', () => {
     it('should return the current empresa id', () => {
       const empresa = { id: 1 } as any;
+
       jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: { empresa }, res: undefined });
 
       const result = service.empresaId();
@@ -62,9 +67,34 @@ describe('ContextService', () => {
     });
   });
 
+  describe('data', () => {
+    it('should return the current empresa data', () => {
+      const empresa = { data: new Date() } as any;
+
+      jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: { empresa }, res: undefined });
+
+      const result = service.data();
+
+      expect(result).toEqual(empresa.data);
+    });
+  });
+
+  describe('parametros', () => {
+    it('should return the current empresa parametros', () => {
+      const empresa = { parametros: [] } as any;
+
+      jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: { empresa }, res: undefined });
+
+      const result = service.parametros();
+
+      expect(result).toEqual(empresa.parametros);
+    });
+  });
+
   describe('operadorId', () => {
     it('should return the current operador id', () => {
       const usuario = { id: 1 } as any;
+
       jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: { usuario }, res: undefined });
 
       const result = service.operadorId();
@@ -76,6 +106,7 @@ describe('ContextService', () => {
   describe('request', () => {
     it('should return the current request', () => {
       const request = {} as Request;
+
       jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: request, res: undefined });
 
       const result = service.request();
@@ -87,6 +118,7 @@ describe('ContextService', () => {
   describe('response', () => {
     it('should return the current response', () => {
       const response = {} as Response;
+
       jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ res: response, req: undefined });
 
       const result = service.response();

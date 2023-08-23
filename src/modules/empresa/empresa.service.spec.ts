@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { empresaFakeRepository } from 'src/base-fake/empresa';
 import { ILike, Repository } from 'typeorm';
+
+import { empresaFakeRepository } from 'src/base-fake/empresa';
+
 import { EmpresaService } from './empresa.service';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
@@ -56,13 +58,20 @@ describe('BranchService', () => {
     it('should find branches no use filter', async () => {
       // Arrange
       const filter = '';
+      const relations = undefined;
 
       // Act
       const result = await service.find();
 
       // Assert
       expect(repository.find).toHaveBeenCalledTimes(1);
-      expect(repository.find).toHaveBeenCalledWith({ where: { cnpj: ILike(`%${filter ?? ''}%`), nome: ILike(`%${filter ?? ''}%`) } });
+      expect(repository.find).toHaveBeenCalledWith({
+        where: {
+          cnpj: ILike(`%${filter ?? ''}%`),
+          nome: ILike(`%${filter ?? ''}%`),
+        },
+        relations,
+      });
 
       expect(result).toEqual(empresaFakeRepository.find());
     });
@@ -70,13 +79,20 @@ describe('BranchService', () => {
     it('should find branches with filter', async () => {
       // Arrange
       const filter = 'filter';
+      const relations = ['parametros'] as any;
 
       // Act
-      const result = await service.find(filter);
+      const result = await service.find(filter, relations);
 
       // Assert
       expect(repository.find).toHaveBeenCalledTimes(1);
-      expect(repository.find).toHaveBeenCalledWith({ where: { cnpj: ILike(`%${filter ?? ''}%`), nome: ILike(`%${filter ?? ''}%`) } });
+      expect(repository.find).toHaveBeenCalledWith({
+        where: {
+          cnpj: ILike(`%${filter ?? ''}%`),
+          nome: ILike(`%${filter ?? ''}%`),
+        },
+        relations,
+      });
 
       expect(result).toEqual(empresaFakeRepository.find());
     });
@@ -86,13 +102,14 @@ describe('BranchService', () => {
     it('should find a branch by id', async () => {
       // Arrange
       const id = 1;
+      const relations = ['parametros'] as any;
 
       // Act
-      const result = await service.findById(id);
+      const result = await service.findById(id, relations);
 
       // Assert
       expect(repository.findOne).toHaveBeenCalledTimes(1);
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { id } });
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { id }, relations });
 
       expect(result).toEqual(empresaFakeRepository.findOne());
     });

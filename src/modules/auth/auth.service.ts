@@ -11,12 +11,12 @@ import { UsuarioEntity } from '../usuario/entities/usuario.entity';
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private userService: UsuarioService,
-    private branchService: EmpresaService
+    private usuarioService: UsuarioService,
+    private empresaService: EmpresaService
   ) {}
 
   async login({ usuario, senha, empresaId }: LoginDTO): Promise<{ token: string; refreshToken: string }> {
-    const user = await this.userService.validateUser(usuario, senha);
+    const user = await this.usuarioService.validateUser(usuario, senha);
 
     if (user) {
       const payload = { id: user.id, usuario: user.usuario, nome: user.nome, empresaId };
@@ -42,10 +42,10 @@ export class AuthService {
     });
 
     const username = this.jwtService.decode(token)['usuario'];
-    const usuario = await this.userService.findByUserName(username);
+    const usuario = await this.usuarioService.findByUserName(username);
 
-    const branchId = this.jwtService.decode(token)['empresaId'];
-    const empresa = branchId ? await this.branchService.findById(branchId) : undefined;
+    const empresaId = this.jwtService.decode(token)['empresaId'];
+    const empresa = empresaId ? await this.empresaService.findById(empresaId, ['parametros']) : undefined;
 
     return { usuario, empresa };
   }
@@ -61,7 +61,7 @@ export class AuthService {
   }
 
   async validateComponent(userId: number, empresaId: number, componenteId: string): Promise<boolean> {
-    const accesses = await this.userService.findAccesses(userId, { empresaId, componenteId });
+    const accesses = await this.usuarioService.findAccesses(userId, { empresaId, componenteId });
     const access = accesses?.find((access) => access.componenteId == componenteId);
 
     if (access?.descontinuado) {

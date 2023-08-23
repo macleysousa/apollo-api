@@ -47,6 +47,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     request.usuario = instanceToPlain(usuario);
     request.empresa = instanceToPlain(empresa);
+    request.pagamentos = instanceToPlain(empresa?.parametros);
 
     return true;
   }

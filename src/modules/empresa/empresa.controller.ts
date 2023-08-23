@@ -8,6 +8,8 @@ import { UpdateEmpresaDto } from './dto/update-empresa.dto';
 import { EmpresaEntity } from './entities/empresa.entity';
 import { Roles } from '../usuario/roles.decorator';
 import { Role } from '../usuario/enums/usuario-tipo.enum';
+import { EmpresaInclude, EmpresaIncludeEnum } from './includes/empresa.include';
+import { ApiQueryEnum } from 'src/decorators/api-query-enum.decorator';
 
 @ApiTags('Empresas')
 @Controller('empresas')
@@ -26,14 +28,16 @@ export class EmpresaController {
   @Get()
   @ApiResponse({ type: [EmpresaEntity], status: 200 })
   @ApiQuery({ name: 'filter', required: false, description: 'filter by cnpj or name' })
-  async find(@Query('filter') filter: string): Promise<EmpresaEntity[]> {
-    return this.service.find(filter);
+  @ApiQueryEnum({ name: 'incluir', required: false, enum: EmpresaIncludeEnum, isArray: true })
+  async find(@Query('filter') filter: string, @Query('incluir') incluir: EmpresaInclude[]): Promise<EmpresaEntity[]> {
+    return this.service.find(filter, incluir);
   }
 
   @Get(':id')
   @ApiResponse({ type: EmpresaEntity, status: 200 })
-  async findById(@Param('id', ParseIntPipe) id: number): Promise<EmpresaEntity> {
-    return this.service.findById(id);
+  @ApiQueryEnum({ name: 'incluir', required: false, enum: EmpresaIncludeEnum, isArray: true })
+  async findById(@Param('id', ParseIntPipe) id: number, @Query('incluir') incluir: EmpresaInclude[]): Promise<EmpresaEntity> {
+    return this.service.findById(id, incluir);
   }
 
   @Put(':id')
