@@ -13,7 +13,7 @@ export class ParseRomaneioPipe implements PipeTransform<string, Promise<number>>
 
   async transform(value: string): Promise<number> {
     const parsedValue = parseInt(value, 10);
-    const empresa = this.contextService.currentBranch();
+    const empresa = this.contextService.empresa();
 
     if (isNaN(parsedValue)) {
       throw new BadRequestException('O romaneio deve ser um número.');
@@ -40,7 +40,7 @@ export class ParseRomaneioEmAndamentoPipe implements PipeTransform<string, Promi
 
   async transform(value: string): Promise<number> {
     const parsedValue = parseInt(value, 10);
-    const empresa = this.contextService.currentBranch();
+    const empresa = this.contextService.empresa();
 
     console.log('ParseRomaneioEmAndamentoPipe', value, parsedValue, empresa);
 
@@ -69,7 +69,7 @@ export class ParseRomaneioEncerradoPipe implements PipeTransform<string, Promise
 
   async transform(value: string): Promise<number> {
     const parsedValue = parseInt(value, 10);
-    const empresa = this.contextService.currentBranch();
+    const empresa = this.contextService.empresa();
 
     if (isNaN(parsedValue)) {
       throw new BadRequestException('O romaneio deve ser um número.');

@@ -1,22 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { RequestContext } from 'nestjs-easy-context';
 
-import { AuthRequest } from 'src/decorators/current-auth.decorator';
 import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 import { EmpresaParametroEntity } from 'src/modules/empresa/parametro/entities/parametro.entity';
 import { UsuarioEntity } from 'src/modules/usuario/entities/usuario.entity';
 
 @Injectable()
 export class ContextService {
-  currentAuth(): AuthRequest {
-    return RequestContext.currentContext.req as unknown as AuthRequest;
-  }
-
-  currentUser(): UsuarioEntity {
+  usuario(): UsuarioEntity {
     return RequestContext.currentContext.req['usuario'];
   }
 
-  currentBranch(): EmpresaEntity {
+  empresa(): EmpresaEntity {
     return RequestContext.currentContext.req['empresa'];
   }
 

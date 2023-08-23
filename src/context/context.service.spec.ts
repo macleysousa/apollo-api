@@ -1,12 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RequestContext } from 'nestjs-easy-context';
 
-import { AuthRequest } from 'src/decorators/current-auth.decorator';
 import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 import { UsuarioEntity } from 'src/modules/usuario/entities/usuario.entity';
 
 import { ContextService } from './context.service';
-import { describe } from 'node:test';
 
 describe('ContextService', () => {
   let service: ContextService;
@@ -19,37 +17,25 @@ describe('ContextService', () => {
     service = module.get<ContextService>(ContextService);
   });
 
-  describe('currentAuth', () => {
-    it('should return the current auth request', () => {
-      const authRequest = {} as AuthRequest;
-
-      jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: authRequest, res: undefined });
-
-      const result = service.currentAuth();
-
-      expect(result).toBe(authRequest);
-    });
-  });
-
-  describe('currentUser', () => {
+  describe('usuario', () => {
     it('should return the current user', () => {
       const usuario = {} as UsuarioEntity;
 
       jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: { usuario }, res: undefined });
 
-      const result = service.currentUser();
+      const result = service.usuario();
 
       expect(result).toBe(usuario);
     });
   });
 
-  describe('currentBranch', () => {
+  describe('empresa', () => {
     it('should return the current branch', () => {
       const empresa = {} as EmpresaEntity;
 
       jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: { empresa }, res: undefined });
 
-      const result = service.currentBranch();
+      const result = service.empresa();
 
       expect(result).toBe(empresa);
     });

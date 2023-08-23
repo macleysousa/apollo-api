@@ -24,8 +24,8 @@ describe('CaixaConstraint', () => {
         {
           provide: ContextService,
           useValue: {
-            currentUser: jest.fn().mockReturnValue({ terminais: [{ id: 1 }] }),
-            currentBranch: jest.fn().mockReturnValue({ id: 1 }),
+            usuario: jest.fn().mockReturnValue({ terminais: [{ id: 1 }] }),
+            empresa: jest.fn().mockReturnValue({ id: 1 }),
           },
         },
       ],
@@ -43,13 +43,13 @@ describe('CaixaConstraint', () => {
       const caixa = { terminalId: 1, situacao: CaixaSituacao.Aberto } as any;
       const args = { constraints: [{ caixaAberto: true }] } as any;
 
-      jest.spyOn(contextService, 'currentUser').mockReturnValue(usuario);
-      jest.spyOn(contextService, 'currentBranch').mockReturnValue(empresa);
+      jest.spyOn(contextService, 'usuario').mockReturnValue(usuario);
+      jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
       jest.spyOn(caixaService, 'findById').mockResolvedValue(caixa);
 
       expect(await constraint.validate(3, args)).toBe(true);
-      expect(contextService.currentUser).toHaveBeenCalled();
-      expect(contextService.currentBranch).toHaveBeenCalled();
+      expect(contextService.usuario).toHaveBeenCalled();
+      expect(contextService.empresa).toHaveBeenCalled();
       expect(caixaService.findById).toHaveBeenCalledWith(empresa.id, 3);
     });
 
@@ -58,13 +58,13 @@ describe('CaixaConstraint', () => {
       const empresa = { id: 2 } as any;
       const args = { constraints: [{ caixaAberto: true }] } as any;
 
-      jest.spyOn(contextService, 'currentUser').mockReturnValue(usuario);
-      jest.spyOn(contextService, 'currentBranch').mockReturnValue(empresa);
+      jest.spyOn(contextService, 'usuario').mockReturnValue(usuario);
+      jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
       jest.spyOn(caixaService, 'findById').mockResolvedValue(undefined);
 
       expect(await constraint.validate(3, args)).toBe(false);
-      expect(contextService.currentUser).toHaveBeenCalled();
-      expect(contextService.currentBranch).toHaveBeenCalled();
+      expect(contextService.usuario).toHaveBeenCalled();
+      expect(contextService.empresa).toHaveBeenCalled();
       expect(caixaService.findById).toHaveBeenCalledWith(empresa.id, 3);
       expect(constraint.messageError).toBe('Caixa não encontrado');
     });
@@ -75,13 +75,13 @@ describe('CaixaConstraint', () => {
       const caixa = { terminalId: 3, situacao: CaixaSituacao.Aberto } as any;
       const args = { constraints: [{ caixaAberto: true }] } as any;
 
-      jest.spyOn(contextService, 'currentUser').mockReturnValue(usuario);
-      jest.spyOn(contextService, 'currentBranch').mockReturnValue(empresa);
+      jest.spyOn(contextService, 'usuario').mockReturnValue(usuario);
+      jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
       jest.spyOn(caixaService, 'findById').mockResolvedValue(caixa);
 
       expect(await constraint.validate(4, args)).toBe(false);
-      expect(contextService.currentUser).toHaveBeenCalled();
-      expect(contextService.currentBranch).toHaveBeenCalled();
+      expect(contextService.usuario).toHaveBeenCalled();
+      expect(contextService.empresa).toHaveBeenCalled();
       expect(caixaService.findById).toHaveBeenCalledWith(empresa.id, 4);
       expect(constraint.messageError).toBe('Usuário não possui acesso ao caixa');
     });
@@ -91,13 +91,13 @@ describe('CaixaConstraint', () => {
       const empresa = { id: 2 } as any;
       const caixa = { terminalId: 1, situacao: CaixaSituacao.Fechado } as any;
 
-      jest.spyOn(contextService, 'currentUser').mockReturnValue(usuario);
-      jest.spyOn(contextService, 'currentBranch').mockReturnValue(empresa);
+      jest.spyOn(contextService, 'usuario').mockReturnValue(usuario);
+      jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
       jest.spyOn(caixaService, 'findById').mockResolvedValue(caixa);
 
       expect(await constraint.validate(5, { constraints: [{ caixaAberto: true }] } as any)).toBe(false);
-      expect(contextService.currentUser).toHaveBeenCalled();
-      expect(contextService.currentBranch).toHaveBeenCalled();
+      expect(contextService.usuario).toHaveBeenCalled();
+      expect(contextService.empresa).toHaveBeenCalled();
       expect(caixaService.findById).toHaveBeenCalledWith(empresa.id, 5);
       expect(constraint.messageError).toBe('Caixa não está aberto');
     });

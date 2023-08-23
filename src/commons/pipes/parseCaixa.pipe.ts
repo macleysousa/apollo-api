@@ -13,8 +13,8 @@ export class ParseCaixaPipe implements PipeTransform<string, Promise<number>> {
 
   async transform(value: string): Promise<number> {
     const parsedValue = parseInt(value, 10);
-    const usuario = this.contextService.currentUser();
-    const empresa = this.contextService.currentBranch();
+    const usuario = this.contextService.usuario();
+    const empresa = this.contextService.empresa();
 
     if (isNaN(parsedValue)) {
       throw new BadRequestException('O caixa deve ser um número.');
@@ -41,8 +41,8 @@ export class ParseCaixaAbertoPipe implements PipeTransform<string, Promise<numbe
 
   async transform(value: string): Promise<number> {
     const parsedValue = parseInt(value, 10);
-    const usuario = this.contextService.currentUser();
-    const empresa = this.contextService.currentBranch();
+    const usuario = this.contextService.usuario();
+    const empresa = this.contextService.empresa();
 
     if (isNaN(parsedValue)) {
       throw new BadRequestException('O caixa deve ser um número.');

@@ -26,7 +26,7 @@ export class PessoaExtratoService {
 
   async lancarMovimento(dto: LancarMovimentoPessoaDto): Promise<PessoaExtratoEntity> {
     const operadorId = this.contextService.operadorId();
-    const empresa = this.contextService.currentBranch();
+    const empresa = this.contextService.empresa();
 
     return this.repository.save({
       ...dto,

@@ -17,7 +17,7 @@ describe('TerminalConstraint', () => {
         {
           provide: ContextService,
           useValue: {
-            currentUser: jest.fn().mockReturnValue(userFakeRepository.findOne()),
+            usuario: jest.fn().mockReturnValue(userFakeRepository.findOne()),
           },
         },
         {
@@ -46,7 +46,7 @@ describe('TerminalConstraint', () => {
 
       const result = await constraint.validate(value, args);
 
-      expect(contextService.currentUser).toHaveBeenCalled();
+      expect(contextService.usuario).toHaveBeenCalled();
       expect(terminalService.findById).toHaveBeenCalledWith(undefined, value);
       expect(result).toBe(true);
     });
@@ -59,7 +59,7 @@ describe('TerminalConstraint', () => {
 
       const result = await constraint.validate(value, args);
 
-      expect(contextService.currentUser).toHaveBeenCalled();
+      expect(contextService.usuario).toHaveBeenCalled();
       expect(terminalService.findById).toHaveBeenCalledWith(undefined, value);
       expect(result).toBe(false);
     });
@@ -70,7 +70,7 @@ describe('TerminalConstraint', () => {
 
       const result = await constraint.validate(value, args);
 
-      expect(contextService.currentUser).toHaveBeenCalled();
+      expect(contextService.usuario).toHaveBeenCalled();
       expect(terminalService.findById).toHaveBeenCalledWith(undefined, value);
       expect(result).toBe(true);
     });
@@ -81,11 +81,11 @@ describe('TerminalConstraint', () => {
       const terminal = { ...userFakeRepository.findOneTerminal().terminal, id: 999 };
       const usuario = { ...userFakeRepository.findOne(), terminais: [terminal] };
 
-      jest.spyOn(contextService, 'currentUser').mockReturnValueOnce(usuario);
+      jest.spyOn(contextService, 'usuario').mockReturnValueOnce(usuario);
 
       const result = await constraint.validate(value, args);
 
-      expect(contextService.currentUser).toHaveBeenCalled();
+      expect(contextService.usuario).toHaveBeenCalled();
       expect(terminalService.findById).toHaveBeenCalledWith(undefined, value);
       expect(result).toBe(false);
     });

@@ -20,7 +20,7 @@ export class TerminalConstraint implements ValidatorConstraintInterface {
   ) {}
 
   async validate(value: number, args?: ValidationArguments): Promise<boolean> {
-    const usuario = this.contextService.currentUser();
+    const usuario = this.contextService.usuario();
     const terminal = await this.terminalService.findById(undefined, value);
     const [options] = args.constraints;
 

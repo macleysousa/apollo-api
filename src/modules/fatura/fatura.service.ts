@@ -34,8 +34,8 @@ export class FaturaService {
   ) {}
 
   async createManual(createFaturaDto: CreateFaturaManualDto): Promise<FaturaEntity> {
-    const usuario = this.contextService.currentUser();
-    const empresa = this.contextService.currentBranch();
+    const usuario = this.contextService.usuario();
+    const empresa = this.contextService.empresa();
 
     const fatura = await this.repository.save({
       ...createFaturaDto,
@@ -51,8 +51,8 @@ export class FaturaService {
   }
 
   async createAutomatica(createFaturaDto: CreateFaturaAutimaticaDto): Promise<FaturaEntity> {
-    const usuario = this.contextService.currentUser();
-    const empresa = this.contextService.currentBranch();
+    const usuario = this.contextService.usuario();
+    const empresa = this.contextService.empresa();
 
     const fatura = await this.repository.save({
       ...createFaturaDto,
@@ -107,7 +107,7 @@ export class FaturaService {
   }
 
   async update(empresaId: number, id: number, updateFaturaDto: UpdateFaturaManualDto): Promise<FaturaEntity> {
-    const usuario = this.contextService.currentUser();
+    const usuario = this.contextService.usuario();
     const fatura = await this.findById(empresaId, id);
     if (!fatura) {
       throw new BadRequestException('Fatura não encontrada');
@@ -123,7 +123,7 @@ export class FaturaService {
   }
 
   async cancelar(empresaId: number, id: number): Promise<FaturaEntity> {
-    const usuario = this.contextService.currentUser();
+    const usuario = this.contextService.usuario();
     const fatura = await this.findById(empresaId, id);
     if (!fatura) {
       throw new BadRequestException('Fatura não encontrada');

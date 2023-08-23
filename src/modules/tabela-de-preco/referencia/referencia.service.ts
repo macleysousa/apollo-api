@@ -42,7 +42,7 @@ export class PrecoReferenciaService {
   }
 
   async add(tabelaDePrecoId: number, { referenciaId, preco }: AddPrecoReferenciaDto): Promise<PrecoReferenciaView> {
-    const operadorId = this.contextService.currentUser().id;
+    const operadorId = this.contextService.usuario().id;
     const { terminador } = await this.tabelaService.findById(tabelaDePrecoId);
 
     await this.repository.upsert(

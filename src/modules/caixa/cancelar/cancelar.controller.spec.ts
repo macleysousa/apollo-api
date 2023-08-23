@@ -32,8 +32,8 @@ describe('CancelarController', () => {
         {
           provide: ContextService,
           useValue: {
-            currentUser: jest.fn().mockReturnValue({ id: 1 }),
-            currentBranch: jest.fn().mockReturnValue({ id: 1, data: new Date('2023-06-05') }),
+            usuario: jest.fn().mockReturnValue({ id: 1 }),
+            empresa: jest.fn().mockReturnValue({ id: 1, data: new Date('2023-06-05') }),
           },
         },
       ],

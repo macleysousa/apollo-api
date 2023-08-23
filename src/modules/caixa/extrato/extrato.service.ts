@@ -35,7 +35,7 @@ export class CaixaExtratoService {
 
   async lancarLiquidacao(caixaId: number, liquidacao: number, dto: LancarMovimento[]): Promise<CaixaExtratoEntity[]> {
     const operadorId = this.contextService.operadorId();
-    const empresa = this.contextService.currentBranch();
+    const empresa = this.contextService.empresa();
 
     await this.repository.insert(
       dto.map((item) => ({

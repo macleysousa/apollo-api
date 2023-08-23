@@ -27,8 +27,8 @@ export class RomaneioService {
   ) {}
 
   async create(createRomaneioDto: CreateRomaneioDto): Promise<RomaneioView> {
-    const usuario = this.contextService.currentUser();
-    const empresa = this.contextService.currentBranch();
+    const usuario = this.contextService.usuario();
+    const empresa = this.contextService.empresa();
     const parametro = await this.empresaParamService.find(empresa.id);
 
     let observacao = '';
@@ -131,7 +131,7 @@ export class RomaneioService {
   }
 
   async cancelar(empresaId: number, id: number, motivo: string): Promise<RomaneioView> {
-    const operadorId = this.contextService.currentUser().id;
+    const operadorId = this.contextService.usuario().id;
 
     await this.repository.update({ id }, { situacao: SituacaoRomaneio.Cancelado, motivoCancelamento: motivo, operadorId }).catch(() => {
       throw new BadRequestException('Não foi possível cancelar o romaneio');

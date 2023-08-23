@@ -52,7 +52,7 @@ export class ReceberService {
   }
 
   async romaneio(caixaId: number, romaneioDto: ReceberRomaneioDto): Promise<RomaneioView> {
-    const empresa = this.contextService.currentBranch();
+    const empresa = this.contextService.empresa();
     const romaneio = await this.romaneioService.findById(empresa.id, romaneioDto.romaneioId, ['itens']);
     if (!romaneio) {
       throw new BadRequestException('Romaneio não encontrado');

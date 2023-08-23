@@ -27,8 +27,8 @@ export class RomaneioItemService {
   ) {}
 
   async add(romaneioId: number, { produtoId, quantidade }: UpSertRemoveRomaneioItemDto): Promise<RomaneioItemView> {
-    const usuario = this.contextService.currentUser();
-    const empresa = this.contextService.currentBranch();
+    const usuario = this.contextService.usuario();
+    const empresa = this.contextService.empresa();
 
     const romaneio = await this.romaneioService.findById(empresa.id, romaneioId);
     if (!romaneio) {
@@ -97,7 +97,7 @@ export class RomaneioItemService {
   }
 
   async remove(romaneioId: number, produtoId: number, quantidade: number): Promise<void> {
-    const usuario = this.contextService.currentUser();
+    const usuario = this.contextService.usuario();
     const item = await this.view.findOne({ where: { romaneioId, produtoId }, order: { sequencia: 'DESC' } });
 
     if (!item) {

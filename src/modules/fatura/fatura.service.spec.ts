@@ -53,8 +53,8 @@ describe('FaturaService', () => {
         {
           provide: ContextService,
           useValue: {
-            currentUser: jest.fn().mockReturnValue({ id: 1 }),
-            currentBranch: jest.fn().mockReturnValue({ id: 1, data: new Date('2023-06-16') }),
+            usuario: jest.fn().mockReturnValue({ id: 1 }),
+            empresa: jest.fn().mockReturnValue({ id: 1, data: new Date('2023-06-16') }),
           },
         },
       ],
@@ -75,8 +75,8 @@ describe('FaturaService', () => {
 
   describe('create', () => {
     it('should create a manual fatura', async () => {
-      const usuario = contextService.currentUser();
-      const empresa = contextService.currentBranch();
+      const usuario = contextService.usuario();
+      const empresa = contextService.empresa();
       const createFaturaDto: CreateFaturaManualDto = {
         pessoaId: 1,
         valor: 100,
@@ -102,8 +102,8 @@ describe('FaturaService', () => {
     });
 
     it('should create a automatica fatura with itens', async () => {
-      const usuario = contextService.currentUser();
-      const empresa = contextService.currentBranch();
+      const usuario = contextService.usuario();
+      const empresa = contextService.empresa();
       const dto: CreateFaturaAutimaticaDto = new CreateFaturaAutimaticaDto({
         pessoaId: 1,
         valor: 100,
@@ -131,8 +131,8 @@ describe('FaturaService', () => {
     });
 
     it('should create a automatica fatura without itens', async () => {
-      const usuario = contextService.currentUser();
-      const empresa = contextService.currentBranch();
+      const usuario = contextService.usuario();
+      const empresa = contextService.empresa();
 
       const dto: CreateFaturaAutimaticaDto = new CreateFaturaAutimaticaDto({
         pessoaId: 1,

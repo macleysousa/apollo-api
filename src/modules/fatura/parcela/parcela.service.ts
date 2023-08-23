@@ -21,8 +21,8 @@ export class FaturaParcelaService {
   ) {}
 
   async add(faturaId: number, dto: UpsertParcelaDto): Promise<FaturaParcelaEntity> {
-    const usuario = this.contextService.currentUser();
-    const empresa = this.contextService.currentBranch();
+    const usuario = this.contextService.usuario();
+    const empresa = this.contextService.empresa();
 
     const fatura = await this.faturaService.findById(empresa.id, faturaId);
     if (!fatura) {
@@ -84,7 +84,7 @@ export class FaturaParcelaService {
   }
 
   async receber(empresaId: number, caixaId: number, faturaId: number, parcela: number): Promise<void> {
-    const usuario = this.contextService.currentUser();
+    const usuario = this.contextService.usuario();
 
     const parcelaEntity = await this.findByParcela(empresaId, faturaId, parcela);
     if (!parcelaEntity) throw new BadRequestException('Parcela não encontrada.');

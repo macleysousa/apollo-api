@@ -31,7 +31,7 @@ describe('PessoaExtratoService', () => {
           provide: ContextService,
           useValue: {
             operadorId: jest.fn().mockReturnValue(1),
-            currentBranch: jest.fn().mockReturnValue({ id: 1, data: new Date('2023-08-16') }),
+            empresa: jest.fn().mockReturnValue({ id: 1, data: new Date('2023-08-16') }),
           },
         },
       ],

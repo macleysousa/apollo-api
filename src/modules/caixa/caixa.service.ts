@@ -17,8 +17,8 @@ export class CaixaService {
   ) {}
 
   async open({ empresaId, terminalId }: CreateCaixaDto): Promise<CaixaEntity> {
-    const usuario = this.contextService.currentUser();
-    const empresa = this.contextService.currentBranch();
+    const usuario = this.contextService.usuario();
+    const empresa = this.contextService.empresa();
     const ultimoCaixa = await this.repository.findOne({ where: { empresaId, terminalId }, order: { id: 'DESC' } });
 
     if (ultimoCaixa?.situacao === CaixaSituacao.Aberto) {

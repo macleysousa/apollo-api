@@ -58,7 +58,7 @@ describe('PrecoReferenciaService', () => {
         {
           provide: ContextService,
           useValue: {
-            currentUser: jest.fn().mockReturnValue({ id: 1 }),
+            usuario: jest.fn().mockReturnValue({ id: 1 }),
             operadorId: jest.fn().mockReturnValue(1),
           },
         },

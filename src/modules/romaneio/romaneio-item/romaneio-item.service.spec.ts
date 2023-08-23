@@ -61,8 +61,8 @@ describe('RomaneioItemService', () => {
         {
           provide: ContextService,
           useValue: {
-            currentUser: jest.fn().mockReturnValue(userFakeRepository.findOne()),
-            currentBranch: jest.fn().mockReturnValue(empresaFakeRepository.findOne()),
+            usuario: jest.fn().mockReturnValue(userFakeRepository.findOne()),
+            empresa: jest.fn().mockReturnValue(empresaFakeRepository.findOne()),
             operadorId: jest.fn().mockReturnValue(1),
             empresaId: jest.fn().mockReturnValue(1),
           },
@@ -112,7 +112,7 @@ describe('RomaneioItemService', () => {
       const estoque = { produtoId, referenciaId: 1, saldo: 20 } as any;
       const precoReferencia = { preco: 10 } as any;
 
-      jest.spyOn(contextService, 'currentBranch').mockReturnValueOnce(empresa);
+      jest.spyOn(contextService, 'empresa').mockReturnValueOnce(empresa);
       jest.spyOn(service, 'findByProdutoId').mockResolvedValueOnce(undefined);
       jest.spyOn(estoqueService, 'findByProdutoId').mockResolvedValueOnce(estoque);
       jest.spyOn(precoService, 'findByReferenciaId').mockResolvedValueOnce(precoReferencia);
@@ -148,7 +148,7 @@ describe('RomaneioItemService', () => {
       const precoReferencia = { preco: 10 } as any;
       const romaneioItem = [{ quantidade: 5 }] as any;
 
-      jest.spyOn(contextService, 'currentBranch').mockReturnValueOnce(empresa);
+      jest.spyOn(contextService, 'empresa').mockReturnValueOnce(empresa);
       jest.spyOn(service, 'findByProdutoId').mockResolvedValueOnce(romaneioItem);
       jest.spyOn(estoqueService, 'findByProdutoId').mockResolvedValueOnce(estoque);
       jest.spyOn(precoService, 'findByReferenciaId').mockResolvedValueOnce(precoReferencia);
@@ -198,7 +198,7 @@ describe('RomaneioItemService', () => {
       const quantidade = 10;
       const empresa = { id: 1 } as any;
 
-      jest.spyOn(contextService, 'currentBranch').mockReturnValue(empresa);
+      jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
       jest.spyOn(estoqueService, 'findByProdutoId').mockResolvedValue(null);
 
       await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrow(BadRequestException);
@@ -211,7 +211,7 @@ describe('RomaneioItemService', () => {
       const empresa = { id: 1 } as any;
       const estoque = { produtoId, referenciaId: 1, saldo: 5 } as any;
 
-      jest.spyOn(contextService, 'currentBranch').mockReturnValue(empresa);
+      jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
       jest.spyOn(service, 'findByProdutoId').mockResolvedValueOnce(undefined);
       jest.spyOn(estoqueService, 'findByProdutoId').mockResolvedValue(estoque);
 
@@ -225,7 +225,7 @@ describe('RomaneioItemService', () => {
       const empresa = { id: 1 } as any;
       const estoque = { produtoId, referenciaId: 1, saldo: 20 } as any;
 
-      jest.spyOn(contextService, 'currentBranch').mockReturnValue(empresa);
+      jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
       jest.spyOn(service, 'findByProdutoId').mockResolvedValue([{ quantidade: 5 }] as any);
       jest.spyOn(estoqueService, 'findByProdutoId').mockResolvedValue(estoque);
       jest.spyOn(precoService, 'findByReferenciaId').mockResolvedValue(null);
@@ -241,7 +241,7 @@ describe('RomaneioItemService', () => {
       const estoque = { produtoId, referenciaId: 1, saldo: 20 } as any;
       const precoReferencia = { preco: 0 } as any;
 
-      jest.spyOn(contextService, 'currentBranch').mockReturnValue(empresa);
+      jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
       jest.spyOn(service, 'findByProdutoId').mockResolvedValue([{ quantidade: 5 }] as any);
       jest.spyOn(estoqueService, 'findByProdutoId').mockResolvedValue(estoque);
       jest.spyOn(precoService, 'findByReferenciaId').mockResolvedValue(precoReferencia);

@@ -21,8 +21,8 @@ export class CaixaConstraint implements ValidatorConstraintInterface {
   ) {}
 
   async validate(value: number, args?: ValidationArguments): Promise<boolean> {
-    const usuario = this.contextService.currentUser();
-    const empresa = this.contextService.currentBranch();
+    const usuario = this.contextService.usuario();
+    const empresa = this.contextService.empresa();
 
     const caixa = await this.caixaService.findById(empresa.id, value);
     const [options] = args.constraints;
