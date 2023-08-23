@@ -112,7 +112,7 @@ describe('CaixaExtratoService', () => {
       const result = await service.newLiquidacaoId();
 
       expect(repository.createQueryBuilder).toHaveBeenCalledTimes(1);
-      expect(repository.createQueryBuilder().select).toHaveBeenCalledWith(`SELECT FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000) AS timestamp`);
+      expect(repository.createQueryBuilder().select).toHaveBeenCalledWith(`FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000) AS timestamp`);
       expect(result).toEqual(timestamp);
     });
   });

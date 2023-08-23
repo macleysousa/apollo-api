@@ -1,18 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { ContextService } from 'src/context/context.service';
+import { EstoqueService } from 'src/modules/estoque/estoque.service';
 import { PessoaExtratoService } from 'src/modules/pessoa/extrato/pessoa-extrato.service';
+import { ModalidadeRomaneio } from 'src/modules/romaneio/enum/modalidade-romaneio.enum';
+import { OperacaoRomaneio } from 'src/modules/romaneio/enum/operacao-romaneio.enum';
 import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
+import { RomaneioItemService } from 'src/modules/romaneio/romaneio-item/romaneio-item.service';
 import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
 
 import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
 import { CaixaExtratoService } from '../extrato/extrato.service';
 import { CancelarAdiantamentoDto } from './dto/cancelar-adianteamento.dto';
 import { CancelarRomaneioDto } from './dto/cancelar-romaneio.dto';
-import { RomaneioItemService } from 'src/modules/romaneio/romaneio-item/romaneio-item.service';
-import { EstoqueService } from 'src/modules/estoque/estoque.service';
-import { ModalidadeRomaneio } from 'src/modules/romaneio/enum/modalidade-romaneio.enum';
-import { OperacaoRomaneio } from 'src/modules/romaneio/enum/operacao-romaneio.enum';
 
 @Injectable()
 export class CancelarService {
@@ -75,9 +75,7 @@ export class CancelarService {
       if (saldoCredev < romaneio.valorLiquido) {
         throw new BadRequestException(`Saldo de crédito de devolução insuficiente para realizar o cancelamento`);
       }
-    }
-
-    if (romaneio.situacao == SituacaoRomaneio.Encerrado && romaneio.operacao == OperacaoRomaneio.Venda) {
+    } else if (romaneio.situacao == SituacaoRomaneio.Encerrado && romaneio.operacao == OperacaoRomaneio.Venda) {
       const romaneioItens = await this.romaneioItemService.find(dto.romaneioId);
       const produtoDevolucaoIds = romaneioItens.filter((x) => x.devolvido > 0).map((x) => x.produtoId);
       if (produtoDevolucaoIds.length > 0) {

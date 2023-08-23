@@ -87,6 +87,11 @@ export class CreateTableFaturasParcelas1686931296067 implements MigrationInterfa
             isNullable: true,
           },
           {
+            name: 'bandeira',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
             name: 'cheque',
             type: 'int',
             isNullable: true,

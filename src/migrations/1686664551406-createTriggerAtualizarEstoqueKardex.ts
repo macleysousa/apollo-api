@@ -2,10 +2,10 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateTriggerAtualizarEstoqueKardex1686664551406 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TRIGGER IF EXISTS atualiza_estoque_kardex`);
+    await queryRunner.query(`DROP TRIGGER IF EXISTS romaneios_before_update`);
 
     await queryRunner.query(`
-CREATE TRIGGER atualiza_estoque_kardex
+CREATE TRIGGER romaneios_before_update
 BEFORE UPDATE ON romaneios
 FOR EACH ROW
 BEGIN
@@ -19,13 +19,16 @@ BEGIN
         WHERE romaneioId = NEW.id
 		    GROUP BY empresaId, data, romaneioId, referenciaId, produtoId;
     ELSEIF OLD.situacao = 'Encerrado' AND NEW.situacao = 'Cancelado' THEN
-        UPDATE estoque_kardex  SET cancelado = 1, atualizadoEm = now() WHERE romaneioId = NEW.id;
+        UPDATE estoque_kardex  SET cancelado=1,atualizadoEm=now() WHERE romaneioId=NEW.id;
+        UPDATE faturas SET situacao='Cancelada',operadorId=new.operadorId,motivoCancelamento=new.motivoCancelamento,atualizadoEm=now() WHERE romaneioId=NEW.id;
+        UPDATE pessoas_extrato SET cancelado=1,operadorId=new.operadorId,motivoCancelamento=new.motivoCancelamento,atualizadoEm=now() WHERE romaneioId=NEW.id;
+        UPDATE caixas_extrato SET cancelado=1,operadorId=new.operadorId,motivoCancelamento=new.motivoCancelamento,atualizadoEm=now() WHERE liquidacao=NEW.liquidacao;
     END IF;
 END;
 `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TRIGGER IF EXISTS atualiza_estoque_kardex`);
+    await queryRunner.query(`DROP TRIGGER IF EXISTS romaneios_before_update`);
   }
 }

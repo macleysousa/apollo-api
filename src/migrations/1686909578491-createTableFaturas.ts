@@ -71,6 +71,12 @@ export class CreateTableFaturas1686909578491 implements MigrationInterface {
             isNullable: true,
           },
           {
+            name: 'motivoCancelamento',
+            type: 'varchar',
+            length: '500',
+            isNullable: true,
+          },
+          {
             name: 'operadorId',
             type: 'int',
             isNullable: false,
@@ -86,6 +92,7 @@ export class CreateTableFaturas1686909578491 implements MigrationInterface {
             default: 'now()',
           },
         ],
+        uniques: [{ columnNames: ['id'] }],
         foreignKeys: [
           {
             columnNames: ['empresaId'],
@@ -118,9 +125,22 @@ export class CreateTableFaturas1686909578491 implements MigrationInterface {
         ],
       })
     );
+
+    await queryRunner.query(`DROP TRIGGER IF EXISTS faturas_after_update`);
+    await queryRunner.query(`
+CREATE TRIGGER faturas_after_update
+AFTER UPDATE ON faturas
+FOR EACH ROW
+BEGIN
+	IF OLD.situacao <> 'Cancelada' AND NEW.situacao = 'Cancelada' THEN
+    UPDATE faturas_parcelas SET situacao='Cancelada',operadorId=new.operadorId,motivoCancelamento=new.motivoCancelamento,atualizadoEm=now() WHERE faturaId=NEW.id;
+  END IF;
+END;
+`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP TRIGGER IF EXISTS faturas_after_update`);
     await queryRunner.dropTable('faturas');
   }
 }

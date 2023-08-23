@@ -6,6 +6,7 @@ import { IsBetween } from 'src/commons/validations/is-between.validation';
 import { IsPessoa } from 'src/commons/validations/is-pessoa.validation';
 
 import { TipoDocumento } from '../enum/tipo-documento.enum';
+import { IsRomaneio } from 'src/commons/validations/is-romaneio.validation';
 
 export class LancarMovimentoPessoaDto {
   @ApiProperty()
@@ -44,7 +45,12 @@ export class LancarMovimentoPessoaDto {
 
   @ApiProperty()
   @IsOptional()
-  observacao: string;
+  @IsRomaneio()
+  romaneioId?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  observacao?: string;
 
   constructor(data: LancarMovimentoPessoaDto) {
     Object.assign(this, data);

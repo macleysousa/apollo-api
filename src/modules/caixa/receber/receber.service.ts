@@ -109,6 +109,7 @@ export class ReceberService {
           faturaParcela: fatura.itens.first().parcela,
           valor: romaneio.valorLiquido,
           liquidacao: await this.caixaExtratoService.newLiquidacaoId(),
+          romaneioId: romaneio.romaneioId,
           tipoDocumento: TipoDocumento.Credito_de_Devolucao as any,
           tipoMovimento: TipoMovimento.Credito,
           observacao: `Crédito de devolução gerado a partir do romaneio ${romaneio.romaneioId}`,

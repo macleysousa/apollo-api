@@ -66,6 +66,10 @@ export class FaturaEntity extends BaseEntity {
   observacao: string;
 
   @ApiProperty()
+  @Column('varchar', { length: 500 })
+  motivoCancelamento: string;
+
+  @ApiProperty()
   @Column('int')
   operadorId: number;
 

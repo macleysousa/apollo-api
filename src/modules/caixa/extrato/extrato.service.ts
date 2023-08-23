@@ -28,7 +28,7 @@ export class CaixaExtratoService {
   }
 
   async newLiquidacaoId(): Promise<number> {
-    const queryBuilder = this.repository.createQueryBuilder().select(`SELECT FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000) AS timestamp`);
+    const queryBuilder = this.repository.createQueryBuilder().select(`FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000) AS timestamp`);
     const { timestamp } = await queryBuilder.getRawOne();
     return timestamp;
   }

@@ -24,19 +24,21 @@ CREATE TRIGGER faturas_parcelas_after_update
 AFTER UPDATE ON faturas_parcelas
 FOR EACH ROW
 BEGIN
-		SET @valorFatura = (select sum(valor) from faturas where empresaId=new.empresaId and id=new.faturaId);
-		SET @valorParcelasPagas = (select sum(valor) from faturas_parcelas where empresaId=new.empresaId and faturaId=new.faturaId and situacao='Encerrada');
+    SET @situacaoFatura = (select distinct(situacao) from faturas_parcelas where empresaId=new.empresaId and faturaId=new.faturaId);
+    SET @valorFatura = (select sum(valor) from faturas where empresaId=new.empresaId and id=new.faturaId);
+    SET @valorParcelasPagas = (select sum(valor) from faturas_parcelas where empresaId=new.empresaId and faturaId=new.faturaId and situacao='Encerrada');
 
     IF @valorFatura = @valorParcelasPagas THEN
-			update faturas set situacao='Encerrada' where empresaId=new.empresaId and id=new.faturaId;
-		ELSEIF OLD.situacao='Encerrada' AND  NEW.situacao = 'Cancelada' THEN
-			update faturas set situacao='Normal' where empresaId=new.empresaId and id=new.faturaId;
-		END IF;
+      update faturas set situacao='Encerrada' where empresaId=new.empresaId and id=new.faturaId;
+    ELSEIF OLD.situacao='Encerrada' AND  NEW.situacao='Cancelada' AND  @situacaoFatura<>'Cancelada' THEN
+      update faturas set situacao='Normal' where empresaId=new.empresaId and id=new.faturaId;
+    END IF;
 END;
 `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP TRIGGER IF EXISTS faturas_parcelas_before_update`);
     await queryRunner.query(`DROP TRIGGER IF EXISTS faturas_parcelas_after_update`);
   }
 }

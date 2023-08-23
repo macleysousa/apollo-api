@@ -71,6 +71,10 @@ export class FaturaParcelaEntity extends BaseEntity {
 
   @ApiProperty()
   @Column('varchar', { length: 255 })
+  bandeira: string;
+
+  @ApiProperty()
+  @Column('varchar', { length: 255 })
   autorizacao: string;
 
   @ApiProperty()

@@ -30,6 +30,10 @@ export class PessoaExtratoEntity extends BaseEntity {
   faturaId: number;
 
   @ApiProperty()
+  @Column('bigint')
+  romaneioId: number;
+
+  @ApiProperty()
   @PrimaryColumn('int')
   faturaParcela: number;
 

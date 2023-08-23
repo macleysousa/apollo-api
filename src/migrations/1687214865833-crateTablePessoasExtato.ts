@@ -37,6 +37,11 @@ export class CrateTablePessoasExtato1687214865833 implements MigrationInterface 
             isPrimary: true,
           },
           {
+            name: 'romaneioId',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
             name: 'tipoDocumento',
             type: 'enum',
             enum: ['Adiantamento', 'Crédito de Devolução'],
@@ -109,14 +114,21 @@ export class CrateTablePessoasExtato1687214865833 implements MigrationInterface 
             columnNames: ['empresaId', 'faturaId'],
             referencedTableName: 'faturas',
             referencedColumnNames: ['empresaId', 'id'],
-            onDelete: 'RESTRICT',
+            onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           },
           {
             columnNames: ['empresaId', 'faturaId', 'faturaParcela'],
             referencedTableName: 'faturas_parcelas',
             referencedColumnNames: ['empresaId', 'faturaId', 'parcela'],
-            onDelete: 'RESTRICT',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
+          },
+          {
+            columnNames: ['empresaId', 'romaneioId'],
+            referencedTableName: 'romaneios',
+            referencedColumnNames: ['empresaId', 'id'],
+            onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           },
           {
@@ -142,10 +154,14 @@ BEGIN
           SET NEW.valor = ABS(NEW.valor);
       END IF;
 
-      IF NEW.tipoMovimento = 'Débito' THEN
-        SET NEW.descricao = 'DEBITO EM ADIANTAMENTO';
-      ELSEIF NEW.tipoMovimento = 'Crédito' THEN
-        SET NEW.descricao = 'CREDITO EM ADIANTAMENTO';
+      IF NEW.tipoMovimento = 'Débito' AND NEW.tipoDocumento = 'Adiantamento' AND NEW.descricao IS NULL THEN
+          SET NEW.descricao = 'DEBITO EM ADIANTAMENTO';
+      ELSEIF NEW.tipoMovimento = 'Crédito' AND NEW.tipoDocumento = 'Adiantamento' AND NEW.descricao IS NULL THEN
+          SET NEW.descricao = 'CREDITO EM ADIANTAMENTO';
+	    ELSEIF NEW.tipoMovimento = 'Débito' AND NEW.tipoDocumento = 'Crédito de Devolução' AND NEW.descricao IS NULL THEN
+          SET NEW.descricao = 'DEBITO EM DEVOLUCAO';
+	    ELSEIF NEW.tipoMovimento = 'Crédito' AND NEW.tipoDocumento = 'Crédito de Devolução' AND NEW.descricao IS NULL THEN
+          SET NEW.descricao = 'CREDITO EM DEVOLUCAO';
       END IF;
 END;
 `);
@@ -162,10 +178,14 @@ BEGIN
           SET NEW.valor = ABS(NEW.valor);
       END IF;
 
-      IF NEW.tipoMovimento = 'Débito' THEN
-        SET NEW.descricao = 'DEBITO EM ADIANTAMENTO';
-      ELSEIF NEW.tipoMovimento = 'Crédito' THEN
-        SET NEW.descricao = 'CREDITO EM ADIANTAMENTO';
+      IF NEW.tipoMovimento = 'Débito' AND NEW.tipoDocumento = 'Adiantamento' AND NEW.descricao IS NULL THEN
+          SET NEW.descricao = 'DEBITO EM ADIANTAMENTO';
+      ELSEIF NEW.tipoMovimento = 'Crédito' AND NEW.tipoDocumento = 'Adiantamento' AND NEW.descricao IS NULL THEN
+          SET NEW.descricao = 'CREDITO EM ADIANTAMENTO';
+	    ELSEIF NEW.tipoMovimento = 'Débito' AND NEW.tipoDocumento = 'Crédito de Devolução' AND NEW.descricao IS NULL THEN
+          SET NEW.descricao = 'DEBITO EM DEVOLUCAO';
+	    ELSEIF NEW.tipoMovimento = 'Crédito' AND NEW.tipoDocumento = 'Crédito de Devolução' AND NEW.descricao IS NULL THEN
+          SET NEW.descricao = 'CREDITO EM DEVOLUCAO';
       END IF;
 END;
 `);
