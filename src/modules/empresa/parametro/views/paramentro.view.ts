@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { JoinColumn, ManyToOne, ViewColumn, ViewEntity } from 'typeorm';
+import { Parametro } from 'src/modules/parametro/enum/parametros';
+
 import { EmpresaEntity } from '../../entities/empresa.entity';
 
 @ViewEntity({ name: 'view_empresas_parametros' })
@@ -11,7 +13,7 @@ export class EmpresaParametroView {
 
   @ApiProperty()
   @ViewColumn()
-  parametroId: string;
+  parametroId: Parametro;
 
   @ApiProperty()
   @ViewColumn()

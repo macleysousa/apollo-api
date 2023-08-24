@@ -32,7 +32,7 @@ describe('ParametroConstraint', () => {
   describe('validate', () => {
     it('should return true if parametro exists', async () => {
       // Arrange
-      const value = 'parametro1';
+      const value = 'parametro1' as any;
       jest.spyOn(service, 'findById').mockResolvedValueOnce({ id: value, descricao: 'descricao1', valorPadrao: 'valor1' });
 
       // Act

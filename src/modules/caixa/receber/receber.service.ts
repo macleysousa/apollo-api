@@ -53,6 +53,8 @@ export class ReceberService {
 
   async romaneio(caixaId: number, romaneioDto: ReceberRomaneioDto): Promise<RomaneioView> {
     const empresa = this.contextService.empresa();
+    const parametros = this.contextService.parametros();
+
     const romaneio = await this.romaneioService.findById(empresa.id, romaneioDto.romaneioId, ['itens']);
     if (!romaneio) {
       throw new BadRequestException('Romaneio não encontrado');
@@ -92,6 +94,12 @@ export class ReceberService {
 
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId, liquidacaoId);
       case OperacaoRomaneio.Devolucao_Venda:
+        if (!romaneioDto.romaneiosDevolucao && parametros.first((x) => x.parametroId == 'DEVOLVER_SEM_ROMANEIO').valor == 'N') {
+          throw new BadRequestException('Romaneios de devolução não informados');
+        } else if (await this.romaneioService.validarDevolucao(empresa.id, romaneio.romaneioId, romaneioDto.romaneiosDevolucao)) {
+          throw new BadRequestException('Romaneio possui itens que não podem ser devolvidos');
+        }
+
         const fatura = await this.faturaService.createAutomatica({
           pessoaId: romaneio.pessoaId,
           parcelas: 1,

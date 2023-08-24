@@ -4,6 +4,7 @@ import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ParametroService } from './parametro.service';
 import { ParametroEntity } from './entities/parametro.entity';
 import { ApiComponent } from '../componente/decorator/componente.decorator';
+import { Parametro } from './enum/parametros';
 
 @ApiTags('Parâmetros')
 @Controller('parametros')
@@ -16,6 +17,6 @@ export class ParametroController {
   @ApiQuery({ name: 'id', required: false })
   @ApiQuery({ name: 'descricao', required: false })
   async find(@Body('id') id?: string, @Body('descricao') descricao?: string): Promise<ParametroEntity[]> {
-    return this.service.find(id, descricao);
+    return this.service.find(id as Parametro, descricao);
   }
 }

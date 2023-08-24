@@ -8,6 +8,7 @@ import { CreateParametroDto } from './dto/create-parametro.dto';
 import { EmpresaParametroService } from './parametro.service';
 import { EmpresaParametroView } from './views/paramentro.view';
 import { UpdateEmpresaParametroDto } from './dto/update-parametro.dto';
+import { Parametro } from 'src/modules/parametro/enum/parametros';
 
 @ApiTags('Empresas Parâmetros')
 @Controller('empresas/:empresaId/parametros')
@@ -35,7 +36,7 @@ export class EmpresaParametroController {
   @ApiResponse({ status: 200, type: EmpresaParametroView })
   findByParametroId(
     @Param('empresaId', ParseEmpresaPipe) empresaId: number,
-    @Param('parametroId') parametroId: string
+    @Param('parametroId') parametroId: Parametro
   ): Promise<EmpresaParametroView> {
     return this.service.findByParametroId(empresaId, parametroId);
   }
@@ -44,7 +45,7 @@ export class EmpresaParametroController {
   @ApiResponse({ status: 200, type: EmpresaParametroView })
   async update(
     @Param('empresaId', ParseEmpresaPipe) empresaId: number,
-    @Param('parametroId') parametroId: string,
+    @Param('parametroId') parametroId: Parametro,
     @Body() updateEmpresaParametroDto: UpdateEmpresaParametroDto
   ): Promise<EmpresaParametroView> {
     return this.service.update(empresaId, parametroId, updateEmpresaParametroDto);

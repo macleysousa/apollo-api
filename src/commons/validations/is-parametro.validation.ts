@@ -15,7 +15,7 @@ export class ParametroConstraint implements ValidatorConstraintInterface {
   constructor(private readonly service: ParametroService) {}
 
   async validate(value: string): Promise<boolean> {
-    const response = await this.service.findById(value);
+    const response = await this.service.findById(value as any);
 
     return response ? true : false;
   }

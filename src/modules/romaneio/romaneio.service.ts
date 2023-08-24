@@ -102,6 +102,10 @@ export class RomaneioService {
     return romaneio.first();
   }
 
+  async findByIds(empresaId: number, ids: number[], relations?: RomaneioInclude[]): Promise<RomaneioView[]> {
+    return this.view.find({ where: { empresaId: empresaId, romaneioId: In(ids) }, relations });
+  }
+
   async observacao(empresaId: number, id: number, { observacao }: OperacaoRomaneioDto): Promise<RomaneioView> {
     const romaneio = await this.findById(empresaId, id);
 
@@ -114,6 +118,10 @@ export class RomaneioService {
     });
 
     return this.findById(empresaId, id);
+  }
+
+  async validarDevolucao(empresaId: number, id: number, romaneriosDevolucao: number[]): Promise<Boolean> {
+    return true;
   }
 
   async encerrar(empresaId: number, caixaId: number, id: number, liquidacao?: number): Promise<RomaneioView> {

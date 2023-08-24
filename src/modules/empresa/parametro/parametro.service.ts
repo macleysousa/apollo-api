@@ -6,6 +6,7 @@ import { CreateParametroDto } from './dto/create-parametro.dto';
 import { EmpresaParametroEntity } from './entities/parametro.entity';
 import { EmpresaParametroView } from './views/paramentro.view';
 import { UpdateEmpresaParametroDto } from './dto/update-parametro.dto';
+import { Parametro } from 'src/modules/parametro/enum/parametros';
 
 @Injectable()
 export class EmpresaParametroService {
@@ -25,11 +26,11 @@ export class EmpresaParametroService {
     return this.view.find({ where: { empresaId } });
   }
 
-  async findByParametroId(empresaId: number, parametroId: string): Promise<EmpresaParametroView> {
+  async findByParametroId(empresaId: number, parametroId: Parametro): Promise<EmpresaParametroView> {
     return this.view.findOne({ where: { empresaId, parametroId } });
   }
 
-  async update(empresaId: number, parametroId: string, updateParametroDto: UpdateEmpresaParametroDto): Promise<EmpresaParametroView> {
+  async update(empresaId: number, parametroId: Parametro, updateParametroDto: UpdateEmpresaParametroDto): Promise<EmpresaParametroView> {
     await this.repository.upsert({ ...updateParametroDto, empresaId }, { conflictPaths: ['empresaId', 'parametroId'] });
     return this.findByParametroId(empresaId, parametroId);
   }

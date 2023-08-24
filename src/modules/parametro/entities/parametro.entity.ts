@@ -1,11 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
+import { Parametro } from '../enum/parametros';
+
 @Entity({ name: 'parametros' })
 export class ParametroEntity {
   @ApiProperty()
   @PrimaryColumn()
-  id: string;
+  id: Parametro;
 
   @ApiProperty()
   @Column()

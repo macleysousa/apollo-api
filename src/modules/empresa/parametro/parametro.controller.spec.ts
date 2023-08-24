@@ -47,7 +47,7 @@ describe('ParametroController', () => {
     it('should create a parametro', async () => {
       // Arrange
       const empresaId = 1;
-      const createParametroDto: CreateParametroDto = { parametroId: 'parametro1', valor: 'valor1' };
+      const createParametroDto: CreateParametroDto = { parametroId: 'CD_PRECO_PADRAO', valor: 'valor1' };
       const parametroView: EmpresaParametroView = empresaParametroFakeRepository.findViewOne();
 
       // Act
@@ -78,7 +78,7 @@ describe('ParametroController', () => {
     it('should find a parametro by parametroId', async () => {
       // Arrange
       const empresaId = 1;
-      const parametroId = 'parametro1';
+      const parametroId = 'CD_PRECO_PADRAO';
       const parametroView: EmpresaParametroView = empresaParametroFakeRepository.findViewOne();
 
       // Act
@@ -94,8 +94,8 @@ describe('ParametroController', () => {
     it('should update a parametro by parametroId', async () => {
       // Arrange
       const empresaId = 1;
-      const parametroId = 'parametro1';
-      const updateParametroDto: CreateParametroDto = { parametroId: 'parametro1', valor: 'valor1' };
+      const parametroId = 'CD_PRECO_PADRAO';
+      const updateParametroDto: CreateParametroDto = { parametroId: 'CD_PRECO_PADRAO', valor: 'valor1' };
       const parametroView: EmpresaParametroView = empresaParametroFakeRepository.findViewOne();
 
       // Act

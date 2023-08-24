@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
+import { Parametro } from 'src/modules/parametro/enum/parametros';
 
 @Entity({ name: 'empresas_parametros', orderBy: { empresaId: 'ASC', parametroId: 'ASC' } })
 export class EmpresaParametroEntity extends BaseEntity {
@@ -11,7 +12,7 @@ export class EmpresaParametroEntity extends BaseEntity {
 
   @ApiProperty()
   @PrimaryColumn()
-  parametroId: string;
+  parametroId: Parametro;
 
   @ApiProperty()
   @Column()

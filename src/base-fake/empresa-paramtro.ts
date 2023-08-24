@@ -4,7 +4,7 @@ class EmpresaParametroFakeRepository {
   findView(): EmpresaParametroView[] {
     const value = new EmpresaParametroView();
     value.empresaId = 1;
-    value.parametroId = 'parametro1';
+    value.parametroId = 'CD_PRECO_PADRAO';
     value.valor = 'valor1';
     return [value];
   }
@@ -12,7 +12,7 @@ class EmpresaParametroFakeRepository {
   findViewOne(): EmpresaParametroView {
     const value = new EmpresaParametroView();
     value.empresaId = 1;
-    value.parametroId = 'parametro1';
+    value.parametroId = 'CD_PRECO_PADRAO';
     value.valor = 'valor1';
     return value;
   }
