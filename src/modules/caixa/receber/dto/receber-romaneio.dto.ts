@@ -19,9 +19,4 @@ export class ReceberRomaneioDto {
   @ValidateNested({ each: true })
   @Type(() => PagamentoDto)
   formasDePagamento?: PagamentoDto[];
-
-  @ApiProperty({ type: [Number] })
-  @IsOptional()
-  @IsRomaneio(SituacaoRomaneio.Encerrado, { each: true })
-  romaneiosDevolucao?: number[];
 }

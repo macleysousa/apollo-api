@@ -5,7 +5,7 @@ import { ParseRomaneioEmAndamentoPipe } from 'src/commons/pipes/parseRomaneio.pi
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
 
-import { UpSertRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
+import { AddRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
 import { RomaneioItemService } from './romaneio-item.service';
 
 import { RomaneioItemView } from './views/romaneio-item.view';
@@ -20,7 +20,7 @@ export class RomaneioItemController {
 
   @Post()
   @ApiResponse({ status: 201, type: RomaneioItemView })
-  async add(@Param('romaneioId') romaneioId: number, @Body() addDto: UpSertRemoveRomaneioItemDto): Promise<RomaneioItemView> {
+  async add(@Param('romaneioId') romaneioId: number, @Body() addDto: AddRemoveRomaneioItemDto): Promise<RomaneioItemView> {
     return this.service.add(romaneioId, addDto);
   }
 
@@ -34,7 +34,7 @@ export class RomaneioItemController {
   @ApiResponse({ status: 201 })
   async remove(
     @Param('romaneioId', ParseRomaneioEmAndamentoPipe) romaneioId: number,
-    @Body() { produtoId, quantidade }: UpSertRemoveRomaneioItemDto
+    @Body() { produtoId, quantidade }: AddRemoveRomaneioItemDto
   ): Promise<void> {
     await this.service.remove(romaneioId, produtoId, quantidade);
   }

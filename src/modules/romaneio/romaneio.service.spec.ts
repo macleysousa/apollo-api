@@ -11,7 +11,7 @@ import { CreateRomaneioDto } from './dto/create-romaneio.dto';
 import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';
 import { RomaneioEntity } from './entities/romaneio.entity';
 import { ModalidadeRomaneio } from './enum/modalidade-romaneio.enum';
-import { OperacaoRomaneio } from './enum/operacao-romaneio.enum';
+import { OperacaoRomaneio, OperacaoRomaneioType } from './enum/operacao-romaneio.enum';
 import { SituacaoRomaneio } from './enum/situacao-romaneio.enum';
 import { RomaneioService } from './romaneio.service';
 import { RomaneioView } from './views/romaneio.view';
@@ -56,8 +56,10 @@ describe('RomaneioService', () => {
           provide: ContextService,
           useValue: {
             usuario: jest.fn().mockReturnValue({ id: 1 }),
-            empresa: jest.fn().mockReturnValue({ id: 1, data: new Date('2023-06-05') }),
             operadorId: jest.fn().mockReturnValue(1),
+            empresa: jest.fn().mockReturnValue({ id: 1, data: new Date('2023-06-05') }),
+            data: jest.fn().mockReturnValue('2023-06-05'),
+            parametros: jest.fn().mockReturnValue([{ parametroId: 'QT_DIAS_DEVOLUCAO', valor: 60 }]),
           },
         },
         {
@@ -308,6 +310,19 @@ describe('RomaneioService', () => {
     });
   });
 
+  describe('findByIds', () => {
+    it('should find romaneios by ids', async () => {
+      const empresaId = 1;
+      const ids = [1, 2, 3];
+      const relations = ['itens'] as any;
+
+      const result = await service.findByIds(empresaId, ids, relations);
+
+      expect(view.find).toHaveBeenCalledWith({ where: { empresaId: empresaId, romaneioId: In(ids) }, relations });
+      expect(result).toEqual(romaneioFakeRepository.findView());
+    });
+  });
+
   describe('observacao', () => {
     it('should update observacao', async () => {
       const empresaId = 1;
@@ -349,6 +364,77 @@ describe('RomaneioService', () => {
       await expect(service.observacao(empresaId, id, dto)).rejects.toThrow(BadRequestException);
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(repository.update).toHaveBeenCalledWith({ id }, { observacao: dto.observacao });
+    });
+  });
+
+  describe('validarDevolucao', () => {
+    it('should return BadRequestException if romaneios invalid operacao', () => {
+      const empresaId = 1;
+      const id = 1;
+      const operacao: OperacaoRomaneioType = 'Venda';
+      const romaneiosDevolucao = [1, 2, 3];
+      const romaneios = [{ ...romaneioFakeRepository.findOneView(), operacao: OperacaoRomaneio.Outros }] as any;
+      const romaneio = { ...romaneioFakeRepository.findOneView(), operacao: OperacaoRomaneio.Devolucao_Venda };
+
+      jest.spyOn(service, 'findByIds').mockResolvedValueOnce(romaneios);
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
+
+      expect(service.validarDevolucao(empresaId, id, operacao, romaneiosDevolucao)).rejects.toThrow(BadRequestException);
+      expect(service.findByIds).toHaveBeenCalledWith(empresaId, romaneiosDevolucao, ['itens']);
+    });
+
+    it('should return true if romaneios are valid', async () => {
+      const empresaId = 1;
+      const id = 1;
+      const operacao: OperacaoRomaneioType = 'Venda';
+      const romaneiosDevolucao = [1, 2, 3];
+      const romaneios = [
+        {
+          ...romaneioFakeRepository.findOneView(),
+          operacao: OperacaoRomaneio.Venda,
+          itens: romaneioFakeRepository.findViewItens(),
+        },
+      ];
+      const romaneio = {
+        ...romaneioFakeRepository.findOneView(),
+        operacao: OperacaoRomaneio.Devolucao_Venda,
+        itens: romaneioFakeRepository.findViewItens(),
+      };
+
+      jest.spyOn(service, 'findByIds').mockResolvedValueOnce(romaneios);
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
+
+      const result = await service.validarDevolucao(empresaId, id, operacao, romaneiosDevolucao);
+
+      expect(service.findByIds).toHaveBeenCalledWith(empresaId, romaneiosDevolucao, ['itens']);
+      expect(result).toEqual(true);
+    });
+
+    it('should return false if romaneios are invalid', async () => {
+      const empresaId = 1;
+      const id = 1;
+      const operacao: OperacaoRomaneioType = 'Venda';
+      const romaneiosDevolucao = [1, 2, 3];
+      const romaneios = [
+        {
+          ...romaneioFakeRepository.findOneView(),
+          operacao: OperacaoRomaneio.Venda,
+          itens: [{ ...romaneioFakeRepository.findOneViewItem(), devolvido: 100, quantidade: 100 }],
+        },
+      ];
+      const romaneio = {
+        ...romaneioFakeRepository.findOneView(),
+        operacao: OperacaoRomaneio.Devolucao_Venda,
+        itens: [{ ...romaneioFakeRepository.findOneViewItem(), quantidade: 1 }],
+      };
+
+      jest.spyOn(service, 'findByIds').mockResolvedValueOnce(romaneios);
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
+
+      const result = await service.validarDevolucao(empresaId, id, operacao, romaneiosDevolucao);
+
+      expect(service.findByIds).toHaveBeenCalledWith(empresaId, romaneiosDevolucao, ['itens']);
+      expect(result).toEqual(false);
     });
   });
 

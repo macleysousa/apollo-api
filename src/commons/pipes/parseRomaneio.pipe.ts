@@ -42,8 +42,6 @@ export class ParseRomaneioEmAndamentoPipe implements PipeTransform<string, Promi
     const parsedValue = parseInt(value, 10);
     const empresa = this.contextService.empresa();
 
-    console.log('ParseRomaneioEmAndamentoPipe', value, parsedValue, empresa);
-
     if (isNaN(parsedValue)) {
       throw new BadRequestException('O romaneio deve ser um número.');
     }

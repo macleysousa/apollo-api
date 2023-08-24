@@ -19,8 +19,8 @@ export class RomaneioView extends BaseView {
   @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
   romaneioId: number;
 
-  @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => value.toISOString().substring(0, 10), to: (value) => new Date(value) } })
+  @ApiProperty({ format: 'date' })
+  @ViewColumn({ transformer: { from: (value) => new Date(value).format('yyyy-MM-dd'), to: (value) => new Date(value) } })
   data: Date;
 
   @ApiProperty()
@@ -50,6 +50,10 @@ export class RomaneioView extends BaseView {
   @ApiProperty({ enum: OperacaoRomaneio })
   @ViewColumn()
   operacao: OperacaoRomaneio;
+
+  @ApiProperty()
+  @ViewColumn({ transformer: { from: (value) => JSON.parse(value), to: (value) => JSON.parse(value) } })
+  romaneiosDevolucao: number[];
 
   @ApiProperty({ enum: SituacaoRomaneio })
   @ViewColumn()

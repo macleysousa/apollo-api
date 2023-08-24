@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
 import { EstoqueService } from 'src/modules/estoque/estoque.service';
@@ -9,7 +9,7 @@ import { PrecoReferenciaService } from 'src/modules/tabela-de-preco/referencia/r
 import { ModalidadeRomaneio } from '../enum/modalidade-romaneio.enum';
 import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
 import { RomaneioService } from '../romaneio.service';
-import { UpSertRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
+import { AddRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
 import { RomaneioItemEntity } from './entities/romaneio-item.entity';
 import { RomaneioItemView } from './views/romaneio-item.view';
 
@@ -26,7 +26,7 @@ export class RomaneioItemService {
     private readonly precoService: PrecoReferenciaService
   ) {}
 
-  async add(romaneioId: number, { produtoId, quantidade }: UpSertRemoveRomaneioItemDto): Promise<RomaneioItemView> {
+  async add(romaneioId: number, { produtoId, quantidade }: AddRemoveRomaneioItemDto): Promise<RomaneioItemView> {
     const usuario = this.contextService.usuario();
     const empresa = this.contextService.empresa();
 
@@ -54,6 +54,36 @@ export class RomaneioItemService {
       throw new BadRequestException(`Referência ${estoque.referenciaId} com preço 00,00`);
     }
 
+    const romaneioDevolucaoIds = [];
+    if (romaneio.romaneiosDevolucao?.length > 0) {
+      const romaneiosDevolucao = await this.findByRomaneioIds(romaneio.romaneiosDevolucao);
+      const romaneiosSaldos = romaneiosDevolucao.map((x) => {
+        const devolucaoAtual = romaneioItem.filter((y) => y.romaneiosDevolucao.includes(x.romaneioId) && y.produtoId == x.produtoId);
+        return {
+          romaneioId: x.romaneioId,
+          produtoId: x.produtoId,
+          saldo: x.quantidade - x.devolvido - devolucaoAtual.sum((y) => y.quantidade),
+        };
+      });
+
+      const romaneiosComSaldo = romaneiosSaldos.filter((x) => x.produtoId == produtoId && x.saldo > 0);
+
+      if (romaneiosComSaldo.sum((x) => x.saldo) < quantidade) {
+        throw new BadRequestException(`Saldo de devolução do produto "${produtoId}" insuficiente para realizar a operação`);
+      }
+
+      let quantidadeDevolucao = quantidade;
+      romaneiosComSaldo.map((x) => {
+        if (x.saldo >= quantidadeDevolucao) {
+          romaneioDevolucaoIds.push(x.romaneioId);
+          quantidadeDevolucao = 0;
+        } else {
+          romaneioDevolucaoIds.push(x.romaneioId);
+          quantidadeDevolucao -= x.saldo;
+        }
+      });
+    }
+
     const sequencia = await this.repository
       .createQueryBuilder()
       .select('coalesce(max(sequencia), 0) + 1', 'sequencia')
@@ -72,6 +102,7 @@ export class RomaneioItemService {
       emPromocao: false,
       quantidade: quantidade,
       operadorId: usuario.id,
+      romaneiosDevolucao: romaneioDevolucaoIds,
     });
 
     return this.view.findOne({ where: { romaneioId: romaneioId, sequencia: sequencia, produtoId: produtoId } });
@@ -79,6 +110,10 @@ export class RomaneioItemService {
 
   async find(romaneioId: number): Promise<RomaneioItemView[]> {
     return this.view.find({ where: { romaneioId } });
+  }
+
+  async findByRomaneioIds(romaneioId: number[]): Promise<RomaneioItemView[]> {
+    return this.view.find({ where: { romaneioId: In(romaneioId) } });
   }
 
   async findByProdutoId(romaneioId: number, produtoId: number): Promise<RomaneioItemView[]> {

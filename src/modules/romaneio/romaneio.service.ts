@@ -9,7 +9,7 @@ import { EmpresaParametroService } from '../empresa/parametro/parametro.service'
 import { CreateRomaneioDto } from './dto/create-romaneio.dto';
 import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';
 import { RomaneioEntity } from './entities/romaneio.entity';
-import { OperacaoRomaneio } from './enum/operacao-romaneio.enum';
+import { OperacaoRomaneio, OperacaoRomaneioType } from './enum/operacao-romaneio.enum';
 import { SituacaoRomaneio } from './enum/situacao-romaneio.enum';
 import { RomaneioView } from './views/romaneio.view';
 import { RomaneioInclude } from './includes/romaneio.include';
@@ -120,8 +120,39 @@ export class RomaneioService {
     return this.findById(empresaId, id);
   }
 
-  async validarDevolucao(empresaId: number, id: number, romaneriosDevolucao: number[]): Promise<Boolean> {
-    return true;
+  async validarDevolucao(empresaId: number, id: number, operacao: OperacaoRomaneioType, romaneiosDevolucao: number[]): Promise<Boolean> {
+    const data = this.contextService.data();
+    const parametros = this.contextService.parametros();
+
+    const romaneios = await this.findByIds(empresaId, romaneiosDevolucao, ['itens']);
+    const romaneio = await this.findById(empresaId, id, ['itens']);
+
+    if (romaneios.filter((x) => x.operacao != operacao).length > 0) {
+      throw new BadRequestException('Devolução não permitida. Verifique o tipo de operação dos romaneios selecionados.');
+    }
+
+    const romaneioItens = romaneios.map((r) => r.itens).flat();
+    const produtos = romaneioItens
+      .filter((i) => new Date(i.data) >= new Date(data).addDays(-parametros.first((p) => p.parametroId == 'QT_DIAS_DEVOLUCAO').valor))
+      .groupBy((i) => i.produtoId)
+      .select((i) => ({
+        produtoId: i.key,
+        devolvido: i.values.sum((i) => i.devolvido),
+        quantidade: i.values.sum((i) => i.quantidade),
+      }));
+
+    const produtosErros = [];
+    await Promise.all(
+      produtos.map((p) => {
+        const quantidadeDevoldida = romaneio.itens.filter((f) => f.produtoId == p.produtoId).sum((i) => i.quantidade);
+        const saldoDevolucao = p.quantidade - p.devolvido;
+        if (quantidadeDevoldida > saldoDevolucao) {
+          produtosErros.push(p.produtoId);
+        }
+      })
+    );
+
+    return produtosErros.length == 0;
   }
 
   async encerrar(empresaId: number, caixaId: number, id: number, liquidacao?: number): Promise<RomaneioView> {

@@ -5,7 +5,7 @@ import { ContextService } from 'src/context/context.service';
 
 import { RomaneioItemController } from './romaneio-item.controller';
 import { RomaneioItemService } from './romaneio-item.service';
-import { UpSertRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
+import { AddRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
 import { RomaneioService } from '../romaneio.service';
 
 describe('RomaneioItemController', () => {
@@ -52,7 +52,7 @@ describe('RomaneioItemController', () => {
   describe('add', () => {
     it('should call service add method with correct parameters', async () => {
       const romaneioId = 1;
-      const addDto = { produtoId: 2, quantidade: 3 } as UpSertRemoveRomaneioItemDto;
+      const addDto = { produtoId: 2, quantidade: 3 } as AddRemoveRomaneioItemDto;
       const romaneioItemView = romaneioFakeRepository.findOneViewItem();
 
       const result = await controller.add(romaneioId, addDto);
@@ -77,7 +77,7 @@ describe('RomaneioItemController', () => {
   describe('removeByRomaneioId', () => {
     it('should call service remove method with correct parameters', async () => {
       const romaneioId = 1;
-      const removeDto = { produtoId: 2, quantidade: 3 } as UpSertRemoveRomaneioItemDto;
+      const removeDto = { produtoId: 2, quantidade: 3 } as AddRemoveRomaneioItemDto;
 
       await controller.remove(romaneioId, removeDto);
 

@@ -79,6 +79,11 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
             isNullable: false,
           },
           {
+            name: 'romaneiosDevolucao',
+            type: 'text',
+            isNullable: true,
+          },
+          {
             name: 'situacao',
             type: 'varchar',
             isNullable: false,

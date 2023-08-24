@@ -1,10 +1,12 @@
-import { Controller, Get, Body } from '@nestjs/common';
+import { Body, Controller, Get } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
-import { ParametroService } from './parametro.service';
-import { ParametroEntity } from './entities/parametro.entity';
+import { ApiQueryEnum } from 'src/decorators/api-query-enum.decorator';
+
 import { ApiComponent } from '../componente/decorator/componente.decorator';
-import { Parametro } from './enum/parametros';
+import { ParametroEntity } from './entities/parametro.entity';
+import { Parametro, ParametroEnum } from './enum/parametros';
+import { ParametroService } from './parametro.service';
 
 @ApiTags('Parâmetros')
 @Controller('parametros')
@@ -14,7 +16,7 @@ export class ParametroController {
   constructor(private readonly service: ParametroService) {}
 
   @Get()
-  @ApiQuery({ name: 'id', required: false })
+  @ApiQueryEnum({ name: 'id', enum: ParametroEnum, required: false })
   @ApiQuery({ name: 'descricao', required: false })
   async find(@Body('id') id?: string, @Body('descricao') descricao?: string): Promise<ParametroEntity[]> {
     return this.service.find(id as Parametro, descricao);

@@ -135,6 +135,8 @@ export class RomaneioFakeRepository {
       valorTotalLiquido: 159.6,
       cupomId: 1,
       operadorId: 1,
+      devolvido: 0,
+      romaneiosDevolucao: [],
       criadoEm: new Date('2023-06-09T11:13:18.000Z'),
       atualizadoEm: new Date('2023-06-09T11:13:18.000Z'),
     });

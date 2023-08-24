@@ -7,3 +7,5 @@ export enum OperacaoRomaneio {
   Devolucao_Transferencia = 'Devolução Transferência',
   Outros = 'Outros',
 }
+
+export type OperacaoRomaneioType = keyof typeof OperacaoRomaneio;
