@@ -50,14 +50,18 @@ export class RomaneioItemEntity extends BaseEntity {
   cupomId: number;
 
   @ApiProperty()
-  @Column('int')
-  operadorId: number;
-
-  @ApiProperty()
   @Column('decimal', { precision: 10, scale: 4 })
   devolvido: number;
 
   @ApiProperty()
   @Column('bigint')
-  romaneioDevolucaoId: number;
+  romaneioOrigemId: number;
+
+  @ApiProperty()
+  @Column('int')
+  romaneioOrigemSequencia: number;
+
+  @ApiProperty()
+  @Column('int')
+  operadorId: number;
 }

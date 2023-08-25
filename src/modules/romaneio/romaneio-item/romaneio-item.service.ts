@@ -20,7 +20,8 @@ interface InsertDto {
   referenciaId: number;
   valorUnitario: number;
   valorUnitDesconto?: number;
-  romaneioDevolucaoId?: number;
+  romaneioOrigemId?: number;
+  romaneioOrigemSequencia?: number;
 }
 
 @Injectable()
@@ -64,18 +65,23 @@ export class RomaneioItemService {
     }
 
     if (romaneio.romaneiosDevolucao && romaneio.romaneiosDevolucao.length > 0) {
-      const romaneiosDevolucao = await this.findByRomaneioIds(romaneio.romaneiosDevolucao);
-      const romaneiosSaldos = romaneiosDevolucao.map((x) => {
-        const devolucaoAtual = romaneioItem.filter((y) => y.romaneioDevolucaoId == x.romaneioId && y.produtoId == x.produtoId);
-        return {
-          romaneioId: x.romaneioId,
-          produtoId: x.produtoId,
-          referenciaId: x.referenciaId,
-          valorUnitario: x.valorUnitario,
-          valorUnitDesconto: x.valorUnitDesconto,
-          saldo: x.quantidade - x.devolvido - devolucaoAtual.sum((y) => y.quantidade),
-        };
-      });
+      const romaneiosDevolucao = await this.findByRomaneioIds(romaneio.romaneiosDevolucao, [produtoId]);
+      const romaneiosSaldos = await Promise.all(
+        romaneiosDevolucao.map((x) => {
+          const devolucaoAtual = romaneioItem
+            .filter((p) => p.produtoId == produtoId)
+            .filter((r) => r.romaneioOrigemId == x.romaneioId && r.romaneioOrigemSequencia == x.sequencia);
+          return {
+            romaneioId: x.romaneioId,
+            sequecia: x.sequencia,
+            produtoId: x.produtoId,
+            referenciaId: x.referenciaId,
+            valorUnitario: x.valorUnitario,
+            valorUnitDesconto: x.valorUnitDesconto,
+            saldo: x.quantidade - x.devolvido - devolucaoAtual.sum((y) => y.quantidade),
+          };
+        })
+      );
 
       const romaneiosComSaldo = romaneiosSaldos.filter((x) => x.produtoId == produtoId && x.saldo > 0);
 
@@ -85,7 +91,7 @@ export class RomaneioItemService {
 
       let quantidadeDevolucao = quantidade;
       for await (const item of romaneiosComSaldo) {
-        if (item.saldo >= quantidadeDevolucao) {
+        if (quantidadeDevolucao > 0 && item.saldo >= quantidadeDevolucao) {
           await this.insert({
             romaneioId,
             produtoId,
@@ -93,10 +99,11 @@ export class RomaneioItemService {
             referenciaId: item.referenciaId,
             valorUnitario: item.valorUnitario,
             valorUnitDesconto: item.valorUnitDesconto,
-            romaneioDevolucaoId: item.romaneioId,
+            romaneioOrigemId: item.romaneioId,
+            romaneioOrigemSequencia: item.sequecia,
           });
           quantidadeDevolucao = 0;
-        } else {
+        } else if (quantidadeDevolucao > 0) {
           await this.insert({
             romaneioId,
             produtoId,
@@ -104,7 +111,8 @@ export class RomaneioItemService {
             referenciaId: item.referenciaId,
             valorUnitario: item.valorUnitario,
             valorUnitDesconto: item.valorUnitDesconto,
-            romaneioDevolucaoId: item.romaneioId,
+            romaneioOrigemId: item.romaneioId,
+            romaneioOrigemSequencia: item.sequecia,
           });
           quantidadeDevolucao -= item.saldo;
         }
@@ -139,8 +147,8 @@ export class RomaneioItemService {
     return this.view.find({ where: { romaneioId } });
   }
 
-  async findByRomaneioIds(romaneioId: number[]): Promise<RomaneioItemView[]> {
-    return this.view.find({ where: { romaneioId: In(romaneioId) } });
+  async findByRomaneioIds(romaneioId: number[], produtoIds?: number[]): Promise<RomaneioItemView[]> {
+    return this.view.find({ where: { romaneioId: In(romaneioId), produtoId: produtoIds?.length > 0 ? In(produtoIds) : undefined } });
   }
 
   async findByProdutoId(romaneioId: number, produtoId: number): Promise<RomaneioItemView[]> {

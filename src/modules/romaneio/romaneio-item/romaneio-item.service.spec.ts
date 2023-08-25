@@ -187,7 +187,7 @@ describe('RomaneioItemService', () => {
       const romaneiosDevolucao = [{ ...romaneioFakeRepository.findOneViewItem(), romaneioId: 2, romaneiosDevolucao: [] }] as any;
       const estoque = { produtoId, referenciaId: 1, saldo: 20 } as any;
       const precoReferencia = { preco: 10 } as any;
-      const romaneioItem = [{ romaneiosDevolucao: [2], produtoId: 1, quantidade: 5 }] as any;
+      const romaneioItem = [{ romaneioOrigemId: 2, romaneioOrigemSequencia: 1, produtoId: 1, quantidade: 5 }] as any;
 
       jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
       jest.spyOn(contextService, 'empresa').mockReturnValueOnce(empresa);
@@ -209,8 +209,22 @@ describe('RomaneioItemService', () => {
       const quantidade = 2;
       const romaneio = { ...romaneioFakeRepository.findOneView(), romaneiosDevolucao: [2, 3] } as any;
       const romaneiosDevolucao = [
-        { ...romaneioFakeRepository.findOneViewItem(), romaneioId: 2, devolvido: 1, quantidade: 2, romaneiosDevolucao: 2 },
-        { ...romaneioFakeRepository.findOneViewItem(), romaneioId: 3, devolvido: 0, quantidade: 1, romaneiosDevolucao: 3 },
+        {
+          ...romaneioFakeRepository.findOneViewItem(),
+          romaneioId: 2,
+          devolvido: 1,
+          quantidade: 2,
+          romaneioOrigemId: 2,
+          romaneioOrigemSequencia: 1,
+        },
+        {
+          ...romaneioFakeRepository.findOneViewItem(),
+          romaneioId: 3,
+          devolvido: 0,
+          quantidade: 1,
+          romaneiosDevolucao: 3,
+          romaneioOrigemSequencia: 1,
+        },
       ] as any;
       const estoque = { produtoId, referenciaId: 1, saldo: 20 } as any;
       const precoReferencia = { preco: 10 } as any;
@@ -234,7 +248,8 @@ describe('RomaneioItemService', () => {
         referenciaId: estoque.referenciaId,
         valorUnitario: expect.any(Number),
         valorUnitDesconto: expect.any(Number),
-        romaneioDevolucaoId: expect.any(Number),
+        romaneioOrigemId: expect.any(Number),
+        romaneioOrigemSequencia: expect.any(Number),
       });
     });
 
@@ -244,12 +259,26 @@ describe('RomaneioItemService', () => {
       const quantidade = 2;
       const romaneio = { ...romaneioFakeRepository.findOneView(), romaneiosDevolucao: [2, 3] } as any;
       const romaneiosDevolucao = [
-        { ...romaneioFakeRepository.findOneViewItem(), romaneioId: 2, devolvido: 1, quantidade: 3, romaneiosDevolucao: 2 },
-        { ...romaneioFakeRepository.findOneViewItem(), romaneioId: 3, devolvido: 0, quantidade: 1, romaneiosDevolucao: 3 },
+        {
+          ...romaneioFakeRepository.findOneViewItem(),
+          romaneioId: 2,
+          devolvido: 1,
+          quantidade: 3,
+          romaneioOrigemId: 2,
+          romaneioOrigemSequencia: 1,
+        },
+        {
+          ...romaneioFakeRepository.findOneViewItem(),
+          romaneioId: 3,
+          devolvido: 0,
+          quantidade: 1,
+          romaneioOrigemId: 3,
+          romaneioOrigemSequencia: 1,
+        },
       ] as any;
       const estoque = { produtoId, referenciaId: 1, saldo: 20 } as any;
       const precoReferencia = { preco: 10 } as any;
-      const romaneioItem = [{ romaneioDevolucaoId: 2, produtoId: 1, quantidade: 1 }] as any;
+      const romaneioItem = [{ romaneioOrigemId: 2, romaneioOrigemSequencia: 1, produtoId: 1, quantidade: 1 }] as any;
 
       jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
       jest.spyOn(service, 'findByProdutoId').mockResolvedValueOnce(romaneioItem);
@@ -269,7 +298,8 @@ describe('RomaneioItemService', () => {
         referenciaId: estoque.referenciaId,
         valorUnitario: expect.any(Number),
         valorUnitDesconto: expect.any(Number),
-        romaneioDevolucaoId: expect.any(Number),
+        romaneioOrigemId: expect.any(Number),
+        romaneioOrigemSequencia: expect.any(Number),
       });
     });
 
@@ -345,12 +375,27 @@ describe('RomaneioItemService', () => {
   });
 
   describe('findByRomaneioIds', () => {
-    it('should return romaneio items', async () => {
+    it('should return romaneio items without produtoids', async () => {
       const romaneioIds = [1];
+      const produtoIds = undefined;
 
       const result = await service.findByRomaneioIds(romaneioIds);
 
-      expect(view.find).toHaveBeenCalledWith({ where: { romaneioId: In(romaneioIds) } });
+      expect(view.find).toHaveBeenCalledWith({
+        where: { romaneioId: In(romaneioIds), produtoId: produtoIds?.length > 0 ? In(produtoIds) : undefined },
+      });
+      expect(result).toEqual(romaneioFakeRepository.findViewItens());
+    });
+
+    it('should return romaneio items with produtoids', async () => {
+      const romaneioIds = [1];
+      const produtoIds = [1];
+
+      const result = await service.findByRomaneioIds(romaneioIds, produtoIds);
+
+      expect(view.find).toHaveBeenCalledWith({
+        where: { romaneioId: In(romaneioIds), produtoId: produtoIds?.length > 0 ? In(produtoIds) : undefined },
+      });
       expect(result).toEqual(romaneioFakeRepository.findViewItens());
     });
   });

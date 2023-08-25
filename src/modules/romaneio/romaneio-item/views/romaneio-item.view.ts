@@ -114,7 +114,11 @@ export class RomaneioItemView extends BaseView {
 
   @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
-  romaneioDevolucaoId: number;
+  romaneioOrigemId: number;
+
+  @ApiProperty()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  romaneioOrigemSequencia: number;
 
   @Exclude()
   @ManyToOne(() => RomaneioView, (romaneio) => romaneio.itens)

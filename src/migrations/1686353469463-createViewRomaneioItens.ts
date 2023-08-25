@@ -30,16 +30,23 @@ ri.valorUnitDesconto as valorUnitDesconto,
 (ri.quantidade * ri.valorUnitario) - (ri.quantidade * ri.valorUnitDesconto) as valorTotalLiquido,
 ri.cupomId as cupomId,
 ri.operadorId as operadorId,
-ri.devolvido as devolvido,
-ri.romaneioDevolucaoId as romaneioDevolucaoId,
+sum(ifnull(rid.quantidade,0)) as devolvido,
+ri.romaneioOrigemId as romaneioOrigemId,
+ri.romaneioOrigemSequencia as romaneioOrigemSequencia,
 ri.criadoEm as criadoEm,
 ri.atualizadoEm as atualizadoEm
 FROM romaneios ro
 inner join romaneios_itens ri on ri.romaneioId=ro.id
 inner join referencias r on ri.referenciaId=r.id
 inner join produtos p on ri.produtoId=p.id
+left join romaneios_itens_devolvidos rid on rid.romaneioId=ro.id and rid.sequencia=ri.sequencia and rid.cancelado=0
 left join cores c on p.corId=c.id
 left join tamanhos t on p.tamanhoId=t.id
+group by
+ri.empresaId,
+ri.romaneioId,
+ri.sequencia,
+ri.produtoId
 `);
   }
 
