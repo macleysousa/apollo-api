@@ -13,6 +13,16 @@ import { AddRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
 import { RomaneioItemEntity } from './entities/romaneio-item.entity';
 import { RomaneioItemView } from './views/romaneio-item.view';
 
+interface InsertDto {
+  romaneioId: number;
+  produtoId: number;
+  quantidade: number;
+  referenciaId: number;
+  valorUnitario: number;
+  valorUnitDesconto?: number;
+  romaneioDevolucaoId?: number;
+}
+
 @Injectable()
 export class RomaneioItemService {
   constructor(
@@ -26,8 +36,7 @@ export class RomaneioItemService {
     private readonly precoService: PrecoReferenciaService
   ) {}
 
-  async add(romaneioId: number, { produtoId, quantidade }: AddRemoveRomaneioItemDto): Promise<RomaneioItemView> {
-    const usuario = this.contextService.usuario();
+  async add(romaneioId: number, { produtoId, quantidade }: AddRemoveRomaneioItemDto): Promise<void> {
     const empresa = this.contextService.empresa();
 
     const romaneio = await this.romaneioService.findById(empresa.id, romaneioId);
@@ -54,14 +63,16 @@ export class RomaneioItemService {
       throw new BadRequestException(`Referência ${estoque.referenciaId} com preço 00,00`);
     }
 
-    const romaneioDevolucaoIds = [];
-    if (romaneio.romaneiosDevolucao?.length > 0) {
+    if (romaneio.romaneiosDevolucao && romaneio.romaneiosDevolucao.length > 0) {
       const romaneiosDevolucao = await this.findByRomaneioIds(romaneio.romaneiosDevolucao);
       const romaneiosSaldos = romaneiosDevolucao.map((x) => {
-        const devolucaoAtual = romaneioItem.filter((y) => y.romaneiosDevolucao.includes(x.romaneioId) && y.produtoId == x.produtoId);
+        const devolucaoAtual = romaneioItem.filter((y) => y.romaneioDevolucaoId == x.romaneioId && y.produtoId == x.produtoId);
         return {
           romaneioId: x.romaneioId,
           produtoId: x.produtoId,
+          referenciaId: x.referenciaId,
+          valorUnitario: x.valorUnitario,
+          valorUnitDesconto: x.valorUnitDesconto,
           saldo: x.quantidade - x.devolvido - devolucaoAtual.sum((y) => y.quantidade),
         };
       });
@@ -73,39 +84,55 @@ export class RomaneioItemService {
       }
 
       let quantidadeDevolucao = quantidade;
-      romaneiosComSaldo.map((x) => {
-        if (x.saldo >= quantidadeDevolucao) {
-          romaneioDevolucaoIds.push(x.romaneioId);
+      for await (const item of romaneiosComSaldo) {
+        if (item.saldo >= quantidadeDevolucao) {
+          await this.insert({
+            romaneioId,
+            produtoId,
+            quantidade: quantidadeDevolucao,
+            referenciaId: item.referenciaId,
+            valorUnitario: item.valorUnitario,
+            valorUnitDesconto: item.valorUnitDesconto,
+            romaneioDevolucaoId: item.romaneioId,
+          });
           quantidadeDevolucao = 0;
         } else {
-          romaneioDevolucaoIds.push(x.romaneioId);
-          quantidadeDevolucao -= x.saldo;
+          await this.insert({
+            romaneioId,
+            produtoId,
+            quantidade: quantidadeDevolucao,
+            referenciaId: item.referenciaId,
+            valorUnitario: item.valorUnitario,
+            valorUnitDesconto: item.valorUnitDesconto,
+            romaneioDevolucaoId: item.romaneioId,
+          });
+          quantidadeDevolucao -= item.saldo;
         }
-      });
+      }
+    } else if (quantidade > 0) {
+      await this.insert({ romaneioId, produtoId, quantidade, referenciaId: estoque.referenciaId, valorUnitario: precoReferencia.preco });
     }
+  }
+
+  async insert(dto: InsertDto): Promise<void> {
+    const usuario = this.contextService.usuario();
+    const empresa = this.contextService.empresa();
 
     const sequencia = await this.repository
       .createQueryBuilder()
       .select('coalesce(max(sequencia), 0) + 1', 'sequencia')
-      .where({ empresaId: empresa.id, romaneioId: romaneioId })
+      .where({ empresaId: empresa.id, romaneioId: dto.romaneioId })
       .getRawOne()
       .then((r) => r.sequencia);
 
     await this.repository.insert({
+      ...dto,
       empresaId: empresa.id,
-      romaneioId: romaneioId,
       data: empresa.data,
       sequencia: sequencia,
-      referenciaId: estoque.referenciaId,
-      produtoId: estoque.produtoId,
-      valorUnitario: precoReferencia.preco,
       emPromocao: false,
-      quantidade: quantidade,
       operadorId: usuario.id,
-      romaneiosDevolucao: romaneioDevolucaoIds,
     });
-
-    return this.view.findOne({ where: { romaneioId: romaneioId, sequencia: sequencia, produtoId: produtoId } });
   }
 
   async find(romaneioId: number): Promise<RomaneioItemView[]> {

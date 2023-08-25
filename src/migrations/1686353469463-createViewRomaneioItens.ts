@@ -31,7 +31,7 @@ ri.valorUnitDesconto as valorUnitDesconto,
 ri.cupomId as cupomId,
 ri.operadorId as operadorId,
 ri.devolvido as devolvido,
-ri.romaneiosDevolucao as romaneiosDevolucao,
+ri.romaneioDevolucaoId as romaneioDevolucaoId,
 ri.criadoEm as criadoEm,
 ri.atualizadoEm as atualizadoEm
 FROM romaneios ro

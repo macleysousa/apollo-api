@@ -58,6 +58,6 @@ export class RomaneioItemEntity extends BaseEntity {
   devolvido: number;
 
   @ApiProperty()
-  @Column('simple-json')
-  romaneiosDevolucao: number[];
+  @Column('bigint')
+  romaneioDevolucaoId: number;
 }

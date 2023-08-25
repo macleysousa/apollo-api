@@ -19,8 +19,8 @@ export class RomaneioItemController {
   constructor(private readonly service: RomaneioItemService) {}
 
   @Post()
-  @ApiResponse({ status: 201, type: RomaneioItemView })
-  async add(@Param('romaneioId') romaneioId: number, @Body() addDto: AddRemoveRomaneioItemDto): Promise<RomaneioItemView> {
+  @ApiResponse({ status: 201 })
+  async add(@Param('romaneioId') romaneioId: number, @Body() addDto: AddRemoveRomaneioItemDto): Promise<void> {
     return this.service.add(romaneioId, addDto);
   }
 

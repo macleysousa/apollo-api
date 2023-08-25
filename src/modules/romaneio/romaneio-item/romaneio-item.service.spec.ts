@@ -41,7 +41,7 @@ describe('RomaneioItemService', () => {
             createQueryBuilder: jest.fn().mockReturnValue({
               select: jest.fn().mockReturnThis(),
               where: jest.fn().mockReturnThis(),
-              getRawOne: jest.fn().mockResolvedValue(romaneioFakeRepository.findOneViewItem()),
+              getRawOne: jest.fn().mockResolvedValue({ sequencia: 1 }),
             }),
           },
         },
@@ -183,7 +183,7 @@ describe('RomaneioItemService', () => {
       const produtoId = 1;
       const quantidade = 10;
       const empresa = { id: 1, data: new Date('2023-06-05') } as any;
-      const romaneio = { ...romaneioFakeRepository.findOneViewItem(), produtoId: 1, romaneiosDevolucao: [2] } as any;
+      const romaneio = { ...romaneioFakeRepository.findOneView(), romaneiosDevolucao: [2] } as any;
       const romaneiosDevolucao = [{ ...romaneioFakeRepository.findOneViewItem(), romaneioId: 2, romaneiosDevolucao: [] }] as any;
       const estoque = { produtoId, referenciaId: 1, saldo: 20 } as any;
       const precoReferencia = { preco: 10 } as any;
@@ -203,21 +203,18 @@ describe('RomaneioItemService', () => {
       );
     });
 
-    it('should add a new item of devolucao at the romaneio', async () => {
+    it('should add a new item of devolucao at the romaneio without itens', async () => {
       const romaneioId = 10;
       const produtoId = 1;
       const quantidade = 2;
-      const empresa = { id: 1 } as any;
-      const usuario = { id: 1 } as any;
-      const romaneio = { ...romaneioFakeRepository.findOneViewItem(), produtoId: 1, romaneiosDevolucao: [2, 3] } as any;
+      const romaneio = { ...romaneioFakeRepository.findOneView(), romaneiosDevolucao: [2, 3] } as any;
       const romaneiosDevolucao = [
-        { ...romaneioFakeRepository.findOneViewItem(), romaneioId: 2, devolvido: 1, quantidade: 2, romaneiosDevolucao: [] },
-        { ...romaneioFakeRepository.findOneViewItem(), romaneioId: 3, devolvido: 0, quantidade: 1, romaneiosDevolucao: [] },
+        { ...romaneioFakeRepository.findOneViewItem(), romaneioId: 2, devolvido: 1, quantidade: 2, romaneiosDevolucao: 2 },
+        { ...romaneioFakeRepository.findOneViewItem(), romaneioId: 3, devolvido: 0, quantidade: 1, romaneiosDevolucao: 3 },
       ] as any;
       const estoque = { produtoId, referenciaId: 1, saldo: 20 } as any;
       const precoReferencia = { preco: 10 } as any;
       const romaneioItem = [] as any;
-      const sequencia = 1;
 
       jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
       jest.spyOn(service, 'findByProdutoId').mockResolvedValueOnce(romaneioItem);
@@ -225,33 +222,62 @@ describe('RomaneioItemService', () => {
       jest.spyOn(precoService, 'findByReferenciaId').mockResolvedValueOnce(precoReferencia);
       jest.spyOn(service, 'findByRomaneioIds').mockResolvedValue(romaneiosDevolucao);
       jest.spyOn(view, 'findOne').mockResolvedValueOnce({ quantidade } as any);
+      jest.spyOn(service, 'insert').mockResolvedValueOnce();
 
-      const result = await service.add(romaneioId, { produtoId, quantidade });
+      await service.add(romaneioId, { produtoId, quantidade });
 
-      expect(repository.insert).toHaveBeenCalledWith({
-        empresaId: empresa.id,
+      expect(service.insert).toHaveBeenCalledTimes(2);
+      expect(service.insert).toHaveBeenCalledWith({
         romaneioId,
-        data: expect.any(Date),
-        sequencia: sequencia,
-        referenciaId: estoque.referenciaId,
         produtoId,
-        valorUnitario: precoReferencia.preco,
-        emPromocao: false,
-        quantidade: quantidade,
-        operadorId: usuario.id,
-        romaneiosDevolucao: romaneio.romaneiosDevolucao,
+        quantidade,
+        referenciaId: estoque.referenciaId,
+        valorUnitario: expect.any(Number),
+        valorUnitDesconto: expect.any(Number),
+        romaneioDevolucaoId: expect.any(Number),
       });
-      expect(result).toBeDefined();
-      expect(result.quantidade).toEqual(quantidade);
+    });
+
+    it('should add a new item of devolucao at the romaneio with itens', async () => {
+      const romaneioId = 10;
+      const produtoId = 1;
+      const quantidade = 2;
+      const romaneio = { ...romaneioFakeRepository.findOneView(), romaneiosDevolucao: [2, 3] } as any;
+      const romaneiosDevolucao = [
+        { ...romaneioFakeRepository.findOneViewItem(), romaneioId: 2, devolvido: 1, quantidade: 3, romaneiosDevolucao: 2 },
+        { ...romaneioFakeRepository.findOneViewItem(), romaneioId: 3, devolvido: 0, quantidade: 1, romaneiosDevolucao: 3 },
+      ] as any;
+      const estoque = { produtoId, referenciaId: 1, saldo: 20 } as any;
+      const precoReferencia = { preco: 10 } as any;
+      const romaneioItem = [{ romaneioDevolucaoId: 2, produtoId: 1, quantidade: 1 }] as any;
+
+      jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
+      jest.spyOn(service, 'findByProdutoId').mockResolvedValueOnce(romaneioItem);
+      jest.spyOn(estoqueService, 'findByProdutoId').mockResolvedValueOnce(estoque);
+      jest.spyOn(precoService, 'findByReferenciaId').mockResolvedValueOnce(precoReferencia);
+      jest.spyOn(service, 'findByRomaneioIds').mockResolvedValue(romaneiosDevolucao);
+      jest.spyOn(view, 'findOne').mockResolvedValueOnce({ quantidade } as any);
+      jest.spyOn(service, 'insert').mockResolvedValueOnce();
+
+      await service.add(romaneioId, { produtoId, quantidade });
+
+      expect(service.insert).toHaveBeenCalledTimes(2);
+      expect(service.insert).toHaveBeenCalledWith({
+        romaneioId,
+        produtoId,
+        quantidade: 1,
+        referenciaId: estoque.referenciaId,
+        valorUnitario: expect.any(Number),
+        valorUnitDesconto: expect.any(Number),
+        romaneioDevolucaoId: expect.any(Number),
+      });
     });
 
     it('should add a new romaneio item', async () => {
       const romaneioId = 1;
-      const sequencia = 1;
       const produtoId = 1;
       const quantidade = 10;
       const empresa = { id: 1, data: new Date('2023-06-05') } as any;
-      const usuario = { id: 1 } as any;
       const estoque = { produtoId, referenciaId: 1, saldo: 20 } as any;
       const precoReferencia = { preco: 10 } as any;
       const romaneioItem = [{ quantidade: 5 }] as any;
@@ -262,24 +288,48 @@ describe('RomaneioItemService', () => {
       jest.spyOn(precoService, 'findByReferenciaId').mockResolvedValueOnce(precoReferencia);
       jest.spyOn(service, 'findByProdutoId').mockResolvedValueOnce({ quantidade: 15 } as any);
       jest.spyOn(view, 'findOne').mockResolvedValueOnce({ quantidade: 10 } as any);
+      jest.spyOn(service, 'insert').mockResolvedValueOnce();
 
-      const result = await service.add(romaneioId, { produtoId, quantidade });
+      await service.add(romaneioId, { produtoId, quantidade });
 
-      expect(repository.insert).toHaveBeenCalledWith({
-        empresaId: empresa.id,
+      expect(service.insert).toHaveBeenCalledTimes(1);
+      expect(service.insert).toHaveBeenCalledWith({
         romaneioId,
-        data: empresa.data,
-        sequencia: sequencia,
-        referenciaId: estoque.referenciaId,
         produtoId,
+        quantidade,
+        referenciaId: estoque.referenciaId,
         valorUnitario: precoReferencia.preco,
-        emPromocao: false,
-        quantidade: quantidade,
-        operadorId: usuario.id,
-        romaneiosDevolucao: expect.any(Array<Number>),
       });
-      expect(result).toBeDefined();
-      expect(result.quantidade).toEqual(quantidade);
+    });
+  });
+
+  describe('insert', () => {
+    it('should insert a new romaneio item', async () => {
+      const empresa = { id: 1, data: new Date('2023-06-05') } as any;
+      const usuario = { id: 1 } as any;
+      const sequencia = 1;
+      const dto = { romaneioId: 1, sequencia: 1, produtoId: 1, quantidade: 10, referenciaId: 1, valorUnitario: 10 };
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValue({
+        select: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        getRawOne: jest.fn().mockResolvedValue({ sequencia }),
+      } as any);
+
+      await service.insert(dto);
+
+      expect(repository.createQueryBuilder).toHaveBeenCalled();
+      expect(repository.createQueryBuilder().select).toHaveBeenCalledWith('coalesce(max(sequencia), 0) + 1', 'sequencia');
+      expect(repository.createQueryBuilder().where).toHaveBeenCalledWith({ empresaId: empresa.id, romaneioId: dto.romaneioId });
+      expect(repository.createQueryBuilder().getRawOne).toHaveBeenCalled();
+      expect(repository.insert).toHaveBeenCalledWith({
+        ...dto,
+        empresaId: empresa.id,
+        data: expect.any(Date),
+        sequencia: sequencia,
+        emPromocao: false,
+        operadorId: usuario.id,
+      });
     });
   });
 

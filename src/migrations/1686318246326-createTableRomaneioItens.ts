@@ -62,18 +62,18 @@ export class CreateTableRomaneioItens1686318246326 implements MigrationInterface
             isNullable: true,
           },
           {
-            name: `operadorId`,
-            type: `int`,
-            isNullable: true,
-          },
-          {
             name: `devolvido`,
             type: `decimal(10,4)`,
             default: false,
           },
           {
-            name: `romaneiosDevolucao`,
-            type: `text`,
+            name: `romaneioDevolucaoId`,
+            type: `bigint`,
+            isNullable: true,
+          },
+          {
+            name: `operadorId`,
+            type: `int`,
             isNullable: true,
           },
           {
@@ -89,6 +89,13 @@ export class CreateTableRomaneioItens1686318246326 implements MigrationInterface
         ],
         uniques: [{ columnNames: [`romaneioId`, `sequencia`, `produtoId`] }],
         foreignKeys: [
+          {
+            columnNames: [`empresaId`],
+            referencedTableName: `empresas`,
+            referencedColumnNames: [`id`],
+            onDelete: `CASCADE`,
+            onUpdate: `CASCADE`,
+          },
           {
             columnNames: [`empresaId`, `romaneioId`],
             referencedTableName: `romaneios`,
@@ -108,6 +115,13 @@ export class CreateTableRomaneioItens1686318246326 implements MigrationInterface
             referencedTableName: `produtos`,
             referencedColumnNames: [`referenciaId`, `id`],
             onDelete: `RESTRICT`,
+            onUpdate: `CASCADE`,
+          },
+          {
+            columnNames: [`empresaId`, `romaneioDevolucaoId`],
+            referencedTableName: `romaneios`,
+            referencedColumnNames: [`empresaId`, `id`],
+            onDelete: `CASCADE`,
             onUpdate: `CASCADE`,
           },
           {

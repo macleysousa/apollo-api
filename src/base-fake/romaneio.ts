@@ -136,7 +136,7 @@ export class RomaneioFakeRepository {
       cupomId: 1,
       operadorId: 1,
       devolvido: 0,
-      romaneiosDevolucao: [],
+      romaneioDevolucaoId: null,
       criadoEm: new Date('2023-06-09T11:13:18.000Z'),
       atualizadoEm: new Date('2023-06-09T11:13:18.000Z'),
     });

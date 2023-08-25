@@ -53,12 +53,10 @@ describe('RomaneioItemController', () => {
     it('should call service add method with correct parameters', async () => {
       const romaneioId = 1;
       const addDto = { produtoId: 2, quantidade: 3 } as AddRemoveRomaneioItemDto;
-      const romaneioItemView = romaneioFakeRepository.findOneViewItem();
 
-      const result = await controller.add(romaneioId, addDto);
+      await controller.add(romaneioId, addDto);
 
       expect(service.add).toHaveBeenCalledWith(romaneioId, addDto);
-      expect(result).toEqual(romaneioItemView);
     });
   });
 
