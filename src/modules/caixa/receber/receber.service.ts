@@ -75,8 +75,12 @@ export class ReceberService {
     }
 
     switch (romaneio.operacao) {
-      case OperacaoRomaneio.Outros:
-        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
+      case OperacaoRomaneio.Compra:
+        throw new BadRequestException('Operação não implementada');
+
+      case OperacaoRomaneio.Devolucao_Compra:
+        throw new BadRequestException('Operação não implementada');
+
       case OperacaoRomaneio.Venda:
         const valorRomaneio = romaneio.valorLiquido + (romaneio.tipoFrete == TipoFrete.FOB ? romaneio.valorFrete : 0);
 
@@ -93,6 +97,7 @@ export class ReceberService {
         const liquidacaoId = liquidacao.first().liquidacao;
 
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId, liquidacaoId);
+
       case OperacaoRomaneio.Devolucao_Venda:
         if (!romaneio.romaneiosDevolucao && parametros.first((x) => x.parametroId == 'DEVOLVER_SEM_ROMANEIO').valor == 'N') {
           throw new BadRequestException('Romaneios de devolução não informados');
@@ -126,9 +131,28 @@ export class ReceberService {
         });
 
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
-    }
 
-    return romaneio;
+      case OperacaoRomaneio.Saida_Consignacao:
+        throw new BadRequestException('Operação não implementada');
+
+      case OperacaoRomaneio.Devolucao_Consignacao:
+        throw new BadRequestException('Operação não implementada');
+
+      case OperacaoRomaneio.Acerto_Consignacao:
+        throw new BadRequestException('Operação não implementada');
+
+      case OperacaoRomaneio.Brinde:
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
+
+      case OperacaoRomaneio.Transferencia:
+        throw new BadRequestException('Operação não implementada');
+
+      case OperacaoRomaneio.Devolucao_Transferencia:
+        throw new BadRequestException('Operação não implementada');
+
+      case OperacaoRomaneio.Outros:
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
+    }
   }
 
   async lancarLiquidacao(caixaId: number, tipoHistorico: TipoHistorico, faturas: FaturaEntity[]): Promise<CaixaExtratoEntity[]> {
