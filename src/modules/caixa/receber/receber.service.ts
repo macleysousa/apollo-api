@@ -102,31 +102,30 @@ export class ReceberService {
           throw new BadRequestException('Romaneio possui itens que não podem ser devolvidos');
         }
 
-        // const fatura = await this.faturaService.createAutomatica({
-        //   pessoaId: romaneio.pessoaId,
-        //   parcelas: 1,
-        //   romaneioId: romaneio.romaneioId,
-        //   valor: romaneio.valorLiquido,
-        //   tipoDocumento: TipoDocumento.Credito_de_Devolucao,
-        //   tipoMovimento: TipoMovimento.Credito,
-        //   observacao: `Crédito de devolução gerado a partir do romaneio ${romaneio.romaneioId}`,
-        //   itens: [{ parcela: 1, valor: romaneio.valorLiquido, caixaPagamento: caixaId, situacao: 'Encerrada' } as FaturaParcelaEntity],
-        // });
+        const fatura = await this.faturaService.createAutomatica({
+          pessoaId: romaneio.pessoaId,
+          parcelas: 1,
+          romaneioId: romaneio.romaneioId,
+          valor: romaneio.valorLiquido,
+          tipoDocumento: TipoDocumento.Credito_de_Devolucao,
+          tipoMovimento: TipoMovimento.Credito,
+          observacao: `Crédito de devolução gerado a partir do romaneio ${romaneio.romaneioId}`,
+          itens: [{ parcela: 1, valor: romaneio.valorLiquido, caixaPagamento: caixaId, situacao: 'Encerrada' } as FaturaParcelaEntity],
+        });
 
-        // await this.pessoaExtratoService.lancarMovimento({
-        //   pessoaId: romaneio.pessoaId,
-        //   faturaId: fatura.id,
-        //   faturaParcela: fatura.itens.first().parcela,
-        //   valor: romaneio.valorLiquido,
-        //   liquidacao: await this.caixaExtratoService.newLiquidacaoId(),
-        //   romaneioId: romaneio.romaneioId,
-        //   tipoDocumento: TipoDocumento.Credito_de_Devolucao as any,
-        //   tipoMovimento: TipoMovimento.Credito,
-        //   observacao: `Crédito de devolução gerado a partir do romaneio ${romaneio.romaneioId}`,
-        // });
+        await this.pessoaExtratoService.lancarMovimento({
+          pessoaId: romaneio.pessoaId,
+          faturaId: fatura.id,
+          faturaParcela: fatura.itens.first().parcela,
+          valor: romaneio.valorLiquido,
+          liquidacao: await this.caixaExtratoService.newLiquidacaoId(),
+          romaneioId: romaneio.romaneioId,
+          tipoDocumento: TipoDocumento.Credito_de_Devolucao as any,
+          tipoMovimento: TipoMovimento.Credito,
+          observacao: `Crédito de devolução gerado a partir do romaneio ${romaneio.romaneioId}`,
+        });
 
-        // return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
-        break;
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
     }
 
     return romaneio;

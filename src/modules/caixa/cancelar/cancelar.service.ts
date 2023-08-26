@@ -82,7 +82,5 @@ export class CancelarService {
         throw new BadRequestException(`O romaneio "${dto.romaneioId}" já possui produtos devolvidos, não é possível cancelar`);
       }
     }
-
-    await this.romaneioService.cancelar(empresaId, dto.romaneioId, dto.motivo);
   }
 }

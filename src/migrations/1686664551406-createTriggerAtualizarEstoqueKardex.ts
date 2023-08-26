@@ -18,11 +18,15 @@ BEGIN
         FROM view_romaneios_itens
         WHERE romaneioId = NEW.id
 		    GROUP BY empresaId, data, romaneioId, referenciaId, produtoId;
+        -- calcular os itens devidos
+        CALL romaneio_calcular_itens_devidos(NEW.id);
     ELSEIF OLD.situacao = 'Encerrado' AND NEW.situacao = 'Cancelado' THEN
         UPDATE estoque_kardex  SET cancelado=1,atualizadoEm=now() WHERE romaneioId=NEW.id;
         UPDATE faturas SET situacao='Cancelada',operadorId=new.operadorId,motivoCancelamento=new.motivoCancelamento,atualizadoEm=now() WHERE romaneioId=NEW.id;
         UPDATE pessoas_extrato SET cancelado=1,operadorId=new.operadorId,motivoCancelamento=new.motivoCancelamento,atualizadoEm=now() WHERE romaneioId=NEW.id;
         UPDATE caixas_extrato SET cancelado=1,operadorId=new.operadorId,motivoCancelamento=new.motivoCancelamento,atualizadoEm=now() WHERE liquidacao=NEW.liquidacao;
+        -- cancelar os itens devidos
+        CALL romaneio_cancelar_itens_devidos(NEW.id);
     END IF;
 END;
 `);

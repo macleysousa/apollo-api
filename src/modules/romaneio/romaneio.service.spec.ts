@@ -38,6 +38,7 @@ describe('RomaneioService', () => {
             save: jest.fn(),
             update: jest.fn(),
             delete: jest.fn(),
+            query: jest.fn(),
           },
         },
         {
@@ -482,6 +483,23 @@ describe('RomaneioService', () => {
       expect(repository.update).toHaveBeenCalledWith({ id }, { caixaId, situacao: SituacaoRomaneio.Encerrado, liquidacao });
     });
 
+    it('should update romaneio situacao to Encerrado if operacao is devolucao', async () => {
+      const empresaId = 1;
+      const caixaId = 1;
+      const id = 1;
+      const liquidacao = 1692703474445;
+      const romaneio = { id: 1, situacao: SituacaoRomaneio.EmAndamento, operacao: OperacaoRomaneio.Venda } as any;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
+      jest.spyOn(repository, 'update').mockResolvedValueOnce({} as any);
+
+      await service.encerrar(empresaId, caixaId, id, liquidacao);
+
+      expect(service.findById).toHaveBeenCalledWith(empresaId, id);
+      expect(repository.update).toHaveBeenCalledWith({ id }, { caixaId, situacao: SituacaoRomaneio.Encerrado, liquidacao });
+      expect(repository.query).toBeCalledWith(`CALL romaneio_calcular_itens_devidos(${id})`);
+    });
+
     it('should throw BadRequestException if update situacao', async () => {
       const empresaId = 1;
       const caixaId = 1;
@@ -515,6 +533,7 @@ describe('RomaneioService', () => {
       );
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(result).toEqual(romaneioFakeRepository.findOneView());
+      expect(repository.query).toBeCalledWith(`CALL romaneio_cancelar_itens_devolvidos(${id})`);
     });
 
     it('should throw BadRequestException if cancelar fails', async () => {

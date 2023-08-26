@@ -166,6 +166,8 @@ export class RomaneioService {
       throw new BadRequestException('Não foi possível encerrar o romaneio');
     });
 
+    await this.repository.query(`CALL romaneio_calcular_itens_devidos(${id})`);
+
     return this.findById(empresaId, id);
   }
 
@@ -175,6 +177,8 @@ export class RomaneioService {
     await this.repository.update({ id }, { situacao: SituacaoRomaneio.Cancelado, motivoCancelamento: motivo, operadorId }).catch(() => {
       throw new BadRequestException('Não foi possível cancelar o romaneio');
     });
+
+    await this.repository.query(`CALL romaneio_cancelar_itens_devolvidos(${id})`);
 
     return this.findById(empresaId, id);
   }
