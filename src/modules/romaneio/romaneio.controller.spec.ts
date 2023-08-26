@@ -7,6 +7,8 @@ import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';
 import { RomaneioController } from './romaneio.controller';
 import { RomaneioService } from './romaneio.service';
 import { RomaneioFilter } from './filters/romaneio.filter';
+import { UpdateRomaneioDto } from './dto/update-romaneio.dto';
+import { ContextService } from 'src/context/context.service';
 
 describe('RomaneioController', () => {
   let controller: RomaneioController;
@@ -22,8 +24,15 @@ describe('RomaneioController', () => {
             create: jest.fn().mockResolvedValue(romaneioFakeRepository.findOneView()),
             find: jest.fn().mockResolvedValue(romaneioFakeRepository.findViewPaginate()),
             findById: jest.fn().mockResolvedValue(romaneioFakeRepository.findOneView()),
+            update: jest.fn().mockResolvedValue(romaneioFakeRepository.findOneView()),
             observacao: jest.fn().mockResolvedValue(romaneioFakeRepository.findOneView()),
             cancelar: jest.fn().mockResolvedValue({ ...romaneioFakeRepository.findOneView(), sutuacao: 'Cancelado' }),
+          },
+        },
+        {
+          provide: ContextService,
+          useValue: {
+            empresa: jest.fn().mockReturnValue({ id: 1 }),
           },
         },
       ],
@@ -82,6 +91,20 @@ describe('RomaneioController', () => {
       const result = await controller.findOne(empresa, id, ['itens'] as any);
 
       expect(service.findById).toHaveBeenCalledWith(empresa.id, id, ['itens']);
+      expect(result).toEqual(romaneioView);
+    });
+  });
+
+  describe('/:id (PUT)', () => {
+    it('should update a romaneio', async () => {
+      const empresa = { id: 1 } as any;
+      const romaneioId = 1;
+      const updateRomaneioDto: UpdateRomaneioDto = {} as any;
+      const romaneioView = romaneioFakeRepository.findOneView();
+
+      const result = await controller.update(empresa, romaneioId, updateRomaneioDto);
+
+      expect(service.update).toHaveBeenCalledWith(empresa.id, romaneioId, updateRomaneioDto);
       expect(result).toEqual(romaneioView);
     });
   });

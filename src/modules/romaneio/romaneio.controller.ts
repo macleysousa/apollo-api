@@ -5,16 +5,18 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 import { CurrentBranch } from 'src/decorators/current-auth.decorator';
+import { ApiQueryEnum } from 'src/decorators/api-query-enum.decorator';
 
 import { ApiComponent } from '../componente/decorator/componente.decorator';
 import { EmpresaEntity } from '../empresa/entities/empresa.entity';
 import { CreateRomaneioDto } from './dto/create-romaneio.dto';
 import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';
+import { UpdateRomaneioDto } from './dto/update-romaneio.dto';
 import { RomaneioFilter } from './filters/romaneio.filter';
 import { RomaneioIncludeEnum } from './includes/romaneio.include';
 import { RomaneioService } from './romaneio.service';
 import { RomaneioView } from './views/romaneio.view';
-import { ApiQueryEnum } from 'src/decorators/api-query-enum.decorator';
+import { ParseRomaneioEmAndamentoPipe } from 'src/commons/pipes/parseRomaneio.pipe';
 
 @ApiTags('Romaneios')
 @Controller('romaneios')
@@ -51,6 +53,16 @@ export class RomaneioController {
     @Query('incluir', new DefaultValuePipe([])) relations: RomaneioIncludeEnum[]
   ): Promise<RomaneioView> {
     return this.service.findById(empresa.id, id, relations);
+  }
+
+  @Put(':id')
+  @ApiResponse({ status: 200, type: RomaneioView })
+  async update(
+    @CurrentBranch() empresa: EmpresaEntity,
+    @Param('id', ParseRomaneioEmAndamentoPipe) id: number,
+    @Body() updateRomaneioDto: UpdateRomaneioDto
+  ): Promise<RomaneioView> {
+    return this.service.update(empresa.id, id, updateRomaneioDto);
   }
 
   @Put(':id/observacao')

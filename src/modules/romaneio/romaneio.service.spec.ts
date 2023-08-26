@@ -324,6 +324,77 @@ describe('RomaneioService', () => {
     });
   });
 
+  describe('update', () => {
+    it('should not update romaneio not found', async () => {
+      const empresaId = 1;
+      const id = 1;
+      const dto = { descricao: 'Teste' } as any;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(undefined);
+
+      expect(service.update(empresaId, id, dto)).rejects.toThrow(BadRequestException);
+      expect(service.findById).toHaveBeenCalledWith(empresaId, id, ['itens']);
+      expect(repository.update).not.toHaveBeenCalled();
+    });
+
+    it('should not update romaneio not Em andamento', async () => {
+      const empresaId = 1;
+      const id = 1;
+      const dto = { descricao: 'Teste' } as any;
+      const romaneio = { ...romaneioFakeRepository.findOneView(), situacao: SituacaoRomaneio.Cancelado };
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
+
+      expect(service.update(empresaId, id, dto)).rejects.toThrow(BadRequestException);
+      expect(service.findById).toHaveBeenCalledWith(empresaId, id, ['itens']);
+      expect(repository.update).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException if update romaneio already have items', async () => {
+      const empresaId = 1;
+      const id = 1;
+      const dto = { descricao: 'Teste' } as any;
+      const romaneio = { ...romaneioFakeRepository.findOneView(), itens: [{ id: 1 }] } as any;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
+
+      await expect(service.update(empresaId, id, dto)).rejects.toThrowError(`Romaneio "${id}" não pode ser alterado pois já possui itens`);
+      expect(service.findById).toHaveBeenCalledWith(empresaId, id, ['itens']);
+      expect(repository.update).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException if update romaneio', async () => {
+      const operadorId = 1;
+      const empresaId = 1;
+      const id = 1;
+      const dto = { descricao: 'Teste' } as any;
+      const romaneio = { id: 1, situacao: SituacaoRomaneio.EmAndamento, operacao: OperacaoRomaneio.Outros } as any;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
+      jest.spyOn(repository, 'update').mockRejectedValueOnce(new Error());
+
+      await expect(service.update(empresaId, id, dto)).rejects.toThrow(BadRequestException);
+      expect(service.findById).toHaveBeenCalledWith(empresaId, id, ['itens']);
+      expect(repository.update).toHaveBeenCalledWith({ id }, { ...dto, operadorId });
+    });
+
+    it('should update a romaneio', async () => {
+      const empresaId = 1;
+      const operadorId = 1;
+      const id = 1;
+      const dto = { descricao: 'Teste' } as any;
+
+      jest.spyOn(repository, 'update').mockResolvedValueOnce({} as any);
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneioFakeRepository.findOneView());
+
+      const result = await service.update(empresaId, id, dto);
+
+      expect(repository.update).toHaveBeenCalledWith({ id }, { ...dto, operadorId });
+      expect(service.findById).toHaveBeenCalledWith(empresaId, id, ['itens']);
+      expect(result).toEqual(romaneioFakeRepository.findOneView());
+    });
+  });
+
   describe('observacao', () => {
     it('should update observacao', async () => {
       const empresaId = 1;

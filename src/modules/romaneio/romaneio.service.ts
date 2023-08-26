@@ -14,6 +14,7 @@ import { SituacaoRomaneio } from './enum/situacao-romaneio.enum';
 import { RomaneioView } from './views/romaneio.view';
 import { RomaneioInclude } from './includes/romaneio.include';
 import { RomaneioFilter } from './filters/romaneio.filter';
+import { UpdateRomaneioDto } from './dto/update-romaneio.dto';
 
 @Injectable()
 export class RomaneioService {
@@ -104,6 +105,29 @@ export class RomaneioService {
 
   async findByIds(empresaId: number, ids: number[], relations?: RomaneioInclude[]): Promise<RomaneioView[]> {
     return this.view.find({ where: { empresaId: empresaId, romaneioId: In(ids) }, relations });
+  }
+
+  async update(empresaId: number, id: number, updateRomaneioDto: UpdateRomaneioDto): Promise<RomaneioView> {
+    const operadorId = this.contextService.operadorId();
+
+    const romaneio = await this.findById(empresaId, id, ['itens']);
+    if (!romaneio) {
+      throw new BadRequestException('Romaneio não encontrado');
+    }
+
+    if (romaneio.situacao !== SituacaoRomaneio.EmAndamento) {
+      throw new BadRequestException('Romaneio não está em andamento');
+    }
+
+    if (romaneio.itens && romaneio.itens.length > 0) {
+      throw new BadRequestException(`Romaneio "${id}" não pode ser alterado pois já possui itens`);
+    }
+
+    await this.repository.update({ id }, { ...updateRomaneioDto, operadorId }).catch(() => {
+      throw new BadRequestException('Não foi possível atualizar o romaneio');
+    });
+
+    return this.findById(empresaId, id);
   }
 
   async observacao(empresaId: number, id: number, { observacao }: OperacaoRomaneioDto): Promise<RomaneioView> {
