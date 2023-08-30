@@ -1,5 +1,7 @@
 export enum SituacaoRomaneio {
-  EmAndamento = 'Em andamento',
-  Encerrado = 'Encerrado',
-  Cancelado = 'Cancelado',
+  em_andamento = 'em_andamento',
+  encerrado = 'encerrado',
+  cancelado = 'cancelado',
 }
+
+export type SituacaoRomaneioType = keyof typeof SituacaoRomaneio;

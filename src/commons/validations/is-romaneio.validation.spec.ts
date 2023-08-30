@@ -33,7 +33,7 @@ describe('RomaneioConstraint', () => {
 
   it('should return true if romaneio exists and has the correct situacao', async () => {
     const romaneioId = 1;
-    const situacao = SituacaoRomaneio.EmAndamento;
+    const situacao = SituacaoRomaneio.em_andamento;
     const romaneio = { id: romaneioId, situacao } as any;
 
     jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
@@ -44,7 +44,7 @@ describe('RomaneioConstraint', () => {
 
   it('should return false if romaneio does not exist', async () => {
     const romaneioId = 1;
-    const situacao = SituacaoRomaneio.EmAndamento;
+    const situacao = SituacaoRomaneio.em_andamento;
 
     jest.spyOn(service, 'findById').mockResolvedValueOnce(undefined);
 
@@ -55,8 +55,8 @@ describe('RomaneioConstraint', () => {
 
   it('should return false if romaneio has the wrong situacao', async () => {
     const romaneioId = 1;
-    const situacao = SituacaoRomaneio.EmAndamento;
-    const romaneio = { id: romaneioId, situacao: SituacaoRomaneio.Encerrado } as any;
+    const situacao = SituacaoRomaneio.em_andamento;
+    const romaneio = { id: romaneioId, situacao: SituacaoRomaneio.encerrado } as any;
 
     jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
 

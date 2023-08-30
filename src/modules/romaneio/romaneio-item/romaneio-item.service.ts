@@ -43,7 +43,7 @@ export class RomaneioItemService {
     const romaneio = await this.romaneioService.findById(empresa.id, romaneioId);
     if (!romaneio) {
       throw new BadRequestException('Romaneio não encontrado');
-    } else if (romaneio.situacao !== SituacaoRomaneio.EmAndamento) {
+    } else if (romaneio.situacao !== SituacaoRomaneio.em_andamento) {
       throw new BadRequestException('Romaneio não está em andamento');
     }
 
@@ -53,7 +53,7 @@ export class RomaneioItemService {
     const estoque = await this.estoqueService.findByProdutoId(empresa.id, produtoId);
     if (!estoque) {
       throw new BadRequestException('Produto não encontrado em estoque');
-    } else if (estoque.saldo < quantidade + romaneioItemQuantidade && romaneio.modalidade == ModalidadeRomaneio.Saida) {
+    } else if (estoque.saldo < quantidade + romaneioItemQuantidade && romaneio.modalidade == ModalidadeRomaneio.saida) {
       throw new BadRequestException(`Saldo em estoque insuficiente para o produto ${produtoId}`);
     }
 
@@ -159,7 +159,7 @@ export class RomaneioItemService {
     const empresaId = this.contextService.empresaId();
     const romaneio = await this.romaneioService.findById(empresaId, romaneioId);
 
-    if (romaneio.situacao !== SituacaoRomaneio.EmAndamento) {
+    if (romaneio.situacao !== SituacaoRomaneio.em_andamento) {
       throw new BadRequestException('Romaneio não está em andamento');
     }
 
@@ -172,7 +172,7 @@ export class RomaneioItemService {
 
     if (!item) {
       throw new BadRequestException('Item não encontrado');
-    } else if (item.situacao !== SituacaoRomaneio.EmAndamento) {
+    } else if (item.situacao !== SituacaoRomaneio.em_andamento) {
       throw new BadRequestException('Romaneio não está em andamento');
     }
 

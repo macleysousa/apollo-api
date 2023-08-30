@@ -88,13 +88,13 @@ describe('ReceberController', () => {
       const romaneioDto = { romaneioId: 1 } as any;
       const caixaId = 1;
 
-      jest.spyOn(service, 'romaneio').mockResolvedValue({ situacao: SituacaoRomaneio.Encerrado } as any);
+      jest.spyOn(service, 'romaneio').mockResolvedValue({ situacao: SituacaoRomaneio.encerrado } as any);
 
       const result = await controller.romaneio(caixaId, romaneioDto);
 
       expect(service.romaneio).toBeCalledWith(caixaId, romaneioDto);
 
-      expect(result).toEqual({ situacao: SituacaoRomaneio.Encerrado });
+      expect(result).toEqual({ situacao: SituacaoRomaneio.encerrado });
     });
   });
 });

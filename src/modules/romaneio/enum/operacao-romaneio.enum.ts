@@ -1,15 +1,16 @@
 export enum OperacaoRomaneio {
-  Compra = 'Compra',
-  Devolucao_Compra = 'Devolução Compra',
-  Venda = 'Venda',
-  Devolucao_Venda = 'Devolução Venda',
-  Saida_Consignacao = 'Saída Consignação',
-  Devolucao_Consignacao = 'Devolução Consignação',
-  Acerto_Consignacao = 'Acerto Consignação',
-  Brinde = 'Brinde',
-  Transferencia = 'Transferência',
-  Devolucao_Transferencia = 'Devolução Transferência',
-  Outros = 'Outros',
+  compra = 'compra',
+  devolucao_compra = 'devolucao_compra',
+  venda = 'venda',
+  venda_devolucao = 'venda_devolucao',
+  consignacao_saida = 'consignacao_saida',
+  consignacao_devolucao = 'consignacao_devolucao',
+  consignacao_acerto = 'consignacao_acerto',
+  brinde = 'brinde',
+  transferencia_saida = 'transferencia_saida',
+  transferencia_entrada = 'transferencia_entrada',
+  transferencia_devolucao = 'transferencia_devolucao',
+  outros = 'outros',
 }
 
 export type OperacaoRomaneioType = keyof typeof OperacaoRomaneio;

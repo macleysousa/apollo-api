@@ -60,7 +60,7 @@ export class ReceberService {
       throw new BadRequestException('Romaneio não encontrado');
     } else if (romaneio.itens.length == 0) {
       throw new BadRequestException('Romaneio não possui itens');
-    } else if (romaneio.modalidade == ModalidadeRomaneio.Saida) {
+    } else if (romaneio.modalidade == ModalidadeRomaneio.saida) {
       const produtos = romaneio.itens
         .groupBy((x) => x.produtoId)
         .map((x) => ({ produtoId: x.key, quantidade: x.values.sum((y) => y.quantidade) }));
@@ -75,18 +75,18 @@ export class ReceberService {
     }
 
     switch (romaneio.operacao) {
-      case OperacaoRomaneio.Compra:
+      case OperacaoRomaneio.compra:
         throw new BadRequestException('Operação não implementada');
 
-      case OperacaoRomaneio.Devolucao_Compra:
+      case OperacaoRomaneio.devolucao_compra:
         throw new BadRequestException('Operação não implementada');
 
-      case OperacaoRomaneio.Venda:
+      case OperacaoRomaneio.venda:
         const valorRomaneio = romaneio.valorLiquido + (romaneio.tipoFrete == TipoFrete.FOB ? romaneio.valorFrete : 0);
 
         if (!romaneioDto.formasDePagamento) {
           throw new BadRequestException('Nenhuma forma de pagamento informada');
-        } else if (romaneio.situacao != SituacaoRomaneio.EmAndamento) {
+        } else if (romaneio.situacao != SituacaoRomaneio.em_andamento) {
           throw new BadRequestException('Romaneio não está em andamento');
         } else if (valorRomaneio > romaneioDto.formasDePagamento.sum((x) => x.valor)) {
           throw new BadRequestException('O valor pago é insuficiente para encerrar o romaneio');
@@ -98,12 +98,12 @@ export class ReceberService {
 
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId, liquidacaoId);
 
-      case OperacaoRomaneio.Devolucao_Venda:
+      case OperacaoRomaneio.venda_devolucao:
         if (!romaneio.romaneiosDevolucao && parametros.first((x) => x.parametroId == 'DEVOLVER_SEM_ROMANEIO').valor == 'N') {
           throw new BadRequestException('Romaneios de devolução não informados');
         }
 
-        if (!(await this.romaneioService.validarDevolucao(empresa.id, romaneio.romaneioId, 'Venda', romaneio.romaneiosDevolucao))) {
+        if (!(await this.romaneioService.validarDevolucao(empresa.id, romaneio.romaneioId, 'venda', romaneio.romaneiosDevolucao))) {
           throw new BadRequestException('Romaneio possui itens que não podem ser devolvidos');
         }
 
@@ -132,25 +132,25 @@ export class ReceberService {
 
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
-      case OperacaoRomaneio.Saida_Consignacao:
+      case OperacaoRomaneio.consignacao_saida:
         throw new BadRequestException('Operação não implementada');
 
-      case OperacaoRomaneio.Devolucao_Consignacao:
+      case OperacaoRomaneio.consignacao_devolucao:
         throw new BadRequestException('Operação não implementada');
 
-      case OperacaoRomaneio.Acerto_Consignacao:
+      case OperacaoRomaneio.consignacao_acerto:
         throw new BadRequestException('Operação não implementada');
 
-      case OperacaoRomaneio.Brinde:
+      case OperacaoRomaneio.brinde:
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
-      case OperacaoRomaneio.Transferencia:
+      case OperacaoRomaneio.transferencia_saida:
         throw new BadRequestException('Operação não implementada');
 
-      case OperacaoRomaneio.Devolucao_Transferencia:
+      case OperacaoRomaneio.transferencia_entrada:
         throw new BadRequestException('Operação não implementada');
 
-      case OperacaoRomaneio.Outros:
+      case OperacaoRomaneio.outros:
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
     }
   }

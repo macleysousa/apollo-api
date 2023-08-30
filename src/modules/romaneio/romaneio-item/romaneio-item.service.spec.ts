@@ -116,7 +116,7 @@ describe('RomaneioItemService', () => {
       const romaneioId = 1;
       const produtoId = 1;
       const quantidade = 10;
-      jest.spyOn(romaneioService, 'findById').mockResolvedValueOnce({ situacao: 'Cancelado' } as any);
+      jest.spyOn(romaneioService, 'findById').mockResolvedValueOnce({ situacao: 'cancelado' } as any);
 
       await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrow(BadRequestException);
     });
@@ -424,7 +424,7 @@ describe('RomaneioItemService', () => {
     it('should throw BadRequestException when romaneio situação canceldo', async () => {
       const romaneioId = 1;
 
-      jest.spyOn(romaneioService, 'findById').mockResolvedValue({ situacao: 'Cancelado' } as any);
+      jest.spyOn(romaneioService, 'findById').mockResolvedValue({ situacao: 'cancelado' } as any);
 
       await expect(service.clear(romaneioId)).rejects.toThrow(BadRequestException);
     });
@@ -465,7 +465,7 @@ describe('RomaneioItemService', () => {
       const romaneioId = 1;
       const produtoId = 2;
       const quantidade = 3;
-      const romaneioItem = { ...romaneioFakeRepository.findOneViewItem(), situacao: SituacaoRomaneio.Cancelado } as any;
+      const romaneioItem = { ...romaneioFakeRepository.findOneViewItem(), situacao: SituacaoRomaneio.cancelado } as any;
 
       jest.spyOn(view, 'findOne').mockResolvedValueOnce(romaneioItem);
 

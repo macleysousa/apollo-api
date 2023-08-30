@@ -26,18 +26,18 @@ export class CreateRomaneioDto {
   @IsTabelaDePreco()
   tabelaPrecoId: number;
 
-  @ApiProperty({ enum: ModalidadeRomaneio, default: ModalidadeRomaneio.Saida })
+  @ApiProperty({ enum: ModalidadeRomaneio, default: ModalidadeRomaneio.saida })
   @IsNotEmpty()
   @IsEnum(ModalidadeRomaneio)
   modalidade: ModalidadeRomaneio;
 
-  @ApiProperty({ enum: OperacaoRomaneio, default: OperacaoRomaneio.Venda })
+  @ApiProperty({ enum: OperacaoRomaneio, default: OperacaoRomaneio.venda })
   @IsNotEmpty()
   @IsEnum(OperacaoRomaneio)
   operacao: OperacaoRomaneio;
 
   @ApiProperty({ type: [Number], required: false })
   @IsOptional()
-  @IsRomaneio(SituacaoRomaneio.Encerrado, { each: true })
+  @IsRomaneio(SituacaoRomaneio.encerrado, { each: true })
   romaneiosDevolucao?: number[];
 }

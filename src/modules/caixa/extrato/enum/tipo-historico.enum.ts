@@ -3,7 +3,7 @@ export enum TipoHistorico {
   Suprimento = 'Suprimento',
   Sangria = 'Sangria',
   Lancamento_de_despesa = 'Lançamento de Despesa',
-  Venda = 'Venda',
+  Venda = 'venda',
   Devolucao = 'Devolução',
   Troco = 'Troco',
   Adiantamento = 'Adiantamento',

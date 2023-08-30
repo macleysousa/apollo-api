@@ -34,10 +34,10 @@ export class RomaneioService {
 
     let observacao = '';
     switch (createRomaneioDto.operacao) {
-      case OperacaoRomaneio.Compra:
+      case OperacaoRomaneio.compra:
         observacao = parametro.find((p) => p.parametroId === 'OBS_PADRAO_COMPRA')?.valor ?? '';
         break;
-      case OperacaoRomaneio.Venda:
+      case OperacaoRomaneio.venda:
         observacao = parametro.find((p) => p.parametroId === 'OBS_PADRAO_VENDA')?.valor ?? '';
         break;
     }
@@ -48,7 +48,7 @@ export class RomaneioService {
       data: empresa.data,
       observacao: observacao,
       operadorId: usuario.id,
-      situacao: SituacaoRomaneio.EmAndamento,
+      situacao: SituacaoRomaneio.em_andamento,
     });
 
     return this.findById(romaneio.empresaId, romaneio.id);
@@ -115,7 +115,7 @@ export class RomaneioService {
       throw new BadRequestException('Romaneio não encontrado');
     }
 
-    if (romaneio.situacao !== SituacaoRomaneio.EmAndamento) {
+    if (romaneio.situacao !== SituacaoRomaneio.em_andamento) {
       throw new BadRequestException('Romaneio não está em andamento');
     }
 
@@ -133,7 +133,7 @@ export class RomaneioService {
   async observacao(empresaId: number, id: number, { observacao }: OperacaoRomaneioDto): Promise<RomaneioView> {
     const romaneio = await this.findById(empresaId, id);
 
-    if (romaneio.situacao !== SituacaoRomaneio.EmAndamento) {
+    if (romaneio.situacao !== SituacaoRomaneio.em_andamento) {
       throw new BadRequestException('Romaneio não está em andamento');
     }
 
@@ -182,11 +182,11 @@ export class RomaneioService {
   async encerrar(empresaId: number, caixaId: number, id: number, liquidacao?: number): Promise<RomaneioView> {
     const romaneio = await this.findById(empresaId, id);
 
-    if (romaneio.situacao !== SituacaoRomaneio.EmAndamento) {
+    if (romaneio.situacao !== SituacaoRomaneio.em_andamento) {
       throw new BadRequestException('Romaneio não está em andamento');
     }
 
-    await this.repository.update({ id }, { caixaId, situacao: SituacaoRomaneio.Encerrado, liquidacao }).catch(() => {
+    await this.repository.update({ id }, { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao }).catch(() => {
       throw new BadRequestException('Não foi possível encerrar o romaneio');
     });
 
@@ -198,7 +198,7 @@ export class RomaneioService {
   async cancelar(empresaId: number, id: number, motivo: string): Promise<RomaneioView> {
     const operadorId = this.contextService.usuario().id;
 
-    await this.repository.update({ id }, { situacao: SituacaoRomaneio.Cancelado, motivoCancelamento: motivo, operadorId }).catch(() => {
+    await this.repository.update({ id }, { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId }).catch(() => {
       throw new BadRequestException('Não foi possível cancelar o romaneio');
     });
 

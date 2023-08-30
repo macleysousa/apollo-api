@@ -51,13 +51,13 @@ export class CancelarService {
     const romaneio = await this.romaneioService.findById(empresaId, dto.romaneioId);
     if (!romaneio) {
       throw new BadRequestException(`O romaneio "${dto.romaneioId}" não foi encontrado`);
-    } else if (romaneio.situacao == SituacaoRomaneio.Cancelado) {
+    } else if (romaneio.situacao == SituacaoRomaneio.cancelado) {
       throw new BadRequestException(`O romaneio "${dto.romaneioId}" já foi cancelado`);
-    } else if (romaneio.situacao == SituacaoRomaneio.Encerrado && romaneio.caixaId != caixaId) {
+    } else if (romaneio.situacao == SituacaoRomaneio.encerrado && romaneio.caixaId != caixaId) {
       throw new BadRequestException(`O romaneio "${dto.romaneioId}" não pertence ao caixa "${caixaId}"`);
     }
 
-    if (romaneio.situacao == SituacaoRomaneio.Encerrado && romaneio.modalidade == ModalidadeRomaneio.Entrada) {
+    if (romaneio.situacao == SituacaoRomaneio.encerrado && romaneio.modalidade == ModalidadeRomaneio.entrada) {
       const romaneioItens = await this.romaneioItemService.find(dto.romaneioId);
       const produtoIds = romaneioItens.map((x) => x.produtoId);
 
@@ -70,12 +70,12 @@ export class CancelarService {
       });
     }
 
-    if (romaneio.situacao == SituacaoRomaneio.Encerrado && romaneio.operacao == OperacaoRomaneio.Devolucao_Venda) {
+    if (romaneio.situacao == SituacaoRomaneio.encerrado && romaneio.operacao == OperacaoRomaneio.venda_devolucao) {
       const saldoCredev = await this.pessoaExtratoService.findSaldoCreditoDeDevolucao(empresaId, romaneio.pessoaId);
       if (saldoCredev < romaneio.valorLiquido) {
         throw new BadRequestException(`Saldo de crédito de devolução insuficiente para realizar o cancelamento`);
       }
-    } else if (romaneio.situacao == SituacaoRomaneio.Encerrado && romaneio.operacao == OperacaoRomaneio.Venda) {
+    } else if (romaneio.situacao == SituacaoRomaneio.encerrado && romaneio.operacao == OperacaoRomaneio.venda) {
       const romaneioItens = await this.romaneioItemService.find(dto.romaneioId);
       const produtoDevolucaoIds = romaneioItens.filter((x) => x.devolvido > 0).map((x) => x.produtoId);
       if (produtoDevolucaoIds.length > 0) {

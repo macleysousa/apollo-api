@@ -26,7 +26,7 @@ describe('RomaneioController', () => {
             findById: jest.fn().mockResolvedValue(romaneioFakeRepository.findOneView()),
             update: jest.fn().mockResolvedValue(romaneioFakeRepository.findOneView()),
             observacao: jest.fn().mockResolvedValue(romaneioFakeRepository.findOneView()),
-            cancelar: jest.fn().mockResolvedValue({ ...romaneioFakeRepository.findOneView(), sutuacao: 'Cancelado' }),
+            cancelar: jest.fn().mockResolvedValue({ ...romaneioFakeRepository.findOneView(), sutuacao: 'cancelado' }),
           },
         },
         {
@@ -67,9 +67,9 @@ describe('RomaneioController', () => {
         empresaIds: [1],
         pessoaIds: [1],
         funcionarioIds: [1],
-        modalidades: ['Entrada'],
-        operacoes: ['Compra'],
-        situacoes: ['Encerrado'],
+        modalidades: ['entrada'],
+        operacoes: ['compra'],
+        situacoes: ['encerrado'],
         incluir: ['itens'],
       };
       const page = 1;

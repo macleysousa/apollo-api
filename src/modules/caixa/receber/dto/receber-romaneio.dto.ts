@@ -10,7 +10,7 @@ import { PagamentoDto } from './pagamento.dto';
 export class ReceberRomaneioDto {
   @ApiProperty({ type: Number })
   @IsNotEmpty()
-  @IsRomaneio(SituacaoRomaneio.EmAndamento, { message: 'Romaneio não está Em Andamento' })
+  @IsRomaneio(SituacaoRomaneio.em_andamento, { message: 'Romaneio não está Em Andamento' })
   romaneioId: number;
 
   @ApiProperty({ type: [PagamentoDto] })

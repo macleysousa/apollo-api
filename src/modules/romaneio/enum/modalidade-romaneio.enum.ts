@@ -1,4 +1,6 @@
 export enum ModalidadeRomaneio {
-  Entrada = 'Entrada',
-  Saida = 'Saída',
+  entrada = 'entrada',
+  saida = 'saida',
 }
+
+export type ModalidadeRomaneioType = keyof typeof ModalidadeRomaneio;

@@ -164,7 +164,7 @@ describe('CancelarService', () => {
       const dto: CancelarRomaneioDto = { romaneioId: 1, motivo: 'Motivo' };
       const error = new BadRequestException(`O romaneio "${dto.romaneioId}" já foi cancelado`);
 
-      jest.spyOn(romaneioService, 'findById').mockResolvedValue({ situacao: SituacaoRomaneio.Cancelado } as any);
+      jest.spyOn(romaneioService, 'findById').mockResolvedValue({ situacao: SituacaoRomaneio.cancelado } as any);
 
       await expect(service.romaneio(caixaId, dto)).rejects.toThrow(error);
     });
@@ -174,7 +174,7 @@ describe('CancelarService', () => {
       const dto: CancelarRomaneioDto = { romaneioId: 1, motivo: 'Motivo' };
       const error = new BadRequestException(`O romaneio "${dto.romaneioId}" não pertence ao caixa "${caixaId}"`);
 
-      jest.spyOn(romaneioService, 'findById').mockResolvedValue({ caixaId: 2, situacao: SituacaoRomaneio.Encerrado } as any);
+      jest.spyOn(romaneioService, 'findById').mockResolvedValue({ caixaId: 2, situacao: SituacaoRomaneio.encerrado } as any);
 
       await expect(service.romaneio(caixaId, dto)).rejects.toThrow(error);
     });
@@ -182,7 +182,7 @@ describe('CancelarService', () => {
     it('should throw BadRequestException if romaneio have items insufficient in stock', async () => {
       const caixaId = 1;
       const dto: CancelarRomaneioDto = { romaneioId: 1, motivo: 'Motivo' };
-      const romaneio = { caixaId: 1, situacao: SituacaoRomaneio.Encerrado, modalidade: ModalidadeRomaneio.Entrada } as any;
+      const romaneio = { caixaId: 1, situacao: SituacaoRomaneio.encerrado, modalidade: ModalidadeRomaneio.entrada } as any;
       const romaneioItens = [{ produtoId: 1, quantidade: 10 }] as any;
       const estoque = [{ produtoId: 1, saldo: 5 }] as any;
       const error = new BadRequestException(`O produto "1" não possui estoque suficiente para realizar o cancelamento`);
@@ -199,8 +199,8 @@ describe('CancelarService', () => {
       const dto: CancelarRomaneioDto = { romaneioId: 1, motivo: 'Motivo' };
       const romaneio = {
         caixaId: 1,
-        situacao: SituacaoRomaneio.Encerrado,
-        operacao: OperacaoRomaneio.Devolucao_Venda,
+        situacao: SituacaoRomaneio.encerrado,
+        operacao: OperacaoRomaneio.venda_devolucao,
         valorLiquido: 100,
       } as any;
       const error = new BadRequestException(`Saldo de crédito de devolução insuficiente para realizar o cancelamento`);
@@ -214,7 +214,7 @@ describe('CancelarService', () => {
     it('should throw BadRequestException if romaneio have itens returned', async () => {
       const caixaId = 1;
       const dto: CancelarRomaneioDto = { romaneioId: 2, motivo: 'Motivo' };
-      const romaneio = { caixaId: 1, situacao: SituacaoRomaneio.Encerrado, operacao: OperacaoRomaneio.Venda, valorLiquido: 100 } as any;
+      const romaneio = { caixaId: 1, situacao: SituacaoRomaneio.encerrado, operacao: OperacaoRomaneio.venda, valorLiquido: 100 } as any;
       const romaneioItens = [{ produtoId: 1, quantidade: 10, devolvido: 1, romaneiDevolucaoId: 1 }] as any;
       const estoque = [{ produtoId: 1, saldo: 10 }] as any;
       const error = new BadRequestException(`O romaneio "${dto.romaneioId}" já possui produtos devolvidos, não é possível cancelar`);

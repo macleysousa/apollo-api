@@ -23,7 +23,7 @@ export class ParseRomaneioPipe implements PipeTransform<string, Promise<number>>
 
     if (!romaneio) {
       throw new BadRequestException(`Romaneio com id ${value} não encontrado.`);
-    } else if (romaneio.situacao !== SituacaoRomaneio.EmAndamento) {
+    } else if (romaneio.situacao !== SituacaoRomaneio.em_andamento) {
       throw new BadRequestException(`Romaneio com id ${value} não está em andamento.`);
     }
 
@@ -50,7 +50,7 @@ export class ParseRomaneioEmAndamentoPipe implements PipeTransform<string, Promi
 
     if (!romaneio) {
       throw new BadRequestException(`Romaneio com id ${value} não encontrado.`);
-    } else if (romaneio.situacao !== SituacaoRomaneio.EmAndamento) {
+    } else if (romaneio.situacao !== SituacaoRomaneio.em_andamento) {
       throw new BadRequestException(`Romaneio com id ${value} não está em andamento.`);
     }
 
@@ -77,7 +77,7 @@ export class ParseRomaneioEncerradoPipe implements PipeTransform<string, Promise
 
     if (!romaneio) {
       throw new BadRequestException(`Romaneio com id ${value} não encontrado.`);
-    } else if (romaneio.situacao !== SituacaoRomaneio.Encerrado) {
+    } else if (romaneio.situacao !== SituacaoRomaneio.encerrado) {
       throw new BadRequestException(`Romaneio com id ${value} não está encontrado.`);
     }
 
