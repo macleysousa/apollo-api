@@ -5,7 +5,7 @@ import { CurrentBranch } from 'src/decorators/current-auth.decorator';
 
 import { PessoaService } from './pessoa.service';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
-import { ApiComponent } from '../componente/decorator/componente.decorator';
+import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { EmpresaEntity } from '../empresa/entities/empresa.entity';
 import { PessoaEntity } from './entities/pessoa.entity';
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';

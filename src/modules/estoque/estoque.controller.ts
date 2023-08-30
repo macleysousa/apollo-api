@@ -5,7 +5,7 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 import { ParseBetweenPipe } from 'src/commons/pipes/parseBetween.pipe';
 
-import { ApiComponent } from '../componente/decorator/componente.decorator';
+import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { EstoqueService } from './estoque.service';
 import { EstoqueView } from './views/estoque.view';
 

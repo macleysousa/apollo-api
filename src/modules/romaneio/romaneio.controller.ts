@@ -7,7 +7,7 @@ import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.deco
 import { CurrentBranch } from 'src/decorators/current-auth.decorator';
 import { ApiQueryEnum } from 'src/decorators/api-query-enum.decorator';
 
-import { ApiComponent } from '../componente/decorator/componente.decorator';
+import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { EmpresaEntity } from '../empresa/entities/empresa.entity';
 import { CreateRomaneioDto } from './dto/create-romaneio.dto';
 import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';

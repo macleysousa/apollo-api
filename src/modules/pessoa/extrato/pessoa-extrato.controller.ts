@@ -2,7 +2,7 @@ import { Controller, DefaultValuePipe, Get, Param, Query } from '@nestjs/common'
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
-import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
+import { ApiComponent } from 'src/decorators/api-componente.decorator';
 
 import { PessoaExtratoEntity } from './entities/pessoa-extrato.entity';
 import { TipoDocumento } from './enum/tipo-documento.enum';

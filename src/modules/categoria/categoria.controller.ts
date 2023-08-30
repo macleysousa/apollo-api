@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/
 import { ParseIntPipe } from '@nestjs/common/pipes';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ApiComponent } from '../componente/decorator/componente.decorator';
+import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { CategoriaService } from './categoria.service';
 import { CreateCategoriaDto } from './dto/create-category.dto';
 import { UpdateCategoriaDto } from './dto/update-category.dto';

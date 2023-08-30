@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 import { CurrentBranch } from 'src/decorators/current-auth.decorator';
-import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
+import { ApiComponent } from 'src/decorators/api-componente.decorator';
 import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 
 import { CaixaExtratoEntity } from './entities/extrato.entity';

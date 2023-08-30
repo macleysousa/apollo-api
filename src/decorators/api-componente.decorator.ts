@@ -1,5 +1,6 @@
 import { SetMetadata } from '@nestjs/common';
-import { ComponenteEntity } from '../entities/componente.entity';
+
+import { ComponenteEntity } from 'src/modules/componente/entities/componente.entity';
 
 export const components: ComponenteEntity[] = new Array<ComponenteEntity>();
 

@@ -7,7 +7,7 @@ import { FuncionarioService } from './funcionario.service';
 import { CreateFuncionarioDto } from './dto/create-funcionario.dto';
 import { UpdateFuncionarioDto } from './dto/update-funcionario.dto';
 import { FuncionarioEntity } from './entities/funcionario.entity';
-import { ApiComponent } from '../componente/decorator/componente.decorator';
+import { ApiComponent } from '../../decorators/api-componente.decorator';
 
 @ApiBearerAuth()
 @ApiEmpresaAuth()

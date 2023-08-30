@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ParseUsuarioPipe } from 'src/commons/pipes/parseUsuario.pipe';
-import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
+import { ApiComponent } from 'src/decorators/api-componente.decorator';
 import { TerminalEntity } from 'src/modules/empresa/terminal/entities/terminal.entity';
 
 import { AddUsuarioTerminalDto } from './dto/add-terminal.dto';

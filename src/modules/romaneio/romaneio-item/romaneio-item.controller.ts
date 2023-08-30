@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ParseRomaneioEmAndamentoPipe } from 'src/commons/pipes/parseRomaneio.pipe';
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
-import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
+import { ApiComponent } from 'src/decorators/api-componente.decorator';
 
 import { AddRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
 import { RomaneioItemService } from './romaneio-item.service';

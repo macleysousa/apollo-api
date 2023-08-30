@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, IsNull, Not, Repository } from 'typeorm';
 
-import { components } from './decorator/componente.decorator';
+import { components } from '../../decorators/api-componente.decorator';
 import { ComponenteEntity } from './entities/componente.entity';
 
 @Injectable()

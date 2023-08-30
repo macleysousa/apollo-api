@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ParseEmpresaPipe } from 'src/commons/pipes/parseEmpresa.pipe';
-import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
+import { ApiComponent } from 'src/decorators/api-componente.decorator';
 
 import { CreateParametroDto } from './dto/create-parametro.dto';
 import { EmpresaParametroService } from './parametro.service';

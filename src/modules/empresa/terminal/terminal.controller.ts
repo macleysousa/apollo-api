@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ParseEmpresaPipe } from 'src/commons/pipes/parseEmpresa.pipe';
-import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
+import { ApiComponent } from 'src/decorators/api-componente.decorator';
 
 import { CreateTerminalDto } from './dto/create-terminal.dto';
 import { UpdateTerminalDto } from './dto/update-terminal.dto';

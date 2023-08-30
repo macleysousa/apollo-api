@@ -6,7 +6,7 @@ import { ParseBetweenPipe } from 'src/commons/pipes/parseBetween.pipe';
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 import { CurrentBranch } from 'src/decorators/current-auth.decorator';
 
-import { ApiComponent } from '../componente/decorator/componente.decorator';
+import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { EmpresaEntity } from '../empresa/entities/empresa.entity';
 import { CreateFaturaManualDto } from './dto/create-fatura-manual.dto';
 import { UpdateFaturaManualDto } from './dto/update-fatura-manual.dto';

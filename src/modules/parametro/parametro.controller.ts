@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { ApiQueryEnum } from 'src/decorators/api-query-enum.decorator';
 
-import { ApiComponent } from '../componente/decorator/componente.decorator';
+import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { ParametroEntity } from './entities/parametro.entity';
 import { Parametro, ParametroEnum } from './enum/parametros';
 import { ParametroService } from './parametro.service';

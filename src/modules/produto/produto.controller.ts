@@ -6,7 +6,7 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 import { ParseArrayPipe } from 'src/commons/pipes/parseArrayPipe.pipe';
 
-import { ApiComponent } from '../componente/decorator/componente.decorator';
+import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { CreateProdutoDto } from './dto/create-produto.dto';
 import { ImportProdutoDto } from './dto/import-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';

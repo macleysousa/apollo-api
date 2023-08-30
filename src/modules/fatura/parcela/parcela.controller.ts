@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from '@nestj
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CurrentBranch } from 'src/decorators/current-auth.decorator';
-import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
+import { ApiComponent } from 'src/decorators/api-componente.decorator';
 import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 
 import { UpsertParcelaDto } from './dto/upsert-parcela.dto';

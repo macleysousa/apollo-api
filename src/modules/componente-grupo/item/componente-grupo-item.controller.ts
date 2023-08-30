@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ApiComponent } from '../../componente/decorator/componente.decorator';
+import { ApiComponent } from '../../../decorators/api-componente.decorator';
 import { ComponenteGrupoItemService } from './componente-grupo-item.service';
 import { AddComponentGroupItemDto } from './dto/create-component-group-item.dto';
 import { ComponenteGrupoItemEntity } from './entities/componente-grupo-item.entity';

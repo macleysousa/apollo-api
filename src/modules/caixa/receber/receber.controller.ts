@@ -2,7 +2,7 @@ import { Body, Controller, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
-import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
+import { ApiComponent } from 'src/decorators/api-componente.decorator';
 
 import { ReceberAdiantamentoDto } from './dto/receber-adiantamento.dto';
 import { ReceberService } from './receber.service';

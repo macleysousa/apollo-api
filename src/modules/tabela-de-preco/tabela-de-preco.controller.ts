@@ -5,7 +5,7 @@ import { TabelaDePrecoService } from './tabela-de-preco.service';
 import { CreateTabelaDePrecoDto } from './dto/create-tabela-de-preco.dto';
 import { UpdateTabelaDePrecoDto } from './dto/update-tabela-de-preco.dto';
 import { TabelaDePrecoEntity } from './entities/tabela-de-preco.entity';
-import { ApiComponent } from '../componente/decorator/componente.decorator';
+import { ApiComponent } from '../../decorators/api-componente.decorator';
 
 @ApiBearerAuth()
 @ApiTags('Tabelas de preços')

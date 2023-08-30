@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ApiComponent } from '../componente/decorator/componente.decorator';
+import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { CreateFormaDePagamentoDto } from './dto/create-forma-de-pagamento.dto';
 import { UpdateFormaDePagamentoDto } from './dto/update-forma-de-pagamento.dto';
 import { FormaDePagamentoEntity } from './entities/forma-de-pagamento.entity';

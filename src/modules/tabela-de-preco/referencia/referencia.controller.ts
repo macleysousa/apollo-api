@@ -4,7 +4,7 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { ParseBetweenPipe } from 'src/commons/pipes/parseBetween.pipe';
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
-import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
+import { ApiComponent } from 'src/decorators/api-componente.decorator';
 
 import { AddPrecoReferenciaDto } from './dto/add-referencia.dto';
 import { PrecoReferenciaService } from './referencia.service';

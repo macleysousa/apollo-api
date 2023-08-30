@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
-import { ApiComponent } from 'src/modules/componente/decorator/componente.decorator';
+import { ApiComponent } from 'src/decorators/api-componente.decorator';
 import { ParsePessoaPipe } from 'src/commons/pipes/parsePessoa.pipe';
 
 import { PessoaEnderecoService } from './pessoa-endereco.service';

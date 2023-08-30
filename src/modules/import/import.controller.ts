@@ -2,7 +2,7 @@ import { Controller, Post, UploadedFiles, UseInterceptors } from '@nestjs/common
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger';
 
-import { ApiComponent } from '../componente/decorator/componente.decorator';
+import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { ImportService } from './import.service';
 
 @ApiTags('Importação')
