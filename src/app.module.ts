@@ -31,6 +31,7 @@ import { RomaneioModule } from './modules/romaneio/romaneio.module';
 import { TabelaDePrecoModule } from './modules/tabela-de-preco/tabela-de-preco.module';
 import { FaturaModule } from './modules/fatura/fatura.module';
 import { ImportModule } from './modules/import/import.module';
+import { ConsignacaoModule } from './modules/consignacao/consignacao.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { ImportModule } from './modules/import/import.module';
     EstoqueModule.forRoot(),
     FormaDePagamentoModule.forRoot(),
     RomaneioModule.forRoot(),
+    ConsignacaoModule.forRoot(),
     ImportModule,
   ],
   controllers: [],
