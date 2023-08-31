@@ -7,7 +7,7 @@ import { EstoqueService } from 'src/modules/estoque/estoque.service';
 import { PrecoReferenciaService } from 'src/modules/tabela-de-preco/referencia/referencia.service';
 
 import { ModalidadeRomaneio } from '../enum/modalidade-romaneio.enum';
-import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
+import { SituacaoRomaneio, SituacaoRomaneioType } from '../enum/situacao-romaneio.enum';
 import { RomaneioService } from '../romaneio.service';
 import { AddRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
 import { RomaneioItemEntity } from './entities/romaneio-item.entity';
@@ -149,6 +149,20 @@ export class RomaneioItemService {
 
   async findByRomaneioIds(romaneioId: number[], produtoIds?: number[]): Promise<RomaneioItemView[]> {
     return this.view.find({ where: { romaneioId: In(romaneioId), produtoId: produtoIds?.length > 0 ? In(produtoIds) : undefined } });
+  }
+
+  async findByConsignacaoIds(
+    consignacaoIds: number[],
+    produtoIds?: number[],
+    situacoes?: SituacaoRomaneioType[]
+  ): Promise<RomaneioItemView[]> {
+    return this.view.find({
+      where: {
+        consignacaoId: In(consignacaoIds),
+        produtoId: produtoIds?.length > 0 ? In(produtoIds) : undefined,
+        situacao: situacoes?.length > 0 ? In(situacoes) : undefined,
+      },
+    });
   }
 
   async findByProdutoId(romaneioId: number, produtoId: number): Promise<RomaneioItemView[]> {

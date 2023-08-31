@@ -1,18 +1,24 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { TipoDocumento } from 'src/commons/enum/tipo-documento';
+import { TipoFrete } from 'src/commons/enum/tipo-frete';
 import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
 import { ContextService } from 'src/context/context.service';
+import { ConsignacaoService } from 'src/modules/consignacao/consignacao.service';
+import { EstoqueService } from 'src/modules/estoque/estoque.service';
+import { CreateFaturaAutimaticaDto } from 'src/modules/fatura/dto/create-fatura-automatica.dto';
 import { FaturaEntity } from 'src/modules/fatura/entities/fatura.entity';
 import { FaturaService } from 'src/modules/fatura/fatura.service';
+import { FaturaParcelaEntity } from 'src/modules/fatura/parcela/entities/parcela.entity';
 import { FormaDePagamentoService } from 'src/modules/forma-de-pagamento/forma-de-pagamento.service';
 import { PessoaExtratoService } from 'src/modules/pessoa/extrato/pessoa-extrato.service';
+import { ModalidadeRomaneio } from 'src/modules/romaneio/enum/modalidade-romaneio.enum';
 import { OperacaoRomaneio } from 'src/modules/romaneio/enum/operacao-romaneio.enum';
+import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
 import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
 import { RomaneioView } from 'src/modules/romaneio/views/romaneio.view';
-import { CreateFaturaAutimaticaDto } from 'src/modules/fatura/dto/create-fatura-automatica.dto';
-import { FaturaParcelaEntity } from 'src/modules/fatura/parcela/entities/parcela.entity';
 
+import { CaixaExtratoEntity } from '../extrato/entities/extrato.entity';
 import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
 import { CaixaExtratoService } from '../extrato/extrato.service';
 import { PagamentoDto } from './dto/pagamento.dto';
@@ -20,11 +26,6 @@ import { ReceberAdiantamentoDto } from './dto/receber-adiantamento.dto';
 import { ReceberFaturaDto } from './dto/receber-fatura.dto';
 import { ReceberRomaneioDto } from './dto/receber-romaneio.dto';
 import { RecebimentoDto } from './dto/recebimento.dto';
-import { CaixaExtratoEntity } from '../extrato/entities/extrato.entity';
-import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
-import { TipoFrete } from 'src/commons/enum/tipo-frete';
-import { ModalidadeRomaneio } from 'src/modules/romaneio/enum/modalidade-romaneio.enum';
-import { EstoqueService } from 'src/modules/estoque/estoque.service';
 
 @Injectable()
 export class ReceberService {
@@ -35,7 +36,8 @@ export class ReceberService {
     private readonly faturaService: FaturaService,
     private readonly caixaExtratoService: CaixaExtratoService,
     private readonly romaneioService: RomaneioService,
-    private readonly estoqueService: EstoqueService
+    private readonly estoqueService: EstoqueService,
+    private readonly consignacaoService: ConsignacaoService
   ) {}
 
   async adiantamento(caixaId: number, { formasDePagamento, ...recebimento }: ReceberAdiantamentoDto): Promise<CaixaExtratoEntity[]> {
@@ -72,13 +74,19 @@ export class ReceberService {
       if (estInsuficiente.length > 0) {
         throw new BadRequestException(`Estoque insuficiente para os produtos: ${estInsuficiente.map((x) => x.produtoId).join(', ')}`);
       }
+    } else if (romaneio.operacao == OperacaoRomaneio.consignacao_saida && !romaneio.consignacaoId) {
+      throw new BadRequestException('Consignação não informada');
+    } else if (romaneio.operacao == OperacaoRomaneio.consignacao_devolucao && !romaneio.consignacaoId) {
+      throw new BadRequestException('Consignação não informada');
+    } else if (romaneio.operacao == OperacaoRomaneio.consignacao_acerto && !romaneio.consignacaoId) {
+      throw new BadRequestException('Consignação não informada');
     }
 
     switch (romaneio.operacao) {
       case OperacaoRomaneio.compra:
         throw new BadRequestException('Operação não implementada');
 
-      case OperacaoRomaneio.devolucao_compra:
+      case OperacaoRomaneio.compra_devolucao:
         throw new BadRequestException('Operação não implementada');
 
       case OperacaoRomaneio.venda:
@@ -133,16 +141,19 @@ export class ReceberService {
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
       case OperacaoRomaneio.consignacao_saida:
-        throw new BadRequestException('Operação não implementada');
+        const consignacao = await this.consignacaoService.findById(empresa.id, romaneio.consignacaoId, ['itens']);
+        if (!consignacao) {
+          throw new BadRequestException('Consignação não encontrada');
+        } else if (consignacao.situacao != 'aberta') {
+          throw new BadRequestException('Consignação não está em andamento');
+        }
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
       case OperacaoRomaneio.consignacao_devolucao:
         throw new BadRequestException('Operação não implementada');
 
       case OperacaoRomaneio.consignacao_acerto:
         throw new BadRequestException('Operação não implementada');
-
-      case OperacaoRomaneio.brinde:
-        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
       case OperacaoRomaneio.transferencia_saida:
         throw new BadRequestException('Operação não implementada');

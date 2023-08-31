@@ -15,6 +15,7 @@ import { RomaneioView } from './views/romaneio.view';
 import { RomaneioInclude } from './includes/romaneio.include';
 import { RomaneioFilter } from './filters/romaneio.filter';
 import { UpdateRomaneioDto } from './dto/update-romaneio.dto';
+import { ModalidadeRomaneio } from './enum/modalidade-romaneio.enum';
 
 @Injectable()
 export class RomaneioService {
@@ -23,29 +24,81 @@ export class RomaneioService {
     private readonly repository: Repository<RomaneioEntity>,
     @InjectRepository(RomaneioView)
     private readonly view: Repository<RomaneioView>,
-    private readonly contextService: ContextService,
-    private readonly empresaParamService: EmpresaParametroService
+    private readonly contextService: ContextService
   ) {}
 
-  async create(createRomaneioDto: CreateRomaneioDto): Promise<RomaneioView> {
+  async create(dto: CreateRomaneioDto): Promise<RomaneioView> {
     const usuario = this.contextService.usuario();
     const empresa = this.contextService.empresa();
-    const parametro = await this.empresaParamService.find(empresa.id);
+    const parametro = this.contextService.parametros();
 
+    if (dto.operacao == OperacaoRomaneio.consignacao_saida && !dto.consignacaoId) {
+      throw new BadRequestException('Romaneio de consignação não informado');
+    } else if (dto.operacao == OperacaoRomaneio.consignacao_devolucao && !dto.consignacaoId) {
+      throw new BadRequestException('Romaneio de consignação não informado');
+    } else if (dto.operacao == OperacaoRomaneio.consignacao_acerto && !dto.consignacaoId) {
+      throw new BadRequestException('Romaneio de consignação não informado');
+    } else if (dto.operacao == OperacaoRomaneio.compra_devolucao && !dto.romaneiosDevolucao) {
+      throw new BadRequestException('Romaneios de devolução não informados');
+    } else if (dto.operacao == OperacaoRomaneio.venda_devolucao && !dto.romaneiosDevolucao) {
+      throw new BadRequestException('Romaneios de devolução não informados');
+    } else if (dto.operacao == OperacaoRomaneio.consignacao_devolucao && !dto.romaneiosDevolucao) {
+      throw new BadRequestException('Romaneios de devolução não informados');
+    } else if (dto.operacao == OperacaoRomaneio.transferencia_devolucao && !dto.romaneiosDevolucao) {
+      throw new BadRequestException('Romaneios de devolução não informados');
+    }
+
+    let modalidade = ModalidadeRomaneio.saida;
+    let kardex = true;
+    let financeiro = true;
     let observacao = '';
-    switch (createRomaneioDto.operacao) {
+
+    switch (dto.operacao) {
       case OperacaoRomaneio.compra:
-        observacao = parametro.find((p) => p.parametroId === 'OBS_PADRAO_COMPRA')?.valor ?? '';
+        modalidade = ModalidadeRomaneio.entrada;
+        observacao = parametro.first((p) => p.parametroId === 'OBS_PADRAO_COMPRA').valor;
+        break;
+      case OperacaoRomaneio.compra_devolucao:
+        modalidade = ModalidadeRomaneio.saida;
         break;
       case OperacaoRomaneio.venda:
-        observacao = parametro.find((p) => p.parametroId === 'OBS_PADRAO_VENDA')?.valor ?? '';
+        modalidade = ModalidadeRomaneio.saida;
+        observacao = parametro.find((p) => p.parametroId === 'OBS_PADRAO_VENDA').valor;
+        break;
+      case OperacaoRomaneio.venda_devolucao:
+        modalidade = ModalidadeRomaneio.entrada;
+        break;
+      case OperacaoRomaneio.consignacao_saida:
+        modalidade = ModalidadeRomaneio.saida;
+        financeiro = false;
+        observacao = parametro.find((p) => p.parametroId === 'OBS_PADRAO_CONSIGNACAO').valor;
+        break;
+      case OperacaoRomaneio.consignacao_devolucao:
+        modalidade = ModalidadeRomaneio.entrada;
+        financeiro = false;
+        break;
+      case OperacaoRomaneio.consignacao_acerto:
+        modalidade = ModalidadeRomaneio.saida;
+        kardex = false;
+        observacao = parametro.find((p) => p.parametroId === 'OBS_PADRAO_VENDA').valor;
+        break;
+      case OperacaoRomaneio.transferencia_saida:
+        modalidade = ModalidadeRomaneio.saida;
+        financeiro = false;
+        break;
+      case OperacaoRomaneio.transferencia_entrada:
+        modalidade = ModalidadeRomaneio.entrada;
+        financeiro = false;
         break;
     }
 
     const romaneio = await this.repository.save({
-      ...createRomaneioDto,
+      ...dto,
       empresaId: empresa.id,
       data: empresa.data,
+      modalidade: modalidade,
+      kardex: kardex,
+      financeiro: financeiro,
       observacao: observacao,
       operadorId: usuario.id,
       situacao: SituacaoRomaneio.em_andamento,

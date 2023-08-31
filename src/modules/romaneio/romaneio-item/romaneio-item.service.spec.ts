@@ -15,7 +15,7 @@ import { RomaneioService } from '../romaneio.service';
 import { RomaneioItemEntity } from './entities/romaneio-item.entity';
 import { RomaneioItemService } from './romaneio-item.service';
 import { RomaneioItemView } from './views/romaneio-item.view';
-import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
+import { SituacaoRomaneio, SituacaoRomaneioType } from '../enum/situacao-romaneio.enum';
 
 describe('RomaneioItemService', () => {
   let service: RomaneioItemService;
@@ -409,6 +409,62 @@ describe('RomaneioItemService', () => {
 
       expect(view.find).toHaveBeenCalledWith({ where: { romaneioId, produtoId } });
       expect(result).toEqual(romaneioFakeRepository.findViewItens());
+    });
+  });
+
+  describe('findByConsignacaoIds', () => {
+    it('should return romaneio items filtered by consignacaoIds', async () => {
+      const expectedItems = [{ romaneioId: 1 }, { romaneioId: 2 }] as RomaneioItemView[];
+      const consignacaoIds = [1, 2];
+
+      jest.spyOn(view, 'find').mockResolvedValueOnce(expectedItems);
+
+      const result = await service.findByConsignacaoIds(consignacaoIds);
+
+      expect(result).toEqual(expectedItems);
+      expect(view.find).toHaveBeenCalledWith({
+        where: {
+          consignacaoId: In(consignacaoIds),
+        },
+      });
+    });
+
+    it('should return romaneio items filtered by consignacaoIds and produtoIds', async () => {
+      const expectedItems = [{ romaneioId: 1 }, { romaneioId: 2 }] as RomaneioItemView[];
+      const consignacaoIds = [1, 2];
+      const produtoIds = [3, 4];
+
+      jest.spyOn(view, 'find').mockResolvedValueOnce(expectedItems);
+
+      const result = await service.findByConsignacaoIds(consignacaoIds, produtoIds);
+
+      expect(result).toEqual(expectedItems);
+      expect(view.find).toHaveBeenCalledWith({
+        where: {
+          consignacaoId: In(consignacaoIds),
+          produtoId: In(produtoIds),
+        },
+      });
+    });
+
+    it('should return romaneio items filtered by consignacaoIds, produtoIds and situacoes', async () => {
+      const expectedItems = [{ romaneioId: 1 }, { romaneioId: 2 }] as RomaneioItemView[];
+      const consignacaoIds = [1, 2];
+      const produtoIds = [3, 4];
+      const situacoes = ['encerrado', 'cancelado', 'em_andamento'] as SituacaoRomaneioType[];
+
+      jest.spyOn(view, 'find').mockResolvedValueOnce(expectedItems);
+
+      const result = await service.findByConsignacaoIds(consignacaoIds, produtoIds, situacoes);
+
+      expect(result).toEqual(expectedItems);
+      expect(view.find).toHaveBeenCalledWith({
+        where: {
+          consignacaoId: In(consignacaoIds),
+          produtoId: In(produtoIds),
+          situacao: In(situacoes),
+        },
+      });
     });
   });
 

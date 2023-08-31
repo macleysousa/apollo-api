@@ -45,7 +45,7 @@ export class ConsignacaoController {
   }
 
   @Put('/:id/atualizar')
-  @ApiResponse({ status: 201, type: ConsignacaoEntity })
+  @ApiResponse({ status: 200, type: ConsignacaoEntity })
   @ApiOperation({ summary: 'CONFP002 - Atualizar consignação' })
   @ApiComponent('CONFP002', 'Atualizar consignação')
   async atualizar(
@@ -54,6 +54,14 @@ export class ConsignacaoController {
     @Body() dto: UpdateConsignacaoDto
   ): Promise<ConsignacaoEntity> {
     return this.service.update(empresa.id, id, dto);
+  }
+
+  @Put('/:id/recalcular')
+  @ApiResponse({ status: 200 })
+  @ApiOperation({ summary: 'CONFP004 - Recalcular consignação' })
+  @ApiComponent('CONFP004', 'Recalcular consignação')
+  async recalculate(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.service.calculate(id);
   }
 
   @Post('/:id/cancelar')

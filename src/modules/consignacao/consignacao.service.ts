@@ -10,13 +10,18 @@ import { UpdateConsignacaoDto } from './dto/update-consignacao.dto';
 import { ConsignacaoEntity } from './entities/consignacao.entity';
 import { ConsignacaoFilter } from './filters/consignacao-filter';
 import { ConsignacaoIncluir } from './includes/consignacao.includ';
+import { RomaneioItemService } from '../romaneio/romaneio-item/romaneio-item.service';
+import { ConsignacaoItemService } from './consignacao-item/consignacao-item.service';
+import { UpsertConsignacaoItemDto } from './consignacao-item/dto/upsert-consignacao-item.dto';
 
 @Injectable()
 export class ConsignacaoService {
   constructor(
     @InjectRepository(ConsignacaoEntity)
     private readonly repository: Repository<ConsignacaoEntity>,
-    private readonly contextService: ContextService
+    private readonly contextService: ContextService,
+    private readonly romanaioItemService: RomaneioItemService,
+    private readonly consignacaoItemService: ConsignacaoItemService
   ) {}
 
   async open(dto: OpenConsignacaoDto): Promise<ConsignacaoEntity> {
@@ -72,6 +77,41 @@ export class ConsignacaoService {
     await this.repository.update({ empresaId, id }, { ...dto, operadorId });
 
     return this.findById(empresaId, id);
+  }
+
+  async calculate(consignacaoId: number): Promise<void> {
+    const romaneiosItens = await this.romanaioItemService.findByConsignacaoIds([consignacaoId], undefined, ['encerrado']);
+
+    const produtosSaida = romaneiosItens.filter((ri) => ri.operacao == 'consignacao_saida');
+    const produtosDevolvidos = romaneiosItens.filter((ri) => ri.operacao == 'consignacao_devolucao');
+    const produtosAcertados = romaneiosItens.filter((ri) => ri.operacao == 'consignacao_acerto');
+
+    const produtos: UpsertConsignacaoItemDto[] = produtosSaida.map((ri) => {
+      const quantidadeDevolvida = produtosDevolvidos
+        .filter((x) => x.romaneioOrigemId == x.romaneioId)
+        .filter((x) => x.romaneioOrigemSequencia == x.romaneioOrigemSequencia)
+        .filter((x) => x.produtoId == ri.produtoId)
+        .sum((ri) => ri.quantidade);
+
+      const quantidadeAcertado = produtosAcertados
+        .filter((x) => x.romaneioOrigemId == x.romaneioId)
+        .filter((x) => x.romaneioOrigemSequencia == x.romaneioOrigemSequencia)
+        .filter((x) => x.produtoId == ri.produtoId)
+        .sum((ri) => ri.quantidade);
+
+      return {
+        empresaId: ri.empresaId,
+        consignacaoId: ri.consignacaoId,
+        romaneioId: ri.romaneioId,
+        sequencia: ri.sequencia,
+        produtoId: ri.produtoId,
+        quantidade: ri.quantidade,
+        devolvido: quantidadeDevolvida,
+        acertado: quantidadeAcertado,
+      };
+    });
+
+    await this.consignacaoItemService.upsert(produtos);
   }
 
   async cancel(empresaId: number, id: number, { motivoCancelamento }: CancelConsinacaoDto): Promise<void> {

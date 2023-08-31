@@ -26,7 +26,6 @@ describe('RomaneioService', () => {
   let repository: Repository<RomaneioEntity>;
   let view: Repository<RomaneioView>;
   let contextService: ContextService;
-  let empresaParamService: EmpresaParametroService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -63,12 +62,6 @@ describe('RomaneioService', () => {
             parametros: jest.fn().mockReturnValue([{ parametroId: 'QT_DIAS_DEVOLUCAO', valor: 60 }]),
           },
         },
-        {
-          provide: EmpresaParametroService,
-          useValue: {
-            find: jest.fn(),
-          },
-        },
       ],
     }).compile();
 
@@ -76,7 +69,6 @@ describe('RomaneioService', () => {
     repository = module.get<Repository<RomaneioEntity>>(getRepositoryToken(RomaneioEntity));
     view = module.get<Repository<RomaneioView>>(getRepositoryToken(RomaneioView));
     contextService = module.get<ContextService>(ContextService);
-    empresaParamService = module.get<EmpresaParametroService>(EmpresaParametroService);
   });
 
   it('should be defined', () => {
@@ -84,39 +76,92 @@ describe('RomaneioService', () => {
     expect(repository).toBeDefined();
     expect(view).toBeDefined();
     expect(contextService).toBeDefined();
-    expect(empresaParamService).toBeDefined();
   });
 
   describe('create', () => {
-    it('should create a romaneio', async () => {
-      const createRomaneioDto = { descricao: 'Teste' } as any;
-      const currentUser = { id: 1 };
-      const currentBranch = { id: 1, data: new Date('2023-06-05') };
-      const observacao = '';
-
-      jest.spyOn(repository, 'save').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
-      jest.spyOn(service, 'findById').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
-
-      const result = await service.create(createRomaneioDto);
-
-      expect(repository.save).toHaveBeenCalledWith({
-        ...createRomaneioDto,
-        empresaId: currentBranch.id,
-        data: currentBranch.data,
-        observacao: observacao,
-        operadorId: currentUser.id,
-        situacao: SituacaoRomaneio.em_andamento,
-      });
-      expect(service.findById).toHaveBeenCalledWith(1, 1);
-      expect(result).toEqual({ empresaId: 1, id: 1 });
-    });
-
-    it('should create a romaneio Compra', async () => {
+    it('should return BadRequestException if consignacao_saida and consignacaoId is undefined', async () => {
       const createRomaneioDto: CreateRomaneioDto = {
         pessoaId: 1,
         tabelaPrecoId: 1,
         funcionarioId: 1,
-        modalidade: ModalidadeRomaneio.entrada,
+        operacao: OperacaoRomaneio.consignacao_saida,
+      };
+
+      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneio de consignação não informado');
+    });
+
+    it('should return BadRequestException if consignacao_devolucao and consignacaoId is undefined', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
+        operacao: OperacaoRomaneio.consignacao_devolucao,
+      };
+
+      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneio de consignação não informado');
+    });
+
+    it('should return BadRequestException if consignacao_acerto and consignacaoId is undefined', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
+        operacao: OperacaoRomaneio.consignacao_acerto,
+      };
+
+      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneio de consignação não informado');
+    });
+
+    it('should return BadRequestException if compra_devolucao and romaneiosDevolucao is undefined', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
+        operacao: OperacaoRomaneio.compra_devolucao,
+      };
+
+      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneios de devolução não informados');
+    });
+
+    it('should return BadRequestException if venda_devolucao and romaneiosDevolucao is undefined', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
+        operacao: OperacaoRomaneio.venda_devolucao,
+      };
+
+      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneios de devolução não informados');
+    });
+
+    it('should return BadRequestException if consignacao_devolucao and romaneiosDevolucao is undefined', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
+        operacao: OperacaoRomaneio.consignacao_devolucao,
+        consignacaoId: 1,
+      };
+
+      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneios de devolução não informados');
+    });
+
+    it('should return BadRequestException if transferencia_devolucao and romaneiosDevolucao is undefined', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
+        operacao: OperacaoRomaneio.transferencia_devolucao,
+      };
+
+      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneios de devolução não informados');
+    });
+
+    it('should create a romaneio compra', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
         operacao: OperacaoRomaneio.compra,
       };
       const currentUser = { id: 1 };
@@ -125,7 +170,7 @@ describe('RomaneioService', () => {
 
       jest.spyOn(repository, 'save').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
       jest.spyOn(service, 'findById').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
-      jest.spyOn(empresaParamService, 'find').mockResolvedValueOnce([{ parametroId: 'OBS_PADRAO_COMPRA', valor: '' }] as any);
+      jest.spyOn(contextService, 'parametros').mockReturnValueOnce([{ parametroId: 'OBS_PADRAO_COMPRA', valor: '' }] as any);
 
       const result = await service.create(createRomaneioDto);
 
@@ -133,36 +178,9 @@ describe('RomaneioService', () => {
         ...createRomaneioDto,
         empresaId: currentBranch.id,
         data: currentBranch.data,
-        observacao: observacao,
-        operadorId: currentUser.id,
-        situacao: SituacaoRomaneio.em_andamento,
-      });
-      expect(service.findById).toHaveBeenCalledWith(1, 1);
-      expect(result).toEqual({ empresaId: 1, id: 1 });
-    });
-
-    it('should create a romaneio Compra not found', async () => {
-      const createRomaneioDto: CreateRomaneioDto = {
-        pessoaId: 1,
-        tabelaPrecoId: 1,
-        funcionarioId: 1,
         modalidade: ModalidadeRomaneio.entrada,
-        operacao: OperacaoRomaneio.compra,
-      };
-      const currentUser = { id: 1 };
-      const currentBranch = { id: 1, data: new Date('2023-06-05') };
-      const observacao = '';
-
-      jest.spyOn(repository, 'save').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
-      jest.spyOn(service, 'findById').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
-      jest.spyOn(empresaParamService, 'find').mockResolvedValueOnce([] as any);
-
-      const result = await service.create(createRomaneioDto);
-
-      expect(repository.save).toHaveBeenCalledWith({
-        ...createRomaneioDto,
-        empresaId: currentBranch.id,
-        data: currentBranch.data,
+        kardex: true,
+        financeiro: true,
         observacao: observacao,
         operadorId: currentUser.id,
         situacao: SituacaoRomaneio.em_andamento,
@@ -171,13 +189,13 @@ describe('RomaneioService', () => {
       expect(result).toEqual({ empresaId: 1, id: 1 });
     });
 
-    it('should create a romaneio Venda', async () => {
+    it('should create a romaneio compra_devolucao', async () => {
       const createRomaneioDto: CreateRomaneioDto = {
         pessoaId: 1,
         tabelaPrecoId: 1,
         funcionarioId: 1,
-        modalidade: ModalidadeRomaneio.saida,
-        operacao: OperacaoRomaneio.venda,
+        operacao: OperacaoRomaneio.compra_devolucao,
+        romaneiosDevolucao: [1, 2, 3],
       };
       const currentUser = { id: 1 };
       const currentBranch = { id: 1, data: new Date('2023-06-05') };
@@ -185,7 +203,7 @@ describe('RomaneioService', () => {
 
       jest.spyOn(repository, 'save').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
       jest.spyOn(service, 'findById').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
-      jest.spyOn(empresaParamService, 'find').mockResolvedValueOnce([{ parametroId: 'OBS_PADRAO_VENDA', valor: '' }] as any);
+      jest.spyOn(contextService, 'parametros').mockReturnValueOnce([{ parametroId: 'OBS_PADRAO_COMPRA', valor: '' }] as any);
 
       const result = await service.create(createRomaneioDto);
 
@@ -193,6 +211,9 @@ describe('RomaneioService', () => {
         ...createRomaneioDto,
         empresaId: currentBranch.id,
         data: currentBranch.data,
+        modalidade: ModalidadeRomaneio.saida,
+        kardex: true,
+        financeiro: true,
         observacao: observacao,
         operadorId: currentUser.id,
         situacao: SituacaoRomaneio.em_andamento,
@@ -201,12 +222,11 @@ describe('RomaneioService', () => {
       expect(result).toEqual({ empresaId: 1, id: 1 });
     });
 
-    it('should create a romaneio Venda not found', async () => {
+    it('should create a romaneio venda', async () => {
       const createRomaneioDto: CreateRomaneioDto = {
         pessoaId: 1,
         tabelaPrecoId: 1,
         funcionarioId: 1,
-        modalidade: ModalidadeRomaneio.saida,
         operacao: OperacaoRomaneio.venda,
       };
       const currentUser = { id: 1 };
@@ -215,7 +235,7 @@ describe('RomaneioService', () => {
 
       jest.spyOn(repository, 'save').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
       jest.spyOn(service, 'findById').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
-      jest.spyOn(empresaParamService, 'find').mockResolvedValueOnce([{ parametroId: '', valor: '' }] as any);
+      jest.spyOn(contextService, 'parametros').mockReturnValueOnce([{ parametroId: 'OBS_PADRAO_VENDA', valor: '' }] as any);
 
       const result = await service.create(createRomaneioDto);
 
@@ -223,6 +243,205 @@ describe('RomaneioService', () => {
         ...createRomaneioDto,
         empresaId: currentBranch.id,
         data: currentBranch.data,
+        modalidade: ModalidadeRomaneio.saida,
+        kardex: true,
+        financeiro: true,
+        observacao: observacao,
+        operadorId: currentUser.id,
+        situacao: SituacaoRomaneio.em_andamento,
+      });
+      expect(service.findById).toHaveBeenCalledWith(1, 1);
+      expect(result).toEqual({ empresaId: 1, id: 1 });
+    });
+
+    it('should create a romaneio venda_devolucao', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
+        operacao: OperacaoRomaneio.venda_devolucao,
+        romaneiosDevolucao: [1, 2, 3],
+      };
+      const currentUser = { id: 1 };
+      const currentBranch = { id: 1, data: new Date('2023-06-05') };
+      const observacao = '';
+
+      jest.spyOn(repository, 'save').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
+      jest.spyOn(service, 'findById').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
+
+      const result = await service.create(createRomaneioDto);
+
+      expect(repository.save).toHaveBeenCalledWith({
+        ...createRomaneioDto,
+        empresaId: currentBranch.id,
+        data: currentBranch.data,
+        modalidade: ModalidadeRomaneio.entrada,
+        kardex: true,
+        financeiro: true,
+        observacao: observacao,
+        operadorId: currentUser.id,
+        situacao: SituacaoRomaneio.em_andamento,
+      });
+      expect(service.findById).toHaveBeenCalledWith(1, 1);
+      expect(result).toEqual({ empresaId: 1, id: 1 });
+    });
+
+    it('should create a romaneio consignacao_saida', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
+        operacao: OperacaoRomaneio.consignacao_saida,
+        consignacaoId: 1,
+      };
+      const currentUser = { id: 1 };
+      const currentBranch = { id: 1, data: new Date('2023-06-05') };
+      const observacao = '';
+
+      jest.spyOn(repository, 'save').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
+      jest.spyOn(service, 'findById').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
+      jest.spyOn(contextService, 'parametros').mockReturnValueOnce([{ parametroId: 'OBS_PADRAO_CONSIGNACAO', valor: '' }] as any);
+
+      const result = await service.create(createRomaneioDto);
+
+      expect(repository.save).toHaveBeenCalledWith({
+        ...createRomaneioDto,
+        empresaId: currentBranch.id,
+        data: currentBranch.data,
+        modalidade: ModalidadeRomaneio.saida,
+        kardex: true,
+        financeiro: false,
+        observacao: observacao,
+        operadorId: currentUser.id,
+        situacao: SituacaoRomaneio.em_andamento,
+      });
+      expect(service.findById).toHaveBeenCalledWith(1, 1);
+      expect(result).toEqual({ empresaId: 1, id: 1 });
+    });
+
+    it('should create a romaneio consignacao_devolucao', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
+        operacao: OperacaoRomaneio.consignacao_devolucao,
+        consignacaoId: 1,
+        romaneiosDevolucao: [1, 2, 3],
+      };
+      const currentUser = { id: 1 };
+      const currentBranch = { id: 1, data: new Date('2023-06-05') };
+      const observacao = '';
+
+      jest.spyOn(repository, 'save').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
+      jest.spyOn(service, 'findById').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
+      jest.spyOn(contextService, 'parametros').mockReturnValueOnce([{ parametroId: 'OBS_PADRAO_CONSIGNACAO', valor: '' }] as any);
+
+      const result = await service.create(createRomaneioDto);
+
+      expect(repository.save).toHaveBeenCalledWith({
+        ...createRomaneioDto,
+        empresaId: currentBranch.id,
+        data: currentBranch.data,
+        modalidade: ModalidadeRomaneio.entrada,
+        kardex: true,
+        financeiro: false,
+        observacao: observacao,
+        operadorId: currentUser.id,
+        situacao: SituacaoRomaneio.em_andamento,
+      });
+      expect(service.findById).toHaveBeenCalledWith(1, 1);
+      expect(result).toEqual({ empresaId: 1, id: 1 });
+    });
+
+    it('should create a romaneio consignacao_acerto', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
+        operacao: OperacaoRomaneio.consignacao_acerto,
+        consignacaoId: 1,
+      };
+      const currentUser = { id: 1 };
+      const currentBranch = { id: 1, data: new Date('2023-06-05') };
+      const observacao = '';
+
+      jest.spyOn(repository, 'save').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
+      jest.spyOn(service, 'findById').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
+      jest.spyOn(contextService, 'parametros').mockReturnValueOnce([{ parametroId: 'OBS_PADRAO_VENDA', valor: '' }] as any);
+
+      const result = await service.create(createRomaneioDto);
+
+      expect(repository.save).toHaveBeenCalledWith({
+        ...createRomaneioDto,
+        empresaId: currentBranch.id,
+        data: currentBranch.data,
+        modalidade: ModalidadeRomaneio.saida,
+        kardex: false,
+        financeiro: true,
+        observacao: observacao,
+        operadorId: currentUser.id,
+        situacao: SituacaoRomaneio.em_andamento,
+      });
+      expect(service.findById).toHaveBeenCalledWith(1, 1);
+      expect(result).toEqual({ empresaId: 1, id: 1 });
+    });
+
+    it('should create a romaneio transferencia_saida', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
+        operacao: OperacaoRomaneio.transferencia_saida,
+      };
+      const currentUser = { id: 1 };
+      const currentBranch = { id: 1, data: new Date('2023-06-05') };
+      const observacao = '';
+
+      jest.spyOn(repository, 'save').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
+      jest.spyOn(service, 'findById').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
+      jest.spyOn(contextService, 'parametros').mockReturnValueOnce([{ parametroId: 'OBS_PADRAO_CONSIGNACAO', valor: '' }] as any);
+
+      const result = await service.create(createRomaneioDto);
+
+      expect(repository.save).toHaveBeenCalledWith({
+        ...createRomaneioDto,
+        empresaId: currentBranch.id,
+        data: currentBranch.data,
+        modalidade: ModalidadeRomaneio.saida,
+        kardex: true,
+        financeiro: false,
+        observacao: observacao,
+        operadorId: currentUser.id,
+        situacao: SituacaoRomaneio.em_andamento,
+      });
+      expect(service.findById).toHaveBeenCalledWith(1, 1);
+      expect(result).toEqual({ empresaId: 1, id: 1 });
+    });
+
+    it('should create a romaneio transferencia_entrada', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
+        operacao: OperacaoRomaneio.transferencia_entrada,
+      };
+      const currentUser = { id: 1 };
+      const currentBranch = { id: 1, data: new Date('2023-06-05') };
+      const observacao = '';
+
+      jest.spyOn(repository, 'save').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
+      jest.spyOn(service, 'findById').mockResolvedValueOnce({ empresaId: 1, id: 1 } as any);
+      jest.spyOn(contextService, 'parametros').mockReturnValueOnce([{ parametroId: 'OBS_PADRAO_CONSIGNACAO', valor: '' }] as any);
+
+      const result = await service.create(createRomaneioDto);
+
+      expect(repository.save).toHaveBeenCalledWith({
+        ...createRomaneioDto,
+        empresaId: currentBranch.id,
+        data: currentBranch.data,
+        modalidade: ModalidadeRomaneio.entrada,
+        kardex: true,
+        financeiro: false,
         observacao: observacao,
         operadorId: currentUser.id,
         situacao: SituacaoRomaneio.em_andamento,

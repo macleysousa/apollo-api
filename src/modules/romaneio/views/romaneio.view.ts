@@ -12,19 +12,19 @@ import { RomaneioItemView } from '../romaneio-item/views/romaneio-item.view';
 @ViewEntity({ name: 'view_romaneios' })
 export class RomaneioView extends BaseView {
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
   empresaId: number;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
   romaneioId: number;
 
   @ApiProperty({ format: 'date' })
-  @ViewColumn({ transformer: { from: (value) => new Date(value).format('yyyy-MM-dd'), to: (value) => new Date(value) } })
+  @ViewColumn({ transformer: { from: (value) => new Date(value).format('yyyy-MM-dd'), to: (value) => value } })
   data: Date;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
   pessoaId: number;
 
   @ApiProperty()
@@ -32,7 +32,7 @@ export class RomaneioView extends BaseView {
   pessoaNome: string;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
   funcionarioId: number;
 
   @ApiProperty()
@@ -40,7 +40,7 @@ export class RomaneioView extends BaseView {
   funcionarioNome: string;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
   tabelaPrecoId: number;
 
   @ApiProperty({ enum: ModalidadeRomaneio })
@@ -60,19 +60,19 @@ export class RomaneioView extends BaseView {
   situacao: SituacaoRomaneio;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Boolean(value), to: (value) => Boolean(value) } })
+  @ViewColumn({ transformer: { from: (value) => Boolean(value), to: (value) => value } })
   pago: boolean;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Boolean(value), to: (value) => Boolean(value) } })
-  acertoConsignacao: boolean;
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
+  consignacaoId: number;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
   caixaId: number;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
   liquidacao: number;
 
   @ApiProperty({ enum: TipoFrete })
@@ -80,27 +80,27 @@ export class RomaneioView extends BaseView {
   tipoFrete: TipoFrete;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
   valorFrete: number;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
   quantidade: number;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
   valorBruto: number;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
   valorDesconto: number;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
   valorLiquido: number;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
   operadorId: number;
 
   @ApiProperty()

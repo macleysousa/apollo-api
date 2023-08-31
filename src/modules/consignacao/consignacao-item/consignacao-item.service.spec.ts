@@ -2,9 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { ContextService } from 'src/context/context.service';
 import { ConsignacaoItemService } from './consignacao-item.service';
 import { ConsignacaoItemEntity } from './entities/consignacao-item.entity';
 import { ConsignacaoItemFilter } from './filters/consignacao-item.filter';
+import { UpsertConsignacaoItemDto } from './dto/upsert-consignacao-item.dto';
 
 describe('ConsignacaoItemService', () => {
   let service: ConsignacaoItemService;
@@ -17,11 +19,18 @@ describe('ConsignacaoItemService', () => {
         {
           provide: getRepositoryToken(ConsignacaoItemEntity),
           useValue: {
+            upsert: jest.fn(),
             createQueryBuilder: jest.fn().mockReturnValue({
               where: jest.fn().mockReturnThis(),
               andWhere: jest.fn().mockReturnThis(),
               getMany: jest.fn(),
             }),
+          },
+        },
+        {
+          provide: ContextService,
+          useValue: {
+            operadorId: jest.fn().mockReturnValue(1),
           },
         },
       ],
@@ -77,6 +86,23 @@ describe('ConsignacaoItemService', () => {
       });
 
       expect(result).toEqual(expectedItems);
+    });
+  });
+
+  describe('upsert', () => {
+    it('should upsert consignacao items', async () => {
+      const operadorId = 1;
+      const dto: UpsertConsignacaoItemDto[] = [
+        { empresaId: 1, consignacaoId: 1, romaneioId: 1, sequencia: 1, produtoId: 1, quantidade: 1 },
+      ];
+
+      jest.spyOn(repository, 'upsert').mockResolvedValueOnce(undefined);
+
+      await service.upsert(dto);
+
+      expect(repository.upsert).toHaveBeenCalledWith([...dto.map((x) => ({ ...x, operadorId }))], {
+        conflictPaths: ['consignacaoId', 'romaneioId', 'sequencia', 'produtoId'],
+      });
     });
   });
 });

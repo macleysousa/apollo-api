@@ -5,6 +5,9 @@ import { JoinColumn, ManyToOne, ViewColumn, ViewEntity } from 'typeorm';
 import { BaseView } from 'src/commons/base.view';
 
 import { RomaneioView } from '../../views/romaneio.view';
+import { OperacaoRomaneioType } from '../../enum/operacao-romaneio.enum';
+import { SituacaoRomaneioType } from '../../enum/situacao-romaneio.enum';
+import { ModalidadeRomaneioType } from '../../enum/modalidade-romaneio.enum';
 
 @ViewEntity({ name: 'view_romaneios_itens' })
 export class RomaneioItemView extends BaseView {
@@ -61,16 +64,20 @@ export class RomaneioItemView extends BaseView {
   tamanhoNome: string;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => String(value), to: (value) => String(value) } })
-  modalidade: string;
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => Number(value) } })
+  consignacaoId: number;
 
   @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => String(value), to: (value) => String(value) } })
-  operacao: string;
+  modalidade: ModalidadeRomaneioType;
 
   @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => String(value), to: (value) => String(value) } })
-  situacao: string;
+  operacao: OperacaoRomaneioType;
+
+  @ApiProperty()
+  @ViewColumn({ transformer: { from: (value) => String(value), to: (value) => String(value) } })
+  situacao: SituacaoRomaneioType;
 
   @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => Boolean(value), to: (value) => Boolean(value) } })

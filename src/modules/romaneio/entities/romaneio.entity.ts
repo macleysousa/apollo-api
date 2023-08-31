@@ -38,8 +38,8 @@ export class RomaneioEntity extends BaseEntity {
   pago: boolean;
 
   @ApiProperty()
-  @Column('boolean')
-  acertoConsignacao: boolean;
+  @Column('bigint')
+  consignacaoId: number;
 
   @ApiProperty()
   @Column('bigint')
@@ -50,8 +50,12 @@ export class RomaneioEntity extends BaseEntity {
   liquidacao: number;
 
   @ApiProperty()
-  @Column('int')
-  operadorId: number;
+  @Column('boolean')
+  kardex: boolean;
+
+  @ApiProperty()
+  @Column('boolean')
+  financeiro: boolean;
 
   @ApiProperty()
   @Column('text')
@@ -76,6 +80,10 @@ export class RomaneioEntity extends BaseEntity {
   @ApiProperty()
   @Column('varchar')
   motivoCancelamento: string;
+
+  @ApiProperty()
+  @Column('int')
+  operadorId: number;
 
   constructor(partial?: Partial<RomaneioEntity>) {
     super();

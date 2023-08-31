@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 
 import { ConsignacaoItemEntity } from './entities/consignacao-item.entity';
 import { ConsignacaoItemFilter } from './filters/consignacao-item.filter';
+import { UpsertConsignacaoItemDto } from './dto/upsert-consignacao-item.dto';
+import { ContextService } from 'src/context/context.service';
 
 @Injectable()
 export class ConsignacaoItemService {
   constructor(
     @InjectRepository(ConsignacaoItemEntity)
-    private readonly repository: Repository<ConsignacaoItemEntity>
+    private readonly repository: Repository<ConsignacaoItemEntity>,
+    private readonly contextService: ContextService
   ) {}
 
   async find(filter: ConsignacaoItemFilter): Promise<ConsignacaoItemEntity[]> {
@@ -33,5 +36,13 @@ export class ConsignacaoItemService {
     }
 
     return queryBuilder.getMany();
+  }
+
+  async upsert(dto: UpsertConsignacaoItemDto[]): Promise<void> {
+    const operadorId = this.contextService.operadorId();
+
+    await this.repository.upsert([...dto.map((x) => ({ ...x, operadorId }))], {
+      conflictPaths: ['consignacaoId', 'romaneioId', 'sequencia', 'produtoId'],
+    });
   }
 }

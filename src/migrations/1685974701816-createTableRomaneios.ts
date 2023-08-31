@@ -44,11 +44,6 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
             default: false,
           },
           {
-            name: 'acertoConsignacao',
-            type: 'boolean',
-            default: false,
-          },
-          {
             name: 'caixaId',
             type: 'bigint',
             isNullable: true,
@@ -59,9 +54,14 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'operadorId',
-            type: 'int',
-            isNullable: false,
+            name: 'kardex',
+            type: 'boolean',
+            default: true,
+          },
+          {
+            name: 'financeiro',
+            type: 'boolean',
+            default: true,
           },
           {
             name: 'observacao',
@@ -92,6 +92,11 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
             name: 'motivoCancelamento',
             type: 'varchar',
             isNullable: true,
+          },
+          {
+            name: 'operadorId',
+            type: 'int',
+            isNullable: false,
           },
           {
             name: 'criadoEm',

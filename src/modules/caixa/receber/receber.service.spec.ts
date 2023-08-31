@@ -1,23 +1,24 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 
-import { ContextService } from 'src/context/context.service';
-import { FaturaService } from 'src/modules/fatura/fatura.service';
-import { FormaDePagamentoService } from 'src/modules/forma-de-pagamento/forma-de-pagamento.service';
 import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
+import { ContextService } from 'src/context/context.service';
+import { ConsignacaoService } from 'src/modules/consignacao/consignacao.service';
+import { EstoqueService } from 'src/modules/estoque/estoque.service';
 import { FaturaEntity } from 'src/modules/fatura/entities/fatura.entity';
+import { FaturaService } from 'src/modules/fatura/fatura.service';
+import { FormaDePagamentoService } from 'src/modules/forma-de-pagamento/forma-de-pagamento.service';
 import { PessoaExtratoService } from 'src/modules/pessoa/extrato/pessoa-extrato.service';
 import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
 
+import { CaixaExtratoEntity } from '../extrato/entities/extrato.entity';
+import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
 import { CaixaExtratoService } from '../extrato/extrato.service';
 import { PagamentoDto } from './dto/pagamento.dto';
+import { ReceberAdiantamentoDto } from './dto/receber-adiantamento.dto';
 import { RecebimentoDto } from './dto/recebimento.dto';
 import { ReceberService } from './receber.service';
-import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
-import { CaixaExtratoEntity } from '../extrato/entities/extrato.entity';
-import { ReceberAdiantamentoDto } from './dto/receber-adiantamento.dto';
-import { EstoqueService } from 'src/modules/estoque/estoque.service';
 
 describe('ReceberService', () => {
   let service: ReceberService;
@@ -27,6 +28,7 @@ describe('ReceberService', () => {
   let caixaExtratoService: CaixaExtratoService;
   let romaneioService: RomaneioService;
   let estoqueService: EstoqueService;
+  let consignacaoService: ConsignacaoService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -78,6 +80,12 @@ describe('ReceberService', () => {
             findByProdutoIds: jest.fn(),
           },
         },
+        {
+          provide: ConsignacaoService,
+          useValue: {
+            findById: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -88,6 +96,7 @@ describe('ReceberService', () => {
     caixaExtratoService = module.get<CaixaExtratoService>(CaixaExtratoService);
     romaneioService = module.get<RomaneioService>(RomaneioService);
     estoqueService = module.get<EstoqueService>(EstoqueService);
+    consignacaoService = module.get<ConsignacaoService>(ConsignacaoService);
   });
 
   it('should be defined', () => {
@@ -98,6 +107,7 @@ describe('ReceberService', () => {
     expect(caixaExtratoService).toBeDefined();
     expect(romaneioService).toBeDefined();
     expect(estoqueService).toBeDefined();
+    expect(consignacaoService).toBeDefined();
   });
 
   describe('adiantamento', () => {
