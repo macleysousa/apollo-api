@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
+
 import { ConsignacaoItemService } from './consignacao-item.service';
 import { ConsignacaoItemEntity } from './entities/consignacao-item.entity';
 import { ConsignacaoItemFilter } from './filters/consignacao-item.filter';
@@ -93,7 +94,7 @@ describe('ConsignacaoItemService', () => {
     it('should upsert consignacao items', async () => {
       const operadorId = 1;
       const dto: UpsertConsignacaoItemDto[] = [
-        { empresaId: 1, consignacaoId: 1, romaneioId: 1, sequencia: 1, produtoId: 1, quantidade: 1 },
+        new UpsertConsignacaoItemDto({ empresaId: 1, consignacaoId: 1, romaneioId: 1, sequencia: 1, produtoId: 1, quantidade: 1 }),
       ];
 
       jest.spyOn(repository, 'upsert').mockResolvedValueOnce(undefined);

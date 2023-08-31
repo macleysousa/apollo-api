@@ -30,7 +30,7 @@ export class ConsignacaoService {
     const dataAbertura = this.contextService.data();
 
     const pessoaConsignacao = await this.find({ empresaIds: [empresaId], pessoaIds: [dto.pessoaId], situacoes: ['aberta'] });
-    if (pessoaConsignacao.length > 0) {
+    if (pessoaConsignacao?.length > 0) {
       throw new BadRequestException('Já existe uma consignação aberta para esta pessoa');
     }
 
@@ -43,19 +43,19 @@ export class ConsignacaoService {
     const queryBuilder = this.repository.createQueryBuilder('c');
     queryBuilder.where('c.empresaId IS NOT NULL');
 
-    if (filter?.empresaIds && filter.empresaIds.length > 0) {
+    if (filter.empresaIds && filter.empresaIds.length > 0) {
       queryBuilder.andWhere('c.empresaId IN (:...empresaIds)', { empresaIds: filter.empresaIds });
     }
 
-    if (filter?.pessoaIds && filter.pessoaIds.length > 0) {
+    if (filter.pessoaIds && filter.pessoaIds.length > 0) {
       queryBuilder.andWhere('c.pessoaId IN (:...pessoaIds)', { pessoaIds: filter.pessoaIds });
     }
 
-    if (filter?.funcionarioIds && filter.funcionarioIds.length > 0) {
+    if (filter.funcionarioIds && filter.funcionarioIds.length > 0) {
       queryBuilder.andWhere('c.funcionarioId IN (:...funcionarioIds)', { funcionarioIds: filter.funcionarioIds });
     }
 
-    if (filter?.situacoes && filter.situacoes.length > 0) {
+    if (filter.situacoes && filter.situacoes.length > 0) {
       queryBuilder.andWhere('c.situacao IN (:...situacoes)', { situacoes: filter.situacoes });
     }
 

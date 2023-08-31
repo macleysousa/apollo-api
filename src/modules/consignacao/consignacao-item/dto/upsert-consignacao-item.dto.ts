@@ -40,4 +40,8 @@ export class UpsertConsignacaoItemDto {
   @ApiProperty()
   @IsOptional()
   acertado?: number;
+
+  constructor(partial?: Partial<UpsertConsignacaoItemDto>) {
+    Object.assign(this, partial);
+  }
 }

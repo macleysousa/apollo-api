@@ -44,7 +44,7 @@ export class ConsignacaoController {
     return this.service.findById(empresa.id, id);
   }
 
-  @Put('/:id/atualizar')
+  @Put(':id/atualizar')
   @ApiResponse({ status: 200, type: ConsignacaoEntity })
   @ApiOperation({ summary: 'CONFP002 - Atualizar consignação' })
   @ApiComponent('CONFP002', 'Atualizar consignação')
@@ -56,7 +56,7 @@ export class ConsignacaoController {
     return this.service.update(empresa.id, id, dto);
   }
 
-  @Put('/:id/recalcular')
+  @Put(':id/recalcular')
   @ApiResponse({ status: 200 })
   @ApiOperation({ summary: 'CONFP004 - Recalcular consignação' })
   @ApiComponent('CONFP004', 'Recalcular consignação')
@@ -64,7 +64,7 @@ export class ConsignacaoController {
     return this.service.calculate(id);
   }
 
-  @Post('/:id/cancelar')
+  @Post(':id/cancelar')
   @ApiResponse({ status: 200 })
   @ApiOperation({ summary: 'CONFP003 - Cancelar consignação' })
   @ApiComponent('CONFP003', 'Cancelar consignação')
