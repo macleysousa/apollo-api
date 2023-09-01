@@ -8,6 +8,7 @@ import { OpenConsignacaoDto } from './dto/open-consignacao.dto';
 import { UpdateConsignacaoDto } from './dto/update-consignacao.dto';
 import { ConsignacaoEntity } from './entities/consignacao.entity';
 import { ConsignacaoFilter } from './filters/consignacao-filter';
+import { ConsignacaoIncluir } from './includes/consignacao.includ';
 
 describe('ConsignacaoController', () => {
   let controller: ConsignacaoController;
@@ -70,12 +71,12 @@ describe('ConsignacaoController', () => {
   describe(':id (GET)', () => {
     it('should return a consignacao by id', async () => {
       const empresa: EmpresaEntity = { id: 1 } as EmpresaEntity;
-
       const consignacao = { id: 1, empresaId: 1 } as ConsignacaoEntity;
+      const includes: ConsignacaoIncluir[] = ['itens'];
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
 
-      expect(await controller.findById(empresa, consignacao.id)).toBe(consignacao);
+      expect(await controller.findById(empresa, consignacao.id, includes)).toBe(consignacao);
     });
   });
 

@@ -63,6 +63,7 @@ export class ConsignacaoService {
   }
 
   async findById(empresaId: number, id: number, relations?: ConsignacaoIncluir[]): Promise<ConsignacaoEntity> {
+    console.log(relations);
     return this.repository.findOne({ where: { empresaId, id }, relations });
   }
 

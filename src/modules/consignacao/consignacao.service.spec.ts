@@ -324,7 +324,7 @@ describe('ConsignacaoService', () => {
         dataAbertura: new Date(),
         operadorId: 1,
         situacao: 'aberta',
-        itens: [{ id: 1 }],
+        itens: [{ id: 1 }] as any[],
       } as ConsignacaoEntity;
 
       const dto: CancelConsinacaoDto = { motivoCancelamento: 'Motivo de cancelamento' };

@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
+import { Exclude } from 'class-transformer';
+import { ConsignacaoEntity } from '../../entities/consignacao.entity';
 
 @Entity({ name: 'consignacoes_itens' })
 export class ConsignacaoItemEntity extends BaseEntity {
@@ -40,6 +42,11 @@ export class ConsignacaoItemEntity extends BaseEntity {
   @ApiProperty()
   @Column('int')
   operadorId: number;
+
+  @Exclude()
+  @ManyToOne(() => ConsignacaoEntity, (consignacao) => consignacao.id)
+  @JoinColumn({ name: 'consignacaoId', referencedColumnName: 'id' })
+  consignacao: ConsignacaoEntity;
 
   constructor(partial: Partial<ConsignacaoItemEntity>) {
     super();

@@ -147,6 +147,9 @@ export class ReceberService {
         } else if (consignacao.situacao != 'aberta') {
           throw new BadRequestException('Consignação não está em andamento');
         }
+
+        await this.consignacaoService.calculate(romaneio.consignacaoId);
+
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
       case OperacaoRomaneio.consignacao_devolucao:
