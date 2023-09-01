@@ -4,20 +4,22 @@ import { Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
 
-import { ConsignacaoService } from './consignacao.service';
-import { ConsignacaoEntity } from './entities/consignacao.entity';
 import { RomaneioItemService } from '../romaneio/romaneio-item/romaneio-item.service';
 import { ConsignacaoItemService } from './consignacao-item/consignacao-item.service';
+import { UpsertConsignacaoItemDto } from './consignacao-item/dto/upsert-consignacao-item.dto';
+import { ConsignacaoService } from './consignacao.service';
+import { CancelConsinacaoDto } from './dto/cancelar-consignacao.dto';
 import { OpenConsignacaoDto } from './dto/open-consignacao.dto';
+import { UpdateConsignacaoDto } from './dto/update-consignacao.dto';
+import { ConsignacaoEntity } from './entities/consignacao.entity';
 import { ConsignacaoFilter } from './filters/consignacao-filter';
 import { ConsignacaoIncluir } from './includes/consignacao.includ';
-import { UpdateConsignacaoDto } from './dto/update-consignacao.dto';
-import { UpsertConsignacaoItemDto } from './consignacao-item/dto/upsert-consignacao-item.dto';
-import { CancelConsinacaoDto } from './dto/cancelar-consignacao.dto';
+import { ConsignacaoView } from './views/consignacao.view';
 
 describe('ConsignacaoService', () => {
   let service: ConsignacaoService;
   let repository: Repository<ConsignacaoEntity>;
+  let view: Repository<ConsignacaoView>;
   let contextService: ContextService;
   let romaneioItemService: RomaneioItemService;
   let consignacaoItemService: ConsignacaoItemService;
@@ -30,8 +32,14 @@ describe('ConsignacaoService', () => {
           provide: getRepositoryToken(ConsignacaoEntity),
           useValue: {
             save: jest.fn(),
-            findOne: jest.fn(),
             update: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(ConsignacaoView),
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
             createQueryBuilder: jest.fn().mockReturnValue({
               where: jest.fn().mockReturnThis(),
               andWhere: jest.fn().mockReturnThis(),
@@ -64,6 +72,7 @@ describe('ConsignacaoService', () => {
 
     service = module.get<ConsignacaoService>(ConsignacaoService);
     repository = module.get<Repository<ConsignacaoEntity>>(getRepositoryToken(ConsignacaoEntity));
+    view = module.get<Repository<ConsignacaoView>>(getRepositoryToken(ConsignacaoView));
     contextService = module.get<ContextService>(ContextService);
     romaneioItemService = module.get<RomaneioItemService>(RomaneioItemService);
     consignacaoItemService = module.get<ConsignacaoItemService>(ConsignacaoItemService);
@@ -72,6 +81,7 @@ describe('ConsignacaoService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
+    expect(view).toBeDefined();
     expect(contextService).toBeDefined();
     expect(romaneioItemService).toBeDefined();
     expect(consignacaoItemService).toBeDefined();
@@ -79,7 +89,7 @@ describe('ConsignacaoService', () => {
 
   describe('open', () => {
     it('should throw BadRequestException if there is already an open consignacao for the given pessoaId', async () => {
-      const pessoaConsignacao = [{ pessoaId: 1 }] as ConsignacaoEntity[];
+      const pessoaConsignacao = [{ pessoaId: 1 }] as ConsignacaoView[];
       const dto = { pessoaId: 1, observacao: 'Observação' } as OpenConsignacaoDto;
 
       jest.spyOn(service, 'find').mockResolvedValueOnce(pessoaConsignacao);
@@ -89,7 +99,7 @@ describe('ConsignacaoService', () => {
     });
 
     it('should create a new consignacao', async () => {
-      const expectedConsignacao = { id: 1, empresaId: 1, dataAbertura: new Date(), operadorId: 1, situacao: 'aberta' } as ConsignacaoEntity;
+      const expectedConsignacao = { id: 1, empresaId: 1, dataAbertura: new Date(), operadorId: 1, situacao: 'aberta' } as ConsignacaoView;
       const dto = { pessoaId: 1, observacao: 'Observação' } as OpenConsignacaoDto;
 
       jest.spyOn(service, 'find').mockResolvedValueOnce(undefined);
@@ -112,20 +122,20 @@ describe('ConsignacaoService', () => {
 
   describe('find', () => {
     it('should return consignacoes without filters', async () => {
-      const expectedConsignacoes = [{ id: 1 }, { id: 2 }] as ConsignacaoEntity[];
+      const expectedConsignacoes = [{ id: 1 }, { id: 2 }] as ConsignacaoView[];
       const filter: ConsignacaoFilter = {};
 
-      jest.spyOn(repository.createQueryBuilder(), 'getMany').mockResolvedValueOnce(expectedConsignacoes);
+      jest.spyOn(view.createQueryBuilder(), 'getMany').mockResolvedValueOnce(expectedConsignacoes);
 
       const result = await service.find(filter);
 
-      expect(repository.createQueryBuilder).toHaveBeenCalledWith('c');
-      expect(repository.createQueryBuilder().where).toHaveBeenCalledWith('c.empresaId IS NOT NULL');
+      expect(view.createQueryBuilder).toHaveBeenCalledWith('c');
+      expect(view.createQueryBuilder().where).toHaveBeenCalledWith('c.empresaId IS NOT NULL');
       expect(result).toEqual(expectedConsignacoes);
     });
 
     it('should return consignacoes with filters', async () => {
-      const expectedConsignacoes = [{ id: 1 }, { id: 2 }] as ConsignacaoEntity[];
+      const expectedConsignacoes = [{ id: 1 }, { id: 2 }] as ConsignacaoView[];
       const filter: ConsignacaoFilter = {
         empresaIds: [1, 2],
         pessoaIds: [1, 2],
@@ -133,25 +143,25 @@ describe('ConsignacaoService', () => {
         situacoes: ['aberta', 'fechada'],
       };
 
-      jest.spyOn(repository.createQueryBuilder(), 'getMany').mockResolvedValueOnce(expectedConsignacoes);
+      jest.spyOn(view.createQueryBuilder(), 'getMany').mockResolvedValueOnce(expectedConsignacoes);
 
       const result = await service.find(filter);
 
-      expect(repository.createQueryBuilder).toHaveBeenCalledWith('c');
-      expect(repository.createQueryBuilder().where).toHaveBeenCalledWith('c.empresaId IS NOT NULL');
-      expect(repository.createQueryBuilder().andWhere).toHaveBeenCalledWith('c.empresaId IN (:...empresaIds)', {
+      expect(view.createQueryBuilder).toHaveBeenCalledWith('c');
+      expect(view.createQueryBuilder().where).toHaveBeenCalledWith('c.empresaId IS NOT NULL');
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('c.empresaId IN (:...empresaIds)', {
         empresaIds: filter.empresaIds,
       });
-      expect(repository.createQueryBuilder().andWhere).toHaveBeenCalledWith('c.pessoaId IN (:...pessoaIds)', {
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('c.pessoaId IN (:...pessoaIds)', {
         pessoaIds: filter.pessoaIds,
       });
-      expect(repository.createQueryBuilder().andWhere).toHaveBeenCalledWith('c.funcionarioId IN (:...funcionarioIds)', {
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('c.funcionarioId IN (:...funcionarioIds)', {
         funcionarioIds: filter.funcionarioIds,
       });
-      expect(repository.createQueryBuilder().andWhere).toHaveBeenCalledWith('c.situacao IN (:...situacoes)', {
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('c.situacao IN (:...situacoes)', {
         situacoes: filter.situacoes,
       });
-      expect(repository.createQueryBuilder().getMany).toHaveBeenCalled();
+      expect(view.createQueryBuilder().getMany).toHaveBeenCalled();
 
       expect(result).toEqual(expectedConsignacoes);
     });
@@ -161,34 +171,34 @@ describe('ConsignacaoService', () => {
     it('should return consignacao', async () => {
       const empresaId = 1;
       const id = 1;
-      const expectedConsignacao = { id: 1 } as ConsignacaoEntity;
+      const expectedConsignacao = { id: 1 } as ConsignacaoView;
 
-      jest.spyOn(repository, 'findOne').mockResolvedValueOnce(expectedConsignacao);
+      jest.spyOn(view, 'find').mockResolvedValueOnce([expectedConsignacao]);
 
       const result = await service.findById(empresaId, id);
 
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { empresaId, id } });
+      expect(view.find).toHaveBeenCalledWith({ where: { empresaId, id } });
       expect(result).toEqual(expectedConsignacao);
     });
 
     it('should return consignacao with relations', async () => {
       const empresaId = 1;
       const id = 1;
-      const expectedConsignacao = { id: 1 } as ConsignacaoEntity;
+      const expectedConsignacao = { id: 1 } as ConsignacaoView;
       const relations: ConsignacaoIncluir[] = ['itens'];
 
-      jest.spyOn(repository, 'findOne').mockResolvedValueOnce(expectedConsignacao);
+      jest.spyOn(view, 'find').mockResolvedValueOnce([expectedConsignacao]);
 
       const result = await service.findById(empresaId, id, relations);
 
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { empresaId, id }, relations });
+      expect(view.find).toHaveBeenCalledWith({ where: { empresaId, id }, relations });
       expect(result).toEqual(expectedConsignacao);
     });
   });
 
   describe('update', () => {
     it('should update a consignacao', async () => {
-      const expectedConsignacao = { id: 1, empresaId: 1, dataAbertura: new Date(), operadorId: 1, situacao: 'aberta' } as ConsignacaoEntity;
+      const expectedConsignacao = { id: 1, empresaId: 1, dataAbertura: new Date(), operadorId: 1, situacao: 'aberta' } as ConsignacaoView;
       const dto: UpdateConsignacaoDto = { observacao: 'Nova observação' };
       const empresaId = 1;
       const id = 1;
@@ -207,7 +217,7 @@ describe('ConsignacaoService', () => {
     });
 
     it('should throw BadRequestException if consignacao is not "aberta"', async () => {
-      const consignacao = { id: 1, empresaId: 1, dataAbertura: new Date(), operadorId: 1, situacao: 'fechada' } as ConsignacaoEntity;
+      const consignacao = { id: 1, empresaId: 1, dataAbertura: new Date(), operadorId: 1, situacao: 'fechada' } as ConsignacaoView;
       const dto: UpdateConsignacaoDto = { observacao: 'Nova observação' };
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
@@ -260,7 +270,7 @@ describe('ConsignacaoService', () => {
           romaneioId: 1,
           sequencia: 1,
           produtoId: 1,
-          quantidade: 10,
+          solicitado: 10,
           devolvido: 5,
           acertado: 3,
         },
@@ -276,30 +286,7 @@ describe('ConsignacaoService', () => {
     });
   });
 
-  describe('cancel', () => {
-    it('should cancel a consignacao', async () => {
-      const consignacao = {
-        id: 1,
-        empresaId: 1,
-        dataAbertura: new Date(),
-        operadorId: 1,
-        situacao: 'aberta',
-        itens: [],
-      } as ConsignacaoEntity;
-      const dto = { motivoCancelamento: 'Motivo de cancelamento' } as CancelConsinacaoDto;
-
-      jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
-      jest.spyOn(repository, 'update').mockResolvedValueOnce(undefined);
-
-      await service.cancel(1, 1, dto);
-
-      expect(service.findById).toHaveBeenCalledWith(1, 1, ['itens']);
-      expect(repository.update).toHaveBeenCalledWith(
-        { empresaId: 1, id: 1 },
-        { situacao: 'cancelada', motivoCancelamento: dto.motivoCancelamento, operadorId: 1 }
-      );
-    });
-
+  describe('close', () => {
     it('should throw BadRequestException if consignacao is not "aberta"', async () => {
       const consignacao = {
         id: 1,
@@ -308,16 +295,15 @@ describe('ConsignacaoService', () => {
         operadorId: 1,
         situacao: 'fechada',
         itens: [],
-      } as ConsignacaoEntity;
-      const dto: CancelConsinacaoDto = { motivoCancelamento: 'Motivo de cancelamento' };
+      } as ConsignacaoView;
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
 
-      await expect(service.cancel(1, 1, dto)).rejects.toThrowError('Consignação não está com situação "aberta"');
-      expect(service.findById).toHaveBeenCalledWith(1, 1, ['itens']);
+      await expect(service.close(1, 1)).rejects.toThrowError('Consignação não está com situação "aberta"');
+      expect(service.findById).toHaveBeenCalledWith(1, 1);
     });
 
-    it('should throw BadRequestException if consignacao has items', async () => {
+    it('should throw BadRequestException if consignacao has items pendentes', async () => {
       const consignacao = {
         id: 1,
         empresaId: 1,
@@ -325,14 +311,113 @@ describe('ConsignacaoService', () => {
         operadorId: 1,
         situacao: 'aberta',
         itens: [{ id: 1 }] as any[],
-      } as ConsignacaoEntity;
+        pendente: 10,
+      } as ConsignacaoView;
 
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
+
+      await expect(service.close(1, 1)).rejects.toThrowError('Consignação possui itens pendentes');
+      expect(service.findById).toHaveBeenCalledWith(1, 1);
+    });
+
+    it('should close a consignacao', async () => {
+      const consignacao = {
+        id: 1,
+        empresaId: 1,
+        dataAbertura: new Date(),
+        operadorId: 1,
+        situacao: 'aberta',
+        itens: [],
+      } as ConsignacaoView;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
+      jest.spyOn(repository, 'update').mockResolvedValueOnce(undefined);
+
+      await service.close(1, 1);
+
+      expect(service.findById).toHaveBeenCalledWith(1, 1);
+      expect(repository.update).toHaveBeenCalledWith({ empresaId: 1, id: 1 }, { situacao: 'fechada', operadorId: 1 });
+    });
+  });
+
+  describe('cancel', () => {
+    it('should throw BadRequestException if consignacao is not "aberta"', async () => {
+      const consignacao = {
+        id: 1,
+        empresaId: 1,
+        dataAbertura: new Date(),
+        operadorId: 1,
+        situacao: 'fechada',
+        itens: [],
+      } as ConsignacaoView;
       const dto: CancelConsinacaoDto = { motivoCancelamento: 'Motivo de cancelamento' };
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
 
-      await expect(service.cancel(1, 1, dto)).rejects.toThrowError('Consignação possui itens');
-      expect(service.findById).toHaveBeenCalledWith(1, 1, ['itens']);
+      await expect(service.cancel(1, 1, dto)).rejects.toThrowError('Consignação não está com situação "aberta"');
+      expect(service.findById).toHaveBeenCalledWith(1, 1);
+    });
+
+    it('should throw BadRequestException if consignacao has items pendentes', async () => {
+      const consignacao = {
+        id: 1,
+        empresaId: 1,
+        dataAbertura: new Date(),
+        operadorId: 1,
+        situacao: 'aberta',
+        itens: [{ id: 1 }] as any[],
+        pendente: 10,
+      } as ConsignacaoView;
+
+      const dto: CancelConsinacaoDto = { motivoCancelamento: 'Motivo do cancelamento' };
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
+
+      await expect(service.cancel(1, 1, dto)).rejects.toThrowError('Consignação possui itens pendentes');
+      expect(service.findById).toHaveBeenCalledWith(1, 1);
+    });
+
+    it('should throw BadRequestException if consignacao has items acertados', async () => {
+      const consignacao = {
+        id: 1,
+        empresaId: 1,
+        dataAbertura: new Date(),
+        operadorId: 1,
+        situacao: 'aberta',
+        itens: [{ id: 1 }] as any[],
+        pendente: 0,
+        acertado: 10,
+      } as ConsignacaoView;
+
+      const dto: CancelConsinacaoDto = { motivoCancelamento: 'Motivo do cancelamento' };
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
+
+      await expect(service.cancel(1, 1, dto)).rejects.toThrowError('Consignação já possui itens acertados');
+      expect(service.findById).toHaveBeenCalledWith(1, 1);
+    });
+
+    it('should cancel a consignacao', async () => {
+      const consignacao = {
+        id: 1,
+        empresaId: 1,
+        dataAbertura: new Date(),
+        operadorId: 1,
+        situacao: 'aberta',
+        itens: [],
+      } as ConsignacaoView;
+      const dto = { motivoCancelamento: 'Motivo de cancelamento' } as CancelConsinacaoDto;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
+      jest.spyOn(repository, 'update').mockResolvedValueOnce(undefined);
+
+      await service.cancel(1, 1, dto);
+
+      expect(service.findById).toHaveBeenCalledWith(1, 1);
+      expect(repository.update).toHaveBeenCalledWith(
+        { empresaId: 1, id: 1 },
+        { situacao: 'cancelada', motivoCancelamento: dto.motivoCancelamento, operadorId: 1 }
+      );
     });
   });
 });

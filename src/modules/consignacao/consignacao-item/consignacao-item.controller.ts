@@ -7,6 +7,7 @@ import { ConsignacaoItemService } from './consignacao-item.service';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
 import { ConsignacaoItemEntity } from './entities/consignacao-item.entity';
 import { ConsignacaoItemFilter } from './filters/consignacao-item.filter';
+import { ConsignacaoItemView } from './views/consignacao-item.view';
 
 @ApiBearerAuth()
 @ApiEmpresaAuth()
@@ -16,10 +17,10 @@ export class ConsignacaoItemController {
   constructor(private readonly service: ConsignacaoItemService) {}
 
   @Post()
-  @ApiResponse({ status: 200, type: ConsignacaoItemEntity })
+  @ApiResponse({ status: 200, type: [ConsignacaoItemView] })
   @ApiOperation({ summary: 'CONFC003 - Consultar consignações (itens)' })
   @ApiComponent('CONFC003', 'Consultar consignações (itens)')
-  async findAll(@Body() filter: ConsignacaoItemFilter) {
+  async find(@Body() filter: ConsignacaoItemFilter): Promise<ConsignacaoItemView[]> {
     return this.service.find(filter);
   }
 }

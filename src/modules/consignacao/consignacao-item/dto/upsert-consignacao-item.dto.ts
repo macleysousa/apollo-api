@@ -29,9 +29,9 @@ export class UpsertConsignacaoItemDto {
   produtoId: number;
 
   @ApiProperty()
-  @IsNotEmpty({ message: 'O campo "quantidade" é obrigatório' })
-  @Min(1, { message: 'O campo "quantidade" deve ser maior que zero' })
-  quantidade: number;
+  @IsNotEmpty({ message: 'O campo "solicitado" é obrigatório' })
+  @Min(1, { message: 'O campo "solicitado" deve ser maior que zero' })
+  solicitado: number;
 
   @ApiProperty()
   @IsOptional()

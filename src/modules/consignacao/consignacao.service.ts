@@ -13,18 +13,21 @@ import { ConsignacaoIncluir } from './includes/consignacao.includ';
 import { RomaneioItemService } from '../romaneio/romaneio-item/romaneio-item.service';
 import { ConsignacaoItemService } from './consignacao-item/consignacao-item.service';
 import { UpsertConsignacaoItemDto } from './consignacao-item/dto/upsert-consignacao-item.dto';
+import { ConsignacaoView } from './views/consignacao.view';
 
 @Injectable()
 export class ConsignacaoService {
   constructor(
     @InjectRepository(ConsignacaoEntity)
     private readonly repository: Repository<ConsignacaoEntity>,
+    @InjectRepository(ConsignacaoView)
+    private readonly view: Repository<ConsignacaoView>,
     private readonly contextService: ContextService,
     private readonly romanaioItemService: RomaneioItemService,
     private readonly consignacaoItemService: ConsignacaoItemService
   ) {}
 
-  async open(dto: OpenConsignacaoDto): Promise<ConsignacaoEntity> {
+  async open(dto: OpenConsignacaoDto): Promise<ConsignacaoView> {
     const operadorId = this.contextService.operadorId();
     const empresaId = this.contextService.empresaId();
     const dataAbertura = this.contextService.data();
@@ -39,8 +42,8 @@ export class ConsignacaoService {
     return this.findById(empresaId, consignacao.id);
   }
 
-  async find(filter: ConsignacaoFilter): Promise<ConsignacaoEntity[]> {
-    const queryBuilder = this.repository.createQueryBuilder('c');
+  async find(filter: ConsignacaoFilter): Promise<ConsignacaoView[]> {
+    const queryBuilder = this.view.createQueryBuilder('c');
     queryBuilder.where('c.empresaId IS NOT NULL');
 
     if (filter.empresaIds && filter.empresaIds.length > 0) {
@@ -62,26 +65,8 @@ export class ConsignacaoService {
     return queryBuilder.getMany();
   }
 
-  async findById(empresaId: number, id: number, relations?: ConsignacaoIncluir[]): Promise<ConsignacaoEntity> {
-    console.log(relations);
-    return this.repository.findOne({ where: { empresaId, id }, relations });
-  }
-
-  async update(empresaId: number, id: number, dto: UpdateConsignacaoDto): Promise<ConsignacaoEntity> {
-    const operadorId = this.contextService.operadorId();
-    const consignacao = await this.findById(empresaId, id);
-
-    if (consignacao.situacao !== 'aberta') {
-      throw new BadRequestException('Consignação não está com situação "aberta"');
-    }
-
-    await this.repository.update({ empresaId, id }, { ...dto, operadorId });
-
-    return this.findById(empresaId, id);
-  }
-
-  async calculate(consignacaoId: number): Promise<void> {
-    const romaneiosItens = await this.romanaioItemService.findByConsignacaoIds([consignacaoId], undefined, ['encerrado']);
+  async calculate(id: number): Promise<void> {
+    const romaneiosItens = await this.romanaioItemService.findByConsignacaoIds([id], undefined, ['encerrado']);
 
     const produtosSaida = romaneiosItens.filter((ri) => ri.operacao == 'consignacao_saida');
     const produtosDevolvidos = romaneiosItens.filter((ri) => ri.operacao == 'consignacao_devolucao');
@@ -106,7 +91,7 @@ export class ConsignacaoService {
         romaneioId: ri.romaneioId,
         sequencia: ri.sequencia,
         produtoId: ri.produtoId,
-        quantidade: ri.quantidade,
+        solicitado: ri.quantidade,
         devolvido: quantidadeDevolvida,
         acertado: quantidadeAcertado,
       };
@@ -115,16 +100,48 @@ export class ConsignacaoService {
     await this.consignacaoItemService.upsert(produtos);
   }
 
-  async cancel(empresaId: number, id: number, { motivoCancelamento }: CancelConsinacaoDto): Promise<void> {
+  async findById(empresaId: number, id: number, relations?: ConsignacaoIncluir[]): Promise<ConsignacaoView> {
+    const consignacoes = await this.view.find({ where: { empresaId, id }, relations });
+    return consignacoes.first();
+  }
+
+  async update(empresaId: number, id: number, dto: UpdateConsignacaoDto): Promise<ConsignacaoView> {
     const operadorId = this.contextService.operadorId();
-    const consignacao = await this.findById(empresaId, id, ['itens']);
+    const consignacao = await this.findById(empresaId, id);
 
     if (consignacao.situacao !== 'aberta') {
       throw new BadRequestException('Consignação não está com situação "aberta"');
     }
 
-    if (consignacao.itens.length > 0) {
-      throw new BadRequestException('Consignação possui itens');
+    await this.repository.update({ empresaId, id }, { ...dto, operadorId });
+
+    return this.findById(empresaId, id);
+  }
+
+  async close(empresaId: number, id: number): Promise<void> {
+    const operadorId = this.contextService.operadorId();
+
+    const consignacao = await this.findById(empresaId, id);
+
+    if (consignacao.situacao !== 'aberta') {
+      throw new BadRequestException('Consignação não está com situação "aberta"');
+    } else if (consignacao.pendente > 0) {
+      throw new BadRequestException('Consignação possui itens pendentes');
+    }
+
+    await this.repository.update({ empresaId, id }, { situacao: 'fechada', operadorId });
+  }
+
+  async cancel(empresaId: number, id: number, { motivoCancelamento }: CancelConsinacaoDto): Promise<void> {
+    const operadorId = this.contextService.operadorId();
+    const consignacao = await this.findById(empresaId, id);
+
+    if (consignacao.situacao !== 'aberta') {
+      throw new BadRequestException('Consignação não está com situação "aberta"');
+    } else if (consignacao.pendente > 0) {
+      throw new BadRequestException('Consignação possui itens pendentes');
+    } else if (consignacao.acertado > 0) {
+      throw new BadRequestException('Consignação já possui itens acertados');
     }
 
     await this.repository.update({ empresaId, id }, { situacao: 'cancelada', motivoCancelamento, operadorId });

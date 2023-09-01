@@ -32,7 +32,7 @@ export class CreateTableConsignacaoItens1693426713509 implements MigrationInterf
             isPrimary: true,
           },
           {
-            name: 'quantidade',
+            name: 'solicitado',
             type: 'decimal(18,4)',
             default: 1,
           },

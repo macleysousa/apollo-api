@@ -3,6 +3,7 @@ import { ConsignacaoItemController } from './consignacao-item.controller';
 import { ConsignacaoItemService } from './consignacao-item.service';
 import { ConsignacaoItemEntity } from './entities/consignacao-item.entity';
 import { ConsignacaoItemFilter } from './filters/consignacao-item.filter';
+import { ConsignacaoItemView } from './views/consignacao-item.view';
 
 describe('ConsignacaoItemController', () => {
   let controller: ConsignacaoItemController;
@@ -32,12 +33,12 @@ describe('ConsignacaoItemController', () => {
 
   describe('/ (POST)', () => {
     it('should return all consignacao items when no filter is provided', async () => {
-      const expectedItems: ConsignacaoItemEntity[] = [{ consignacaoId: 1 }, { consignacaoId: 2 }] as ConsignacaoItemEntity[];
+      const expectedItems = [{ consignacaoId: 1 }, { consignacaoId: 2 }] as ConsignacaoItemView[];
       const filter: ConsignacaoItemFilter = {};
 
       jest.spyOn(service, 'find').mockResolvedValueOnce(expectedItems);
 
-      const result = await controller.findAll(filter);
+      const result = await controller.find(filter);
 
       expect(service.find).toHaveBeenCalledWith(filter);
       expect(result).toEqual(expectedItems);

@@ -6,7 +6,7 @@ import { Exclude } from 'class-transformer';
 import { ConsignacaoEntity } from '../../entities/consignacao.entity';
 
 @Entity({ name: 'consignacoes_itens' })
-export class ConsignacaoItemEntity extends BaseEntity {
+export class ConsignacaoItemEntity {
   @ApiProperty()
   @PrimaryColumn('int')
   empresaId: number;
@@ -29,7 +29,7 @@ export class ConsignacaoItemEntity extends BaseEntity {
 
   @ApiProperty()
   @Column('decimal', { precision: 18, scale: 4 })
-  quantidade: number;
+  solicitado: number;
 
   @ApiProperty()
   @Column('decimal', { precision: 18, scale: 4 })
@@ -49,7 +49,6 @@ export class ConsignacaoItemEntity extends BaseEntity {
   consignacao: ConsignacaoEntity;
 
   constructor(partial: Partial<ConsignacaoItemEntity>) {
-    super();
     Object.assign(this, partial);
   }
 }

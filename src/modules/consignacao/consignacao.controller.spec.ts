@@ -6,9 +6,9 @@ import { ConsignacaoService } from './consignacao.service';
 import { CancelConsinacaoDto } from './dto/cancelar-consignacao.dto';
 import { OpenConsignacaoDto } from './dto/open-consignacao.dto';
 import { UpdateConsignacaoDto } from './dto/update-consignacao.dto';
-import { ConsignacaoEntity } from './entities/consignacao.entity';
 import { ConsignacaoFilter } from './filters/consignacao-filter';
 import { ConsignacaoIncluir } from './includes/consignacao.includ';
+import { ConsignacaoView } from './views/consignacao.view';
 
 describe('ConsignacaoController', () => {
   let controller: ConsignacaoController;
@@ -26,6 +26,7 @@ describe('ConsignacaoController', () => {
             findById: jest.fn(),
             update: jest.fn(),
             calculate: jest.fn(),
+            close: jest.fn(),
             cancel: jest.fn(),
           },
         },
@@ -48,7 +49,7 @@ describe('ConsignacaoController', () => {
       const consignacoes = [
         { id: 1, empresaId: 1, dataAbertura: new Date(), situacao: 'aberta' },
         { id: 2, empresaId: 1, dataAbertura: new Date(), situacao: 'cancelada' },
-      ] as ConsignacaoEntity[];
+      ] as ConsignacaoView[];
 
       jest.spyOn(service, 'find').mockResolvedValueOnce(consignacoes);
 
@@ -60,7 +61,7 @@ describe('ConsignacaoController', () => {
     it('should create a new consignacao', async () => {
       const dto = { caixaAbertura: 1, pessoaId: 1 } as OpenConsignacaoDto;
 
-      const consignacao: ConsignacaoEntity = { id: 1, ...dto, situacao: 'aberta' } as unknown as ConsignacaoEntity;
+      const consignacao: ConsignacaoView = { id: 1, ...dto, situacao: 'aberta' } as unknown as ConsignacaoView;
 
       jest.spyOn(service, 'open').mockResolvedValueOnce(consignacao);
 
@@ -71,7 +72,7 @@ describe('ConsignacaoController', () => {
   describe(':id (GET)', () => {
     it('should return a consignacao by id', async () => {
       const empresa: EmpresaEntity = { id: 1 } as EmpresaEntity;
-      const consignacao = { id: 1, empresaId: 1 } as ConsignacaoEntity;
+      const consignacao = { id: 1, empresaId: 1 } as ConsignacaoView;
       const includes: ConsignacaoIncluir[] = ['itens'];
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
@@ -86,7 +87,7 @@ describe('ConsignacaoController', () => {
       const id = 1;
       const dto = { funcionarioId: 1 } as UpdateConsignacaoDto;
 
-      const consignacao = { id, empresaId: 1 } as ConsignacaoEntity;
+      const consignacao = { id, empresaId: 1 } as ConsignacaoView;
 
       jest.spyOn(service, 'update').mockResolvedValueOnce(consignacao);
 
@@ -101,6 +102,17 @@ describe('ConsignacaoController', () => {
       jest.spyOn(service, 'calculate').mockResolvedValueOnce(undefined);
 
       expect(await controller.recalculate(id)).toBe(undefined);
+    });
+  });
+
+  describe(':id/fechar', () => {
+    it('should close a consignacao by id', async () => {
+      const empresa = { id: 1 } as EmpresaEntity;
+      const id = 1;
+
+      jest.spyOn(service, 'close').mockResolvedValueOnce(undefined);
+
+      expect(await controller.close(empresa, id)).toBe(undefined);
     });
   });
 
