@@ -20,7 +20,7 @@ describe('RomaneioItemController', () => {
           provide: RomaneioItemService,
           useValue: {
             add: jest.fn().mockResolvedValue(romaneioFakeRepository.findOneViewItem()),
-            find: jest.fn().mockResolvedValue(romaneioFakeRepository.findViewItens()),
+            findByRomaneioId: jest.fn().mockResolvedValue(romaneioFakeRepository.findViewItens()),
             remove: jest.fn().mockResolvedValue(undefined),
           },
         },
@@ -67,7 +67,7 @@ describe('RomaneioItemController', () => {
 
       const result = await controller.find(romaneioId);
 
-      expect(service.find).toHaveBeenCalledWith(romaneioId);
+      expect(service.findByRomaneioId).toHaveBeenCalledWith(romaneioId);
       expect(result).toEqual(romaneioItemViews);
     });
   });

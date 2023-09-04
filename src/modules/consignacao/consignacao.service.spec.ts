@@ -48,17 +48,17 @@ describe('ConsignacaoService', () => {
           },
         },
         {
+          provide: RomaneioItemService,
+          useValue: {
+            findByConsignacaoIds: jest.fn(),
+          },
+        },
+        {
           provide: ContextService,
           useValue: {
             operadorId: jest.fn().mockReturnValue(1),
             empresaId: jest.fn().mockReturnValue(1),
             data: jest.fn().mockReturnValue(new Date('2023-08-31')),
-          },
-        },
-        {
-          provide: RomaneioItemService,
-          useValue: {
-            findByConsignacaoIds: jest.fn(),
           },
         },
         {
@@ -73,8 +73,8 @@ describe('ConsignacaoService', () => {
     service = module.get<ConsignacaoService>(ConsignacaoService);
     repository = module.get<Repository<ConsignacaoEntity>>(getRepositoryToken(ConsignacaoEntity));
     view = module.get<Repository<ConsignacaoView>>(getRepositoryToken(ConsignacaoView));
-    contextService = module.get<ContextService>(ContextService);
     romaneioItemService = module.get<RomaneioItemService>(RomaneioItemService);
+    contextService = module.get<ContextService>(ContextService);
     consignacaoItemService = module.get<ConsignacaoItemService>(ConsignacaoItemService);
   });
 
@@ -414,10 +414,7 @@ describe('ConsignacaoService', () => {
       await service.cancel(1, 1, dto);
 
       expect(service.findById).toHaveBeenCalledWith(1, 1);
-      expect(repository.update).toHaveBeenCalledWith(
-        { empresaId: 1, id: 1 },
-        { situacao: 'cancelada', motivoCancelamento: dto.motivoCancelamento, operadorId: 1 }
-      );
+      expect(repository.update).toHaveBeenCalledWith({ empresaId: 1, id: 1 }, { situacao: 'cancelada', motivoCancelamento: dto.motivoCancelamento, operadorId: 1 });
     });
   });
 });

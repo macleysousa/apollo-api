@@ -40,7 +40,7 @@ describe('CancelarService', () => {
           provide: CaixaExtratoService,
           useValue: {
             findByLiquidacao: jest.fn(),
-            cancelarLiquidacao: jest.fn(),
+            cancelar: jest.fn(),
           },
         },
         {
@@ -54,12 +54,13 @@ describe('CancelarService', () => {
           provide: RomaneioService,
           useValue: {
             findById: jest.fn(),
+            cancelar: jest.fn(),
           },
         },
         {
           provide: RomaneioItemService,
           useValue: {
-            find: jest.fn(),
+            findByRomaneioId: jest.fn(),
           },
         },
         {
@@ -144,7 +145,7 @@ describe('CancelarService', () => {
 
       await service.adiantamento(caixaId, dto);
 
-      expect(caixaExtratoService.cancelarLiquidacao).toHaveBeenCalledWith(empresaId, caixaId, liquidacao, motivo);
+      expect(caixaExtratoService.cancelar).toHaveBeenCalledWith(empresaId, caixaId, liquidacao, motivo);
     });
   });
 
@@ -188,7 +189,7 @@ describe('CancelarService', () => {
       const error = new BadRequestException(`O produto "1" não possui estoque suficiente para realizar o cancelamento`);
 
       jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
-      jest.spyOn(romaneioItemService, 'find').mockResolvedValue(romaneioItens);
+      jest.spyOn(romaneioItemService, 'findByRomaneioId').mockResolvedValue(romaneioItens);
       jest.spyOn(estoqueService, 'findByProdutoIds').mockResolvedValue(estoque);
 
       await expect(service.romaneio(caixaId, dto)).rejects.toThrow(error);
@@ -220,21 +221,24 @@ describe('CancelarService', () => {
       const error = new BadRequestException(`O romaneio "${dto.romaneioId}" já possui produtos devolvidos, não é possível cancelar`);
 
       jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
-      jest.spyOn(romaneioItemService, 'find').mockResolvedValue(romaneioItens);
+      jest.spyOn(romaneioItemService, 'findByRomaneioId').mockResolvedValue(romaneioItens);
       jest.spyOn(estoqueService, 'findByProdutoIds').mockResolvedValue(estoque);
       jest.spyOn(pessoaExtratoService, 'findSaldoCreditoDeDevolucao').mockResolvedValue(100);
 
       await expect(service.romaneio(caixaId, dto)).rejects.toThrow(error);
     });
 
-    // it('should cancel romaneio if all validations pass', async () => {
-    //   const romaneioMock = { cancelado: false } as any;
+    it('should cancel romaneio if all validations pass', async () => {
+      const empresaId = 1;
+      const caixaId = 1;
+      const dto: CancelarRomaneioDto = { romaneioId: 2, motivo: 'Motivo' };
+      const romaneioMock = { cancelado: false } as any;
 
-    //   jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneioMock);
+      jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneioMock);
 
-    //   await service.romaneio(caixaId, romaneioId, motivo);
+      await service.romaneio(caixaId, dto);
 
-    //   expect(romaneioService.cancelar).toHaveBeenCalledWith(empresaId, caixaId, romaneioId, motivo);
-    // });
+      expect(romaneioService.cancelar).toHaveBeenCalledWith(empresaId, dto.romaneioId, dto.motivo);
+    });
   });
 });

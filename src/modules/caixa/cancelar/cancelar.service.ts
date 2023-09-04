@@ -42,7 +42,7 @@ export class CancelarService {
       throw new BadRequestException(`Saldo em adiantamento insuficiente para realizar o cancelamentoo`);
     }
 
-    await this.caixaExtratoService.cancelarLiquidacao(empresaId, caixaId, dto.liquidacao, dto.motivo);
+    await this.caixaExtratoService.cancelar(empresaId, caixaId, dto.liquidacao, dto.motivo);
   }
 
   async romaneio(caixaId: number, dto: CancelarRomaneioDto): Promise<void> {
@@ -58,7 +58,7 @@ export class CancelarService {
     }
 
     if (romaneio.situacao == SituacaoRomaneio.encerrado && romaneio.modalidade == ModalidadeRomaneio.entrada) {
-      const romaneioItens = await this.romaneioItemService.find(dto.romaneioId);
+      const romaneioItens = await this.romaneioItemService.findByRomaneioId(dto.romaneioId);
       const produtoIds = romaneioItens.map((x) => x.produtoId);
 
       const estoque = await this.estoqueService.findByProdutoIds(empresaId, produtoIds);
@@ -76,7 +76,7 @@ export class CancelarService {
         throw new BadRequestException(`Saldo de crédito de devolução insuficiente para realizar o cancelamento`);
       }
     } else if (romaneio.situacao == SituacaoRomaneio.encerrado && romaneio.operacao == OperacaoRomaneio.venda) {
-      const romaneioItens = await this.romaneioItemService.find(dto.romaneioId);
+      const romaneioItens = await this.romaneioItemService.findByRomaneioId(dto.romaneioId);
       const produtoDevolucaoIds = romaneioItens.filter((x) => x.devolvido > 0).map((x) => x.produtoId);
       if (produtoDevolucaoIds.length > 0) {
         throw new BadRequestException(`O romaneio "${dto.romaneioId}" já possui produtos devolvidos, não é possível cancelar`);

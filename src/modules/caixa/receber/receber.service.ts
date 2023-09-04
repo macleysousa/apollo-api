@@ -44,7 +44,7 @@ export class ReceberService {
     const empresaId = this.contextService.empresaId();
 
     const faturas = await this.lancarFaturas(empresaId, recebimento, formasDePagamento);
-    const liquidacao = await this.lancarLiquidacao(caixaId, TipoHistorico.Adiantamento, faturas);
+    const liquidacao = await this.lancarNoCaixa(caixaId, TipoHistorico.Adiantamento, faturas);
 
     return liquidacao;
   }
@@ -82,6 +82,11 @@ export class ReceberService {
       throw new BadRequestException('Consignação não informada');
     }
 
+    let recebimento: RecebimentoDto;
+    let faturas: FaturaEntity[];
+    let extrato: CaixaExtratoEntity[];
+    let liquidacaoId: number;
+
     switch (romaneio.operacao) {
       case OperacaoRomaneio.compra:
         throw new BadRequestException('Operação não implementada');
@@ -99,10 +104,10 @@ export class ReceberService {
         } else if (valorRomaneio > romaneioDto.formasDePagamento.sum((x) => x.valor)) {
           throw new BadRequestException('O valor pago é insuficiente para encerrar o romaneio');
         }
-        const recebimento: RecebimentoDto = { pessoaId: romaneio.pessoaId, valor: romaneio.valorLiquido, romaneioId: romaneio.romaneioId };
-        const faturas = await this.lancarFaturas(empresa.id, recebimento, romaneioDto.formasDePagamento);
-        const liquidacao = await this.lancarLiquidacao(caixaId, TipoHistorico.Venda, faturas);
-        const liquidacaoId = liquidacao.first().liquidacao;
+        recebimento = { pessoaId: romaneio.pessoaId, valor: romaneio.valorLiquido, romaneioId: romaneio.romaneioId };
+        faturas = await this.lancarFaturas(empresa.id, recebimento, romaneioDto.formasDePagamento);
+        extrato = await this.lancarNoCaixa(caixaId, TipoHistorico.Venda, faturas);
+        liquidacaoId = extrato.first().liquidacao;
 
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId, liquidacaoId);
 
@@ -111,7 +116,7 @@ export class ReceberService {
           throw new BadRequestException('Romaneios de devolução não informados');
         }
 
-        if (!(await this.romaneioService.validarDevolucao(empresa.id, romaneio.romaneioId, 'venda', romaneio.romaneiosDevolucao))) {
+        if (!(await this.romaneioService.validarDevolucao(empresa.id, romaneio.romaneioId, ['venda'], romaneio.romaneiosDevolucao))) {
           throw new BadRequestException('Romaneio possui itens que não podem ser devolvidos');
         }
 
@@ -148,15 +153,31 @@ export class ReceberService {
           throw new BadRequestException('Consignação não está em andamento');
         }
 
-        await this.consignacaoService.calculate(romaneio.consignacaoId);
-
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
       case OperacaoRomaneio.consignacao_devolucao:
-        throw new BadRequestException('Operação não implementada');
+        // eslint-disable-next-line prettier/prettier
+        if (!(await this.romaneioService.validarDevolucao(empresa.id, romaneio.romaneioId, ['consignacao_saida'], romaneio.romaneiosDevolucao))) {
+          throw new BadRequestException('Romaneio possui itens que não podem ser devolvidos');
+        }
+
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
       case OperacaoRomaneio.consignacao_acerto:
-        throw new BadRequestException('Operação não implementada');
+        if (!romaneioDto.formasDePagamento) {
+          throw new BadRequestException('Nenhuma forma de pagamento informada');
+        } else if (romaneio.situacao != SituacaoRomaneio.em_andamento) {
+          throw new BadRequestException('Romaneio não está em andamento');
+        } else if (valorRomaneio > romaneioDto.formasDePagamento.sum((x) => x.valor)) {
+          throw new BadRequestException('O valor pago é insuficiente para encerrar o romaneio');
+        }
+
+        recebimento = { pessoaId: romaneio.pessoaId, valor: romaneio.valorLiquido, romaneioId: romaneio.romaneioId };
+        faturas = await this.lancarFaturas(empresa.id, recebimento, romaneioDto.formasDePagamento);
+        extrato = await this.lancarNoCaixa(caixaId, TipoHistorico.Venda, faturas);
+        liquidacaoId = extrato.first().liquidacao;
+
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId, liquidacaoId);
 
       case OperacaoRomaneio.transferencia_saida:
         throw new BadRequestException('Operação não implementada');
@@ -169,7 +190,7 @@ export class ReceberService {
     }
   }
 
-  async lancarLiquidacao(caixaId: number, tipoHistorico: TipoHistorico, faturas: FaturaEntity[]): Promise<CaixaExtratoEntity[]> {
+  async lancarNoCaixa(caixaId: number, tipoHistorico: TipoHistorico, faturas: FaturaEntity[]): Promise<CaixaExtratoEntity[]> {
     const liquidacaoId = await this.caixaExtratoService.newLiquidacaoId();
 
     const liquidacaoFatura = faturas
@@ -186,7 +207,7 @@ export class ReceberService {
       })
       .flat();
 
-    return this.caixaExtratoService.lancarLiquidacao(caixaId, liquidacaoId, liquidacaoFatura);
+    return this.caixaExtratoService.lancar(caixaId, liquidacaoId, liquidacaoFatura);
   }
 
   async lancarFaturas(empresaId: number, recebimento: RecebimentoDto, formasDePagamento: PagamentoDto[]): Promise<FaturaEntity[]> {

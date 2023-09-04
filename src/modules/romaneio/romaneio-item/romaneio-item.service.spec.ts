@@ -367,7 +367,7 @@ describe('RomaneioItemService', () => {
     it('should return romaneio items', async () => {
       const romaneioId = 1;
 
-      const result = await service.find(romaneioId);
+      const result = await service.findByRomaneioId(romaneioId);
 
       expect(view.find).toHaveBeenCalledWith({ where: { romaneioId } });
       expect(result).toEqual(romaneioFakeRepository.findViewItens());

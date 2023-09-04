@@ -31,7 +31,8 @@ module.exports = {
         'trailingComma': 'es5',
         'endOfLine': 'auto',
         'singleQuote': true,
-        'tabWidth': 2
+        'tabWidth': 2,
+        'maxLineLength': 180,
       },
     ]
   },

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -22,8 +22,9 @@ export class ConsignacaoService {
     private readonly repository: Repository<ConsignacaoEntity>,
     @InjectRepository(ConsignacaoView)
     private readonly view: Repository<ConsignacaoView>,
-    private readonly contextService: ContextService,
+    @Inject(forwardRef(() => RomaneioItemService))
     private readonly romanaioItemService: RomaneioItemService,
+    private readonly contextService: ContextService,
     private readonly consignacaoItemService: ConsignacaoItemService
   ) {}
 

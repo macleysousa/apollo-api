@@ -65,7 +65,7 @@ describe('ReceberService', () => {
           useValue: {
             create: jest.fn(),
             newLiquidacaoId: jest.fn(),
-            lancarLiquidacao: jest.fn(),
+            lancar: jest.fn(),
           },
         },
         {
@@ -121,7 +121,7 @@ describe('ReceberService', () => {
       const extrato: CaixaExtratoEntity[] = [{ id: 1 }] as any;
 
       const mockLancarFaturas = jest.spyOn(service, 'lancarFaturas').mockResolvedValueOnce(faturas);
-      const mockLancarLiquidacao = jest.spyOn(service, 'lancarLiquidacao').mockResolvedValueOnce(extrato);
+      const mockLancarLiquidacao = jest.spyOn(service, 'lancarNoCaixa').mockResolvedValueOnce(extrato);
 
       const result = await service.adiantamento(caixaId, dto);
 
@@ -158,9 +158,9 @@ describe('ReceberService', () => {
       ] as any;
 
       jest.spyOn(caixaExtratoService, 'newLiquidacaoId').mockResolvedValueOnce(1692454275429);
-      jest.spyOn(caixaExtratoService, 'lancarLiquidacao').mockResolvedValueOnce(extrato);
+      jest.spyOn(caixaExtratoService, 'lancar').mockResolvedValueOnce(extrato);
 
-      const result = await service.lancarLiquidacao(caixaId, TipoHistorico.Adiantamento, faturas);
+      const result = await service.lancarNoCaixa(caixaId, TipoHistorico.Adiantamento, faturas);
 
       expect(caixaExtratoService.newLiquidacaoId).toHaveBeenCalledTimes(1);
       expect(result).toEqual(extrato);

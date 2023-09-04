@@ -136,7 +136,7 @@ describe('CaixaExtratoService', () => {
       jest.spyOn(repository, 'insert').mockResolvedValue(undefined);
       jest.spyOn(service, 'findByLiquidacao').mockResolvedValue(expectedResult);
 
-      const result = await service.lancarLiquidacao(caixaId, liquidacao, dto);
+      const result = await service.lancar(caixaId, liquidacao, dto);
 
       expect(repository.insert).toHaveBeenCalledWith(
         dto.map((item) => ({
@@ -162,7 +162,7 @@ describe('CaixaExtratoService', () => {
 
       jest.spyOn(service, 'findByLiquidacao').mockResolvedValueOnce([{ tipoHistorico: TipoHistorico.Abertura_de_caixa }] as any);
 
-      await expect(service.cancelarLiquidacao(empresaId, caixaId, liquidacao, motivoCancelamento)).rejects.toThrow(error);
+      await expect(service.cancelar(empresaId, caixaId, liquidacao, motivoCancelamento)).rejects.toThrow(error);
     });
 
     it('should throw an error if the liquidation is for closing a cash register', async () => {
@@ -174,7 +174,7 @@ describe('CaixaExtratoService', () => {
 
       jest.spyOn(service, 'findByLiquidacao').mockResolvedValueOnce([{ tipoHistorico: TipoHistorico.Fechamento_de_caixa }] as any);
 
-      await expect(service.cancelarLiquidacao(empresaId, caixaId, liquidacao, motivoCancelamento)).rejects.toThrow(error);
+      await expect(service.cancelar(empresaId, caixaId, liquidacao, motivoCancelamento)).rejects.toThrow(error);
     });
 
     it('should throw an error if the liquidation has already been canceled', async () => {
@@ -186,7 +186,7 @@ describe('CaixaExtratoService', () => {
 
       jest.spyOn(service, 'findByLiquidacao').mockResolvedValueOnce([{ cancelado: true }] as any);
 
-      await expect(service.cancelarLiquidacao(empresaId, caixaId, liquidacao, motivoCancelamento)).rejects.toThrow(error);
+      await expect(service.cancelar(empresaId, caixaId, liquidacao, motivoCancelamento)).rejects.toThrow(error);
     });
 
     it('should update the liquidation with the provided data', async () => {
@@ -199,7 +199,7 @@ describe('CaixaExtratoService', () => {
 
       jest.spyOn(service, 'findByLiquidacao').mockResolvedValueOnce([{ tipoHistorico: TipoHistorico.Venda, cancelado: false }] as any);
 
-      await service.cancelarLiquidacao(empresaId, caixaId, liquidacao, motivoCancelamento);
+      await service.cancelar(empresaId, caixaId, liquidacao, motivoCancelamento);
 
       expect(repository.update).toHaveBeenCalledWith(
         { empresaId, caixaId, liquidacao },

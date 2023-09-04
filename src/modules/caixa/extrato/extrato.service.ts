@@ -33,7 +33,7 @@ export class CaixaExtratoService {
     return timestamp;
   }
 
-  async lancarLiquidacao(caixaId: number, liquidacao: number, dto: LancarMovimento[]): Promise<CaixaExtratoEntity[]> {
+  async lancar(caixaId: number, liquidacao: number, dto: LancarMovimento[]): Promise<CaixaExtratoEntity[]> {
     const operadorId = this.contextService.operadorId();
     const empresa = this.contextService.empresa();
 
@@ -51,7 +51,7 @@ export class CaixaExtratoService {
     return this.findByLiquidacao(empresa.id, caixaId, liquidacao);
   }
 
-  async cancelarLiquidacao(empresaId: number, caixaId: number, liquidacao: number, motivoCancelamento: string): Promise<void> {
+  async cancelar(empresaId: number, caixaId: number, liquidacao: number, motivoCancelamento: string): Promise<void> {
     const operadorId = this.contextService.operadorId();
 
     const liquidacaoRows = await this.findByLiquidacao(empresaId, caixaId, liquidacao);

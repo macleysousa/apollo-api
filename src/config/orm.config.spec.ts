@@ -39,6 +39,7 @@ describe('orm configuration', () => {
   it('should success to instantiate module orm configuration', () => {
     // Arrange
     process.env.DB_USERNAME = 'DB_USERNAME';
+    process.env.ORM_LOGGING = 'false';
 
     // Act
     const orm = require('./orm.config');

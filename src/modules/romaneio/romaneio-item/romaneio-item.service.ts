@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
@@ -31,6 +31,7 @@ export class RomaneioItemService {
     private readonly repository: Repository<RomaneioItemEntity>,
     @InjectRepository(RomaneioItemView)
     private readonly view: Repository<RomaneioItemView>,
+    @Inject(forwardRef(() => RomaneioService))
     private readonly romaneioService: RomaneioService,
     private readonly contextService: ContextService,
     private readonly estoqueService: EstoqueService,
@@ -143,7 +144,7 @@ export class RomaneioItemService {
     });
   }
 
-  async find(romaneioId: number): Promise<RomaneioItemView[]> {
+  async findByRomaneioId(romaneioId: number): Promise<RomaneioItemView[]> {
     return this.view.find({ where: { romaneioId } });
   }
 

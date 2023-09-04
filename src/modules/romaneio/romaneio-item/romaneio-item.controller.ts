@@ -27,7 +27,7 @@ export class RomaneioItemController {
   @Get()
   @ApiResponse({ status: 200, type: [RomaneioItemView] })
   async find(@Param('romaneioId') romaneioId: number): Promise<RomaneioItemView[]> {
-    return this.service.find(romaneioId);
+    return this.service.findByRomaneioId(romaneioId);
   }
 
   @Delete()

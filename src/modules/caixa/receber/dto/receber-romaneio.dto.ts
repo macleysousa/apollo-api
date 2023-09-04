@@ -19,4 +19,8 @@ export class ReceberRomaneioDto {
   @ValidateNested({ each: true })
   @Type(() => PagamentoDto)
   formasDePagamento?: PagamentoDto[];
+
+  constructor(partial?: Partial<ReceberRomaneioDto>) {
+    Object.assign(this, partial);
+  }
 }

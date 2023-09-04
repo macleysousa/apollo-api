@@ -1,21 +1,21 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { In, Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
 
-import { EmpresaParametroService } from '../empresa/parametro/parametro.service';
+import { ConsignacaoService } from '../consignacao/consignacao.service';
 import { CreateRomaneioDto } from './dto/create-romaneio.dto';
 import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';
+import { UpdateRomaneioDto } from './dto/update-romaneio.dto';
 import { RomaneioEntity } from './entities/romaneio.entity';
+import { ModalidadeRomaneio } from './enum/modalidade-romaneio.enum';
 import { OperacaoRomaneio, OperacaoRomaneioType } from './enum/operacao-romaneio.enum';
 import { SituacaoRomaneio } from './enum/situacao-romaneio.enum';
-import { RomaneioView } from './views/romaneio.view';
-import { RomaneioInclude } from './includes/romaneio.include';
 import { RomaneioFilter } from './filters/romaneio.filter';
-import { UpdateRomaneioDto } from './dto/update-romaneio.dto';
-import { ModalidadeRomaneio } from './enum/modalidade-romaneio.enum';
+import { RomaneioInclude } from './includes/romaneio.include';
+import { RomaneioView } from './views/romaneio.view';
 
 @Injectable()
 export class RomaneioService {
@@ -24,6 +24,8 @@ export class RomaneioService {
     private readonly repository: Repository<RomaneioEntity>,
     @InjectRepository(RomaneioView)
     private readonly view: Repository<RomaneioView>,
+    @Inject(forwardRef(() => ConsignacaoService))
+    private readonly consignacaoService: ConsignacaoService,
     private readonly contextService: ContextService
   ) {}
 
@@ -197,14 +199,14 @@ export class RomaneioService {
     return this.findById(empresaId, id);
   }
 
-  async validarDevolucao(empresaId: number, id: number, operacao: OperacaoRomaneioType, romaneiosDevolucao: number[]): Promise<Boolean> {
+  async validarDevolucao(empresaId: number, id: number, operacao: OperacaoRomaneioType[], romaneiosDevolucao: number[]): Promise<Boolean> {
     const data = this.contextService.data();
     const parametros = this.contextService.parametros();
 
     const romaneios = await this.findByIds(empresaId, romaneiosDevolucao, ['itens']);
     const romaneio = await this.findById(empresaId, id, ['itens']);
 
-    if (romaneios.filter((x) => x.operacao != operacao).length > 0) {
+    if (romaneios.filter((x) => !operacao.includes(x.operacao)).length > 0) {
       throw new BadRequestException('Devolução não permitida. Verifique o tipo de operação dos romaneios selecionados.');
     }
 
@@ -233,17 +235,25 @@ export class RomaneioService {
   }
 
   async encerrar(empresaId: number, caixaId: number, id: number, liquidacao?: number): Promise<RomaneioView> {
+    const operadorId = this.contextService.usuario().id;
+
     const romaneio = await this.findById(empresaId, id);
 
     if (romaneio.situacao !== SituacaoRomaneio.em_andamento) {
       throw new BadRequestException('Romaneio não está em andamento');
     }
 
-    await this.repository.update({ id }, { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao }).catch(() => {
+    await this.repository.update({ id }, { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId }).catch(() => {
       throw new BadRequestException('Não foi possível encerrar o romaneio');
     });
 
-    await this.repository.query(`CALL romaneio_calcular_itens_devidos(${id})`);
+    if (romaneio.romaneiosDevolucao && romaneio.romaneiosDevolucao.length > 0) {
+      await this.repository.query(`CALL romaneio_calcular_itens_devidos(${id})`);
+    }
+
+    if (romaneio.consignacaoId) {
+      await this.consignacaoService.calculate(romaneio.consignacaoId);
+    }
 
     return this.findById(empresaId, id);
   }
@@ -251,11 +261,19 @@ export class RomaneioService {
   async cancelar(empresaId: number, id: number, motivo: string): Promise<RomaneioView> {
     const operadorId = this.contextService.usuario().id;
 
+    const romaneio = await this.findById(empresaId, id);
+
     await this.repository.update({ id }, { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId }).catch(() => {
       throw new BadRequestException('Não foi possível cancelar o romaneio');
     });
 
-    await this.repository.query(`CALL romaneio_cancelar_itens_devolvidos(${id})`);
+    if (romaneio.romaneiosDevolucao && romaneio.romaneiosDevolucao.length > 0) {
+      await this.repository.query(`CALL romaneio_cancelar_itens_devolvidos(${id})`);
+    }
+
+    if (romaneio.consignacaoId) {
+      await this.consignacaoService.calculate(romaneio.consignacaoId);
+    }
 
     return this.findById(empresaId, id);
   }
