@@ -32,7 +32,7 @@ module.exports = {
         'endOfLine': 'auto',
         'singleQuote': true,
         'tabWidth': 2,
-        'maxLineLength': 180,
+        'maxLineLength': 160,
       },
     ]
   },

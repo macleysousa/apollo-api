@@ -22,7 +22,7 @@ export class IsPessoaConstraint implements ValidatorConstraintInterface {
 
   defaultMessage(_validationArguments?: ValidationArguments): string {
     const { value } = _validationArguments;
-    return `Pessoa com id ${value} não encontrada`;
+    return `Pessoa "${value}" não encontrada`;
   }
 }
 

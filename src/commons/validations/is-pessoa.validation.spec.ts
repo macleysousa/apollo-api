@@ -46,7 +46,7 @@ describe('IsPessoaConstraint', () => {
 
       const result = constraint.defaultMessage(args);
 
-      expect(result).toBe(`Pessoa com id ${id} não encontrada`);
+      expect(result).toBe(`Pessoa "${id}" não encontrada`);
     });
   });
 });

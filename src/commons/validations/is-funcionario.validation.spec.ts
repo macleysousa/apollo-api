@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FuncionarioConstraint } from './is-funcionario.validation';
 import { FuncionarioService } from 'src/modules/funcionario/funcionario.service';
+import { ValidationArguments } from 'class-validator';
 
 describe('FuncionarioConstraint', () => {
   let constraint: FuncionarioConstraint;
@@ -47,9 +48,18 @@ describe('FuncionarioConstraint', () => {
 
   describe('defaultMessage', () => {
     it('should return the default error message', () => {
-      const result = constraint.defaultMessage();
+      const id = 1;
+      const args: ValidationArguments = {
+        value: id,
+        constraints: [],
+        targetName: '',
+        object: undefined,
+        property: '',
+      };
 
-      expect(result).toBe('Funcionário não encontrado');
+      const result = constraint.defaultMessage(args);
+
+      expect(result).toBe(`Funcionário "${id}" não encontrado`);
     });
   });
 });

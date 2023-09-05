@@ -14,7 +14,8 @@ export class FuncionarioConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage(_validationArguments?: ValidationArguments): string {
-    return 'Funcionário não encontrado';
+    const { value } = _validationArguments;
+    return `Funcionário "${value}" não encontrado`;
   }
 }
 

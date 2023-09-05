@@ -3,6 +3,7 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import ormConfig from './config/orm.config';
+
 import { InjectRequestInterceptor } from './interceptors/inject-request.interceptor';
 import { AllExceptionsFilter } from './exceptions/all-exceptions.filter';
 import { UsuarioModule } from './modules/usuario/usuario.module';
@@ -32,6 +33,7 @@ import { TabelaDePrecoModule } from './modules/tabela-de-preco/tabela-de-preco.m
 import { FaturaModule } from './modules/fatura/fatura.module';
 import { ImportModule } from './modules/import/import.module';
 import { ConsignacaoModule } from './modules/consignacao/consignacao.module';
+import { PedidoModule } from './modules/pedido/pedido.module';
 
 @Module({
   imports: [
@@ -58,6 +60,7 @@ import { ConsignacaoModule } from './modules/consignacao/consignacao.module';
     FormaDePagamentoModule.forRoot(),
     RomaneioModule.forRoot(),
     ConsignacaoModule.forRoot(),
+    PedidoModule.forRoot(),
     ImportModule,
   ],
   controllers: [],
