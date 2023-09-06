@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class CreateTablePedidos1693931414147 implements MigrationInterface {
-  name?: string;
-  transaction?: boolean;
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -127,7 +125,6 @@ export class CreateTablePedidos1693931414147 implements MigrationInterface {
           },
         ],
         uniques: [{ columnNames: ['id'] }],
-        indices: [{ columnNames: ['tipo'] }, { columnNames: ['romaneioOrigemId'] }, { columnNames: ['pedidoExternoId'] }],
         foreignKeys: [
           {
             columnNames: ['empresaId'],

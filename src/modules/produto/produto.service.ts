@@ -149,6 +149,10 @@ export class ProdutoService {
     return this.repository.findOne({ where: { id }, loadEagerRelations: true });
   }
 
+  async findProductWithPrice(id: number, tabelaPrecoId: number): Promise<any> {
+    return { id, tabelaPrecoId, valor: 1.99 };
+  }
+
   async update(id: number, updateDto: UpdateProdutoDto): Promise<ProdutoEntity> {
     const valueById = await this.findById(id);
     if (!valueById) {

@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProdutoService } from 'src/modules/produto/produto.service';
 
 import { ProdutoConstraint } from './is-produto.validation';
+import { ValidationArguments } from 'class-validator';
 
 describe('ProdutoConstraint', () => {
   let constraint: ProdutoConstraint;
@@ -47,9 +48,11 @@ describe('ProdutoConstraint', () => {
 
   describe('defaultMessage', () => {
     it('should return a string', () => {
-      const result = constraint.defaultMessage();
+      const validationArguments = { value: 1, constraints: [] } as ValidationArguments;
 
-      expect(typeof result).toBe('string');
+      const result = constraint.defaultMessage(validationArguments);
+
+      expect(result).toBe(`Produto "${validationArguments.value}" não encontrado`);
     });
   });
 });

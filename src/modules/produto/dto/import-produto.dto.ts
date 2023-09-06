@@ -15,9 +15,9 @@ export class ImportProdutoPrecosDto {
   tabelaDePrecoId?: number;
 
   @ApiProperty()
-  @IsNotEmpty({ message: 'O campo "preço" é obrigatório' })
-  @IsNumber({ maxDecimalPlaces: 4 }, { message: 'O campo preço deve ser um número valido e com no máximo 4 casas decimais' })
-  preco: number;
+  @IsNotEmpty({ message: 'O campo "valor" é obrigatório' })
+  @IsNumber({ maxDecimalPlaces: 4 }, { message: 'O campo valor deve ser um número valido e com no máximo 4 casas decimais' })
+  valor: number;
 }
 
 export class ImportProdutoDto {

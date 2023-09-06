@@ -41,12 +41,12 @@ export class PrecoReferenciaService {
     });
   }
 
-  async add(tabelaDePrecoId: number, { referenciaId, preco }: AddPrecoReferenciaDto): Promise<PrecoReferenciaView> {
+  async add(tabelaDePrecoId: number, { referenciaId, valor }: AddPrecoReferenciaDto): Promise<PrecoReferenciaView> {
     const operadorId = this.contextService.usuario().id;
     const { terminador } = await this.tabelaService.findById(tabelaDePrecoId);
 
     await this.repository.upsert(
-      { tabelaDePrecoId, referenciaId, preco: Math.floor(preco) + (terminador % 1), operadorId },
+      { tabelaDePrecoId, referenciaId, valor: Math.floor(valor) + (terminador % 1), operadorId },
       { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] }
     );
 

@@ -71,7 +71,7 @@ describe('ReferenceService', () => {
 
     it('should upsert a reference with precos', async () => {
       // Arrange
-      const precosDto: ImportPrecoDto[] = [{ tabelaDePrecoId: 1, referenciaId: 1, preco: 0.9 }];
+      const precosDto: ImportPrecoDto[] = [{ tabelaDePrecoId: 1, referenciaId: 1, valor: 0.9 }];
       const referenciasDto: CreateReferenciaDto[] = [{ id: 1, nome: 'reference', idExterno: '0001', marcaId: 1, precos: precosDto }];
 
       const precos = referenciasDto.filter((r) => r.precos).map((r) => r.precos);

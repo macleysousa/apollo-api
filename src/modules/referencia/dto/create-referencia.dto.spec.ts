@@ -18,8 +18,8 @@ describe('CreateReferenciaDto', () => {
     dto.composicao = 'Composição da Referencia 1';
     dto.cuidados = 'Cuidados com a Referencia 1';
     dto.precos = [
-      { tabelaDePrecoId: 1, referenciaId: 1, preco: 10.0 },
-      { tabelaDePrecoId: 1, referenciaId: 2, preco: 20.0 },
+      { tabelaDePrecoId: 1, referenciaId: 1, valor: 10.0 },
+      { tabelaDePrecoId: 1, referenciaId: 2, valor: 20.0 },
     ];
 
     const result = plainToClass(CreateReferenciaDto, dto);

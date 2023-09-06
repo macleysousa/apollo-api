@@ -34,7 +34,7 @@ describe('ReferenciaController', () => {
   describe('add', () => {
     it('should add preco referencia', async () => {
       const tabelaDePrecoId = 1;
-      const upSertPrecoReferenciaDto = { referenciaId: 1, preco: 10 };
+      const upSertPrecoReferenciaDto = { referenciaId: 1, valor: 10 };
       const precoReferenciaView = tableaDePrecoFakeRepository.findOneView();
 
       const result = await controller.add(tabelaDePrecoId, upSertPrecoReferenciaDto);

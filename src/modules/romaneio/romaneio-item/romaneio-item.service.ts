@@ -61,7 +61,7 @@ export class RomaneioItemService {
     const precoReferencia = await this.precoService.findByReferenciaId(empresa.id, estoque.referenciaId);
     if (!precoReferencia) {
       throw new BadRequestException(`Preço não encontrado para a referência ${estoque.referenciaId}`);
-    } else if (precoReferencia.preco === 0) {
+    } else if (precoReferencia.valor === 0) {
       throw new BadRequestException(`Referência ${estoque.referenciaId} com preço 00,00`);
     }
 
@@ -119,7 +119,7 @@ export class RomaneioItemService {
         }
       }
     } else if (quantidade > 0) {
-      await this.insert({ romaneioId, produtoId, quantidade, referenciaId: estoque.referenciaId, valorUnitario: precoReferencia.preco });
+      await this.insert({ romaneioId, produtoId, quantidade, referenciaId: estoque.referenciaId, valorUnitario: precoReferencia.valor });
     }
   }
 

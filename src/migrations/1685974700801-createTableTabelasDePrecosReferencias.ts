@@ -17,7 +17,7 @@ export class CreateTableTabelasDePrecosReferencias1685974700801 implements Migra
             isPrimary: true,
           },
           {
-            name: 'preco',
+            name: 'valor',
             type: 'decimal(10,4)',
             isNullable: false,
           },

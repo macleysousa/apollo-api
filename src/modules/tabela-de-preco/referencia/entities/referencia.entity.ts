@@ -15,7 +15,7 @@ export class PrecoReferencia extends BaseEntity {
 
   @ApiProperty()
   @Column('decimal')
-  preco: number;
+  valor: number;
 
   @ApiProperty()
   @Column()

@@ -23,7 +23,7 @@ export class PrecoReferenciaView extends BaseEntity {
 
   @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => parseFloat(value), to: (value) => parseFloat(value) } })
-  preco: number;
+  valor: number;
 
   @ApiProperty()
   @ViewColumn()

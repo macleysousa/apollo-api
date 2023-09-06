@@ -36,7 +36,7 @@ class TableaDePrecoFakeRepository {
       referenciaIdExterno: '0001',
       referenciaNome: 'REF 0001',
       operadorId: 1,
-      preco: 3.9,
+      valor: 3.9,
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
     });
@@ -65,7 +65,7 @@ class TableaDePrecoFakeRepository {
       referenciaIdExterno: '0001',
       referenciaNome: 'REF 0001',
       operadorId: 1,
-      preco: 3.9,
+      valor: 3.9,
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
     });

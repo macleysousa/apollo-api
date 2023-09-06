@@ -82,10 +82,10 @@ describe('PrecoReferenciaService', () => {
 
   describe('upsert', () => {
     it('should upsert the precos and return the corresponding PrecoReferenciaView entities', async () => {
-      const dto: ImportPrecoDto[] = [{ tabelaDePrecoId: 1, referenciaId: 2, preco: 10.0 }];
+      const dto: ImportPrecoDto[] = [{ tabelaDePrecoId: 1, referenciaId: 2, valor: 10.0 }];
       const operadorId = 1;
       const precos = dto.map((x) => ({ ...x, operadorId }));
-      const expected = [{ tabelaDePrecoId: 1, referenciaId: 2, preco: 10.0 }] as PrecoReferenciaView[];
+      const expected = [{ tabelaDePrecoId: 1, referenciaId: 2, valor: 10.0 }] as PrecoReferenciaView[];
 
       jest.spyOn(contextService, 'operadorId').mockReturnValue(operadorId);
       jest.spyOn(repository, 'upsert').mockResolvedValue(undefined);
@@ -103,18 +103,18 @@ describe('PrecoReferenciaService', () => {
     it('should add a new preco referencia', async () => {
       const tabelaDePrecoId = 1;
       const referenciaId = 1;
-      const preco = 3.7;
+      const valor = 3.7;
       const terminador = 0.9;
       const operadorId = 1;
       const precoReferenciaView = tableaDePrecoFakeRepository.findOneView();
 
       jest.spyOn(service, 'findByReferenciaId').mockResolvedValue(precoReferenciaView);
 
-      const result = await service.add(tabelaDePrecoId, { referenciaId, preco });
+      const result = await service.add(tabelaDePrecoId, { referenciaId, valor });
 
       expect(result).toBe(precoReferenciaView);
       expect(repository.upsert).toHaveBeenCalledWith(
-        { tabelaDePrecoId, referenciaId, preco: Math.floor(preco) + terminador, operadorId },
+        { tabelaDePrecoId, referenciaId, valor: Math.floor(valor) + terminador, operadorId },
         { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] }
       );
       expect(service.findByReferenciaId).toHaveBeenCalledWith(tabelaDePrecoId, referenciaId);

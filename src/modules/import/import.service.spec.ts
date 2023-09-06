@@ -101,7 +101,7 @@ describe('ImportService', () => {
           precos: [
             {
               tabelaDePrecoId: 1,
-              preco: 10.0,
+              valor: 10.0,
             },
           ],
         },
@@ -153,7 +153,7 @@ describe('ImportService', () => {
 
     it('should import preco referencia from CSV file', async () => {
       const files = [{ mimetype: 'text/csv' }] as any;
-      const importPrecoDto: ImportPrecoDto[] = [{ tabelaDePrecoId: 1, referenciaId: 1, preco: 10.0 }];
+      const importPrecoDto: ImportPrecoDto[] = [{ tabelaDePrecoId: 1, referenciaId: 1, valor: 10.0 }];
 
       jest.spyOn(mockParseCsv, 'parseCsvToRefereciaPreco').mockReturnValueOnce(importPrecoDto);
       jest.spyOn(mockValidateDto, 'validateDto').mockReturnValueOnce([]);
@@ -170,7 +170,7 @@ describe('ImportService', () => {
 
     it('should throw BadRequestException if any preco referencia is invalid', async () => {
       const files = [{ mimetype: 'text/csv' }] as any;
-      const importPrecoDto: ImportPrecoDto[] = [{ tabelaDePrecoId: 1, referenciaId: 1, preco: 10.0 }];
+      const importPrecoDto: ImportPrecoDto[] = [{ tabelaDePrecoId: 1, referenciaId: 1, valor: 10.0 }];
       const error = ['Error 1'] as any;
 
       jest.spyOn(mockParseCsv, 'parseCsvToRefereciaPreco').mockReturnValueOnce(importPrecoDto);

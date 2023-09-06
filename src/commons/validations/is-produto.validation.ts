@@ -19,7 +19,7 @@ export class ProdutoConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage(_validationArguments?: ValidationArguments): string {
-    return 'Produto não encontrado';
+    return `Produto "${_validationArguments.value}" não encontrado`;
   }
 }
 

@@ -168,7 +168,7 @@ describe('RomaneioItemService', () => {
       const quantidade = 10;
       const empresa = { id: 1 } as any;
       const estoque = { produtoId, referenciaId: 1, saldo: 20 } as any;
-      const precoReferencia = { preco: 0 } as any;
+      const precoReferencia = { valor: 0 } as any;
 
       jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
       jest.spyOn(service, 'findByProdutoId').mockResolvedValue([{ quantidade: 5 }] as any);
@@ -309,7 +309,7 @@ describe('RomaneioItemService', () => {
       const quantidade = 10;
       const empresa = { id: 1, data: new Date('2023-06-05') } as any;
       const estoque = { produtoId, referenciaId: 1, saldo: 20 } as any;
-      const precoReferencia = { preco: 10 } as any;
+      const precoReferencia = { valor: 10 } as any;
       const romaneioItem = [{ quantidade: 5 }] as any;
 
       jest.spyOn(contextService, 'empresa').mockReturnValueOnce(empresa);
@@ -328,7 +328,7 @@ describe('RomaneioItemService', () => {
         produtoId,
         quantidade,
         referenciaId: estoque.referenciaId,
-        valorUnitario: precoReferencia.preco,
+        valorUnitario: precoReferencia.valor,
       });
     });
   });

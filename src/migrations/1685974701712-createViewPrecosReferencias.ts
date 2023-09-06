@@ -9,7 +9,7 @@ p.id as tabelaDePrecoId,
 r.id as referenciaId,
 r.idExterno as referenciaIdExterno,
 r.nome as referenciaNome,
-ifnull(pr.preco,0) as preco,
+ifnull(pr.valor,0) as valor,
 pr.operadorId,
 pr.criadoEm,
 pr.atualizadoEm

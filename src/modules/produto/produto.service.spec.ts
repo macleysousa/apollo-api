@@ -327,7 +327,7 @@ describe('ProductService', () => {
           precos: [
             {
               tabelaDePrecoId: 1,
-              preco: 10.0,
+              valor: 10.0,
             },
           ],
         },
