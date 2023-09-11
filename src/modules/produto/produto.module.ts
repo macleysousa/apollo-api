@@ -1,15 +1,16 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ProdutoConstraint } from 'src/commons/validations/is-produto.validation';
 
-import { ProdutoService } from './produto.service';
-import { ProdutoController } from './produto.controller';
-import { ProdutoEntity } from './entities/produto.entity';
 import { CodigoBarraseModule } from './codigo-barras/codigo-barras.module';
+import { ProdutoEntity } from './entities/produto.entity';
+import { ProdutoController } from './produto.controller';
+import { ProdutoService } from './produto.service';
+import { ProdutoComPrecoView } from './views/produto-com-preco.view';
 
 @Module({
-  imports: [CodigoBarraseModule, TypeOrmModule.forFeature([ProdutoEntity])],
+  imports: [CodigoBarraseModule, TypeOrmModule.forFeature([ProdutoEntity, ProdutoComPrecoView])],
   controllers: [ProdutoController],
   providers: [ProdutoService, ProdutoConstraint],
   exports: [ProdutoService],

@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 
 import { TipoPedido, TipoPedidoType } from '../enum/tipo-pedido.enum';
 import { SituacaoPedido, SituacaoPedidoType } from '../enum/situacao-pedido.enum';
+import { PedidoItemEntity } from '../pedido-item/entities/pedido-item.entity';
 
 @Entity({ name: 'pedidos' })
 export class PedidoEntity extends BaseEntity {
@@ -91,6 +92,10 @@ export class PedidoEntity extends BaseEntity {
   @ApiProperty()
   @Column('int')
   operadorId: number;
+
+  @ApiProperty()
+  @OneToMany(() => PedidoItemEntity, (pedidoItem) => pedidoItem.pedido)
+  itens: PedidoItemEntity[];
 
   constructor(partial?: Partial<PedidoEntity>) {
     super();

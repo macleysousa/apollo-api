@@ -6,9 +6,10 @@ import { IsFuncionario } from 'src/commons/validations/is-funcionario.validation
 import { IsTabelaDePreco } from 'src/commons/validations/is-tabela-de-preco.validation';
 
 import { ModalidadeRomaneio } from '../enum/modalidade-romaneio.enum';
-import { OperacaoRomaneio } from '../enum/operacao-romaneio.enum';
+import { OperacaoRomaneio, OperacaoRomaneioType } from '../enum/operacao-romaneio.enum';
 import { IsRomaneio } from 'src/commons/validations/is-romaneio.validation';
 import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
+import { Exclude } from 'class-transformer';
 
 export class CreateRomaneioDto {
   @ApiProperty()
@@ -29,12 +30,17 @@ export class CreateRomaneioDto {
   @ApiProperty({ enum: OperacaoRomaneio, default: OperacaoRomaneio.venda })
   @IsNotEmpty()
   @IsEnum(OperacaoRomaneio)
-  operacao: OperacaoRomaneio;
+  operacao: OperacaoRomaneioType | OperacaoRomaneio;
 
   @ApiProperty({ type: Number, required: false })
   @IsOptional()
   //@IsConsigancao()
   consignacaoId?: number;
+
+  @Exclude()
+  @IsOptional()
+  //@IsPedido()
+  pedidoId?: number;
 
   @ApiProperty({ type: [Number], required: false })
   @IsOptional()

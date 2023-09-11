@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
+import { Exclude } from 'class-transformer';
+import { PedidoEntity } from '../../entities/pedido.entity';
 
 @Entity({ name: 'pedidos_itens' })
 export class PedidoItemEntity extends BaseEntity {
@@ -40,6 +42,11 @@ export class PedidoItemEntity extends BaseEntity {
   @ApiProperty()
   @Column('int')
   operadorId: number;
+
+  @Exclude()
+  @ManyToOne(() => PedidoEntity, (pedido) => pedido.id)
+  @JoinColumn({ name: 'pedidoId', referencedColumnName: 'id' })
+  pedido: PedidoEntity;
 
   constructor(partial?: Partial<PedidoItemEntity>) {
     super();

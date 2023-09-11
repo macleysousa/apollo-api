@@ -14,12 +14,15 @@ import { CreateProdutoDto } from './dto/create-produto.dto';
 import { ImportProdutoDto } from './dto/import-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';
 import { ProdutoEntity } from './entities/produto.entity';
+import { ProdutoComPrecoView } from './views/produto-com-preco.view';
 
 @Injectable()
 export class ProdutoService {
   constructor(
     @InjectRepository(ProdutoEntity)
     private repository: Repository<ProdutoEntity>,
+    @InjectRepository(ProdutoComPrecoView)
+    private viewProdutoComPreco: Repository<ProdutoComPrecoView>,
     private categoriaService: CategoriaService,
     private subCategoriaService: SubCategoriaService,
     private referenciaService: ReferenciaService,
@@ -149,8 +152,8 @@ export class ProdutoService {
     return this.repository.findOne({ where: { id }, loadEagerRelations: true });
   }
 
-  async findProductWithPrice(id: number, tabelaPrecoId: number): Promise<any> {
-    return { id, tabelaPrecoId, valor: 1.99 };
+  async findProductWithPrice(id: number, tabelaDePrecoId: number): Promise<ProdutoComPrecoView> {
+    return this.viewProdutoComPreco.findOne({ where: { produtoId: id, tabelaDePrecoId } });
   }
 
   async update(id: number, updateDto: UpdateProdutoDto): Promise<ProdutoEntity> {

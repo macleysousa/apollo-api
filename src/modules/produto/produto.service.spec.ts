@@ -17,6 +17,7 @@ import { ImportProdutoDto } from './dto/import-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';
 import { ProdutoEntity } from './entities/produto.entity';
 import { ProdutoService } from './produto.service';
+import { ProdutoComPrecoView } from './views/produto-com-preco.view';
 
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({ paginate: jest.fn().mockResolvedValue(productFakeRepository.findPaginate()) }));
@@ -24,6 +25,7 @@ jest.mock('nestjs-typeorm-paginate', () => ({ paginate: jest.fn().mockResolvedVa
 describe('ProductService', () => {
   let service: ProdutoService;
   let repository: Repository<ProdutoEntity>;
+  let viewProdutoComPreco: Repository<ProdutoComPrecoView>;
   let categoriaService: CategoriaService;
   let subCategoriaService: SubCategoriaService;
   let referenciaService: ReferenciaService;
@@ -57,6 +59,12 @@ describe('ProductService', () => {
               take: jest.fn().mockReturnThis(),
               orderBy: jest.fn().mockReturnThis(),
             }),
+          },
+        },
+        {
+          provide: getRepositoryToken(ProdutoComPrecoView),
+          useValue: {
+            findOne: jest.fn(),
           },
         },
         {
@@ -100,6 +108,7 @@ describe('ProductService', () => {
 
     service = module.get<ProdutoService>(ProdutoService);
     repository = module.get<Repository<ProdutoEntity>>(getRepositoryToken(ProdutoEntity));
+    viewProdutoComPreco = module.get<Repository<ProdutoComPrecoView>>(getRepositoryToken(ProdutoComPrecoView));
     categoriaService = module.get<CategoriaService>(CategoriaService);
     subCategoriaService = module.get<SubCategoriaService>(SubCategoriaService);
     referenciaService = module.get<ReferenciaService>(ReferenciaService);
@@ -111,6 +120,7 @@ describe('ProductService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
+    expect(viewProdutoComPreco).toBeDefined();
     expect(categoriaService).toBeDefined();
     expect(subCategoriaService).toBeDefined();
     expect(referenciaService).toBeDefined();
@@ -241,6 +251,26 @@ describe('ProductService', () => {
       expect(repository.findOne).toHaveBeenCalledWith({ where: { id }, loadEagerRelations: true });
 
       expect(result).toEqual(productFakeRepository.findOne());
+    });
+  });
+
+  describe('findProductWithPrice', () => {
+    it('should find a product with price', async () => {
+      // Arrange
+      const id = 1;
+      const tabelaDePrecoId = 1;
+      const mockResult = { produtoId: id, tabelaDePrecoId, valor: 10.0 } as ProdutoComPrecoView;
+
+      jest.spyOn(viewProdutoComPreco, 'findOne').mockResolvedValueOnce(mockResult);
+
+      // Act
+      const result = await service.findProductWithPrice(id, tabelaDePrecoId);
+
+      // Assert
+      expect(viewProdutoComPreco.findOne).toHaveBeenCalledTimes(1);
+      expect(viewProdutoComPreco.findOne).toHaveBeenCalledWith({ where: { produtoId: id, tabelaDePrecoId } });
+
+      expect(result).toEqual(mockResult);
     });
   });
 

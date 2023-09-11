@@ -108,7 +108,7 @@ describe('PedidoItemService', () => {
       const pedidoItem = { pedidoId: 1, produtoId: 1, sequencia: 1, solicitado: 2, valorUnitario: valor } as PedidoItemEntity;
 
       jest.spyOn(pedidoService, 'findById').mockResolvedValueOnce(pedido);
-      jest.spyOn(productService, 'findProductWithPrice').mockResolvedValueOnce({ valor });
+      jest.spyOn(productService, 'findProductWithPrice').mockResolvedValueOnce({ valor } as any);
       jest.spyOn(repository.createQueryBuilder(), 'getRawOne').mockResolvedValueOnce({ sequencia: 1 });
       jest.spyOn(repository, 'insert').mockResolvedValueOnce(undefined);
       jest.spyOn(repository, 'findOne').mockResolvedValueOnce(pedidoItem);

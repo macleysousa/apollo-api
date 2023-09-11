@@ -10,11 +10,15 @@ import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { PedidoEntity } from './entities/pedido.entity';
 import { PedidoFilter } from './filters/pedido.filters';
 import { PedidoService } from './pedido.service';
+import { RomaneioService } from '../romaneio/romaneio.service';
+import { EstoqueService } from '../estoque/estoque.service';
 
 describe('PedidoService', () => {
   let service: PedidoService;
   let repository: Repository<PedidoEntity>;
   let contextService: ContextService;
+  let estoqueService: EstoqueService;
+  let romanerioService: RomaneioService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -40,18 +44,34 @@ describe('PedidoService', () => {
             operadorId: jest.fn().mockReturnValue(1),
           },
         },
+        {
+          provide: EstoqueService,
+          useValue: {
+            findByProdutoIds: jest.fn(),
+          },
+        },
+        {
+          provide: RomaneioService,
+          useValue: {
+            create: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<PedidoService>(PedidoService);
     repository = module.get<Repository<PedidoEntity>>(getRepositoryToken(PedidoEntity));
     contextService = module.get<ContextService>(ContextService);
+    estoqueService = module.get<EstoqueService>(EstoqueService);
+    romanerioService = module.get<RomaneioService>(RomaneioService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
     expect(contextService).toBeDefined();
+    expect(estoqueService).toBeDefined();
+    expect(romanerioService).toBeDefined();
   });
 
   describe('create', () => {
@@ -71,7 +91,6 @@ describe('PedidoService', () => {
         ...dto,
         empresaId,
         situacao: 'em_andamento',
-        kardex: true,
         financeiro: true,
         operadorId,
       });
@@ -94,7 +113,6 @@ describe('PedidoService', () => {
         ...dto,
         empresaId,
         situacao: 'em_andamento',
-        kardex: true,
         financeiro: true,
         operadorId,
       });
@@ -117,7 +135,6 @@ describe('PedidoService', () => {
         ...dto,
         empresaId,
         situacao: 'em_andamento',
-        kardex: true,
         financeiro: false,
         operadorId,
       });

@@ -5,7 +5,7 @@ import { BaseEntity } from 'src/commons/base.entity';
 
 import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
 import { ModalidadeRomaneio } from '../enum/modalidade-romaneio.enum';
-import { OperacaoRomaneio } from '../enum/operacao-romaneio.enum';
+import { OperacaoRomaneio, OperacaoRomaneioType } from '../enum/operacao-romaneio.enum';
 
 @Entity({ name: 'romaneios' })
 export class RomaneioEntity extends BaseEntity {
@@ -43,6 +43,10 @@ export class RomaneioEntity extends BaseEntity {
 
   @ApiProperty()
   @Column('bigint')
+  pedidoId: number;
+
+  @ApiProperty()
+  @Column('bigint')
   caixaId: number;
 
   @ApiProperty()
@@ -67,7 +71,7 @@ export class RomaneioEntity extends BaseEntity {
 
   @ApiProperty({ enum: OperacaoRomaneio })
   @Column('varchar')
-  operacao: OperacaoRomaneio;
+  operacao: OperacaoRomaneioType | OperacaoRomaneio;
 
   @ApiProperty()
   @Column('simple-json')

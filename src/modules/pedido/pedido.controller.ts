@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
@@ -50,10 +50,27 @@ export class PedidoController {
     return this.service.update(id, updatePedidoDto);
   }
 
+  @Put(':id/conferir')
+  @ApiResponse({ status: 200 })
+  @ApiOperation({ summary: 'PEDFM003 - Processar conferencia do Pedido' })
+  @ApiComponent('PEDFM003', 'Processar conferencia do Pedido')
+  @ApiQuery({ name: 'processarComDivegencia', type: Boolean, required: false })
+  async conferir(@Param('id', ParseIntPipe) id: number, @Query('processarComDivegencia') processarComDivegencia: boolean): Promise<void> {
+    await this.service.conferir(id, processarComDivegencia);
+  }
+
+  @Put(':id/faturar')
+  @ApiResponse({ status: 200 })
+  @ApiOperation({ summary: 'PEDFM007 - Faturamento de Pedido' })
+  @ApiComponent('PEDFM007', 'Faturamento de Pedido')
+  async faturar(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    await this.service.faturar(id);
+  }
+
   @Put(':id/cancelar')
   @ApiResponse({ status: 200 })
-  @ApiOperation({ summary: 'PEDFM003 - Cancelamento de Pedido' })
-  @ApiComponent('PEDFM003', 'Cancelamento de Pedido')
+  @ApiOperation({ summary: 'PEDFM006 - Cancelamento de Pedido' })
+  @ApiComponent('PEDFM006', 'Cancelamento de Pedido')
   async cancel(@Param('id', ParseIntPipe) id: number, @Body() cancelPedidoDto: CancelPedidoDto): Promise<void> {
     await this.service.cancel(id, cancelPedidoDto);
   }

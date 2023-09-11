@@ -22,6 +22,8 @@ describe('PedidoController', () => {
             find: jest.fn(),
             findById: jest.fn(),
             update: jest.fn(),
+            conferir: jest.fn(),
+            faturar: jest.fn(),
             cancel: jest.fn(),
           },
         },
@@ -92,6 +94,31 @@ describe('PedidoController', () => {
 
       expect(result).toEqual(updatedPedido);
       expect(service.update).toHaveBeenCalledWith(id, updatePedidoDto);
+    });
+  });
+
+  describe(':id/conferir (PUT)', () => {
+    it('should conferir the pedido with the given id', async () => {
+      const id = 1;
+      const processarComDivegencia = true;
+
+      jest.spyOn(service, 'conferir').mockResolvedValueOnce(undefined);
+
+      await controller.conferir(id, processarComDivegencia);
+
+      expect(service.conferir).toHaveBeenCalledWith(id, processarComDivegencia);
+    });
+  });
+
+  describe(':id/faturar (PUT)', () => {
+    it('should faturar the pedido with the given id', async () => {
+      const id = 1;
+
+      jest.spyOn(service, 'faturar').mockResolvedValueOnce(undefined);
+
+      await controller.faturar(id);
+
+      expect(service.faturar).toHaveBeenCalledWith(id);
     });
   });
 

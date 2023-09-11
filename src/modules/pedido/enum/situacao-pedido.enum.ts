@@ -1,5 +1,7 @@
 export enum SituacaoPedido {
   em_andamento = 'em_andamento',
+  conferido = 'conferido',
+  faturado = 'faturado',
   encerrado = 'encerrado',
   cancelado = 'cancelado',
 }
