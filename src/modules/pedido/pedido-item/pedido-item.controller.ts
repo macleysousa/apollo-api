@@ -8,6 +8,8 @@ import { AddPedidoItemDto } from './dto/add-pedido-item.dto';
 import { RemovePedidoItemDto } from './dto/remove-pedido-item.dto';
 import { PedidoItemEntity } from './entities/pedido-item.entity';
 import { PedidoItemService } from './pedido-item.service';
+import { ConferirPedidoItemDto } from './dto/conferir-pedido-item.dto';
+import { ParseArrayPipe } from 'src/commons/pipes/parseArrayPipe.pipe';
 
 @ApiBearerAuth()
 @ApiEmpresaAuth()
@@ -38,5 +40,16 @@ export class PedidoItemController {
   @ApiComponent('PEDFM005', 'Remover de Item do Pedido')
   async remove(@Param('id', ParseIntPipe) id: number, @Body() removePedidoItemDto: RemovePedidoItemDto): Promise<void> {
     return this.service.remove(id, removePedidoItemDto);
+  }
+
+  @Put(':id/conferir')
+  @ApiResponse({ status: 200 })
+  @ApiOperation({ summary: 'PEDFM008 - Conferência de Item do Pedido' })
+  @ApiComponent('PEDFM008', 'Conferência de Item do Pedido')
+  async conferirItens(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(new ParseArrayPipe({ items: ConferirPedidoItemDto })) conferirPedidoItemDto: ConferirPedidoItemDto[]
+  ): Promise<void> {
+    return this.service.conferirItens(id, conferirPedidoItemDto);
   }
 }

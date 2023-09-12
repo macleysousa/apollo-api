@@ -20,6 +20,7 @@ describe('PedidoItemController', () => {
             add: jest.fn(),
             findByPedidoId: jest.fn(),
             remove: jest.fn(),
+            conferirItens: jest.fn(),
           },
         },
       ],
@@ -73,6 +74,19 @@ describe('PedidoItemController', () => {
       await controller.remove(id, removePedidoItemDto);
 
       expect(service.remove).toHaveBeenCalledWith(id, removePedidoItemDto);
+    });
+  });
+
+  describe(':id/conferir (PUT)', () => {
+    it('should confer the items with the given ids from the pedido with the given id', async () => {
+      const id = 1;
+      const conferirPedidoItemDto = [{ produtoId: 1, sequencia: 1, quantidade: 1 }];
+
+      jest.spyOn(service, 'conferirItens').mockResolvedValueOnce(undefined);
+
+      await controller.conferirItens(id, conferirPedidoItemDto);
+
+      expect(service.conferirItens).toHaveBeenCalledWith(id, conferirPedidoItemDto);
     });
   });
 });

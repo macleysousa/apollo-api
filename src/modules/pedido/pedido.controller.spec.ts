@@ -6,6 +6,7 @@ import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { PedidoFilter } from './filters/pedido.filters';
 import { PedidoController } from './pedido.controller';
 import { PedidoService } from './pedido.service';
+import { PedidoInclude } from './includes/pedido.include';
 
 describe('PedidoController', () => {
   let controller: PedidoController;
@@ -70,14 +71,15 @@ describe('PedidoController', () => {
   describe(':id (GET)', () => {
     it('should find the pedido with the given id', async () => {
       const id = 1;
+      const includes: PedidoInclude[] = ['itens'];
       const pedido = { id, tipo: 'venda' } as any;
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
 
-      const result = await controller.findById(id);
+      const result = await controller.findById(id, includes);
 
       expect(result).toEqual(pedido);
-      expect(service.findById).toHaveBeenCalledWith(id);
+      expect(service.findById).toHaveBeenCalledWith(id, includes);
     });
   });
 

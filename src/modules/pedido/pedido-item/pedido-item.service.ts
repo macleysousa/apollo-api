@@ -3,12 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
+import { ProdutoService } from 'src/modules/produto/produto.service';
 
 import { PedidoService } from '../pedido.service';
 import { AddPedidoItemDto } from './dto/add-pedido-item.dto';
+import { ConferirPedidoItemDto } from './dto/conferir-pedido-item.dto';
 import { RemovePedidoItemDto } from './dto/remove-pedido-item.dto';
 import { PedidoItemEntity } from './entities/pedido-item.entity';
-import { ProdutoService } from 'src/modules/produto/produto.service';
 
 @Injectable()
 export class PedidoItemService {
@@ -73,5 +74,23 @@ export class PedidoItemService {
     } else {
       await this.repository.update({ pedidoId, produtoId, sequencia }, { solicitado: item.solicitado - quantidade, operadorId });
     }
+  }
+
+  async conferirItens(pedidoId: number, dto: ConferirPedidoItemDto[]): Promise<void> {
+    const operadorId = this.contextService.operadorId();
+
+    const itens = await this.findByPedidoId(pedidoId);
+
+    const itensConferidos = dto.map((item) => {
+      const itemPedido = itens.first((i) => i.produtoId == item.produtoId && i.sequencia == item.sequencia);
+
+      if (!itemPedido) {
+        throw new BadRequestException('Um ou mais itens não foi encontrado no pedido');
+      }
+
+      return { ...itemPedido, atendido: itemPedido.atendido + item.quantidade, operadorId };
+    });
+
+    await this.repository.save(itensConferidos);
   }
 }

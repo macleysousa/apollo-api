@@ -10,6 +10,7 @@ import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { PedidoEntity } from './entities/pedido.entity';
 import { PedidoService } from './pedido.service';
 import { PedidoFilter } from './filters/pedido.filters';
+import { PedidoInclude, PedidoIncludeEnum } from './includes/pedido.include';
 
 @ApiBearerAuth()
 @ApiEmpresaAuth()
@@ -38,8 +39,9 @@ export class PedidoController {
   @ApiResponse({ status: 200, type: PedidoEntity })
   @ApiOperation({ summary: 'PEDFC002 - Consulta de Pedido' })
   @ApiComponent('PEDFC002', 'Consulta de Pedido')
-  async findById(@Param('id', ParseIntPipe) id: number): Promise<PedidoEntity> {
-    return this.service.findById(id);
+  @ApiQuery({ name: 'incluir', enum: PedidoIncludeEnum, isArray: true, required: false })
+  async findById(@Param('id', ParseIntPipe) id: number, @Query('incluir') includes: PedidoInclude[]): Promise<PedidoEntity> {
+    return this.service.findById(id, includes);
   }
 
   @Put(':id')

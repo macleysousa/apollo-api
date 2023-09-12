@@ -10,6 +10,7 @@ import { ContextService } from 'src/context/context.service';
 import { AddPedidoItemDto } from './dto/add-pedido-item.dto';
 import { RemovePedidoItemDto } from './dto/remove-pedido-item.dto';
 import { BadRequestException } from '@nestjs/common';
+import { ConferirPedidoItemDto } from './dto/conferir-pedido-item.dto';
 
 describe('PedidoItemService', () => {
   let service: PedidoItemService;
@@ -30,6 +31,7 @@ describe('PedidoItemService', () => {
             findOne: jest.fn(),
             update: jest.fn(),
             delete: jest.fn(),
+            save: jest.fn(),
             createQueryBuilder: jest.fn().mockReturnValue({
               select: jest.fn().mockReturnThis(),
               where: jest.fn().mockReturnThis(),
@@ -243,6 +245,37 @@ describe('PedidoItemService', () => {
         { pedidoId, produtoId: removePedidoItemDto.produtoId, sequencia: removePedidoItemDto.sequencia },
         { solicitado: item.solicitado - removePedidoItemDto.quantidade, operadorId }
       );
+    });
+  });
+
+  describe('conferirItens', () => {
+    it('should throw BadRequestException if one or more items are not found in the pedido', async () => {
+      const pedidoId = 1;
+      const conferirPedidoItemDto: ConferirPedidoItemDto[] = [{ produtoId: 1, sequencia: 1, quantidade: 1 }];
+      const itens = [];
+
+      jest.spyOn(service, 'findByPedidoId').mockResolvedValueOnce(itens);
+
+      await expect(service.conferirItens(pedidoId, conferirPedidoItemDto)).rejects.toThrowError(
+        'Um ou mais itens não foi encontrado no pedido'
+      );
+      expect(service.findByPedidoId).toHaveBeenCalledWith(pedidoId);
+    });
+
+    it('should update the items with the given ids from the pedido with the given id', async () => {
+      const pedidoId = 1;
+      const dto: ConferirPedidoItemDto[] = [{ produtoId: 1, sequencia: 1, quantidade: 1 }];
+      const itens = [{ id: 1, produtoId: dto[0].produtoId, sequencia: dto[0].sequencia, atendido: 0 }] as any;
+
+      jest.spyOn(service, 'findByPedidoId').mockResolvedValueOnce(itens);
+      jest.spyOn(repository, 'save').mockResolvedValueOnce(undefined);
+
+      await service.conferirItens(pedidoId, dto);
+
+      expect(service.findByPedidoId).toHaveBeenCalledWith(pedidoId);
+      expect(repository.save).toHaveBeenCalledWith([
+        { ...itens[0], atendido: itens[0].atendido + dto[0].quantidade, operadorId: expect.any(Number) },
+      ]);
     });
   });
 });
