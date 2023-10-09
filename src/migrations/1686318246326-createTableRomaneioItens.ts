@@ -137,23 +137,6 @@ export class CreateTableRomaneioItens1686318246326 implements MigrationInterface
             onUpdate: `CASCADE`,
           },
         ],
-        indices: [
-          {
-            columnNames: ['empresaId'],
-          },
-          {
-            columnNames: ['romaneioId'],
-          },
-          {
-            columnNames: ['data'],
-          },
-          {
-            columnNames: ['referenciaId'],
-          },
-          {
-            columnNames: ['produtoId'],
-          },
-        ],
       })
     );
   }
