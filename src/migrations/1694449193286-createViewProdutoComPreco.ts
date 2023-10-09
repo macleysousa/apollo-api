@@ -16,7 +16,7 @@ CREATE OR REPLACE VIEW view_produtos_com_preco AS
   t.nome as tamanhoNome,
   r.unidadeMedida as unidadeMedida,
   tp.id as tabelaDePrecoId,
-  ifnull(pr.valor,0) as valor
+  ifnull(pr.preco,0) as valor
   from produtos p
   join tabelas_de_precos tp
   inner join referencias r on r.id = p.referenciaId
