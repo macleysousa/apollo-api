@@ -16,6 +16,7 @@ import { RomaneioItemEntity } from './entities/romaneio-item.entity';
 import { RomaneioItemService } from './romaneio-item.service';
 import { RomaneioItemView } from './views/romaneio-item.view';
 import { SituacaoRomaneio, SituacaoRomaneioType } from '../enum/situacao-romaneio.enum';
+import { RomaneioView } from '../views/romaneio.view';
 
 describe('RomaneioItemService', () => {
   let service: RomaneioItemService;
@@ -145,6 +146,51 @@ describe('RomaneioItemService', () => {
       jest.spyOn(estoqueService, 'findByProdutoId').mockResolvedValue(estoque);
 
       await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw an error when consignment *consignacao_acerto* balance is insufficient', async () => {
+      const romaneioId = 1;
+      const romaneio = { ...romaneioFakeRepository.findOneView(), operacao: 'consignacao_acerto', consignacaoId: 1 } as RomaneioView;
+      const produtoId = 1;
+      const quantidade = 6;
+      const empresa = { id: 1 } as any;
+      const estoque = { produtoId, referenciaId: 1, saldo: 5 } as any;
+
+      jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
+      jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
+      jest.spyOn(service, 'findByProdutoId').mockResolvedValueOnce(undefined);
+      jest.spyOn(estoqueService, 'findByProdutoId').mockResolvedValue(estoque);
+      jest.spyOn(service, 'findByConsignacaoIds').mockResolvedValue([{ quantidade: 4, devolvido: 0 }] as any);
+
+      await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrowError(
+        `Saldo em consignação insuficiente para o produto "${produtoId}"`
+      );
+    });
+
+    it('should throw an error when consignment *consignacao_devolucao* balance is insufficient', async () => {
+      const romaneioId = 1;
+
+      const romaneio = {
+        ...romaneioFakeRepository.findOneView(),
+        modalidade: 'entrada',
+        operacao: 'consignacao_devolucao',
+        consignacaoId: 1,
+      } as RomaneioView;
+
+      const produtoId = 1;
+      const quantidade = 6;
+      const empresa = { id: 1 } as any;
+      const estoque = { produtoId, referenciaId: 1, saldo: 5 } as any;
+
+      jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
+      jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
+      jest.spyOn(service, 'findByProdutoId').mockResolvedValueOnce(undefined);
+      jest.spyOn(estoqueService, 'findByProdutoId').mockResolvedValue(estoque);
+      jest.spyOn(service, 'findByConsignacaoIds').mockResolvedValue(undefined);
+
+      await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrowError(
+        `Saldo em consignação insuficiente para o produto "${produtoId}"`
+      );
     });
 
     it('should throw an error when price is not found for the reference', async () => {

@@ -12,6 +12,7 @@ import { RomaneioService } from '../romaneio.service';
 import { AddRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
 import { RomaneioItemEntity } from './entities/romaneio-item.entity';
 import { RomaneioItemView } from './views/romaneio-item.view';
+import { OperacaoRomaneio } from '../enum/operacao-romaneio.enum';
 
 interface InsertDto {
   romaneioId: number;
@@ -49,13 +50,23 @@ export class RomaneioItemService {
     }
 
     const romaneioItem = await this.findByProdutoId(romaneioId, produtoId);
-    const romaneioItemQuantidade = romaneioItem?.sum((x) => x.quantidade) ?? 0;
+    const quantidadeItem = romaneioItem?.sum((x) => x.quantidade) ?? 0;
 
     const estoque = await this.estoqueService.findByProdutoId(empresa.id, produtoId);
+    const saldoDisponivel = (estoque?.saldo ?? 0) - quantidadeItem;
     if (!estoque) {
       throw new BadRequestException('Produto não encontrado em estoque');
-    } else if (estoque.saldo < quantidade + romaneioItemQuantidade && romaneio.modalidade == ModalidadeRomaneio.saida) {
+    } else if (quantidade > saldoDisponivel && romaneio.modalidade == 'saida' && romaneio.operacao != 'consignacao_acerto') {
       throw new BadRequestException(`Saldo em estoque insuficiente para o produto ${produtoId}`);
+    }
+
+    if (romaneio.operacao == 'consignacao_acerto' || romaneio.operacao == 'consignacao_devolucao') {
+      const consignacaoItems = await this.findByConsignacaoIds([romaneio.consignacaoId], [produtoId], ['encerrado']);
+      const quantidadeConsignacaoItem = consignacaoItems?.sum((x) => x.quantidade - x.devolvido) ?? 0;
+
+      if (quantidadeItem + quantidade > quantidadeConsignacaoItem) {
+        throw new BadRequestException(`Saldo em consignação insuficiente para o produto "${produtoId}"`);
+      }
     }
 
     const precoReferencia = await this.precoService.findByReferenciaId(empresa.id, estoque.referenciaId);

@@ -4,8 +4,8 @@ import { JoinColumn, OneToMany, ViewColumn, ViewEntity } from 'typeorm';
 import { BaseView } from 'src/commons/base.view';
 import { TipoFrete } from 'src/commons/enum/tipo-frete';
 
-import { ModalidadeRomaneio } from '../enum/modalidade-romaneio.enum';
-import { OperacaoRomaneio } from '../enum/operacao-romaneio.enum';
+import { ModalidadeRomaneio, ModalidadeRomaneioType } from '../enum/modalidade-romaneio.enum';
+import { OperacaoRomaneio, OperacaoRomaneioType } from '../enum/operacao-romaneio.enum';
 import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
 import { RomaneioItemView } from '../romaneio-item/views/romaneio-item.view';
 
@@ -45,11 +45,11 @@ export class RomaneioView extends BaseView {
 
   @ApiProperty({ enum: ModalidadeRomaneio })
   @ViewColumn()
-  modalidade: ModalidadeRomaneio;
+  modalidade: ModalidadeRomaneioType | ModalidadeRomaneio;
 
   @ApiProperty({ enum: OperacaoRomaneio })
   @ViewColumn()
-  operacao: OperacaoRomaneio;
+  operacao: OperacaoRomaneioType | OperacaoRomaneio;
 
   @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => JSON.parse(value), to: (value) => JSON.parse(value) } })
