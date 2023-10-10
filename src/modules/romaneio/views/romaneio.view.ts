@@ -52,8 +52,12 @@ export class RomaneioView extends BaseView {
   operacao: OperacaoRomaneioType | OperacaoRomaneio;
 
   @ApiProperty()
-  @ViewColumn({ transformer: { from: (value) => JSON.parse(value), to: (value) => JSON.parse(value) } })
+  @ViewColumn({ transformer: { from: (value) => JSON.parse(value ?? '[]'), to: (value) => JSON.parse(value) } })
   romaneiosDevolucao: number[];
+
+  @ApiProperty()
+  @ViewColumn({ transformer: { from: (value) => JSON.parse(value ?? '[]'), to: (value) => JSON.parse(value) } })
+  romaneiosConsignacao: number[];
 
   @ApiProperty({ enum: SituacaoRomaneio })
   @ViewColumn()

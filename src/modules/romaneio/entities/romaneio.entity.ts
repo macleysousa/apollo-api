@@ -77,6 +77,10 @@ export class RomaneioEntity extends BaseEntity {
   @Column('simple-json')
   romaneiosDevolucao: number[];
 
+  @ApiProperty()
+  @Column('simple-json')
+  romaneiosConsignacao: number[];
+
   @ApiProperty({ enum: SituacaoRomaneio })
   @Column('varchar')
   situacao: SituacaoRomaneio;

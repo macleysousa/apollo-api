@@ -95,13 +95,13 @@ export class ReceberService {
         throw new BadRequestException('Operação não implementada');
 
       case OperacaoRomaneio.venda:
-        const valorRomaneio = romaneio.valorLiquido + (romaneio.tipoFrete == TipoFrete.FOB ? romaneio.valorFrete : 0);
+        const valorRomaneioVenda = romaneio.valorLiquido + (romaneio.tipoFrete == TipoFrete.FOB ? romaneio.valorFrete : 0);
 
         if (!romaneioDto.formasDePagamento) {
           throw new BadRequestException('Nenhuma forma de pagamento informada');
         } else if (romaneio.situacao != SituacaoRomaneio.em_andamento) {
           throw new BadRequestException('Romaneio não está em andamento');
-        } else if (valorRomaneio > romaneioDto.formasDePagamento.sum((x) => x.valor)) {
+        } else if (valorRomaneioVenda > romaneioDto.formasDePagamento.sum((x) => x.valor)) {
           throw new BadRequestException('O valor pago é insuficiente para encerrar o romaneio');
         }
         recebimento = { pessoaId: romaneio.pessoaId, valor: romaneio.valorLiquido, romaneioId: romaneio.romaneioId };
@@ -164,11 +164,13 @@ export class ReceberService {
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
       case OperacaoRomaneio.consignacao_acerto:
+        const valorRomaneioAcerto = romaneio.valorLiquido + (romaneio.tipoFrete == TipoFrete.FOB ? romaneio.valorFrete : 0);
+
         if (!romaneioDto.formasDePagamento) {
           throw new BadRequestException('Nenhuma forma de pagamento informada');
         } else if (romaneio.situacao != SituacaoRomaneio.em_andamento) {
           throw new BadRequestException('Romaneio não está em andamento');
-        } else if (valorRomaneio > romaneioDto.formasDePagamento.sum((x) => x.valor)) {
+        } else if (valorRomaneioAcerto > romaneioDto.formasDePagamento.sum((x) => x.valor)) {
           throw new BadRequestException('O valor pago é insuficiente para encerrar o romaneio');
         }
 

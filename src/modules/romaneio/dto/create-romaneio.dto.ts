@@ -47,4 +47,10 @@ export class CreateRomaneioDto {
   @IsRomaneio(SituacaoRomaneio.encerrado, { each: true })
   @ArrayMinSize(1, { message: 'Deve haver pelo menos um romaneio de devolução' })
   romaneiosDevolucao?: number[];
+
+  @ApiProperty({ type: [Number], required: false })
+  @IsOptional()
+  @IsRomaneio(SituacaoRomaneio.encerrado, { each: true })
+  @ArrayMinSize(1, { message: 'Deve haver pelo menos um romaneio de saída em consignação' })
+  romaneiosConsignacao?: number[];
 }
