@@ -149,7 +149,7 @@ export class ReceberService {
         const consignacao = await this.consignacaoService.findById(empresa.id, romaneio.consignacaoId, ['itens']);
         if (!consignacao) {
           throw new BadRequestException('Consignação não encontrada');
-        } else if (consignacao.situacao != 'aberta') {
+        } else if (consignacao.situacao != 'em_andamento') {
           throw new BadRequestException('Consignação não está em andamento');
         }
 

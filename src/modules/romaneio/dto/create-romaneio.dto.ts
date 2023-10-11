@@ -10,6 +10,7 @@ import { OperacaoRomaneio, OperacaoRomaneioType } from '../enum/operacao-romanei
 import { IsRomaneio } from 'src/commons/validations/is-romaneio.validation';
 import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
 import { Exclude } from 'class-transformer';
+import { IsConsigancao } from 'src/commons/validations/is-consignacao.validation';
 
 export class CreateRomaneioDto {
   @ApiProperty()
@@ -34,7 +35,7 @@ export class CreateRomaneioDto {
 
   @ApiProperty({ type: Number, required: false })
   @IsOptional()
-  //@IsConsigancao()
+  @IsConsigancao({ situacao: ['em_andamento'] })
   consignacaoId?: number;
 
   @Exclude()
@@ -44,13 +45,13 @@ export class CreateRomaneioDto {
 
   @ApiProperty({ type: [Number], required: false })
   @IsOptional()
-  @IsRomaneio(SituacaoRomaneio.encerrado, { each: true })
+  @IsRomaneio({ situacao: ['encerrado'], modalidade: ['saida'] }, { each: true })
   @ArrayMinSize(1, { message: 'Deve haver pelo menos um romaneio de devolução' })
   romaneiosDevolucao?: number[];
 
   @ApiProperty({ type: [Number], required: false })
   @IsOptional()
-  @IsRomaneio(SituacaoRomaneio.encerrado, { each: true })
+  @IsRomaneio({ situacao: ['encerrado'], operacao: ['consignacao_saida'] }, { each: true })
   @ArrayMinSize(1, { message: 'Deve haver pelo menos um romaneio de saída em consignação' })
   romaneiosConsignacao?: number[];
 }

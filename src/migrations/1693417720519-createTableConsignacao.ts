@@ -61,7 +61,7 @@ export class CreateTableConsignacao1693417720519 implements MigrationInterface {
           {
             name: 'situacao',
             type: 'varchar',
-            default: "'aberta'",
+            default: "'em_andamento'",
           },
           {
             name: 'motivoCancelamento',

@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } from 'class-validator';
 import { ValidatorConstraint, ValidationArguments } from 'class-validator';
+import { ModalidadeRomaneioType } from 'src/modules/romaneio/enum/modalidade-romaneio.enum';
+import { OperacaoRomaneioType } from 'src/modules/romaneio/enum/operacao-romaneio.enum';
 
-import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
+import { SituacaoRomaneio, SituacaoRomaneioType } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
 import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
 
 @Injectable()
@@ -12,14 +14,21 @@ export class RomaneioConstraint implements ValidatorConstraintInterface {
   constructor(private readonly service: RomaneioService) {}
 
   async validate(value: number, args?: ValidationArguments): Promise<boolean> {
-    const [situacao] = args.constraints;
+    const [options] = args.constraints as [options];
+
     const romaneio = await this.service.findById(undefined, value);
 
     if (!romaneio) {
       this.messageError = 'Romaneio não encontrado';
       return false;
-    } else if (situacao && romaneio.situacao !== situacao) {
-      this.messageError = `Romaneio ${value} não está com a situação ${situacao}`;
+    } else if (options.situacao && !options.situacao.includes(romaneio.situacao)) {
+      this.messageError = `Romaneio ${value} não está com uma situação válida: ${options.situacao.join(', ')}`;
+      return false;
+    } else if (options.modalidade && !options.modalidade.includes(romaneio.modalidade)) {
+      this.messageError = `Romaneio ${value} não está com uma modalidade válida: ${options.modalidade.join(', ')}`;
+      return false;
+    } else if (options.operacao && !options.operacao.includes(romaneio.operacao)) {
+      this.messageError = `Romaneio ${value} não está com uma operação válida: ${options.operacao.join(', ')}`;
       return false;
     }
 
@@ -31,13 +40,19 @@ export class RomaneioConstraint implements ValidatorConstraintInterface {
   }
 }
 
-export const IsRomaneio = (situacao?: SituacaoRomaneio, validationOptions?: ValidationOptions) => {
+interface options {
+  situacao?: SituacaoRomaneioType[];
+  modalidade?: ModalidadeRomaneioType[];
+  operacao?: OperacaoRomaneioType[];
+}
+
+export const IsRomaneio = (options?: options, validationOptions?: ValidationOptions) => {
   return (object: unknown, propertyName: string) => {
     registerDecorator({
       target: object.constructor,
       propertyName,
       options: validationOptions,
-      constraints: [situacao, object],
+      constraints: [options, object],
       validator: RomaneioConstraint,
     });
   };

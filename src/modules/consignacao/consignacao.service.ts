@@ -33,12 +33,12 @@ export class ConsignacaoService {
     const empresaId = this.contextService.empresaId();
     const dataAbertura = this.contextService.data();
 
-    const pessoaConsignacao = await this.find({ empresaIds: [empresaId], pessoaIds: [dto.pessoaId], situacoes: ['aberta'] });
+    const pessoaConsignacao = await this.find({ empresaIds: [empresaId], pessoaIds: [dto.pessoaId], situacoes: ['em_andamento'] });
     if (pessoaConsignacao?.length > 0) {
       throw new BadRequestException('Já existe uma consignação aberta para esta pessoa');
     }
 
-    const consignacao = await this.repository.save({ ...dto, empresaId, dataAbertura, operadorId, situacao: 'aberta' });
+    const consignacao = await this.repository.save({ ...dto, empresaId, dataAbertura, operadorId, situacao: 'em_andamento' });
 
     return this.findById(empresaId, consignacao.id);
   }
@@ -110,7 +110,7 @@ export class ConsignacaoService {
     const operadorId = this.contextService.operadorId();
     const consignacao = await this.findById(empresaId, id);
 
-    if (consignacao.situacao !== 'aberta') {
+    if (consignacao.situacao !== 'em_andamento') {
       throw new BadRequestException('Consignação não está com situação "aberta"');
     }
 
@@ -124,20 +124,20 @@ export class ConsignacaoService {
 
     const consignacao = await this.findById(empresaId, id);
 
-    if (consignacao.situacao !== 'aberta') {
+    if (consignacao.situacao !== 'em_andamento') {
       throw new BadRequestException('Consignação não está com situação "aberta"');
     } else if (consignacao.pendente > 0) {
       throw new BadRequestException('Consignação possui itens pendentes');
     }
 
-    await this.repository.update({ empresaId, id }, { situacao: 'fechada', operadorId });
+    await this.repository.update({ empresaId, id }, { situacao: 'encerrada', operadorId });
   }
 
   async cancel(empresaId: number, id: number, { motivoCancelamento }: CancelConsinacaoDto): Promise<void> {
     const operadorId = this.contextService.operadorId();
     const consignacao = await this.findById(empresaId, id);
 
-    if (consignacao.situacao !== 'aberta') {
+    if (consignacao.situacao !== 'em_andamento') {
       throw new BadRequestException('Consignação não está com situação "aberta"');
     } else if (consignacao.pendente > 0) {
       throw new BadRequestException('Consignação possui itens pendentes');
