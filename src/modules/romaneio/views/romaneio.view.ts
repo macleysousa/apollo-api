@@ -73,6 +73,10 @@ export class RomaneioView extends BaseView {
 
   @ApiProperty()
   @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
+  pedidoId: number;
+
+  @ApiProperty()
+  @ViewColumn({ transformer: { from: (value) => Number(value), to: (value) => value } })
   caixaId: number;
 
   @ApiProperty()

@@ -1,11 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
 
 import { EstoqueService } from '../estoque/estoque.service';
-import { RomaneioItemService } from '../romaneio/romaneio-item/romaneio-item.service';
 import { RomaneioService } from '../romaneio/romaneio.service';
 import { CancelPedidoDto } from './dto/cancel-pedido.dto';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
@@ -19,8 +18,11 @@ export class PedidoService {
   constructor(
     @InjectRepository(PedidoEntity)
     private readonly repository: Repository<PedidoEntity>,
+    @Inject(forwardRef(() => ContextService))
     private readonly contextService: ContextService,
+    @Inject(forwardRef(() => EstoqueService))
     private readonly estoqueService: EstoqueService,
+    @Inject(forwardRef(() => RomaneioService))
     private readonly romaneioService: RomaneioService
   ) {}
 
@@ -108,6 +110,18 @@ export class PedidoService {
     await this.repository.update({ id }, { situacao: 'conferido', operadorId });
   }
 
+  async cancelarConferencia(id: number): Promise<void> {
+    const operadorId = this.contextService.operadorId();
+
+    const pedido = await this.findById(id);
+
+    if (pedido.situacao != 'conferido') {
+      throw new BadRequestException('Não é possível cancelar a conferência de um pedido que não esteja situação "conferido"');
+    }
+
+    await this.repository.save({ ...pedido, situacao: 'em_andamento', operadorId });
+  }
+
   async faturar(id: number): Promise<void> {
     const operadorId = this.contextService.operadorId();
     const empresaId = this.contextService.empresaId();
@@ -162,7 +176,33 @@ where i.pedidoId = ${id} and i.atendido > 0)
       `
     );
 
-    await this.repository.update({ id }, { situacao: 'encerrado', romaneioOrigemId: romaneio.romaneioId, operadorId });
+    if (pedido.tipo == 'transferencia_saida') {
+      pedido.romaneioOrigemId = romaneio.romaneioId;
+    } else if (pedido.tipo == 'transferencia_entrada') {
+      pedido.romaneioDestinoId = romaneio.romaneioId;
+    }
+
+    await this.repository.save({ ...pedido, situacao: 'encerrado', operadorId });
+  }
+
+  async cancelarFaturamento(id: number): Promise<void> {
+    const operadorId = this.contextService.operadorId();
+
+    const pedido = await this.findById(id);
+
+    if (pedido.situacao != 'encerrado') {
+      throw new BadRequestException('Não é possível cancelar o faturamento de um pedido que não esteja encerrado');
+    } else if (pedido.tipo == 'transferencia_saida' && pedido.romaneioOrigemId) {
+      throw new BadRequestException('Não é possível cancelar o faturamento de um pedido que já foi recebido no destino');
+    }
+
+    if (pedido.tipo == 'venda' || pedido.tipo == 'transferencia_saida') {
+      pedido.romaneioOrigemId = null;
+    } else if (pedido.tipo == 'compra' || pedido.tipo == 'transferencia_entrada') {
+      pedido.romaneioDestinoId = null;
+    }
+
+    await this.repository.save({ ...pedido, situacao: 'conferido', operadorId });
   }
 
   async cancel(id: number, dto: CancelPedidoDto): Promise<void> {
@@ -170,8 +210,8 @@ where i.pedidoId = ${id} and i.atendido > 0)
 
     const pedido = await this.findById(id);
 
-    if (pedido.romaneioDestinoId) {
-      throw new BadRequestException('Não é possível cancelar um pedido que já foi transferido');
+    if (pedido.situacao == 'encerrado') {
+      throw new BadRequestException('Não é possível cancelar um pedido que está com situação "encerrado"');
     }
 
     await this.repository.update({ id }, { situacao: 'cancelado', motivoCancelamento: dto.motivoCancelamento, operadorId });

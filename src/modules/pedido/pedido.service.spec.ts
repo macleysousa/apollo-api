@@ -303,6 +303,37 @@ describe('PedidoService', () => {
     });
   });
 
+  describe('cancelarConferencia', () => {
+    it('should throw BadRequestException if pedido is not in "conferido" status', async () => {
+      const id = 1;
+      const pedido = { id, situacao: 'cancelado' } as PedidoEntity;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
+
+      await expect(service.cancelarConferencia(id)).rejects.toThrowError(
+        'Não é possível cancelar a conferência de um pedido que não esteja situação "conferido"'
+      );
+
+      expect(service.findById).toHaveBeenCalledWith(id);
+    });
+
+    it('should cancelarConferencia the pedido with the given id', async () => {
+      const id = 1;
+      const operadorId = 1;
+      const pedido = { id, situacao: 'conferido' } as PedidoEntity;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
+      jest.spyOn(contextService, 'operadorId').mockReturnValueOnce(operadorId);
+      jest.spyOn(repository, 'save').mockResolvedValueOnce(undefined);
+
+      await service.cancelarConferencia(id);
+
+      expect(service.findById).toHaveBeenCalledWith(id);
+      expect(contextService.operadorId).toHaveBeenCalled();
+      expect(repository.save).toHaveBeenCalledWith({ ...pedido, situacao: 'em_andamento', operadorId });
+    });
+  });
+
   describe('faturar', () => {
     it('should throw BadRequestException if pedido is in "faturado" status', async () => {
       const id = 1;
@@ -370,14 +401,22 @@ describe('PedidoService', () => {
       expect(estoqueService.findByProdutoIds).toHaveBeenCalledWith(1, [1]);
     });
 
-    it('should faturar the pedido with the given id', async () => {
+    it('should faturar the pedido type "transferencia_saida"', async () => {
       const id = 1;
       const operadorId = 1;
-      const pedido = new PedidoEntity({ id, pessoaId: 10, tabelaPrecoId: 3, tipo: 'compra', situacao: 'conferido' });
+      const pedido = new PedidoEntity({
+        id,
+        pessoaId: 10,
+        tabelaPrecoId: 3,
+        tipo: 'transferencia_saida',
+        situacao: 'conferido',
+        itens: [{ produtoId: 1, solicitado: 2, atendido: 2 }] as any,
+      });
+      const estoque = [{ produtoId: 1, saldo: 2 }] as EstoqueView[];
       const romaneio = { romaneioId: 999 } as any;
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
-      jest.spyOn(contextService, 'operadorId').mockReturnValueOnce(operadorId);
+      jest.spyOn(estoqueService, 'findByProdutoIds').mockResolvedValueOnce(estoque);
       jest.spyOn(romaneioService, 'create').mockResolvedValueOnce(romaneio);
       jest.spyOn(repository, 'update').mockResolvedValueOnce(undefined);
       jest.spyOn(repository, 'query').mockResolvedValueOnce(undefined);
@@ -385,7 +424,7 @@ describe('PedidoService', () => {
       await service.faturar(id);
 
       expect(service.findById).toHaveBeenCalledWith(id, ['itens']);
-      expect(contextService.operadorId).toHaveBeenCalled();
+      expect(estoqueService.findByProdutoIds).toHaveBeenCalled();
       expect(romaneioService.create).toHaveBeenCalledWith({
         pessoaId: pedido.pessoaId,
         tabelaPrecoId: pedido.tabelaPrecoId,
@@ -403,7 +442,139 @@ inner join produtos p on p.id = i.produtoId
 where i.pedidoId = ${id} and i.atendido > 0)
       `
       );
-      expect(repository.update).toHaveBeenCalledWith({ id }, { situacao: 'encerrado', romaneioOrigemId: romaneio.romaneioId, operadorId });
+      expect(repository.save).toHaveBeenCalledWith({ ...pedido, situacao: 'encerrado', operadorId });
+    });
+
+    it('should faturar the pedido type "transferencia_entrada"', async () => {
+      const id = 1;
+      const operadorId = 1;
+      const pedido = new PedidoEntity({
+        id,
+        pessoaId: 10,
+        tabelaPrecoId: 3,
+        tipo: 'transferencia_entrada',
+        situacao: 'conferido',
+        itens: [{ produtoId: 1, solicitado: 2, atendido: 2 }] as any,
+      });
+      const romaneio = { romaneioId: 999 } as any;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
+      jest.spyOn(romaneioService, 'create').mockResolvedValueOnce(romaneio);
+      jest.spyOn(repository, 'update').mockResolvedValueOnce(undefined);
+      jest.spyOn(repository, 'query').mockResolvedValueOnce(undefined);
+
+      await service.faturar(id);
+
+      expect(service.findById).toHaveBeenCalledWith(id, ['itens']);
+      expect(estoqueService.findByProdutoIds).not.toHaveBeenCalled();
+      expect(romaneioService.create).toHaveBeenCalledWith({
+        pessoaId: pedido.pessoaId,
+        tabelaPrecoId: pedido.tabelaPrecoId,
+        funcionarioId: operadorId,
+        operacao: pedido.tipo,
+        pedidoId: pedido.id,
+      });
+      expect(repository.query).toHaveBeenCalledWith(
+        `
+insert into romaneios_itens (empresaId, romaneioId, data, sequencia, referenciaId, produtoId, quantidade, valorUnitario, valorUnitDesconto, operadorId)
+(select i.empresaId, ${romaneio.romaneioId}, e.data, i.sequencia, p.referenciaId, i.produtoId, i.atendido, i.valorUnitario, i.valorUnitDesconto, i.operadorId
+from pedidos_itens i
+inner join empresas e on e.id = i.empresaId
+inner join produtos p on p.id = i.produtoId
+where i.pedidoId = ${id} and i.atendido > 0)
+      `
+      );
+      expect(repository.save).toHaveBeenCalledWith({ ...pedido, situacao: 'encerrado', operadorId });
+    });
+
+    it('should faturar the pedido', async () => {
+      const id = 1;
+      const operadorId = 1;
+      const pedido = new PedidoEntity({ id, pessoaId: 10, tabelaPrecoId: 3, tipo: 'compra', situacao: 'conferido' });
+      const romaneio = { romaneioId: 999 } as any;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
+      jest.spyOn(romaneioService, 'create').mockResolvedValueOnce(romaneio);
+      jest.spyOn(repository, 'update').mockResolvedValueOnce(undefined);
+      jest.spyOn(repository, 'query').mockResolvedValueOnce(undefined);
+
+      await service.faturar(id);
+
+      expect(service.findById).toHaveBeenCalledWith(id, ['itens']);
+      expect(romaneioService.create).toHaveBeenCalledWith({
+        pessoaId: pedido.pessoaId,
+        tabelaPrecoId: pedido.tabelaPrecoId,
+        funcionarioId: operadorId,
+        operacao: pedido.tipo,
+        pedidoId: pedido.id,
+      });
+      expect(repository.query).toHaveBeenCalledWith(
+        `
+insert into romaneios_itens (empresaId, romaneioId, data, sequencia, referenciaId, produtoId, quantidade, valorUnitario, valorUnitDesconto, operadorId)
+(select i.empresaId, ${romaneio.romaneioId}, e.data, i.sequencia, p.referenciaId, i.produtoId, i.atendido, i.valorUnitario, i.valorUnitDesconto, i.operadorId
+from pedidos_itens i
+inner join empresas e on e.id = i.empresaId
+inner join produtos p on p.id = i.produtoId
+where i.pedidoId = ${id} and i.atendido > 0)
+      `
+      );
+      expect(repository.save).toHaveBeenCalledWith({ ...pedido, situacao: 'encerrado', operadorId });
+    });
+  });
+
+  describe('cancelarFaturamento', () => {
+    it('should throw BadRequestException if pedido is not in "encerrado" status', async () => {
+      const id = 1;
+      const pedido = { id, situacao: 'cancelado' } as PedidoEntity;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
+
+      await expect(service.cancelarFaturamento(id)).rejects.toThrowError(
+        'Não é possível cancelar o faturamento de um pedido que não esteja encerrado'
+      );
+
+      expect(service.findById).toHaveBeenCalledWith(id);
+    });
+
+    it('should throw BadRequestException if pedido type "transferencia_saida" already received at destination', async () => {
+      const id = 1;
+      const pedido = { id, situacao: 'encerrado', tipo: 'transferencia_saida', romaneioOrigemId: 55 } as PedidoEntity;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
+
+      await expect(service.cancelarFaturamento(id)).rejects.toThrowError(
+        'Não é possível cancelar o faturamento de um pedido que já foi recebido no destino'
+      );
+
+      expect(service.findById).toHaveBeenCalledWith(id);
+    });
+
+    it('should cancelarFaturamento the pedido type "transferencia_saida"', async () => {
+      const id = 1;
+      const operadorId = 1;
+      const pedido = { id, situacao: 'encerrado', tipo: 'transferencia_saida' } as PedidoEntity;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
+      jest.spyOn(repository, 'save').mockResolvedValueOnce(undefined);
+
+      await service.cancelarFaturamento(id);
+
+      expect(service.findById).toHaveBeenCalledWith(id);
+      expect(repository.save).toHaveBeenCalledWith({ ...pedido, situacao: 'conferido', operadorId });
+    });
+
+    it('should cancelarFaturamento the pedido type "transferencia_entrada"', async () => {
+      const id = 1;
+      const operadorId = 1;
+      const pedido = { id, situacao: 'encerrado', tipo: 'transferencia_entrada' } as PedidoEntity;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
+      jest.spyOn(repository, 'save').mockResolvedValueOnce(undefined);
+
+      await service.cancelarFaturamento(id);
+
+      expect(service.findById).toHaveBeenCalledWith(id);
+      expect(repository.save).toHaveBeenCalledWith({ ...pedido, situacao: 'conferido', operadorId });
     });
   });
 
@@ -411,11 +582,11 @@ where i.pedidoId = ${id} and i.atendido > 0)
     it('should throw BadRequestException if pedido is not in "em_andamento" status', async () => {
       const id = 1;
       const dto: CancelPedidoDto = { motivoCancelamento: 'Produto indisponível' };
-      const pedido = { id, romaneioDestinoId: 2 } as PedidoEntity;
+      const pedido = { id, situacao: 'encerrado' } as PedidoEntity;
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
 
-      await expect(service.cancel(id, dto)).rejects.toThrowError('Não é possível cancelar um pedido que já foi transferido');
+      await expect(service.cancel(id, dto)).rejects.toThrowError('Não é possível cancelar um pedido que está com situação "encerrado"');
 
       expect(service.findById).toHaveBeenCalledWith(id);
     });

@@ -16,6 +16,7 @@ import { SituacaoRomaneio } from './enum/situacao-romaneio.enum';
 import { RomaneioFilter } from './filters/romaneio.filter';
 import { RomaneioInclude } from './includes/romaneio.include';
 import { RomaneioView } from './views/romaneio.view';
+import { PedidoService } from '../pedido/pedido.service';
 
 @Injectable()
 export class RomaneioService {
@@ -24,9 +25,12 @@ export class RomaneioService {
     private readonly repository: Repository<RomaneioEntity>,
     @InjectRepository(RomaneioView)
     private readonly view: Repository<RomaneioView>,
+    @Inject(forwardRef(() => ContextService))
+    private readonly contextService: ContextService,
     @Inject(forwardRef(() => ConsignacaoService))
     private readonly consignacaoService: ConsignacaoService,
-    private readonly contextService: ContextService
+    @Inject(forwardRef(() => PedidoService))
+    private readonly pedidoService: PedidoService
   ) {}
 
   async create(dto: CreateRomaneioDto): Promise<RomaneioView> {
@@ -35,16 +39,18 @@ export class RomaneioService {
     const parametro = this.contextService.parametros();
 
     if (dto.operacao == OperacaoRomaneio.consignacao_saida && !dto.consignacaoId) {
-      throw new BadRequestException('Romaneio de consignação não informado');
+      throw new BadRequestException('Consignação não informada');
     } else if (dto.operacao == OperacaoRomaneio.consignacao_devolucao && !dto.consignacaoId) {
-      throw new BadRequestException('Romaneio de consignação não informado');
+      throw new BadRequestException('Consignação não informada');
     } else if (dto.operacao == OperacaoRomaneio.consignacao_acerto && !dto.consignacaoId) {
-      throw new BadRequestException('Romaneio de consignação não informado');
+      throw new BadRequestException('Consignação não informada');
+    } else if (dto.operacao == OperacaoRomaneio.consignacao_devolucao && !dto.romaneiosConsignacao) {
+      throw new BadRequestException('Romaneios de consignação saída não informados');
+    } else if (dto.operacao == OperacaoRomaneio.consignacao_acerto && !dto.romaneiosConsignacao) {
+      throw new BadRequestException('Romaneios de consignação saída não informados');
     } else if (dto.operacao == OperacaoRomaneio.compra_devolucao && !dto.romaneiosDevolucao) {
       throw new BadRequestException('Romaneios de devolução não informados');
     } else if (dto.operacao == OperacaoRomaneio.venda_devolucao && !dto.romaneiosDevolucao) {
-      throw new BadRequestException('Romaneios de devolução não informados');
-    } else if (dto.operacao == OperacaoRomaneio.consignacao_devolucao && !dto.romaneiosDevolucao) {
       throw new BadRequestException('Romaneios de devolução não informados');
     } else if (dto.operacao == OperacaoRomaneio.transferencia_devolucao && !dto.romaneiosDevolucao) {
       throw new BadRequestException('Romaneios de devolução não informados');
@@ -263,6 +269,13 @@ export class RomaneioService {
 
     const romaneio = await this.findById(empresaId, id);
 
+    if (romaneio.pedidoId) {
+      const pedido = await this.pedidoService.findById(romaneio.pedidoId);
+      if (pedido.tipo == 'transferencia_saida' && pedido.romaneioDestinoId) {
+        throw new BadRequestException('Não é possível cancelar um romaneio de transferência que já foi recebido no destino');
+      }
+    }
+
     await this.repository.update({ id }, { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId }).catch(() => {
       throw new BadRequestException('Não foi possível cancelar o romaneio');
     });
@@ -273,6 +286,10 @@ export class RomaneioService {
 
     if (romaneio.consignacaoId) {
       await this.consignacaoService.calculate(romaneio.consignacaoId);
+    }
+
+    if (romaneio.pedidoId) {
+      this.pedidoService.cancelarFaturamento(romaneio.pedidoId);
     }
 
     return this.findById(empresaId, id);
