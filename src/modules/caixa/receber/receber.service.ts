@@ -95,6 +95,13 @@ export class ReceberService {
         throw new BadRequestException('Operação não implementada');
 
       case OperacaoRomaneio.venda:
+        const estoqueErrosVenda = await this.romaneioService.validarEstoque(empresa.id, romaneio.romaneioId);
+        if (estoqueErrosVenda.length > 0) {
+          throw new BadRequestException(
+            `Romaneio possui itens que o estoque não é suficiente para realizar a operação: ${estoqueErrosVenda.join(', ')}`
+          );
+        }
+
         const valorRomaneioVenda = romaneio.valorLiquido + (romaneio.tipoFrete == TipoFrete.FOB ? romaneio.valorFrete : 0);
 
         if (!romaneioDto.formasDePagamento) {
@@ -146,6 +153,13 @@ export class ReceberService {
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
       case OperacaoRomaneio.consignacao_saida:
+        const estoqueErrosConsignaSaida = await this.romaneioService.validarEstoque(empresa.id, romaneio.romaneioId);
+        if (estoqueErrosConsignaSaida.length > 0) {
+          throw new BadRequestException(
+            `Romaneio possui itens que o estoque não é suficiente para realizar a operação: ${estoqueErrosConsignaSaida.join(', ')}`
+          );
+        }
+
         const consignacao = await this.consignacaoService.findById(empresa.id, romaneio.consignacaoId, ['itens']);
         if (!consignacao) {
           throw new BadRequestException('Consignação não encontrada');
@@ -182,10 +196,16 @@ export class ReceberService {
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId, liquidacaoId);
 
       case OperacaoRomaneio.transferencia_saida:
-        throw new BadRequestException('Operação não implementada');
+        const estoqueErrosTransferenciaSaida = await this.romaneioService.validarEstoque(empresa.id, romaneio.romaneioId);
+        if (estoqueErrosTransferenciaSaida.length > 0) {
+          throw new BadRequestException(
+            `Romaneio possui itens que o estoque não é suficiente para realizar a operação: ${estoqueErrosTransferenciaSaida.join(', ')}`
+          );
+        }
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
       case OperacaoRomaneio.transferencia_entrada:
-        throw new BadRequestException('Operação não implementada');
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
       case OperacaoRomaneio.outros:
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);

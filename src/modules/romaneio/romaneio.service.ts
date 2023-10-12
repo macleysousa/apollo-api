@@ -17,6 +17,7 @@ import { RomaneioFilter } from './filters/romaneio.filter';
 import { RomaneioInclude } from './includes/romaneio.include';
 import { RomaneioView } from './views/romaneio.view';
 import { PedidoService } from '../pedido/pedido.service';
+import { EstoqueService } from '../estoque/estoque.service';
 
 @Injectable()
 export class RomaneioService {
@@ -30,7 +31,9 @@ export class RomaneioService {
     @Inject(forwardRef(() => ConsignacaoService))
     private readonly consignacaoService: ConsignacaoService,
     @Inject(forwardRef(() => PedidoService))
-    private readonly pedidoService: PedidoService
+    private readonly pedidoService: PedidoService,
+    @Inject(forwardRef(() => EstoqueService))
+    private readonly estoqueService: EstoqueService
   ) {}
 
   async create(dto: CreateRomaneioDto): Promise<RomaneioView> {
@@ -238,6 +241,24 @@ export class RomaneioService {
     );
 
     return produtosErros.length == 0;
+  }
+
+  async validarEstoque(empresaId: number, id: number): Promise<Number[]> {
+    const romaneio = await this.findById(empresaId, id, ['itens']);
+    const produtos = romaneio.itens.select((s) => s.produtoId);
+
+    const estoque = await this.estoqueService.findByProdutoIds(empresaId, produtos);
+    const produtosErros: Number[] = [];
+    await Promise.all(
+      estoque.map((e) => {
+        const quantidade = romaneio.itens.filter((f) => f.produtoId == e.produtoId).sum((i) => Number(i.quantidade));
+        if (quantidade > e.saldo) {
+          produtosErros.push(e.produtoId);
+        }
+      })
+    );
+
+    return produtosErros;
   }
 
   async encerrar(empresaId: number, caixaId: number, id: number, liquidacao?: number): Promise<RomaneioView> {

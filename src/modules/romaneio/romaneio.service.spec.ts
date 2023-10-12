@@ -17,6 +17,7 @@ import { RomaneioService } from './romaneio.service';
 import { RomaneioView } from './views/romaneio.view';
 import { ConsignacaoService } from '../consignacao/consignacao.service';
 import { PedidoService } from '../pedido/pedido.service';
+import { EstoqueService } from '../estoque/estoque.service';
 
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({
@@ -29,6 +30,7 @@ describe('RomaneioService', () => {
   let contextService: ContextService;
   let consignacaoService: ConsignacaoService;
   let pedidoService: PedidoService;
+  let estoqueService: EstoqueService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -78,6 +80,12 @@ describe('RomaneioService', () => {
             cancelarFaturamento: jest.fn(),
           },
         },
+        {
+          provide: EstoqueService,
+          useValue: {
+            findByProdutoIds: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -87,6 +95,7 @@ describe('RomaneioService', () => {
     contextService = module.get<ContextService>(ContextService);
     consignacaoService = module.get<ConsignacaoService>(ConsignacaoService);
     pedidoService = module.get<PedidoService>(PedidoService);
+    estoqueService = module.get<EstoqueService>(EstoqueService);
   });
 
   it('should be defined', () => {
@@ -96,6 +105,7 @@ describe('RomaneioService', () => {
     expect(contextService).toBeDefined();
     expect(consignacaoService).toBeDefined();
     expect(pedidoService).toBeDefined();
+    expect(estoqueService).toBeDefined();
   });
 
   describe('create', () => {
@@ -759,6 +769,40 @@ describe('RomaneioService', () => {
 
       expect(service.findByIds).toHaveBeenCalledWith(empresaId, romaneiosDevolucao, ['itens']);
       expect(result).toEqual(false);
+    });
+  });
+
+  describe('validarEstoque', () => {
+    it('should return products with insufficient stock', async () => {
+      const empresaId = 1;
+      const id = 1;
+      const romaneio = { itens: [{ produtoId: 1, quantidade: 100 }] };
+      const estoque = [{ produtoId: 1, saldo: 99 }];
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio as any);
+      jest.spyOn(estoqueService, 'findByProdutoIds').mockResolvedValueOnce(estoque as any);
+
+      const result = await service.validarEstoque(empresaId, id);
+
+      expect(service.findById).toHaveBeenCalledWith(empresaId, id, ['itens']);
+      expect(estoqueService.findByProdutoIds).toHaveBeenCalledWith(empresaId, [1]);
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    it('should not return products with insufficient stock', async () => {
+      const empresaId = 1;
+      const id = 1;
+      const romaneio = { itens: [{ produtoId: 1, quantidade: 100 }] };
+      const estoque = [{ produtoId: 1, saldo: 100 }];
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio as any);
+      jest.spyOn(estoqueService, 'findByProdutoIds').mockResolvedValueOnce(estoque as any);
+
+      const result = await service.validarEstoque(empresaId, id);
+
+      expect(service.findById).toHaveBeenCalledWith(empresaId, id, ['itens']);
+      expect(estoqueService.findByProdutoIds).toHaveBeenCalledWith(empresaId, [1]);
+      expect(result.length).toBe(0);
     });
   });
 
