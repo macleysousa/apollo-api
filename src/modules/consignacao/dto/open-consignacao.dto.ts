@@ -24,7 +24,7 @@ export class OpenConsignacaoDto {
 
   @ApiProperty()
   @IsNotEmpty({ message: 'O campo "caixaAbertura" é obrigatório' })
-  @IsCaixa({ caixaAberto: true })
+  @IsCaixa({ situacao: 'aberto' })
   caixaAbertura: number;
 
   @ApiProperty()

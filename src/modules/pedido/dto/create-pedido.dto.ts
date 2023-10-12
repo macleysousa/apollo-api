@@ -47,7 +47,7 @@ export class CreatePedidoDto {
   @IsDate({ message: 'O campo "dataBasePagamento" deve ser uma data válida' })
   previsaoDeEntrega?: Date;
 
-  @ApiProperty({ enum: TipoPedido, default: TipoPedido.transferencia })
+  @ApiProperty({ enum: TipoPedido, default: TipoPedido.transferencia_saida })
   @IsNotEmpty({ message: 'O campo "tipo" é obrigatório' })
   @IsEnum(TipoPedido)
   tipo: TipoPedidoType | TipoPedido;

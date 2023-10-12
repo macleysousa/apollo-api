@@ -21,7 +21,7 @@ export class CaixaService {
     const empresa = this.contextService.empresa();
     const ultimoCaixa = await this.repository.findOne({ where: { empresaId, terminalId }, order: { id: 'DESC' } });
 
-    if (ultimoCaixa?.situacao === CaixaSituacao.Aberto) {
+    if (ultimoCaixa?.situacao === CaixaSituacao.aberto) {
       throw new BadRequestException('Já existe um caixa aberto para este terminal.');
     }
 

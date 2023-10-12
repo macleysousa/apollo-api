@@ -31,7 +31,10 @@ export class PedidoService {
     let financeiro = true;
 
     switch (dto.tipo) {
-      case 'transferencia':
+      case 'transferencia_saida':
+        financeiro = false;
+        break;
+      case 'transferencia_entrada':
         financeiro = false;
         break;
     }
@@ -108,50 +111,43 @@ export class PedidoService {
   async faturar(id: number): Promise<void> {
     const operadorId = this.contextService.operadorId();
     const empresaId = this.contextService.empresaId();
+    const parametros = this.contextService.parametros();
+    const FATURAR_PEDIDO_SEM_CONFERENCIA = parametros.first((x) => x.parametroId == 'FATURAR_PEDIDO_SEM_CONFERENCIA');
 
     const pedido = await this.findById(id, ['itens']);
 
-    if (pedido.situacao !== 'conferido') {
+    if (pedido.situacao == 'encerrado') {
+      throw new BadRequestException('Não é possível faturar um pedido que já foi encerrado');
+    } else if (pedido.situacao == 'cancelado') {
+      throw new BadRequestException('Não é possível faturar um pedido que já foi cancelado');
+    } else if (pedido.situacao == 'em_andamento' && FATURAR_PEDIDO_SEM_CONFERENCIA.valor == 'N') {
       throw new BadRequestException('Não é possível faturar um pedido que não esteja conferido');
-    } else if (pedido.itens.filter((x) => x.atendido > 0).length === 0) {
-      throw new BadRequestException('Não é possível faturar um pedido sem itens');
     }
 
-    const produtos = pedido.itens
-      .groupBy((g) => g.produtoId)
-      .select((s) => ({
-        produtoId: s.key,
-        solicitado: s.values.sum((x) => Number(x.atendido)),
-        atendido: s.values.sum((x) => Number(x.atendido)),
-      }));
+    if (pedido.tipo == 'venda' || pedido.tipo == 'transferencia_saida') {
+      const produtos = pedido.itens
+        .groupBy((g) => g.produtoId)
+        .select((s) => ({
+          produtoId: s.key,
+          solicitado: s.values.sum((x) => Number(x.atendido)),
+          atendido: s.values.sum((x) => Number(x.atendido)),
+        }));
 
-    const produtoIds = produtos.map((item) => item.produtoId);
+      const produtoIds = produtos.map((item) => item.produtoId);
 
-    const estoque = await this.estoqueService.findByProdutoIds(empresaId, produtoIds);
+      const estoque = await this.estoqueService.findByProdutoIds(empresaId, produtoIds);
 
-    const prdsInsufi = produtos.filter((e) => estoque.first((x) => x.produtoId === e.produtoId).saldo < e.atendido);
-    if (prdsInsufi.length > 0) {
-      throw new BadRequestException(`Não há saldo suficiente para os produtos: ${prdsInsufi.map((e) => e.produtoId).join(', ')}`);
-    }
-
-    let operacao: 'compra' | 'venda' | 'transferencia_saida';
-    switch (pedido.tipo) {
-      case 'compra':
-        operacao = 'compra';
-        break;
-      case 'venda':
-        operacao = 'venda';
-        break;
-      case 'transferencia':
-        operacao = 'transferencia_saida';
-        break;
+      const prdsInsufi = produtos.filter((e) => estoque.first((x) => x.produtoId === e.produtoId).saldo < e.atendido);
+      if (prdsInsufi.length > 0) {
+        throw new BadRequestException(`Não há saldo suficiente para os produtos: ${prdsInsufi.map((e) => e.produtoId).join(', ')}`);
+      }
     }
 
     const romaneio = await this.romaneioService.create({
       pessoaId: pedido.pessoaId,
       tabelaPrecoId: pedido.tabelaPrecoId,
       funcionarioId: operadorId,
-      operacao: operacao,
+      operacao: pedido.tipo,
       pedidoId: pedido.id,
     });
 
@@ -166,19 +162,7 @@ where i.pedidoId = ${id} and i.atendido > 0)
       `
     );
 
-    await this.repository.update({ id }, { situacao: 'faturado', romaneioOrigemId: romaneio.romaneioId, operadorId });
-  }
-
-  async encerrar(id: number): Promise<void> {
-    const operadorId = this.contextService.operadorId();
-
-    const pedido = await this.findById(id);
-
-    if (pedido.situacao !== 'faturado') {
-      throw new BadRequestException('Não é possível encerrar um pedido que não esteja faturado');
-    }
-
-    await this.repository.update({ id }, { situacao: 'encerrado', operadorId });
+    await this.repository.update({ id }, { situacao: 'encerrado', romaneioOrigemId: romaneio.romaneioId, operadorId });
   }
 
   async cancel(id: number, dto: CancelPedidoDto): Promise<void> {
