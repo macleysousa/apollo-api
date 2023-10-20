@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { RequestContext } from 'nestjs-easy-context';
 
+import { LoggedRequest } from 'src';
 import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
-import { EmpresaParametroEntity } from 'src/modules/empresa/parametro/entities/parametro.entity';
+import { EmpresaParametroView } from 'src/modules/empresa/parametro/views/paramentro.view';
 import { UsuarioEntity } from 'src/modules/usuario/entities/usuario.entity';
 
 @Injectable()
@@ -23,16 +24,16 @@ export class ContextService {
     return RequestContext.currentContext.req['empresa'].data;
   }
 
-  parametros(): EmpresaParametroEntity[] {
-    return RequestContext.currentContext.req['empresa'].parametros;
+  parametros(): EmpresaParametroView[] {
+    return RequestContext.currentContext.req['parametros'];
   }
 
   operadorId(): number {
     return RequestContext.currentContext.req['usuario'].id;
   }
 
-  request(): Request {
-    return RequestContext.currentContext.req as unknown as Request;
+  request(): LoggedRequest {
+    return RequestContext.currentContext.req as LoggedRequest;
   }
 
   response(): Response {
