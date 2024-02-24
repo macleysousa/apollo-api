@@ -53,15 +53,14 @@ describe('SizeController', () => {
   describe('/ (GET)', () => {
     it('should return a list of sizes', async () => {
       // Arrange
-      const name = undefined;
-      const active = undefined;
+      const filter = { nome: 'P', inativo: true };
 
       // Act
-      const result = await controller.find(name, active);
+      const result = await controller.find(filter);
 
       // Assert
       expect(service.find).toHaveBeenCalledTimes(1);
-      expect(service.find).toHaveBeenCalledWith(name, active);
+      expect(service.find).toHaveBeenCalledWith(filter);
 
       expect(result).toEqual(sizeFakeRepository.find());
     });
