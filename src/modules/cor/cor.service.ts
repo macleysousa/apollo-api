@@ -5,6 +5,7 @@ import { ILike, In, Repository } from 'typeorm';
 import { CreateCorDto } from './dto/create-cor.dto';
 import { UpdateCorDto } from './dto/update-cor.dto';
 import { CorEntity } from './entities/cor.entity';
+import { CorFilter } from './filters/cor.filter';
 
 @Injectable()
 export class CorService {
@@ -25,9 +26,13 @@ export class CorService {
     return this.repository.save(createColorDto);
   }
 
-  async find(name?: string, active?: boolean | unknown): Promise<CorEntity[]> {
+  async find(filter?: CorFilter): Promise<CorEntity[]> {
     return this.repository.find({
-      where: { nome: ILike(`%${name ?? ''}%`), inativa: active == undefined ? undefined : Boolean(active) },
+      where: {
+        nome: filter?.nome ? ILike(`%${filter.nome}%`) : undefined,
+        inativa: filter?.inativa == undefined ? undefined : filter.inativa,
+      },
+      cache: filter?.cache ?? true,
     });
   }
 
@@ -43,18 +48,10 @@ export class CorService {
     return this.repository.find({ where: { nome: In(names) } });
   }
 
-  async update(id: number, { nome: name, inativa: active }: UpdateCorDto): Promise<CorEntity> {
-    const color = await this.findById(id);
+  async update(id: number, dto: UpdateCorDto): Promise<CorEntity> {
+    await this.repository.update({ id }, dto);
 
-    if (name) {
-      color.nome = name;
-    }
-
-    if (active != undefined) {
-      color.inativa = active;
-    }
-
-    return this.repository.save(color);
+    return this.findById(id);
   }
 
   async remove(id: number): Promise<void> {

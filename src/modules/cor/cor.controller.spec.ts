@@ -53,15 +53,14 @@ describe('ColorController', () => {
 
   describe('/ (GET)', () => {
     it('should return a color list', async () => {
-      const name = 'back';
-      const active = true;
+      const filter = {};
 
       // Act
-      const result = await controller.find(name, active);
+      const result = await controller.find(filter);
 
       // Assert
       expect(service.find).toHaveBeenCalledTimes(1);
-      expect(service.find).toHaveBeenCalledWith(name, active);
+      expect(service.find).toHaveBeenCalledWith(filter);
 
       expect(result).toEqual(colorFakeRepository.find());
     });
