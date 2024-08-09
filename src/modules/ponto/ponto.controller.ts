@@ -5,12 +5,13 @@ import { PontoService } from "./ponto.service";
 import { PontoEntity } from "./entities/ponto.entity";
 import { Roles } from "../usuario/roles.decorator";
 import { Role } from "../usuario/enums/usuario-tipo.enum";
+import { PontoDTO } from "./dto/ponto.dto";
 
 
 @ApiTags('pontos')
 @Controller('pontos')
 @ApiBearerAuth()
-@ApiComponent('F001', 'Fidelizacao de clientes')
+@ApiComponent('FI000001', 'Fidelizacao de clientes')
 export class PontoController {
 
     constructor(private readonly service: PontoService) {}
@@ -18,7 +19,7 @@ export class PontoController {
     @Post()
     @ApiResponse({ type: PontoEntity, status: 201 })
     @Roles(Role.administrador)
-    async create(@Body() ponto: PontoEntity): Promise<PontoEntity> {
+    async create(@Body() ponto: PontoDTO): Promise<PontoEntity> {
         return this.service.create(ponto);
     }
 
