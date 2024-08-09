@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BaseEntity, Column, Entity, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity } from 'src/commons/base.entity';
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity({ name: 'ponto' })
+@Entity({ name: 'pontos' })
 export class PontoEntity extends BaseEntity {
 
   @ApiProperty()
@@ -17,12 +18,14 @@ export class PontoEntity extends BaseEntity {
   clienteId: number;
 
   @ApiProperty()
+  @PrimaryColumn('int')
+  quantidade: number;
+
+  @ApiProperty()
   @UpdateDateColumn()
   dataDeValidade: Date;
 
-  @ApiProperty()
-  @UpdateDateColumn({ default: 'now()' })
-  dataDeCriacao?: Date;
+
 
   constructor(partial?: Partial<PontoEntity>) {
     super();

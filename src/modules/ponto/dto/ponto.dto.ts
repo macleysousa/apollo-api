@@ -1,21 +1,24 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { IsDateString, IsNotEmpty, isNotEmpty } from "class-validator";
 import { PrimaryColumn, UpdateDateColumn } from "typeorm";
 
 export class PontoDTO {
     @ApiProperty()
-    @PrimaryColumn('int')
-    empresaId?: number;
+    @IsNotEmpty()
+    empresaId: number;
 
     @ApiProperty({ required: true })
-    @PrimaryColumn('int')
-    clienteId?: number;
+    @IsNotEmpty()
+    //TODO: Criar o IsCliente()
+    pessoaId: number;
+
+    @ApiProperty({ required: true })
+    @IsNotEmpty()
+    quantidade: number;
 
     @ApiProperty()
-    @UpdateDateColumn()
+    @IsNotEmpty()
+    @IsDateString()
     dataDeValidade: Date;
-
-    @ApiProperty()
-    @UpdateDateColumn({ default: 'now()' })
-    dataDeCriacao?: Date;
 
 }
