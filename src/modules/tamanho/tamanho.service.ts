@@ -5,6 +5,7 @@ import { ILike, In, Repository } from 'typeorm';
 import { CreateTamanhoDto } from './dto/create-tamanho.dto';
 import { UpdateTamanhoDto } from './dto/update-tamanho.dto';
 import { TamanhoEntity } from './entities/tamanho.entity';
+import { TamanhoFilter } from './filters/tamanho.filter';
 
 @Injectable()
 export class TamanhoService {
@@ -37,9 +38,13 @@ export class TamanhoService {
     return this.findById(size.id);
   }
 
-  async find(nome?: string, inativo?: boolean | unknown): Promise<TamanhoEntity[]> {
+  async find(filter?: TamanhoFilter): Promise<TamanhoEntity[]> {
     return this.repository.find({
-      where: { nome: ILike(`%${nome ?? ''}%`), inativo: inativo == undefined ? undefined : Boolean(inativo) },
+      where: {
+        nome: filter?.nome ? ILike(`%${filter.nome}%`) : undefined,
+        inativo: filter?.inativo == undefined ? undefined : filter.inativo,
+      },
+      cache: filter?.cache ?? true,
     });
   }
 
@@ -47,23 +52,23 @@ export class TamanhoService {
     return this.repository.findOne({ where: { id } });
   }
 
-  async findByName(name: string): Promise<TamanhoEntity> {
-    return this.repository.findOne({ where: { nome: name } });
+  async findByName(nome: string): Promise<TamanhoEntity> {
+    return this.repository.findOne({ where: { nome } });
   }
 
-  async findByNames(names: string[]): Promise<TamanhoEntity[]> {
-    return this.repository.find({ where: { nome: In(names) } });
+  async findByNames(nomes: string[]): Promise<TamanhoEntity[]> {
+    return this.repository.find({ where: { nome: In(nomes) } });
   }
 
   async update(id: number, updateSizeDto: UpdateTamanhoDto): Promise<TamanhoEntity> {
     const sizeById = await this.findById(id);
     if (!sizeById) {
-      throw new BadRequestException(`Size with this id ${id} does not exist`);
+      throw new BadRequestException(`Tamanho com id ${id} não encontrado`);
     }
 
     const sizeByName = await this.findByName(updateSizeDto.nome);
     if (sizeByName && sizeByName.id != id) {
-      throw new BadRequestException(`Size with this name ${updateSizeDto.nome} already exists`);
+      throw new BadRequestException(`Tamanho com nome ${updateSizeDto.nome} já existe`);
     }
 
     await this.repository.update(id, updateSizeDto);

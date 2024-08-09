@@ -28,7 +28,7 @@ describe('ReceberController', () => {
         {
           provide: CaixaService,
           useValue: {
-            findById: jest.fn().mockReturnValue({ id: 1, terminalId: 1, situacao: CaixaSituacao.Aberto }),
+            findById: jest.fn().mockReturnValue({ id: 1, terminalId: 1, situacao: CaixaSituacao.aberto }),
           },
         },
         {

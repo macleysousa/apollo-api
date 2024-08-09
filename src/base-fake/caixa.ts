@@ -14,7 +14,7 @@ class CaixaFakeRepository {
       abertura: new Date('2022-10-15T11:13:18.000Z'),
       operadorAberturaId: 1,
       valorAbertura: 100,
-      situacao: CaixaSituacao.Aberto,
+      situacao: CaixaSituacao.aberto,
     });
 
     return item;
@@ -31,7 +31,7 @@ class CaixaFakeRepository {
       fechamento: new Date('2022-10-15T11:13:18.000Z'),
       operadorFechamentoId: 1,
       valorFechamento: 100,
-      situacao: CaixaSituacao.Fechado,
+      situacao: CaixaSituacao.fechado,
     });
 
     return size;

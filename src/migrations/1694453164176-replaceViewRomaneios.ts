@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateViewRomaneios1686575262671 implements MigrationInterface {
+export class ReplaceViewRomaneios1694453164176 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
 CREATE OR REPLACE VIEW view_romaneios AS
@@ -18,6 +18,8 @@ r.operacao as operacao,
 r.romaneiosDevolucao as romaneiosDevolucao,
 r.situacao as situacao,
 r.pago as pago,
+r.consignacaoId as consignacaoId,
+r.pedidoId as pedidoId,
 r.caixaId as caixaId,
 r.liquidacao as liquidacao,
 r.kardex as kardex,

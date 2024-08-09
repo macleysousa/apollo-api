@@ -8,6 +8,7 @@ import { CorService } from './cor.service';
 import { CreateCorDto } from './dto/create-cor.dto';
 import { UpdateCorDto } from './dto/update-cor.dto';
 import { CorEntity } from './entities/cor.entity';
+import { CorFilter } from './filters/cor.filter';
 
 describe('ColorService', () => {
   let service: CorService;
@@ -21,6 +22,7 @@ describe('ColorService', () => {
           provide: getRepositoryToken(CorEntity),
           useValue: {
             save: jest.fn().mockResolvedValue(colorFakeRepository.findOne()),
+            update: jest.fn().mockResolvedValue(undefined),
             find: jest.fn().mockResolvedValue(colorFakeRepository.find()),
             findOne: jest.fn().mockResolvedValue(colorFakeRepository.findOne()),
             delete: jest.fn(),
@@ -78,7 +80,8 @@ describe('ColorService', () => {
       // Assert
       expect(repository.find).toHaveBeenCalledTimes(1);
       expect(repository.find).toHaveBeenCalledWith({
-        where: { nome: ILike(`%${''}%`), inativa: undefined },
+        where: { nome: undefined, inativa: undefined },
+        cache: true,
       });
 
       expect(result).toEqual(colorFakeRepository.find());
@@ -86,16 +89,16 @@ describe('ColorService', () => {
 
     it('should return a color list use filter', async () => {
       // Arrange
-      const nome = 'back';
-      const inativa = true;
+      const filter: CorFilter = { nome: 'back', inativa: false, cache: true };
 
       // Act
-      const result = await service.find(nome, inativa);
+      const result = await service.find(filter);
 
       // Assert
       expect(repository.find).toHaveBeenCalledTimes(1);
       expect(repository.find).toHaveBeenCalledWith({
-        where: { nome: ILike(`%${nome}%`), inativa: Boolean(inativa) },
+        where: { nome: ILike(`%${filter.nome}%`), inativa: filter.inativa },
+        cache: filter.cache,
       });
 
       expect(result).toEqual(colorFakeRepository.find());
@@ -156,12 +159,15 @@ describe('ColorService', () => {
       const id = 1;
       const color: UpdateCorDto = { nome: 'white', inativa: false };
 
+      jest.spyOn(repository, 'update').mockResolvedValueOnce(undefined);
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(colorFakeRepository.findOne());
+
       // Act
       const result = await service.update(id, color);
 
       // Assert
-      expect(repository.save).toHaveBeenCalledTimes(1);
-      expect(repository.save).toHaveBeenCalledWith({ ...colorFakeRepository.findOne(), ...color });
+      expect(repository.update).toHaveBeenCalledTimes(1);
+      expect(repository.update).toHaveBeenCalledWith({ id }, color);
 
       expect(result).toEqual(colorFakeRepository.findOne());
     });

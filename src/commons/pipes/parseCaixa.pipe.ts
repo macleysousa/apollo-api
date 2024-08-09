@@ -54,7 +54,7 @@ export class ParseCaixaAbertoPipe implements PipeTransform<string, Promise<numbe
       throw new BadRequestException(`Caixa com id ${value} não encontrado.`);
     } else if (!usuario.terminais.find((x) => x.id == caixa.terminalId)) {
       throw new BadRequestException(`O caixa ${caixa.id} não está associado ao terminal do usuário.`);
-    } else if (caixa.situacao !== CaixaSituacao.Aberto) {
+    } else if (caixa.situacao !== CaixaSituacao.aberto) {
       throw new BadRequestException(`O caixa ${caixa.id} não está aberto.`);
     }
 

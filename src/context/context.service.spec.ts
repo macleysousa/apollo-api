@@ -5,6 +5,7 @@ import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 import { UsuarioEntity } from 'src/modules/usuario/entities/usuario.entity';
 
 import { ContextService } from './context.service';
+import { TenantRequest } from 'src';
 
 describe('ContextService', () => {
   let service: ContextService;
@@ -67,13 +68,13 @@ describe('ContextService', () => {
 
   describe('parametros', () => {
     it('should return the current empresa parametros', () => {
-      const empresa = { parametros: [] } as any;
+      const parametros = [] as any;
 
-      jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: { empresa }, res: undefined });
+      jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: { parametros }, res: undefined });
 
       const result = service.parametros();
 
-      expect(result).toEqual(empresa.parametros);
+      expect(result).toEqual(parametros);
     });
   });
 
@@ -91,7 +92,7 @@ describe('ContextService', () => {
 
   describe('request', () => {
     it('should return the current request', () => {
-      const request = {} as Request;
+      const request = {} as TenantRequest;
 
       jest.spyOn(RequestContext, 'currentContext', 'get').mockReturnValueOnce({ req: request, res: undefined });
 

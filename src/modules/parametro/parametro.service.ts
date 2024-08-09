@@ -21,6 +21,7 @@ export class ParametroService {
       { id: 'OBS_PADRAO_VENDA', descricao: 'Observação padrão para venda', valorPadrao: '' },
       { id: 'OBS_PADRAO_CONSIGNACAO', descricao: 'Observação padrão para consignação', valorPadrao: '' },
       { id: 'DEVOLVER_SEM_ROMANEIO', descricao: 'Devolver sem romaneio', valorPadrao: 'N' },
+      { id: 'FATURAR_PEDIDO_SEM_CONFERENCIA', descricao: 'Faturar pedido sem conferência', valorPadrao: 'N' },
     ];
     await this.repository.save(parametros);
   }

@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe, Put, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { TamanhoService } from './tamanho.service';
+import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { CreateTamanhoDto } from './dto/create-tamanho.dto';
 import { UpdateTamanhoDto } from './dto/update-tamanho.dto';
-import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { TamanhoEntity } from './entities/tamanho.entity';
+import { TamanhoFilter } from './filters/tamanho.filter';
+import { TamanhoService } from './tamanho.service';
 
 @ApiTags('Tamanhos')
 @Controller('tamanhos')
@@ -22,10 +23,8 @@ export class TamanhoController {
 
   @Get()
   @ApiResponse({ status: 200, type: [TamanhoEntity] })
-  @ApiQuery({ name: 'nome', required: false })
-  @ApiQuery({ name: 'inativo', required: false, type: Boolean })
-  async find(@Query('nome') nome?: string, @Query('inativo') inativo?: boolean | unknown): Promise<TamanhoEntity[]> {
-    return this.service.find(nome, inativo);
+  async find(@Query() filter: TamanhoFilter): Promise<TamanhoEntity[]> {
+    return this.service.find(filter);
   }
 
   @Get(':id')

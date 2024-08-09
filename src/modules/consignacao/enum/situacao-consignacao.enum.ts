@@ -1,6 +1,6 @@
 export enum SituacaoConsignacaoEnum {
-  aberta = 'aberta',
-  fechada = 'fechada',
+  em_andamento = 'em_andamento',
+  encerrada = 'encerrada',
   cancelada = 'cancelada',
 }
 

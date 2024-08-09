@@ -8,7 +8,7 @@ CREATE TRIGGER caixas_before_insert
 BEFORE INSERT ON caixas
 FOR EACH ROW
 BEGIN
-   IF NEW.situacao = 'Fechado' THEN
+   IF NEW.situacao = 'fechado' THEN
 		-- Lançar uma exceção
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Erro: Essa operação não é permitida';
 	ELSEIF NEW.situacao = 'abertura' THEN
@@ -26,7 +26,7 @@ CREATE TRIGGER caixas_after_insert
 AFTER INSERT ON caixas
 FOR EACH ROW
 BEGIN
-    IF NEW.situacao = 'Aberto' THEN
+    IF NEW.situacao = 'aberto' THEN
        INSERT INTO caixas_extrato(empresaId,data,caixaId,tipoDocumento,tipoHistorico,tipoMovimento,valor,operadorId)
 							VALUE(NEW.empresaId,NEW.data,NEW.id,'Dinheiro','Abertura de Caixa','Crédito',NEW.valorAbertura,NEW.operadorAberturaId);
     END IF;
@@ -39,9 +39,9 @@ CREATE TRIGGER caixas_before_update
 BEFORE UPDATE ON caixas
 FOR EACH ROW
 BEGIN
-    IF NEW.situacao = 'Fechado' THEN
+    IF NEW.situacao = 'fechado' THEN
        SET NEW.fechamento = CURRENT_TIMESTAMP;
-	  ELSEIF NEW.situacao = 'Fechado' AND NEW.operadorFechamentoId is null THEN
+	  ELSEIF NEW.situacao = 'fechado' AND NEW.operadorFechamentoId is null THEN
 	   -- Lançar uma exceção
 	   SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Erro: Essa operação não é permitida (operador de fechamento não informado)';
     END IF;
@@ -54,7 +54,7 @@ CREATE TRIGGER caixas_after_update
 AFTER UPDATE ON caixas
 FOR EACH ROW
 BEGIN
-    IF OLD.situacao='Aberto' AND NEW.situacao = 'Fechado' THEN
+    IF OLD.situacao='aberto' AND NEW.situacao = 'fechado' THEN
        INSERT INTO caixas_extrato(empresaId,data,caixaId,tipoDocumento,tipoHistorico,tipoMovimento,valor,operadorId)
 							VALUE(NEW.empresaId,NEW.data,NEW.id,'Dinheiro','Fechamento de Caixa','Débito',NEW.valorFechamento,NEW.operadorFechamentoId);
     END IF;

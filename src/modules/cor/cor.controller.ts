@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiComponent } from '../../decorators/api-componente.decorator';
 
 import { CorService } from './cor.service';
 import { CreateCorDto } from './dto/create-cor.dto';
 import { UpdateCorDto } from './dto/update-cor.dto';
 import { CorEntity } from './entities/cor.entity';
+import { CorFilter } from './filters/cor.filter';
 
 @ApiTags('Cores')
 @Controller('cores')
@@ -22,10 +23,8 @@ export class CorController {
 
   @Get()
   @ApiResponse({ type: [CorEntity], status: 200 })
-  @ApiQuery({ name: 'nome', required: false })
-  @ApiQuery({ name: 'inativa', required: false, type: Boolean })
-  async find(@Query('nome') nome?: string, @Query('inativa') inativa?: boolean | unknown): Promise<CorEntity[]> {
-    return this.service.find(nome, inativa);
+  async find(@Query() filter?: CorFilter): Promise<CorEntity[]> {
+    return this.service.find(filter);
   }
 
   @Get(':id')

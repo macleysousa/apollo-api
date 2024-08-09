@@ -65,8 +65,8 @@ export class CreateTableCaixas1685389836832 implements MigrationInterface {
           {
             name: 'situacao',
             type: 'enum',
-            enum: ['Aberto', 'Fechado'],
-            default: "'Aberto'",
+            enum: ['aberto', 'fechado'],
+            default: "'aberto'",
             isNullable: true,
           },
         ],

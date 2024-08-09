@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { IsNotEmpty, validate } from 'class-validator';
 
 import { ContextService } from 'src/context/context.service';
 import { CaixaService } from 'src/modules/caixa/caixa.service';
 import { CaixaSituacao } from 'src/modules/caixa/enum/caixa-situacao.enum';
 
-import { CaixaConstraint } from './is-caixa.validation';
+import { CaixaConstraint, IsCaixa } from './is-caixa.validation';
 
 describe('CaixaConstraint', () => {
   let constraint: CaixaConstraint;
@@ -18,7 +19,7 @@ describe('CaixaConstraint', () => {
         {
           provide: CaixaService,
           useValue: {
-            findById: jest.fn().mockResolvedValue({ id: 1, terminalId: 1, situacao: CaixaSituacao.Aberto }),
+            findById: jest.fn().mockResolvedValue({ id: 1, terminalId: 1, situacao: CaixaSituacao.aberto }),
           },
         },
         {
@@ -40,8 +41,8 @@ describe('CaixaConstraint', () => {
     it('should return true if caixa exists and user has access', async () => {
       const usuario = { terminais: [{ id: 1 }] } as any;
       const empresa = { id: 2 } as any;
-      const caixa = { terminalId: 1, situacao: CaixaSituacao.Aberto } as any;
-      const args = { constraints: [{ caixaAberto: true }] } as any;
+      const caixa = { terminalId: 1, situacao: CaixaSituacao.aberto } as any;
+      const args = { constraints: [{ situacao: 'aberto' }] } as any;
 
       jest.spyOn(contextService, 'usuario').mockReturnValue(usuario);
       jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
@@ -56,7 +57,7 @@ describe('CaixaConstraint', () => {
     it('should return false if caixa does not exist', async () => {
       const usuario = { terminais: [{ id: 1 }] } as any;
       const empresa = { id: 2 } as any;
-      const args = { constraints: [{ caixaAberto: true }] } as any;
+      const args = { constraints: [{ situacao: 'aberto' }] } as any;
 
       jest.spyOn(contextService, 'usuario').mockReturnValue(usuario);
       jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
@@ -72,8 +73,8 @@ describe('CaixaConstraint', () => {
     it('should return false if user does not have access to caixa', async () => {
       const usuario = { terminais: [{ id: 1 }] } as any;
       const empresa = { id: 2 } as any;
-      const caixa = { terminalId: 3, situacao: CaixaSituacao.Aberto } as any;
-      const args = { constraints: [{ caixaAberto: true }] } as any;
+      const caixa = { terminalId: 3, situacao: CaixaSituacao.aberto } as any;
+      const args = { constraints: [{ situacao: 'aberto' }] } as any;
 
       jest.spyOn(contextService, 'usuario').mockReturnValue(usuario);
       jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
@@ -89,17 +90,18 @@ describe('CaixaConstraint', () => {
     it('should return false if caixa is not aberto', async () => {
       const usuario = { terminais: [{ id: 1 }] } as any;
       const empresa = { id: 2 } as any;
-      const caixa = { terminalId: 1, situacao: CaixaSituacao.Fechado } as any;
+      const caixa = { terminalId: 1, situacao: CaixaSituacao.fechado } as any;
+      const validationArguments = { constraints: [{ situacao: 'aberto' }] } as any;
 
       jest.spyOn(contextService, 'usuario').mockReturnValue(usuario);
       jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
       jest.spyOn(caixaService, 'findById').mockResolvedValue(caixa);
 
-      expect(await constraint.validate(5, { constraints: [{ caixaAberto: true }] } as any)).toBe(false);
+      expect(await constraint.validate(5, validationArguments)).toBe(false);
       expect(contextService.usuario).toHaveBeenCalled();
       expect(contextService.empresa).toHaveBeenCalled();
       expect(caixaService.findById).toHaveBeenCalledWith(empresa.id, 5);
-      expect(constraint.messageError).toBe('Caixa não está aberto');
+      expect(constraint.messageError).toBe(`Caixa não está uma situação válida: ${CaixaSituacao.aberto}`);
     });
   });
 
@@ -108,5 +110,22 @@ describe('CaixaConstraint', () => {
       constraint.messageError = 'Test message error';
       expect(constraint.defaultMessage()).toBe('Test message error');
     });
+  });
+});
+
+describe('IsCaixa', () => {
+  it('should call registerDecorator with params', async () => {
+    class TestClass {
+      @IsNotEmpty()
+      @IsCaixa()
+      caixaId: number;
+    }
+
+    const instance = new TestClass();
+    instance.caixaId = 1;
+
+    const result = await validate(instance, { groups: ['test'] });
+
+    expect(result.length).toBeGreaterThan(0);
   });
 });

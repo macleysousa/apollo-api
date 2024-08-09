@@ -1,4 +1,6 @@
 export enum CaixaSituacao {
-  Aberto = 'Aberto',
-  Fechado = 'Fechado',
+  aberto = 'aberto',
+  fechado = 'fechado',
 }
+
+export type CaixaSituacaoType = keyof typeof CaixaSituacao;

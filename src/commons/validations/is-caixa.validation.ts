@@ -9,7 +9,7 @@ import {
 
 import { ContextService } from 'src/context/context.service';
 import { CaixaService } from 'src/modules/caixa/caixa.service';
-import { CaixaSituacao } from 'src/modules/caixa/enum/caixa-situacao.enum';
+import { CaixaSituacaoType } from 'src/modules/caixa/enum/caixa-situacao.enum';
 
 @Injectable()
 @ValidatorConstraint({ async: true })
@@ -33,8 +33,8 @@ export class CaixaConstraint implements ValidatorConstraintInterface {
     } else if (!usuario.terminais.some((item) => item.id === caixa.terminalId)) {
       this.messageError = 'Usuário não possui acesso ao caixa';
       return false;
-    } else if (options.caixaAberto && caixa.situacao !== CaixaSituacao.Aberto) {
-      this.messageError = 'Caixa não está aberto';
+    } else if (options.situacao && caixa.situacao !== options.situacao) {
+      this.messageError = `Caixa não está uma situação válida: ${options.situacao}`;
       return false;
     }
     return true;
@@ -45,7 +45,11 @@ export class CaixaConstraint implements ValidatorConstraintInterface {
   }
 }
 
-export const IsCaixa = (options = { caixaAberto: true }, validationOptions?: ValidationOptions) => {
+interface options {
+  situacao?: CaixaSituacaoType;
+}
+
+export const IsCaixa = (options?: options, validationOptions?: ValidationOptions) => {
   return (object: unknown, propertyName: string) => {
     registerDecorator({
       target: object.constructor,

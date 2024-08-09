@@ -16,6 +16,7 @@ import { RomaneioItemEntity } from './entities/romaneio-item.entity';
 import { RomaneioItemService } from './romaneio-item.service';
 import { RomaneioItemView } from './views/romaneio-item.view';
 import { SituacaoRomaneio, SituacaoRomaneioType } from '../enum/situacao-romaneio.enum';
+import { RomaneioView } from '../views/romaneio.view';
 
 describe('RomaneioItemService', () => {
   let service: RomaneioItemService;
@@ -176,6 +177,201 @@ describe('RomaneioItemService', () => {
       jest.spyOn(precoService, 'findByReferenciaId').mockResolvedValue(precoReferencia);
 
       await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw an error when consignment *consignacao_acerto* balance is insufficient', async () => {
+      const romaneioId = 1;
+      const romaneio = {
+        ...romaneioFakeRepository.findOneView(),
+        operacao: 'consignacao_acerto',
+        consignacaoId: 1,
+        romaneiosConsignacao: [],
+      } as RomaneioView;
+      const produtoId = 1;
+      const quantidade = 6;
+      const empresa = { id: 1 } as any;
+      const estoque = { produtoId, referenciaId: 1, saldo: 5 } as any;
+      const precoReferencia = { preco: 10 } as any;
+
+      jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
+      jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
+      jest.spyOn(service, 'findByProdutoId').mockResolvedValueOnce(undefined);
+      jest.spyOn(estoqueService, 'findByProdutoId').mockResolvedValue(estoque);
+      jest.spyOn(precoService, 'findByReferenciaId').mockResolvedValue(precoReferencia);
+      jest.spyOn(service, 'findByConsignacaoIds').mockResolvedValue([{ quantidade: 4, devolvido: 0 }] as any);
+
+      await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrowError(
+        `Saldo em consignação insuficiente para o produto "${produtoId}"`
+      );
+    });
+
+    it('should throw an error when consignment *consignacao_devolucao* balance is insufficient', async () => {
+      const romaneioId = 1;
+
+      const romaneio = {
+        ...romaneioFakeRepository.findOneView(),
+        modalidade: 'entrada',
+        operacao: 'consignacao_devolucao',
+        consignacaoId: 1,
+        romaneiosDevolucao: [],
+      } as RomaneioView;
+
+      const produtoId = 1;
+      const quantidade = 6;
+      const empresa = { id: 1 } as any;
+      const estoque = { produtoId, referenciaId: 1, saldo: 5 } as any;
+      const precoReferencia = { preco: 10 } as any;
+
+      jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
+      jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
+      jest.spyOn(service, 'findByProdutoId').mockResolvedValueOnce(undefined);
+      jest.spyOn(estoqueService, 'findByProdutoId').mockResolvedValue(estoque);
+      jest.spyOn(precoService, 'findByReferenciaId').mockResolvedValue(precoReferencia);
+      jest.spyOn(service, 'findByConsignacaoIds').mockResolvedValue(undefined);
+
+      await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrowError(
+        `Saldo em consignação insuficiente para o produto "${produtoId}"`
+      );
+    });
+
+    it('should add a new romaneio item *consignacao_acerto*', async () => {
+      const romaneioId = 3;
+
+      const romaneio = {
+        ...romaneioFakeRepository.findOneView(),
+        romaneioId: 3,
+        modalidade: 'entrada',
+        operacao: 'consignacao_acerto',
+        consignacaoId: 1,
+        romaneiosConsignacao: [1, 2],
+      } as RomaneioView;
+
+      const produtoId = 1;
+      const quantidade = 1;
+      const empresa = { id: 1 } as any;
+      const estoque = { produtoId, referenciaId: 1, saldo: 5 } as any;
+      const precoReferencia = { preco: 10 } as any;
+      const romaneioItems = [
+        {
+          romaneio: romaneioId,
+          produtoId: produtoId,
+          romaneioOrigemId: 1,
+          romaneioOrigemSequencia: 1,
+          quantidade: 1,
+          devolvido: 0,
+        },
+      ] as any;
+      const consignacaoItems = [
+        {
+          romaneioId: 1,
+          produtoId: 1,
+          sequencia: 1,
+          referenciaId: 1,
+          quantidade: 1,
+          devolvido: 0,
+          valorUnitDesconto: 0,
+          valorUnitario: 10,
+        },
+        {
+          romaneioId: 2,
+          produtoId: 1,
+          sequencia: 3,
+          referenciaId: 1,
+          quantidade: 1,
+          devolvido: 0,
+          valorUnitDesconto: 0,
+          valorUnitario: 10,
+        },
+      ] as any;
+
+      jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
+      jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
+      jest.spyOn(service, 'findByProdutoId').mockResolvedValueOnce(romaneioItems);
+      jest.spyOn(estoqueService, 'findByProdutoId').mockResolvedValue(estoque);
+      jest.spyOn(precoService, 'findByReferenciaId').mockResolvedValue(precoReferencia);
+      jest.spyOn(service, 'findByConsignacaoIds').mockResolvedValue(consignacaoItems);
+      jest.spyOn(service, 'insert').mockResolvedValueOnce();
+
+      await service.add(romaneioId, { produtoId, quantidade });
+
+      expect(service.findByConsignacaoIds).toHaveBeenCalledTimes(1);
+      expect(service.findByConsignacaoIds).toHaveBeenCalledWith([romaneio.consignacaoId], [produtoId], ['encerrado']);
+      expect(service.insert).toHaveBeenCalledTimes(1);
+      expect(service.insert).toHaveBeenCalledWith({
+        romaneioId,
+        produtoId,
+        quantidade: 1,
+        referenciaId: estoque.referenciaId,
+        valorUnitario: expect.any(Number),
+        valorUnitDesconto: expect.any(Number),
+        romaneioOrigemId: expect.any(Number),
+        romaneioOrigemSequencia: expect.any(Number),
+      });
+    });
+
+    it('should add a new romaneio item *consignacao_devolucao*', async () => {
+      const romaneioId = 3;
+
+      const romaneio = {
+        ...romaneioFakeRepository.findOneView(),
+        romaneioId: 3,
+        modalidade: 'entrada',
+        operacao: 'consignacao_devolucao',
+        consignacaoId: 1,
+        romaneiosConsignacao: [1, 2],
+      } as RomaneioView;
+
+      const produtoId = 1;
+      const quantidade = 2;
+      const empresa = { id: 1 } as any;
+      const estoque = { produtoId, referenciaId: 1, saldo: 5 } as any;
+      const precoReferencia = { preco: 10 } as any;
+      const consignacaoItems = [
+        {
+          romaneioId: 1,
+          produtoId: 1,
+          sequencia: 1,
+          referenciaId: 1,
+          quantidade: 1,
+          devolvido: 0,
+          valorUnitDesconto: 0,
+          valorUnitario: 10,
+        },
+        {
+          romaneioId: 2,
+          produtoId: 1,
+          sequencia: 3,
+          referenciaId: 1,
+          quantidade: 1,
+          devolvido: 0,
+          valorUnitDesconto: 0,
+          valorUnitario: 10,
+        },
+      ] as any;
+
+      jest.spyOn(contextService, 'empresa').mockReturnValue(empresa);
+      jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
+      jest.spyOn(service, 'findByProdutoId').mockResolvedValueOnce([]);
+      jest.spyOn(estoqueService, 'findByProdutoId').mockResolvedValue(estoque);
+      jest.spyOn(precoService, 'findByReferenciaId').mockResolvedValue(precoReferencia);
+      jest.spyOn(service, 'findByConsignacaoIds').mockResolvedValue(consignacaoItems);
+      jest.spyOn(service, 'insert').mockResolvedValueOnce().mockResolvedValueOnce();
+
+      await service.add(romaneioId, { produtoId, quantidade });
+
+      expect(service.findByConsignacaoIds).toHaveBeenCalledTimes(1);
+      expect(service.findByConsignacaoIds).toHaveBeenCalledWith([romaneio.consignacaoId], [produtoId], ['encerrado']);
+      expect(service.insert).toHaveBeenCalledTimes(2);
+      expect(service.insert).toHaveBeenCalledWith({
+        romaneioId,
+        produtoId,
+        quantidade: 1,
+        referenciaId: estoque.referenciaId,
+        valorUnitario: expect.any(Number),
+        valorUnitDesconto: expect.any(Number),
+        romaneioOrigemId: expect.any(Number),
+        romaneioOrigemSequencia: expect.any(Number),
+      });
     });
 
     it('should throw an error when devolution balance is insufficient', async () => {

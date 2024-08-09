@@ -47,7 +47,7 @@ describe('ConsignacaoController', () => {
       const dto: ConsignacaoFilter = { empresaId: 1 } as ConsignacaoFilter;
 
       const consignacoes = [
-        { id: 1, empresaId: 1, dataAbertura: new Date(), situacao: 'aberta' },
+        { id: 1, empresaId: 1, dataAbertura: new Date(), situacao: 'em_andamento' },
         { id: 2, empresaId: 1, dataAbertura: new Date(), situacao: 'cancelada' },
       ] as ConsignacaoView[];
 
@@ -61,7 +61,7 @@ describe('ConsignacaoController', () => {
     it('should create a new consignacao', async () => {
       const dto = { caixaAbertura: 1, pessoaId: 1 } as OpenConsignacaoDto;
 
-      const consignacao: ConsignacaoView = { id: 1, ...dto, situacao: 'aberta' } as unknown as ConsignacaoView;
+      const consignacao: ConsignacaoView = { id: 1, ...dto, situacao: 'em_andamento' } as unknown as ConsignacaoView;
 
       jest.spyOn(service, 'open').mockResolvedValueOnce(consignacao);
 

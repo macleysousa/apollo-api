@@ -47,8 +47,8 @@ export class CaixaEntity {
   @Column('int', { nullable: true })
   operadorFechamentoId: number;
 
-  @ApiProperty({ enum: CaixaSituacao, default: CaixaSituacao.Aberto })
-  @Column('varchar', { nullable: true, default: CaixaSituacao.Aberto })
+  @ApiProperty({ enum: CaixaSituacao, default: CaixaSituacao.aberto })
+  @Column('varchar', { nullable: true, default: CaixaSituacao.aberto })
   situacao: CaixaSituacao;
 
   constructor(partial?: Partial<CaixaEntity>) {

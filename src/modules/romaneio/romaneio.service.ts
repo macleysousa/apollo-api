@@ -16,6 +16,8 @@ import { SituacaoRomaneio } from './enum/situacao-romaneio.enum';
 import { RomaneioFilter } from './filters/romaneio.filter';
 import { RomaneioInclude } from './includes/romaneio.include';
 import { RomaneioView } from './views/romaneio.view';
+import { PedidoService } from '../pedido/pedido.service';
+import { EstoqueService } from '../estoque/estoque.service';
 
 @Injectable()
 export class RomaneioService {
@@ -24,9 +26,14 @@ export class RomaneioService {
     private readonly repository: Repository<RomaneioEntity>,
     @InjectRepository(RomaneioView)
     private readonly view: Repository<RomaneioView>,
+    @Inject(forwardRef(() => ContextService))
+    private readonly contextService: ContextService,
     @Inject(forwardRef(() => ConsignacaoService))
     private readonly consignacaoService: ConsignacaoService,
-    private readonly contextService: ContextService
+    @Inject(forwardRef(() => PedidoService))
+    private readonly pedidoService: PedidoService,
+    @Inject(forwardRef(() => EstoqueService))
+    private readonly estoqueService: EstoqueService
   ) {}
 
   async create(dto: CreateRomaneioDto): Promise<RomaneioView> {
@@ -35,16 +42,18 @@ export class RomaneioService {
     const parametro = this.contextService.parametros();
 
     if (dto.operacao == OperacaoRomaneio.consignacao_saida && !dto.consignacaoId) {
-      throw new BadRequestException('Romaneio de consignação não informado');
+      throw new BadRequestException('Consignação não informada');
     } else if (dto.operacao == OperacaoRomaneio.consignacao_devolucao && !dto.consignacaoId) {
-      throw new BadRequestException('Romaneio de consignação não informado');
+      throw new BadRequestException('Consignação não informada');
     } else if (dto.operacao == OperacaoRomaneio.consignacao_acerto && !dto.consignacaoId) {
-      throw new BadRequestException('Romaneio de consignação não informado');
+      throw new BadRequestException('Consignação não informada');
+    } else if (dto.operacao == OperacaoRomaneio.consignacao_devolucao && !dto.romaneiosConsignacao) {
+      throw new BadRequestException('Romaneios de consignação saída não informados');
+    } else if (dto.operacao == OperacaoRomaneio.consignacao_acerto && !dto.romaneiosConsignacao) {
+      throw new BadRequestException('Romaneios de consignação saída não informados');
     } else if (dto.operacao == OperacaoRomaneio.compra_devolucao && !dto.romaneiosDevolucao) {
       throw new BadRequestException('Romaneios de devolução não informados');
     } else if (dto.operacao == OperacaoRomaneio.venda_devolucao && !dto.romaneiosDevolucao) {
-      throw new BadRequestException('Romaneios de devolução não informados');
-    } else if (dto.operacao == OperacaoRomaneio.consignacao_devolucao && !dto.romaneiosDevolucao) {
       throw new BadRequestException('Romaneios de devolução não informados');
     } else if (dto.operacao == OperacaoRomaneio.transferencia_devolucao && !dto.romaneiosDevolucao) {
       throw new BadRequestException('Romaneios de devolução não informados');
@@ -234,6 +243,24 @@ export class RomaneioService {
     return produtosErros.length == 0;
   }
 
+  async validarEstoque(empresaId: number, id: number): Promise<Number[]> {
+    const romaneio = await this.findById(empresaId, id, ['itens']);
+    const produtos = romaneio.itens.select((s) => s.produtoId);
+
+    const estoque = await this.estoqueService.findByProdutoIds(empresaId, produtos);
+    const produtosErros: Number[] = [];
+    await Promise.all(
+      estoque.map((e) => {
+        const quantidade = romaneio.itens.filter((f) => f.produtoId == e.produtoId).sum((i) => Number(i.quantidade));
+        if (quantidade > e.saldo) {
+          produtosErros.push(e.produtoId);
+        }
+      })
+    );
+
+    return produtosErros;
+  }
+
   async encerrar(empresaId: number, caixaId: number, id: number, liquidacao?: number): Promise<RomaneioView> {
     const operadorId = this.contextService.usuario().id;
 
@@ -263,6 +290,13 @@ export class RomaneioService {
 
     const romaneio = await this.findById(empresaId, id);
 
+    if (romaneio.pedidoId) {
+      const pedido = await this.pedidoService.findById(romaneio.pedidoId);
+      if (pedido.tipo == 'transferencia_saida' && pedido.romaneioDestinoId) {
+        throw new BadRequestException('Não é possível cancelar um romaneio de transferência que já foi recebido no destino');
+      }
+    }
+
     await this.repository.update({ id }, { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId }).catch(() => {
       throw new BadRequestException('Não foi possível cancelar o romaneio');
     });
@@ -273,6 +307,10 @@ export class RomaneioService {
 
     if (romaneio.consignacaoId) {
       await this.consignacaoService.calculate(romaneio.consignacaoId);
+    }
+
+    if (romaneio.pedidoId) {
+      this.pedidoService.cancelarFaturamento(romaneio.pedidoId);
     }
 
     return this.findById(empresaId, id);

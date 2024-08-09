@@ -16,6 +16,8 @@ import { RomaneioFilter } from './filters/romaneio.filter';
 import { RomaneioService } from './romaneio.service';
 import { RomaneioView } from './views/romaneio.view';
 import { ConsignacaoService } from '../consignacao/consignacao.service';
+import { PedidoService } from '../pedido/pedido.service';
+import { EstoqueService } from '../estoque/estoque.service';
 
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({
@@ -25,8 +27,10 @@ describe('RomaneioService', () => {
   let service: RomaneioService;
   let repository: Repository<RomaneioEntity>;
   let view: Repository<RomaneioView>;
-  let consignacaoService: ConsignacaoService;
   let contextService: ContextService;
+  let consignacaoService: ConsignacaoService;
+  let pedidoService: PedidoService;
+  let estoqueService: EstoqueService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -54,12 +58,6 @@ describe('RomaneioService', () => {
           },
         },
         {
-          provide: ConsignacaoService,
-          useValue: {
-            calculate: jest.fn(),
-          },
-        },
-        {
           provide: ContextService,
           useValue: {
             usuario: jest.fn().mockReturnValue({ id: 1 }),
@@ -69,14 +67,35 @@ describe('RomaneioService', () => {
             parametros: jest.fn().mockReturnValue([{ parametroId: 'QT_DIAS_DEVOLUCAO', valor: 60 }]),
           },
         },
+        {
+          provide: ConsignacaoService,
+          useValue: {
+            calculate: jest.fn(),
+          },
+        },
+        {
+          provide: PedidoService,
+          useValue: {
+            findById: jest.fn(),
+            cancelarFaturamento: jest.fn(),
+          },
+        },
+        {
+          provide: EstoqueService,
+          useValue: {
+            findByProdutoIds: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<RomaneioService>(RomaneioService);
     repository = module.get<Repository<RomaneioEntity>>(getRepositoryToken(RomaneioEntity));
     view = module.get<Repository<RomaneioView>>(getRepositoryToken(RomaneioView));
-    consignacaoService = module.get<ConsignacaoService>(ConsignacaoService);
     contextService = module.get<ContextService>(ContextService);
+    consignacaoService = module.get<ConsignacaoService>(ConsignacaoService);
+    pedidoService = module.get<PedidoService>(PedidoService);
+    estoqueService = module.get<EstoqueService>(EstoqueService);
   });
 
   it('should be defined', () => {
@@ -84,6 +103,9 @@ describe('RomaneioService', () => {
     expect(repository).toBeDefined();
     expect(view).toBeDefined();
     expect(contextService).toBeDefined();
+    expect(consignacaoService).toBeDefined();
+    expect(pedidoService).toBeDefined();
+    expect(estoqueService).toBeDefined();
   });
 
   describe('create', () => {
@@ -95,7 +117,7 @@ describe('RomaneioService', () => {
         operacao: OperacaoRomaneio.consignacao_saida,
       };
 
-      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneio de consignação não informado');
+      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Consignação não informada');
     });
 
     it('should return BadRequestException if consignacao_devolucao and consignacaoId is undefined', async () => {
@@ -106,7 +128,7 @@ describe('RomaneioService', () => {
         operacao: OperacaoRomaneio.consignacao_devolucao,
       };
 
-      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneio de consignação não informado');
+      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Consignação não informada');
     });
 
     it('should return BadRequestException if consignacao_acerto and consignacaoId is undefined', async () => {
@@ -117,7 +139,31 @@ describe('RomaneioService', () => {
         operacao: OperacaoRomaneio.consignacao_acerto,
       };
 
-      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneio de consignação não informado');
+      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Consignação não informada');
+    });
+
+    it('should return BadRequestException if consignacao_devolucao and romaneiosConsignacao is undefined', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
+        consignacaoId: 1,
+        operacao: OperacaoRomaneio.consignacao_devolucao,
+      };
+
+      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneios de consignação saída não informados');
+    });
+
+    it('should return BadRequestException if consignacao_devolucao and romaneiosConsignacao is undefined', async () => {
+      const createRomaneioDto: CreateRomaneioDto = {
+        pessoaId: 1,
+        tabelaPrecoId: 1,
+        funcionarioId: 1,
+        consignacaoId: 1,
+        operacao: OperacaoRomaneio.consignacao_acerto,
+      };
+
+      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneios de consignação saída não informados');
     });
 
     it('should return BadRequestException if compra_devolucao and romaneiosDevolucao is undefined', async () => {
@@ -137,18 +183,6 @@ describe('RomaneioService', () => {
         tabelaPrecoId: 1,
         funcionarioId: 1,
         operacao: OperacaoRomaneio.venda_devolucao,
-      };
-
-      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneios de devolução não informados');
-    });
-
-    it('should return BadRequestException if consignacao_devolucao and romaneiosDevolucao is undefined', async () => {
-      const createRomaneioDto: CreateRomaneioDto = {
-        pessoaId: 1,
-        tabelaPrecoId: 1,
-        funcionarioId: 1,
-        operacao: OperacaoRomaneio.consignacao_devolucao,
-        consignacaoId: 1,
       };
 
       await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneios de devolução não informados');
@@ -334,7 +368,7 @@ describe('RomaneioService', () => {
         funcionarioId: 1,
         operacao: OperacaoRomaneio.consignacao_devolucao,
         consignacaoId: 1,
-        romaneiosDevolucao: [1, 2, 3],
+        romaneiosConsignacao: [1, 2, 3],
       };
       const currentUser = { id: 1 };
       const currentBranch = { id: 1, data: new Date('2023-06-05') };
@@ -368,6 +402,7 @@ describe('RomaneioService', () => {
         funcionarioId: 1,
         operacao: OperacaoRomaneio.consignacao_acerto,
         consignacaoId: 1,
+        romaneiosConsignacao: [1, 2, 3],
       };
       const currentUser = { id: 1 };
       const currentBranch = { id: 1, data: new Date('2023-06-05') };
@@ -737,6 +772,40 @@ describe('RomaneioService', () => {
     });
   });
 
+  describe('validarEstoque', () => {
+    it('should return products with insufficient stock', async () => {
+      const empresaId = 1;
+      const id = 1;
+      const romaneio = { itens: [{ produtoId: 1, quantidade: 100 }] };
+      const estoque = [{ produtoId: 1, saldo: 99 }];
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio as any);
+      jest.spyOn(estoqueService, 'findByProdutoIds').mockResolvedValueOnce(estoque as any);
+
+      const result = await service.validarEstoque(empresaId, id);
+
+      expect(service.findById).toHaveBeenCalledWith(empresaId, id, ['itens']);
+      expect(estoqueService.findByProdutoIds).toHaveBeenCalledWith(empresaId, [1]);
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    it('should not return products with insufficient stock', async () => {
+      const empresaId = 1;
+      const id = 1;
+      const romaneio = { itens: [{ produtoId: 1, quantidade: 100 }] };
+      const estoque = [{ produtoId: 1, saldo: 100 }];
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio as any);
+      jest.spyOn(estoqueService, 'findByProdutoIds').mockResolvedValueOnce(estoque as any);
+
+      const result = await service.validarEstoque(empresaId, id);
+
+      expect(service.findById).toHaveBeenCalledWith(empresaId, id, ['itens']);
+      expect(estoqueService.findByProdutoIds).toHaveBeenCalledWith(empresaId, [1]);
+      expect(result.length).toBe(0);
+    });
+  });
+
   describe('encerrar', () => {
     it('should throw BadRequestException if romaneio is not in EmAndamento state', async () => {
       const empresaId = 1;
@@ -808,7 +877,12 @@ describe('RomaneioService', () => {
       const caixaId = 1;
       const id = 1;
       const liquidacao = undefined;
-      const romaneio = { id: 1, situacao: SituacaoRomaneio.em_andamento, operacao: OperacaoRomaneio.consignacao_saida, consignacaoId: 1 } as any;
+      const romaneio = {
+        id: 1,
+        situacao: SituacaoRomaneio.em_andamento,
+        operacao: OperacaoRomaneio.consignacao_saida,
+        consignacaoId: 1,
+      } as any;
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
       jest.spyOn(repository, 'update').mockResolvedValueOnce({} as any);
@@ -839,6 +913,38 @@ describe('RomaneioService', () => {
   });
 
   describe('cancelar', () => {
+    it('should throw BadRequestException if cancelar pedido type "transferencia_saida" already received', async () => {
+      const empresaId = 1;
+      const id = 1;
+      const motivo = 'Teste';
+      const romaneio = { pedidoId: 999, operacao: OperacaoRomaneio.transferencia_saida } as any;
+      const pedido = { tipo: 'transferencia_saida', romaneioDestinoId: 1 } as any;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
+      jest.spyOn(pedidoService, 'findById').mockResolvedValueOnce(pedido);
+
+      await expect(service.cancelar(empresaId, id, motivo)).rejects.toThrowError(
+        'Não é possível cancelar um romaneio de transferência que já foi recebido no destino'
+      );
+      expect(service.findById).toHaveBeenCalledWith(empresaId, id);
+      expect(pedidoService.findById).toHaveBeenCalledWith(romaneio.pedidoId);
+    });
+
+    it('should throw BadRequestException if cancelar fails', async () => {
+      const operadorId = 1;
+      const empresaId = 1;
+      const id = 1;
+      const motivo = 'Teste';
+
+      jest.spyOn(repository, 'update').mockRejectedValueOnce(new Error());
+
+      await expect(service.cancelar(empresaId, id, motivo)).rejects.toThrow(BadRequestException);
+      expect(repository.update).toHaveBeenCalledWith(
+        { id },
+        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId }
+      );
+    });
+
     it('should cancel a romaneio', async () => {
       const operadorId = 1;
       const empresaId = 1;
@@ -851,21 +957,12 @@ describe('RomaneioService', () => {
 
       const result = await service.cancelar(empresaId, id, motivo);
 
-      expect(repository.update).toHaveBeenCalledWith({ id }, { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId });
+      expect(repository.update).toHaveBeenCalledWith(
+        { id },
+        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId }
+      );
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(result).toEqual(romaneioFakeRepository.findOneView());
-    });
-
-    it('should throw BadRequestException if cancelar fails', async () => {
-      const operadorId = 1;
-      const empresaId = 1;
-      const id = 1;
-      const motivo = 'Teste';
-
-      jest.spyOn(repository, 'update').mockRejectedValueOnce(new Error());
-
-      await expect(service.cancelar(empresaId, id, motivo)).rejects.toThrow(BadRequestException);
-      expect(repository.update).toHaveBeenCalledWith({ id }, { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId });
     });
 
     it('should cancel a romaneio if operacao is devolucao', async () => {
@@ -880,7 +977,10 @@ describe('RomaneioService', () => {
 
       const result = await service.cancelar(empresaId, id, motivo);
 
-      expect(repository.update).toHaveBeenCalledWith({ id }, { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId });
+      expect(repository.update).toHaveBeenCalledWith(
+        { id },
+        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId }
+      );
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(result).toEqual(romaneioFakeRepository.findOneView());
       expect(repository.query).toBeCalledWith(`CALL romaneio_cancelar_itens_devolvidos(${id})`);
@@ -898,11 +998,38 @@ describe('RomaneioService', () => {
 
       const result = await service.cancelar(empresaId, id, motivo);
 
-      expect(repository.update).toHaveBeenCalledWith({ id }, { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId });
+      expect(repository.update).toHaveBeenCalledWith(
+        { id },
+        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId }
+      );
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(result).toEqual(romaneioFakeRepository.findOneView());
       expect(consignacaoService.calculate).toHaveBeenCalledTimes(1);
       expect(consignacaoService.calculate).toHaveBeenCalledWith(romaneio.consignacaoId);
+    });
+
+    it('should cancel a romaneio if operacao is transferencia_saida', async () => {
+      const operadorId = 1;
+      const empresaId = 1;
+      const id = 1;
+      const motivo = 'Teste';
+      const romaneio = { ...romaneioFakeRepository.findOneView(), pedidoId: 999, operacao: 'transferencia_saida' } as any;
+      const pedido = { tipo: 'transferencia_saida' } as any;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
+      jest.spyOn(pedidoService, 'findById').mockResolvedValueOnce(pedido);
+      jest.spyOn(repository, 'update').mockResolvedValueOnce({} as any);
+
+      const result = await service.cancelar(empresaId, id, motivo);
+
+      expect(repository.update).toHaveBeenCalledWith(
+        { id },
+        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId }
+      );
+      expect(service.findById).toHaveBeenCalledWith(empresaId, id);
+      expect(result).toEqual(romaneioFakeRepository.findOneView());
+      expect(pedidoService.findById).toHaveBeenCalledWith(romaneio.pedidoId);
+      expect(pedidoService.cancelarFaturamento).toHaveBeenCalledWith(romaneio.pedidoId);
     });
   });
 });

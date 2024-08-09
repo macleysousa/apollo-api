@@ -12,6 +12,8 @@ import { RomaneioService } from '../romaneio.service';
 import { AddRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
 import { RomaneioItemEntity } from './entities/romaneio-item.entity';
 import { RomaneioItemView } from './views/romaneio-item.view';
+import { OperacaoRomaneio } from '../enum/operacao-romaneio.enum';
+import { forEach } from 'lodash';
 
 interface InsertDto {
   romaneioId: number;
@@ -49,12 +51,13 @@ export class RomaneioItemService {
     }
 
     const romaneioItem = await this.findByProdutoId(romaneioId, produtoId);
-    const romaneioItemQuantidade = romaneioItem?.sum((x) => x.quantidade) ?? 0;
+    const quantidadeItem = romaneioItem?.sum((x) => x.quantidade) ?? 0;
 
     const estoque = await this.estoqueService.findByProdutoId(empresa.id, produtoId);
+    const saldoDisponivel = (estoque?.saldo ?? 0) - quantidadeItem;
     if (!estoque) {
       throw new BadRequestException('Produto não encontrado em estoque');
-    } else if (estoque.saldo < quantidade + romaneioItemQuantidade && romaneio.modalidade == ModalidadeRomaneio.saida) {
+    } else if (quantidade > saldoDisponivel && romaneio.modalidade == 'saida' && romaneio.operacao != 'consignacao_acerto') {
       throw new BadRequestException(`Saldo em estoque insuficiente para o produto ${produtoId}`);
     }
 
@@ -65,7 +68,62 @@ export class RomaneioItemService {
       throw new BadRequestException(`Referência ${estoque.referenciaId} com preço 00,00`);
     }
 
-    if (romaneio.romaneiosDevolucao && romaneio.romaneiosDevolucao.length > 0) {
+    if (romaneio.operacao == 'consignacao_acerto' || romaneio.operacao == 'consignacao_devolucao') {
+      const consignacaoItems = await this.findByConsignacaoIds([romaneio.consignacaoId], [produtoId], ['encerrado']);
+      const quantidadeConsignacaoItem =
+        consignacaoItems?.filter((x) => romaneio.romaneiosConsignacao.includes(x.romaneioId)).sum((x) => x.quantidade - x.devolvido) ?? 0;
+
+      if (quantidadeItem + quantidade > quantidadeConsignacaoItem) {
+        throw new BadRequestException(`Saldo em consignação insuficiente para o produto "${produtoId}"`);
+      } else {
+        const produtosConsignacao = await Promise.all(
+          consignacaoItems
+            .map((x) => {
+              const atual = romaneioItem
+                .filter((p) => p.produtoId == produtoId)
+                .filter((r) => r.romaneioOrigemId == x.romaneioId && r.romaneioOrigemSequencia == x.sequencia);
+              return {
+                romaneioId: x.romaneioId,
+                sequencia: x.sequencia,
+                produtoId: x.produtoId,
+                referenciaId: x.referenciaId,
+                valorUnitario: x.valorUnitario,
+                valorUnitDesconto: x.valorUnitDesconto,
+                saldo: x.quantidade - x.devolvido - atual.sum((y) => y.quantidade),
+              };
+            })
+            .filter((x) => x.saldo > 0)
+        );
+
+        for await (const item of produtosConsignacao) {
+          if (item.saldo >= quantidade) {
+            await this.insert({
+              romaneioId,
+              produtoId,
+              quantidade: quantidade,
+              referenciaId: item.referenciaId,
+              valorUnitario: item.valorUnitario,
+              valorUnitDesconto: item.valorUnitDesconto,
+              romaneioOrigemId: item.romaneioId,
+              romaneioOrigemSequencia: item.sequencia,
+            });
+            break;
+          } else if (item.saldo < quantidade) {
+            await this.insert({
+              romaneioId,
+              produtoId,
+              quantidade: item.saldo,
+              referenciaId: item.referenciaId,
+              valorUnitario: item.valorUnitario,
+              valorUnitDesconto: item.valorUnitDesconto,
+              romaneioOrigemId: item.romaneioId,
+              romaneioOrigemSequencia: item.sequencia,
+            });
+            quantidade -= item.saldo;
+          }
+        }
+      }
+    } else if (romaneio.romaneiosDevolucao && romaneio.romaneiosDevolucao.length > 0) {
       const romaneiosDevolucao = await this.findByRomaneioIds(romaneio.romaneiosDevolucao, [produtoId]);
       const romaneiosSaldos = await Promise.all(
         romaneiosDevolucao.map((x) => {
@@ -74,7 +132,7 @@ export class RomaneioItemService {
             .filter((r) => r.romaneioOrigemId == x.romaneioId && r.romaneioOrigemSequencia == x.sequencia);
           return {
             romaneioId: x.romaneioId,
-            sequecia: x.sequencia,
+            sequencia: x.sequencia,
             produtoId: x.produtoId,
             referenciaId: x.referenciaId,
             valorUnitario: x.valorUnitario,
@@ -101,7 +159,7 @@ export class RomaneioItemService {
             valorUnitario: item.valorUnitario,
             valorUnitDesconto: item.valorUnitDesconto,
             romaneioOrigemId: item.romaneioId,
-            romaneioOrigemSequencia: item.sequecia,
+            romaneioOrigemSequencia: item.sequencia,
           });
           quantidadeDevolucao = 0;
         } else if (quantidadeDevolucao > 0) {
@@ -113,7 +171,7 @@ export class RomaneioItemService {
             valorUnitario: item.valorUnitario,
             valorUnitDesconto: item.valorUnitDesconto,
             romaneioOrigemId: item.romaneioId,
-            romaneioOrigemSequencia: item.sequecia,
+            romaneioOrigemSequencia: item.sequencia,
           });
           quantidadeDevolucao -= item.saldo;
         }
