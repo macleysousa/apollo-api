@@ -6,7 +6,7 @@ import { ApiComponent } from 'src/decorators/api-componente.decorator';
 
 import { CreateParametroDto } from './dto/create-parametro.dto';
 import { EmpresaParametroService } from './parametro.service';
-import { EmpresaParametroView } from './views/paramentro.view';
+import { EmpresaParametroView } from './views/parametro.view';
 import { UpdateEmpresaParametroDto } from './dto/update-parametro.dto';
 import { Parametro } from 'src/modules/parametro/enum/parametros';
 

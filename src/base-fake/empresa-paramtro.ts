@@ -1,4 +1,4 @@
-import { EmpresaParametroView } from 'src/modules/empresa/parametro/views/paramentro.view';
+import { EmpresaParametroView } from 'src/modules/empresa/parametro/views/parametro.view';
 
 class EmpresaParametroFakeRepository {
   findView(): EmpresaParametroView[] {

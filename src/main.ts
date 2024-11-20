@@ -32,14 +32,23 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Apollo')
-    .setDescription('Swagger documentaion apollo')
+    .setDescription('Swagger documentation apollo')
     .setVersion('1.0')
+    .setExternalDoc(undefined, '/docs/api-docs.json')
     .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document, { swaggerOptions: { defaultModelsExpandDepth: -1 } });
+  SwaggerModule.setup('docs', app, document, {
+    swaggerOptions: { defaultModelsExpandDepth: -1 },
+    jsonDocumentUrl: '/docs/api-docs.json',
+  });
 
-  await app.listen(process.env.PORT || 3000);
+  await app.listen(process.env.PORT || 5000).then(async () => {
+    if (process.env.NODE_ENV == 'development') {
+      Logger.warn(`Server started on http://localhost:${process.env.PORT || 5000}`, 'App');
+      Logger.warn(`Swagger started on http://localhost:${process.env.PORT || 5000}/docs`, 'App');
+    }
+  });
 }
 bootstrap();

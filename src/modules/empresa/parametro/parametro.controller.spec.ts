@@ -6,7 +6,7 @@ import { EmpresaService } from '../empresa.service';
 import { CreateParametroDto } from './dto/create-parametro.dto';
 import { EmpresaParametroController } from './parametro.controller';
 import { EmpresaParametroService } from './parametro.service';
-import { EmpresaParametroView } from './views/paramentro.view';
+import { EmpresaParametroView } from './views/parametro.view';
 
 describe('ParametroController', () => {
   let controller: EmpresaParametroController;

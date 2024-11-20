@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { EmpresaParametroService } from './parametro.service';
 import { CreateParametroDto } from './dto/create-parametro.dto';
 import { EmpresaParametroEntity } from './entities/parametro.entity';
-import { EmpresaParametroView } from './views/paramentro.view';
+import { EmpresaParametroView } from './views/parametro.view';
 import { empresaParametroFakeRepository } from 'src/base-fake/empresa-paramtro';
 
 describe('ParametroService', () => {

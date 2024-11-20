@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EmpresaParametroService } from './parametro.service';
 import { EmpresaParametroController } from './parametro.controller';
 import { EmpresaParametroEntity } from './entities/parametro.entity';
-import { EmpresaParametroView } from './views/paramentro.view';
+import { EmpresaParametroView } from './views/parametro.view';
 
 @Module({
   imports: [TypeOrmModule.forFeature([EmpresaParametroEntity, EmpresaParametroView])],

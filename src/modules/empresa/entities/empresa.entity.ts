@@ -11,7 +11,7 @@ import { FormaDePagamentoEntity } from 'src/modules/forma-de-pagamento/entities/
 import { EmpresaFormaPagamentoEntity } from '../forma-de-pagamento/entities/forma-de-pagamento.entity';
 import { TerminalEntity } from '../terminal/entities/terminal.entity';
 import { EmpresaParametroEntity } from '../parametro/entities/parametro.entity';
-import { EmpresaParametroView } from '../parametro/views/paramentro.view';
+import { EmpresaParametroView } from '../parametro/views/parametro.view';
 
 @Entity({ name: 'empresas' })
 export class EmpresaEntity extends BaseEntity {
