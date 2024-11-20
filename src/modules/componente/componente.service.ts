@@ -14,7 +14,7 @@ export class ComponenteService {
   ) {}
 
   async popular(): Promise<void> {
-    this.componentRepository.save(components);
+    this.componentRepository.upsert(components, { conflictPaths: ['id'] });
   }
 
   async find(filter?: string, blocked?: boolean): Promise<ComponenteEntity[]> {
