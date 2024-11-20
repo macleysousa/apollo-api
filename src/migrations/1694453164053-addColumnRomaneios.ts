@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, TableColumn, TableForeignKey, TableIndex } from 'typeorm';
 
-export class AddColumnRomaneios1694453164176 implements MigrationInterface {
+export class AddColumnRomaneios1694453164053 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.addColumn(
       'romaneios',

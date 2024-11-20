@@ -1,8 +1,7 @@
 import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
-import ormConfig from './config/orm.config';
+import { OrmModule } from './config/orm.module';
 import { ContextModule } from './context/context.module';
 import { AllExceptionsFilter } from './exceptions/all-exceptions.filter';
 import { ComponentGuard } from './guards/component.guard';
@@ -13,8 +12,8 @@ import { InjectRequestInterceptor } from './interceptors/inject-request.intercep
 import { AuthModule } from './modules/auth/auth.module';
 import { CaixaModule } from './modules/caixa/caixa.module';
 import { CategoriaModule } from './modules/categoria/categoria.module';
-import { ComponentsModule } from './modules/componente/componente.module';
 import { ComponentGroupModule } from './modules/componente-grupo/componente-grupo.module';
+import { ComponentsModule } from './modules/componente/componente.module';
 import { ConsignacaoModule } from './modules/consignacao/consignacao.module';
 import { CorModule } from './modules/cor/cor.module';
 import { EmpresaModule } from './modules/empresa/empresa.module';
@@ -38,7 +37,7 @@ import { UsuarioModule } from './modules/usuario/usuario.module';
   imports: [
     AuthModule,
     ContextModule.forRoot(),
-    TypeOrmModule.forRoot({ ...ormConfig }),
+    OrmModule.forRoot(),
     UsuarioModule.forRoot(),
     ComponentsModule.forRoot(),
     ComponentGroupModule.forRoot(),

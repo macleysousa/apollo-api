@@ -6,7 +6,7 @@ dotenv.config();
 
 const { DB_TYPE, DB_DATABASE, DB_HOSTNAME, DB_USERNAME, DB_ENTITIES, DB_MIGRATIONS } = process.env;
 
-if (!DB_TYPE || !DB_HOSTNAME || !DB_DATABASE || !DB_USERNAME || !DB_ENTITIES || !DB_MIGRATIONS) {
+if (!DB_TYPE || !DB_HOSTNAME || !DB_DATABASE || !DB_USERNAME) {
   throw new Error('Database variable DB_* has not been set properly');
 }
 
@@ -22,8 +22,8 @@ export default {
   autoLoadEntities: true,
   synchronize: false,
   logging: ORM_LOGGING === 'true' ? true : false,
-  entities: [join(__dirname, DB_ENTITIES)],
-  migrations: [join(__dirname, DB_MIGRATIONS)],
-  migrationsRun: true,
+  entities: [join(__dirname, DB_ENTITIES ?? '../modules/**/*.entity{.ts,.js}')],
+  migrations: [join(__dirname, DB_MIGRATIONS ?? '../migrations/*{.ts,.js}')],
+  migrationsRun: process.env.NODE_ENV === 'development' ? false : true,
   timezone: DB_TIMEZONE || '+00:00',
 } as TypeOrmModuleOptions;

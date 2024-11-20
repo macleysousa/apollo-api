@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
 
-export class AddColumnRomaneiosConsignacao1696955588846 implements MigrationInterface {
+export class AddColumnRomaneiosConsignacao1696955588524 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.addColumn('romaneios', new TableColumn({ name: 'romaneiosConsignacao', type: 'text', isNullable: true }));
     await queryRunner.query(
