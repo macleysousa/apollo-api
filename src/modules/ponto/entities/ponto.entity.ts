@@ -4,7 +4,6 @@ import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn
 
 @Entity({ name: 'pontos' })
 export class PontoEntity extends BaseEntity {
-
   @ApiProperty()
   @PrimaryGeneratedColumn('increment')
   id: number;
@@ -24,8 +23,6 @@ export class PontoEntity extends BaseEntity {
   @ApiProperty()
   @UpdateDateColumn()
   dataDeValidade: Date;
-
-
 
   constructor(partial?: Partial<PontoEntity>) {
     super();

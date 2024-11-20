@@ -170,8 +170,14 @@ export class ReceberService {
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
       case OperacaoRomaneio.consignacao_devolucao:
-        // eslint-disable-next-line prettier/prettier
-        if (!(await this.romaneioService.validarDevolucao(empresa.id, romaneio.romaneioId, ['consignacao_saida'], romaneio.romaneiosDevolucao))) {
+        if (
+          !(await this.romaneioService.validarDevolucao(
+            empresa.id,
+            romaneio.romaneioId,
+            ['consignacao_saida'],
+            romaneio.romaneiosDevolucao
+          ))
+        ) {
           throw new BadRequestException('Romaneio possui itens que não podem ser devolvidos');
         }
 
