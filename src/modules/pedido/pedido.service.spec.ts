@@ -4,15 +4,16 @@ import { Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
 
+import { EstoqueService } from '../estoque/estoque.service';
+import { EstoqueView } from '../estoque/views/estoque.view';
+import { RomaneioService } from '../romaneio/romaneio.service';
+
 import { CancelPedidoDto } from './dto/cancel-pedido.dto';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { PedidoEntity } from './entities/pedido.entity';
 import { PedidoFilter } from './filters/pedido.filters';
 import { PedidoService } from './pedido.service';
-import { RomaneioService } from '../romaneio/romaneio.service';
-import { EstoqueService } from '../estoque/estoque.service';
-import { EstoqueView } from '../estoque/views/estoque.view';
 
 describe('PedidoService', () => {
   let service: PedidoService;
@@ -281,7 +282,7 @@ describe('PedidoService', () => {
       jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
 
       await expect(service.conferir(id)).rejects.toThrowError(
-        'Foi encontrado uma divergência entre a quantidade solicitada e a quantidade atendida'
+        'Foi encontrado uma divergência entre a quantidade solicitada e a quantidade atendida',
       );
 
       expect(service.findById).toHaveBeenCalledWith(id, ['itens']);
@@ -311,7 +312,7 @@ describe('PedidoService', () => {
       jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
 
       await expect(service.cancelarConferencia(id)).rejects.toThrowError(
-        'Não é possível cancelar a conferência de um pedido que não esteja situação "conferido"'
+        'Não é possível cancelar a conferência de um pedido que não esteja situação "conferido"',
       );
 
       expect(service.findById).toHaveBeenCalledWith(id);
@@ -359,7 +360,9 @@ describe('PedidoService', () => {
       const id = 1;
       const pedido = { id, situacao: 'em_andamento' } as PedidoEntity;
       jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
-      jest.spyOn(contextService, 'parametros').mockReturnValueOnce([{ parametroId: 'FATURAR_PEDIDO_SEM_CONFERENCIA', valor: 'N' }] as any);
+      jest
+        .spyOn(contextService, 'parametros')
+        .mockReturnValueOnce([{ parametroId: 'FATURAR_PEDIDO_SEM_CONFERENCIA', valor: 'N' }] as any);
 
       await expect(service.faturar(id)).rejects.toThrowError('Não é possível faturar um pedido que não esteja conferido');
 
@@ -368,14 +371,19 @@ describe('PedidoService', () => {
 
     it('should throw BadRequestException if pedido type "venda" products with balance insufficient', async () => {
       const id = 1;
-      const pedido = { id, tipo: 'venda', situacao: 'conferido', itens: [{ produtoId: 1, solicitado: 2, atendido: 2 }] } as PedidoEntity;
+      const pedido = {
+        id,
+        tipo: 'venda',
+        situacao: 'conferido',
+        itens: [{ produtoId: 1, solicitado: 2, atendido: 2 }],
+      } as PedidoEntity;
       const estoque = [{ produtoId: 1, saldo: 1 }] as EstoqueView[];
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
       jest.spyOn(estoqueService, 'findByProdutoIds').mockResolvedValueOnce(estoque);
 
       await expect(service.faturar(id)).rejects.toThrowError(
-        `Não há saldo suficiente para os produtos: ${estoque.map((e) => e.produtoId).join(', ')}`
+        `Não há saldo suficiente para os produtos: ${estoque.map((e) => e.produtoId).join(', ')}`,
       );
       expect(service.findById).toHaveBeenCalledWith(id, ['itens']);
       expect(estoqueService.findByProdutoIds).toHaveBeenCalledWith(1, [1]);
@@ -395,7 +403,7 @@ describe('PedidoService', () => {
       jest.spyOn(estoqueService, 'findByProdutoIds').mockResolvedValueOnce(estoque);
 
       await expect(service.faturar(id)).rejects.toThrowError(
-        `Não há saldo suficiente para os produtos: ${estoque.map((e) => e.produtoId).join(', ')}`
+        `Não há saldo suficiente para os produtos: ${estoque.map((e) => e.produtoId).join(', ')}`,
       );
       expect(service.findById).toHaveBeenCalledWith(id, ['itens']);
       expect(estoqueService.findByProdutoIds).toHaveBeenCalledWith(1, [1]);
@@ -440,7 +448,7 @@ from pedidos_itens i
 inner join empresas e on e.id = i.empresaId
 inner join produtos p on p.id = i.produtoId
 where i.pedidoId = ${id} and i.atendido > 0)
-      `
+      `,
       );
       expect(repository.save).toHaveBeenCalledWith({ ...pedido, situacao: 'encerrado', operadorId });
     });
@@ -482,7 +490,7 @@ from pedidos_itens i
 inner join empresas e on e.id = i.empresaId
 inner join produtos p on p.id = i.produtoId
 where i.pedidoId = ${id} and i.atendido > 0)
-      `
+      `,
       );
       expect(repository.save).toHaveBeenCalledWith({ ...pedido, situacao: 'encerrado', operadorId });
     });
@@ -516,7 +524,7 @@ from pedidos_itens i
 inner join empresas e on e.id = i.empresaId
 inner join produtos p on p.id = i.produtoId
 where i.pedidoId = ${id} and i.atendido > 0)
-      `
+      `,
       );
       expect(repository.save).toHaveBeenCalledWith({ ...pedido, situacao: 'encerrado', operadorId });
     });
@@ -530,7 +538,7 @@ where i.pedidoId = ${id} and i.atendido > 0)
       jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
 
       await expect(service.cancelarFaturamento(id)).rejects.toThrowError(
-        'Não é possível cancelar o faturamento de um pedido que não esteja encerrado'
+        'Não é possível cancelar o faturamento de um pedido que não esteja encerrado',
       );
 
       expect(service.findById).toHaveBeenCalledWith(id);
@@ -543,7 +551,7 @@ where i.pedidoId = ${id} and i.atendido > 0)
       jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
 
       await expect(service.cancelarFaturamento(id)).rejects.toThrowError(
-        'Não é possível cancelar o faturamento de um pedido que já foi recebido no destino'
+        'Não é possível cancelar o faturamento de um pedido que já foi recebido no destino',
       );
 
       expect(service.findById).toHaveBeenCalledWith(id);
@@ -586,7 +594,9 @@ where i.pedidoId = ${id} and i.atendido > 0)
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(pedido);
 
-      await expect(service.cancel(id, dto)).rejects.toThrowError('Não é possível cancelar um pedido que está com situação "encerrado"');
+      await expect(service.cancel(id, dto)).rejects.toThrowError(
+        'Não é possível cancelar um pedido que está com situação "encerrado"',
+      );
 
       expect(service.findById).toHaveBeenCalledWith(id);
     });
@@ -607,7 +617,7 @@ where i.pedidoId = ${id} and i.atendido > 0)
       expect(contextService.operadorId).toHaveBeenCalled();
       expect(repository.update).toHaveBeenCalledWith(
         { id },
-        { situacao: 'cancelado', motivoCancelamento: dto.motivoCancelamento, operadorId }
+        { situacao: 'cancelado', motivoCancelamento: dto.motivoCancelamento, operadorId },
       );
     });
   });

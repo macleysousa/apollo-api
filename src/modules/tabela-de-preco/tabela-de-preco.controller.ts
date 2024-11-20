@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { TabelaDePrecoService } from './tabela-de-preco.service';
+import { ApiComponent } from '../../decorators/api-componente.decorator';
+
 import { CreateTabelaDePrecoDto } from './dto/create-tabela-de-preco.dto';
 import { UpdateTabelaDePrecoDto } from './dto/update-tabela-de-preco.dto';
 import { TabelaDePrecoEntity } from './entities/tabela-de-preco.entity';
-import { ApiComponent } from '../../decorators/api-componente.decorator';
+import { TabelaDePrecoService } from './tabela-de-preco.service';
 
 @ApiBearerAuth()
 @ApiTags('Tabelas de preços')

@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { ParametroEntity } from './entities/parametro.entity';
 import { ParametroController } from './parametro.controller';
 import { ParametroService } from './parametro.service';
-import { ParametroEntity } from './entities/parametro.entity';
 
 describe('ParametroController', () => {
   let controller: ParametroController;
@@ -33,7 +34,9 @@ describe('ParametroController', () => {
     it('should call service.find with the correct parameters', async () => {
       const id = 'CD_PRECO_PADRAO';
       const descricao = 'Tabela de preço padrão';
-      const expectedResult: ParametroEntity[] = [{ id: 'CD_PRECO_PADRAO', descricao: 'Tabela de preço padrão', valorPadrao: '0' }];
+      const expectedResult: ParametroEntity[] = [
+        { id: 'CD_PRECO_PADRAO', descricao: 'Tabela de preço padrão', valorPadrao: '0' },
+      ];
       jest.spyOn(service, 'find').mockResolvedValueOnce(expectedResult);
 
       const result = await controller.find(id, descricao);
@@ -43,7 +46,9 @@ describe('ParametroController', () => {
     });
 
     it('should call service.find with empty parameters if none are provided', async () => {
-      const expectedResult: ParametroEntity[] = [{ id: 'CD_PRECO_PADRAO', descricao: 'Tabela de preço padrão', valorPadrao: '0' }];
+      const expectedResult: ParametroEntity[] = [
+        { id: 'CD_PRECO_PADRAO', descricao: 'Tabela de preço padrão', valorPadrao: '0' },
+      ];
       jest.spyOn(service, 'find').mockResolvedValueOnce(expectedResult);
 
       const result = await controller.find();

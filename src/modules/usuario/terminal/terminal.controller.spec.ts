@@ -3,10 +3,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { userFakeRepository } from 'src/base-fake/user';
 import { TerminalEntity } from 'src/modules/empresa/terminal/entities/terminal.entity';
 
+import { UsuarioService } from '../usuario.service';
+
 import { AddUsuarioTerminalDto } from './dto/add-terminal.dto';
 import { UsuarioTerminalController } from './terminal.controller';
 import { UsuarioTerminalService } from './terminal.service';
-import { UsuarioService } from '../usuario.service';
 
 describe('UsuarioTerminalController', () => {
   let controller: UsuarioTerminalController;

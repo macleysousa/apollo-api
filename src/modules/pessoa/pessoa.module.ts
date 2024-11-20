@@ -3,9 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { IsPessoaConstraint } from 'src/commons/validations/is-pessoa.validation';
 
-import { PessoaExtratoModule } from './extrato/pessoa-extrato.module';
 import { PessoaEnderecoModule } from './endereco/pessoa-endereco.module';
 import { PessoaEntity } from './entities/pessoa.entity';
+import { PessoaExtratoModule } from './extrato/pessoa-extrato.module';
 import { PessoaController } from './pessoa.controller';
 import { PessoaService } from './pessoa.service';
 import { IsDocumentoConstraint } from './validation/is-documento-unique.validation';

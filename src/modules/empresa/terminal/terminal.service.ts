@@ -10,7 +10,7 @@ import { TerminalEntity } from './entities/terminal.entity';
 export class TerminalService {
   constructor(
     @InjectRepository(TerminalEntity)
-    private repository: Repository<TerminalEntity>
+    private repository: Repository<TerminalEntity>,
   ) {}
 
   async create(empresaId: number, createTerminalDto: CreateTerminalDto): Promise<TerminalEntity> {

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ViewEntity, ViewColumn } from 'typeorm';
+import { ViewColumn, ViewEntity } from 'typeorm';
 
 @ViewEntity({ name: 'view_estoque_produtos' })
 export class EstoqueView {

@@ -5,9 +5,10 @@ import { Repository } from 'typeorm';
 import { ContextService } from 'src/context/context.service';
 
 import { RomaneioItemService } from '../romaneio/romaneio-item/romaneio-item.service';
+
+import { ConsignacaoService } from './consignacao.service';
 import { ConsignacaoItemService } from './consignacao-item/consignacao-item.service';
 import { UpsertConsignacaoItemDto } from './consignacao-item/dto/upsert-consignacao-item.dto';
-import { ConsignacaoService } from './consignacao.service';
 import { CancelConsinacaoDto } from './dto/cancelar-consignacao.dto';
 import { OpenConsignacaoDto } from './dto/open-consignacao.dto';
 import { UpdateConsignacaoDto } from './dto/update-consignacao.dto';
@@ -229,7 +230,13 @@ describe('ConsignacaoService', () => {
     });
 
     it('should throw BadRequestException if consignacao is not "aberta"', async () => {
-      const consignacao = { id: 1, empresaId: 1, dataAbertura: new Date(), operadorId: 1, situacao: 'encerrada' } as ConsignacaoView;
+      const consignacao = {
+        id: 1,
+        empresaId: 1,
+        dataAbertura: new Date(),
+        operadorId: 1,
+        situacao: 'encerrada',
+      } as ConsignacaoView;
       const dto: UpdateConsignacaoDto = { observacao: 'Nova observação' };
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
@@ -428,7 +435,7 @@ describe('ConsignacaoService', () => {
       expect(service.findById).toHaveBeenCalledWith(1, 1);
       expect(repository.update).toHaveBeenCalledWith(
         { empresaId: 1, id: 1 },
-        { situacao: 'cancelada', motivoCancelamento: dto.motivoCancelamento, operadorId: 1 }
+        { situacao: 'cancelada', motivoCancelamento: dto.motivoCancelamento, operadorId: 1 },
       );
     });
   });

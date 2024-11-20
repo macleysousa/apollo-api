@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { CreateFuncionarioDto } from './dto/create-funcionario.dto';
+import { UpdateFuncionarioDto } from './dto/update-funcionario.dto';
+import { FuncionarioEntity } from './entities/funcionario.entity';
 import { FuncionarioController } from './funcionario.controller';
 import { FuncionarioService } from './funcionario.service';
-import { CreateFuncionarioDto } from './dto/create-funcionario.dto';
-import { FuncionarioEntity } from './entities/funcionario.entity';
-import { UpdateFuncionarioDto } from './dto/update-funcionario.dto';
 
 describe('FuncionarioController', () => {
   let controller: FuncionarioController;

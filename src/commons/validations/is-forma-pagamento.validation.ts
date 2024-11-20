@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } from 'class-validator';
-import { ValidatorConstraint, ValidationArguments } from 'class-validator';
+import { ValidationArguments, ValidatorConstraint } from 'class-validator';
 
 import { FormaDePagamentoService } from 'src/modules/forma-de-pagamento/forma-de-pagamento.service';
 

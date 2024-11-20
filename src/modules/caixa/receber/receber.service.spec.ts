@@ -15,6 +15,7 @@ import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
 import { CaixaExtratoEntity } from '../extrato/entities/extrato.entity';
 import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
 import { CaixaExtratoService } from '../extrato/extrato.service';
+
 import { PagamentoDto } from './dto/pagamento.dto';
 import { ReceberAdiantamentoDto } from './dto/receber-adiantamento.dto';
 import { RecebimentoDto } from './dto/recebimento.dto';
@@ -180,7 +181,7 @@ describe('ReceberService', () => {
       ] as any);
 
       await expect(service.lancarFaturas(empresaId, recebimento, formasDePagamento)).rejects.toThrow(
-        new BadRequestException('Valor insuficiente para realizar o a operação.')
+        new BadRequestException('Valor insuficiente para realizar o a operação.'),
       );
     });
 
@@ -196,7 +197,7 @@ describe('ReceberService', () => {
       ] as any);
 
       await expect(service.lancarFaturas(empresaId, recebimento, formasDePagamento)).rejects.toThrow(
-        new BadRequestException('Valor em dinheiro insuficiente para realizar o a operação com troco.')
+        new BadRequestException('Valor em dinheiro insuficiente para realizar o a operação com troco.'),
       );
     });
 
@@ -214,7 +215,7 @@ describe('ReceberService', () => {
       jest.spyOn(pessoaExtratoService, 'findSaldoAdiantamento').mockResolvedValueOnce(0);
 
       await expect(service.lancarFaturas(empresaId, recebimento, formasDePagamento)).rejects.toThrow(
-        new BadRequestException('Saldo de adiantamento insuficiente para realizar o a operação.')
+        new BadRequestException('Saldo de adiantamento insuficiente para realizar o a operação.'),
       );
     });
 
@@ -232,7 +233,7 @@ describe('ReceberService', () => {
       jest.spyOn(pessoaExtratoService, 'findSaldoCreditoDeDevolucao').mockResolvedValueOnce(0);
 
       await expect(service.lancarFaturas(empresaId, recebimento, formasDePagamento)).rejects.toThrow(
-        new BadRequestException('Creditos de devolução insuficiente para realizar o a operação.')
+        new BadRequestException('Creditos de devolução insuficiente para realizar o a operação.'),
       );
     });
 

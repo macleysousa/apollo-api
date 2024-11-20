@@ -8,8 +8,8 @@ import { sizeFakeRepository } from 'src/base-fake/size';
 import { CreateTamanhoDto } from './dto/create-tamanho.dto';
 import { UpdateTamanhoDto } from './dto/update-tamanho.dto';
 import { TamanhoEntity } from './entities/tamanho.entity';
-import { TamanhoService } from './tamanho.service';
 import { TamanhoFilter } from './filters/tamanho.filter';
+import { TamanhoService } from './tamanho.service';
 
 describe('SizeService', () => {
   let service: TamanhoService;

@@ -3,9 +3,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { TipoFrete } from '../../../commons/enum/tipo-frete';
+
 import { CreateRomaneioFreteDto } from './dto/create-romaneio-frete.dto';
 import { RomaneioFreteEntity } from './entities/romaneio-frete.entity';
-import { TipoFrete } from '../../../commons/enum/tipo-frete';
 import { RomaneioFreteService } from './romaneio-frete.service';
 
 describe('RomaneioFreteService', () => {
@@ -40,7 +41,12 @@ describe('RomaneioFreteService', () => {
     it('should call repository.upsert() with the correct parameters', async () => {
       const empresaId = 1;
       const romaneioId = 1;
-      const createRomaneioFreteDto: CreateRomaneioFreteDto = { tipo: TipoFrete.CIF, valor: 100, prazo: 10, observacao: 'Observação' };
+      const createRomaneioFreteDto: CreateRomaneioFreteDto = {
+        tipo: TipoFrete.CIF,
+        valor: 100,
+        prazo: 10,
+        observacao: 'Observação',
+      };
       const romaneioFreteResult = { empresaId: 1, romaneioId: 1, ...createRomaneioFreteDto } as any;
 
       jest.spyOn(service, 'findByRomaneioId').mockResolvedValueOnce(romaneioFreteResult);
@@ -49,7 +55,7 @@ describe('RomaneioFreteService', () => {
 
       expect(repository.upsert).toHaveBeenCalledWith(
         { ...createRomaneioFreteDto, empresaId, romaneioId },
-        { conflictPaths: ['empresaId', 'romaneioId'] }
+        { conflictPaths: ['empresaId', 'romaneioId'] },
       );
 
       expect(service.findByRomaneioId).toHaveBeenCalledWith(empresaId, romaneioId);

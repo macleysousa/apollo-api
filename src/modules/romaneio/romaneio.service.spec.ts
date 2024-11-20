@@ -6,6 +6,10 @@ import { In, Repository } from 'typeorm';
 import { romaneioFakeRepository } from 'src/base-fake/romaneio';
 import { ContextService } from 'src/context/context.service';
 
+import { ConsignacaoService } from '../consignacao/consignacao.service';
+import { EstoqueService } from '../estoque/estoque.service';
+import { PedidoService } from '../pedido/pedido.service';
+
 import { CreateRomaneioDto } from './dto/create-romaneio.dto';
 import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';
 import { RomaneioEntity } from './entities/romaneio.entity';
@@ -15,9 +19,6 @@ import { SituacaoRomaneio } from './enum/situacao-romaneio.enum';
 import { RomaneioFilter } from './filters/romaneio.filter';
 import { RomaneioService } from './romaneio.service';
 import { RomaneioView } from './views/romaneio.view';
-import { ConsignacaoService } from '../consignacao/consignacao.service';
-import { PedidoService } from '../pedido/pedido.service';
-import { EstoqueService } from '../estoque/estoque.service';
 
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({
@@ -514,18 +515,28 @@ describe('RomaneioService', () => {
 
       expect(view.createQueryBuilder).toHaveBeenCalledWith('e');
       expect(view.createQueryBuilder().where).toHaveBeenCalledWith('e.empresaId IS NOT NULL');
-      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.data >= :dataInicial', { dataInicial: filter.dataInicial });
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.data >= :dataInicial', {
+        dataInicial: filter.dataInicial,
+      });
       expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.data <= :dataFinal', { dataFinal: filter.dataFinal });
-      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.empresaId IN (:...empresaIds)', { empresaIds: filter.empresaIds });
-      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.pessoaId IN (:...pessoaIds)', { pessoaIds: filter.pessoaIds });
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.empresaId IN (:...empresaIds)', {
+        empresaIds: filter.empresaIds,
+      });
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.pessoaId IN (:...pessoaIds)', {
+        pessoaIds: filter.pessoaIds,
+      });
       expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.funcionarioId IN (:...funcionarioIds)', {
         funcionarioIds: filter.funcionarioIds,
       });
       expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.modalidade IN (:...modalidades)', {
         modalidades: filter.modalidades,
       });
-      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.operacao IN (:...operacoes)', { operacoes: filter.operacoes });
-      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.situacao IN (:...situacoes)', { situacoes: filter.situacoes });
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.operacao IN (:...operacoes)', {
+        operacoes: filter.operacoes,
+      });
+      expect(view.createQueryBuilder().andWhere).toHaveBeenCalledWith('e.situacao IN (:...situacoes)', {
+        situacoes: filter.situacoes,
+      });
 
       expect(result).toEqual(romaneioFakeRepository.findViewPaginate());
     });
@@ -541,8 +552,12 @@ describe('RomaneioService', () => {
       expect(view.createQueryBuilder().where).toHaveBeenCalledWith('e.empresaId IS NOT NULL');
       expect(view.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ empresaId: In(filter.empresaIds) });
       expect(view.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ funcionarioId: In(filter.funcionarioIds) });
-      expect(view.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('e.data >= :dataInicial', { dataInicial: filter.dataInicial });
-      expect(view.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('e.data <= :dataFinal', { dataFinal: filter.dataFinal });
+      expect(view.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('e.data >= :dataInicial', {
+        dataInicial: filter.dataInicial,
+      });
+      expect(view.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('e.data <= :dataFinal', {
+        dataFinal: filter.dataFinal,
+      });
 
       expect(result).toEqual(romaneioFakeRepository.findViewPaginate());
     });
@@ -620,7 +635,9 @@ describe('RomaneioService', () => {
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
 
-      await expect(service.update(empresaId, id, dto)).rejects.toThrowError(`Romaneio "${id}" não pode ser alterado pois já possui itens`);
+      await expect(service.update(empresaId, id, dto)).rejects.toThrowError(
+        `Romaneio "${id}" não pode ser alterado pois já possui itens`,
+      );
       expect(service.findById).toHaveBeenCalledWith(empresaId, id, ['itens']);
       expect(repository.update).not.toHaveBeenCalled();
     });
@@ -833,7 +850,10 @@ describe('RomaneioService', () => {
       await service.encerrar(empresaId, caixaId, id);
 
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
-      expect(repository.update).toHaveBeenCalledWith({ id }, { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId });
+      expect(repository.update).toHaveBeenCalledWith(
+        { id },
+        { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId },
+      );
     });
 
     it('should update romaneio situacao to Encerrado if operacao is venda', async () => {
@@ -850,7 +870,10 @@ describe('RomaneioService', () => {
       await service.encerrar(empresaId, caixaId, id, liquidacao);
 
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
-      expect(repository.update).toHaveBeenCalledWith({ id }, { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId });
+      expect(repository.update).toHaveBeenCalledWith(
+        { id },
+        { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId },
+      );
     });
 
     it('should update romaneio situacao to Encerrado if operacao is devolucao', async () => {
@@ -859,7 +882,12 @@ describe('RomaneioService', () => {
       const caixaId = 1;
       const id = 1;
       const liquidacao = 1692703474445;
-      const romaneio = { id: 1, situacao: SituacaoRomaneio.em_andamento, operacao: OperacaoRomaneio.venda, romaneiosDevolucao: [1] } as any;
+      const romaneio = {
+        id: 1,
+        situacao: SituacaoRomaneio.em_andamento,
+        operacao: OperacaoRomaneio.venda,
+        romaneiosDevolucao: [1],
+      } as any;
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
       jest.spyOn(repository, 'update').mockResolvedValueOnce({} as any);
@@ -867,7 +895,10 @@ describe('RomaneioService', () => {
       await service.encerrar(empresaId, caixaId, id, liquidacao);
 
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
-      expect(repository.update).toHaveBeenCalledWith({ id }, { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId });
+      expect(repository.update).toHaveBeenCalledWith(
+        { id },
+        { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId },
+      );
       expect(repository.query).toHaveBeenCalledWith(`CALL romaneio_calcular_itens_devidos(${id})`);
     });
 
@@ -890,7 +921,10 @@ describe('RomaneioService', () => {
       await service.encerrar(empresaId, caixaId, id, liquidacao);
 
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
-      expect(repository.update).toHaveBeenCalledWith({ id }, { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId });
+      expect(repository.update).toHaveBeenCalledWith(
+        { id },
+        { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId },
+      );
       expect(consignacaoService.calculate).toHaveBeenCalledTimes(1);
       expect(consignacaoService.calculate).toHaveBeenCalledWith(romaneio.consignacaoId);
     });
@@ -908,7 +942,10 @@ describe('RomaneioService', () => {
 
       await expect(service.encerrar(empresaId, caixaId, id)).rejects.toThrow(BadRequestException);
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
-      expect(repository.update).toHaveBeenCalledWith({ id }, { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId });
+      expect(repository.update).toHaveBeenCalledWith(
+        { id },
+        { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId },
+      );
     });
   });
 
@@ -924,7 +961,7 @@ describe('RomaneioService', () => {
       jest.spyOn(pedidoService, 'findById').mockResolvedValueOnce(pedido);
 
       await expect(service.cancelar(empresaId, id, motivo)).rejects.toThrowError(
-        'Não é possível cancelar um romaneio de transferência que já foi recebido no destino'
+        'Não é possível cancelar um romaneio de transferência que já foi recebido no destino',
       );
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(pedidoService.findById).toHaveBeenCalledWith(romaneio.pedidoId);
@@ -941,7 +978,7 @@ describe('RomaneioService', () => {
       await expect(service.cancelar(empresaId, id, motivo)).rejects.toThrow(BadRequestException);
       expect(repository.update).toHaveBeenCalledWith(
         { id },
-        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId }
+        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId },
       );
     });
 
@@ -959,7 +996,7 @@ describe('RomaneioService', () => {
 
       expect(repository.update).toHaveBeenCalledWith(
         { id },
-        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId }
+        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId },
       );
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(result).toEqual(romaneioFakeRepository.findOneView());
@@ -979,7 +1016,7 @@ describe('RomaneioService', () => {
 
       expect(repository.update).toHaveBeenCalledWith(
         { id },
-        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId }
+        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId },
       );
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(result).toEqual(romaneioFakeRepository.findOneView());
@@ -1000,7 +1037,7 @@ describe('RomaneioService', () => {
 
       expect(repository.update).toHaveBeenCalledWith(
         { id },
-        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId }
+        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId },
       );
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(result).toEqual(romaneioFakeRepository.findOneView());
@@ -1024,7 +1061,7 @@ describe('RomaneioService', () => {
 
       expect(repository.update).toHaveBeenCalledWith(
         { id },
-        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId }
+        { situacao: SituacaoRomaneio.cancelado, motivoCancelamento: motivo, operadorId },
       );
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(result).toEqual(romaneioFakeRepository.findOneView());

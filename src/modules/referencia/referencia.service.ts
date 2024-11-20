@@ -3,17 +3,18 @@ import { BadRequestException } from '@nestjs/common/exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 
+import { PrecoReferenciaService } from '../tabela-de-preco/referencia/referencia.service';
+
 import { CreateReferenciaDto } from './dto/create-referencia.dto';
 import { UpdateReferenciaDto } from './dto/update-referencia.dto';
 import { ReferenciaEntity } from './entities/referencia.entity';
-import { PrecoReferenciaService } from '../tabela-de-preco/referencia/referencia.service';
 
 @Injectable()
 export class ReferenciaService {
   constructor(
     @InjectRepository(ReferenciaEntity)
     private referenceRepository: Repository<ReferenciaEntity>,
-    private precoReferenciaService: PrecoReferenciaService
+    private precoReferenciaService: PrecoReferenciaService,
   ) {}
 
   async upsert(createReferenceDto: CreateReferenciaDto[]): Promise<ReferenciaEntity[]> {

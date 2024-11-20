@@ -36,7 +36,7 @@ export class createTableBrands1674135078364 implements MigrationInterface {
             default: 'now()',
           },
         ],
-      })
+      }),
     );
   }
 

@@ -7,6 +7,7 @@ import { ContextService } from 'src/context/context.service';
 
 import { FaturaSituacao } from '../enum/fatura-situacao.enum';
 import { FaturaService } from '../fatura.service';
+
 import { UpsertParcelaDto } from './dto/upsert-parcela.dto';
 import { FaturaParcelaEntity } from './entities/parcela.entity';
 import { ParcelaSituacao } from './enum/parcela-situacao.enum';
@@ -89,7 +90,7 @@ describe('FaturaParcelaService', () => {
 
       expect(repository.upsert).toHaveBeenCalledWith(
         { ...dto, empresaId, faturaId, vencimento: expect.any(Date), operadorId: usuario.id },
-        { conflictPaths: ['empresaId', 'faturaId', 'parcela'] }
+        { conflictPaths: ['empresaId', 'faturaId', 'parcela'] },
       );
       expect(result).toEqual({} as FaturaParcelaEntity);
     });
@@ -108,7 +109,7 @@ describe('FaturaParcelaService', () => {
 
       expect(repository.upsert).toHaveBeenCalledWith(
         { ...dto, empresaId, faturaId, vencimento: expect.any(Date), operadorId: usuario.id },
-        { conflictPaths: ['empresaId', 'faturaId', 'parcela'] }
+        { conflictPaths: ['empresaId', 'faturaId', 'parcela'] },
       );
       expect(result).toEqual({} as FaturaParcelaEntity);
     });
@@ -163,7 +164,7 @@ describe('FaturaParcelaService', () => {
       await expect(service.add(faturaId, dto)).rejects.toThrowError('Não foi possível adicionar/alterar a parcela.');
       expect(repository.upsert).toHaveBeenCalledWith(
         { ...dto, empresaId, faturaId, vencimento: expect.any(Date), operadorId: usuario.id },
-        { conflictPaths: ['empresaId', 'faturaId', 'parcela'] }
+        { conflictPaths: ['empresaId', 'faturaId', 'parcela'] },
       );
     });
   });
@@ -280,7 +281,7 @@ describe('FaturaParcelaService', () => {
           operadorId: usuarioId,
           valorPago: parcelaEntity.valor - parcelaEntity.valorDesconto,
           pagamento: 'now()',
-        }
+        },
       );
     });
 
@@ -305,7 +306,9 @@ describe('FaturaParcelaService', () => {
 
       jest.spyOn(service, 'findByParcela').mockResolvedValueOnce({ situacao: FaturaSituacao.Cancelada } as any);
 
-      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrowError('Parcela não está com situação "normal".');
+      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrowError(
+        'Parcela não está com situação "normal".',
+      );
 
       expect(repository.update).not.toHaveBeenCalled();
     });
@@ -321,7 +324,9 @@ describe('FaturaParcelaService', () => {
       jest.spyOn(service, 'findByParcela').mockResolvedValueOnce(parcelaEntity);
       jest.spyOn(repository, 'update').mockRejectedValueOnce(new Error());
 
-      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrowError('Não foi possível receber a parcela.');
+      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrowError(
+        'Não foi possível receber a parcela.',
+      );
     });
   });
 });

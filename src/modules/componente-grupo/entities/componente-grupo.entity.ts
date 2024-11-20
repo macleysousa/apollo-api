@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BaseEntity } from 'src/commons/base.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
+import { BaseEntity } from 'src/commons/base.entity';
 
 import { ComponenteGrupoItemEntity } from '../item/entities/componente-grupo-item.entity';
 

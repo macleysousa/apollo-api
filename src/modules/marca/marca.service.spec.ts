@@ -1,12 +1,14 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { brandFakeRepository } from 'src/base-fake/brand';
 import { ILike, Repository } from 'typeorm';
-import { MarcaService } from './marca.service';
+
+import { brandFakeRepository } from 'src/base-fake/brand';
+
 import { CreateMarcaDto } from './dto/create-marca.dto';
 import { UpdateMarcaDto } from './dto/update-marca.dto';
 import { MarcaEntity } from './entities/marca.entity';
+import { MarcaService } from './marca.service';
 
 describe('BrandService', () => {
   let service: MarcaService;

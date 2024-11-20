@@ -1,6 +1,6 @@
+import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { ILike, In, IsNull, Not, Repository } from 'typeorm';
 
 import { CategoriaService } from '../categoria/categoria.service';
@@ -9,6 +9,7 @@ import { CorService } from '../cor/cor.service';
 import { CreateReferenciaDto } from '../referencia/dto/create-referencia.dto';
 import { ReferenciaService } from '../referencia/referencia.service';
 import { TamanhoService } from '../tamanho/tamanho.service';
+
 import { CodigoBarrasService } from './codigo-barras/codigo-barras.service';
 import { CreateProdutoDto } from './dto/create-produto.dto';
 import { ImportProdutoDto } from './dto/import-produto.dto';
@@ -28,7 +29,7 @@ export class ProdutoService {
     private referenciaService: ReferenciaService,
     private corService: CorService,
     private tamanhoService: TamanhoService,
-    private codigoBarrasService: CodigoBarrasService
+    private codigoBarrasService: CodigoBarrasService,
   ) {}
 
   async upsert(dto: CreateProdutoDto[]): Promise<ProdutoEntity[]> {

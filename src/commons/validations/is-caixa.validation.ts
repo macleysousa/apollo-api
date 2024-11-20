@@ -17,7 +17,7 @@ export class CaixaConstraint implements ValidatorConstraintInterface {
   messageError: string;
   constructor(
     private readonly caixaService: CaixaService,
-    private readonly contextService: ContextService
+    private readonly contextService: ContextService,
   ) {}
 
   async validate(value: number, args?: ValidationArguments): Promise<boolean> {

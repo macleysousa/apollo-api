@@ -1,13 +1,14 @@
+import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { In, Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
 
 import { TabelaDePrecoService } from '../tabela-de-preco.service';
-import { ImportPrecoDto } from './dto/import-precos.dto';
+
 import { AddPrecoReferenciaDto } from './dto/add-referencia.dto';
+import { ImportPrecoDto } from './dto/import-precos.dto';
 import { PrecoReferencia } from './entities/referencia.entity';
 import { PrecoReferenciaView } from './views/referencia.view';
 
@@ -26,7 +27,7 @@ export class PrecoReferenciaService {
     @InjectRepository(PrecoReferenciaView)
     private readonly view: Repository<PrecoReferenciaView>,
     private readonly tabelaService: TabelaDePrecoService,
-    private readonly contextService: ContextService
+    private readonly contextService: ContextService,
   ) {}
 
   async upsert(dto: ImportPrecoDto[]): Promise<PrecoReferenciaView[]> {
@@ -47,7 +48,7 @@ export class PrecoReferenciaService {
 
     await this.repository.upsert(
       { tabelaDePrecoId, referenciaId, valor: Math.floor(valor) + (terminador % 1), operadorId },
-      { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] }
+      { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] },
     );
 
     return this.findByReferenciaId(tabelaDePrecoId, referenciaId);
@@ -55,7 +56,7 @@ export class PrecoReferenciaService {
 
   async find(
     tabelaDePrecoId: number,
-    { referenciaIds, referenciaIdExternos, page, limit }: FindOptions
+    { referenciaIds, referenciaIdExternos, page, limit }: FindOptions,
   ): Promise<Pagination<PrecoReferenciaView>> {
     const queryBuilder = this.view.createQueryBuilder('p');
     queryBuilder.where({ tabelaDePrecoId });

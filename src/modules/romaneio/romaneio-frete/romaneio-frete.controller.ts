@@ -2,9 +2,9 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ParseRomaneioEmAndamentoPipe } from 'src/commons/pipes/parseRomaneio.pipe';
+import { ApiComponent } from 'src/decorators/api-componente.decorator';
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 import { CurrentBranch } from 'src/decorators/current-auth.decorator';
-import { ApiComponent } from 'src/decorators/api-componente.decorator';
 import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 
 import { CreateRomaneioFreteDto } from './dto/create-romaneio-frete.dto';
@@ -24,7 +24,7 @@ export class RomaneioFreteController {
   create(
     @CurrentBranch() empresa: EmpresaEntity,
     @Param('romaneioId', ParseRomaneioEmAndamentoPipe) romaneioId: number,
-    @Body() createRomaneioFreteDto: CreateRomaneioFreteDto
+    @Body() createRomaneioFreteDto: CreateRomaneioFreteDto,
   ): Promise<RomaneioFreteEntity> {
     return this.service.upsert(empresa.id, romaneioId, createRomaneioFreteDto);
   }
@@ -32,7 +32,7 @@ export class RomaneioFreteController {
   @Get()
   async findByRomaneioId(
     @CurrentBranch() empresa: EmpresaEntity,
-    @Param('romaneioId', ParseRomaneioEmAndamentoPipe) romaneioId: number
+    @Param('romaneioId', ParseRomaneioEmAndamentoPipe) romaneioId: number,
   ): Promise<RomaneioFreteEntity> {
     return this.service.findByRomaneioId(empresa.id, romaneioId);
   }
@@ -40,7 +40,7 @@ export class RomaneioFreteController {
   @Delete()
   async delete(
     @CurrentBranch() empresa: EmpresaEntity,
-    @Param('romaneioId', ParseRomaneioEmAndamentoPipe) romaneioId: number
+    @Param('romaneioId', ParseRomaneioEmAndamentoPipe) romaneioId: number,
   ): Promise<void> {
     return this.service.delete(empresa.id, romaneioId);
   }

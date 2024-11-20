@@ -6,11 +6,12 @@ import { PessoaExtratoService } from 'src/modules/pessoa/extrato/pessoa-extrato.
 import { ModalidadeRomaneio } from 'src/modules/romaneio/enum/modalidade-romaneio.enum';
 import { OperacaoRomaneio } from 'src/modules/romaneio/enum/operacao-romaneio.enum';
 import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
-import { RomaneioItemService } from 'src/modules/romaneio/romaneio-item/romaneio-item.service';
 import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
+import { RomaneioItemService } from 'src/modules/romaneio/romaneio-item/romaneio-item.service';
 
 import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
 import { CaixaExtratoService } from '../extrato/extrato.service';
+
 import { CancelarAdiantamentoDto } from './dto/cancelar-adianteamento.dto';
 import { CancelarRomaneioDto } from './dto/cancelar-romaneio.dto';
 
@@ -22,7 +23,7 @@ export class CancelarService {
     private readonly pessoaExtratoService: PessoaExtratoService,
     private readonly romaneioService: RomaneioService,
     private readonly romaneioItemService: RomaneioItemService,
-    private readonly estoqueService: EstoqueService
+    private readonly estoqueService: EstoqueService,
   ) {}
 
   async adiantamento(caixaId: number, dto: CancelarAdiantamentoDto): Promise<void> {

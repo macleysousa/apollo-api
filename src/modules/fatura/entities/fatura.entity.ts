@@ -4,11 +4,11 @@ import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn, Primary
 import { BaseEntity } from 'src/commons/base.entity';
 import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { TipoInclusao } from 'src/commons/enum/tipo-inclusao';
+import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
 import { PessoaEntity } from 'src/modules/pessoa/entities/pessoa.entity';
 
 import { FaturaSituacao } from '../enum/fatura-situacao.enum';
 import { FaturaParcelaEntity } from '../parcela/entities/parcela.entity';
-import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
 
 @Entity({ name: 'faturas' })
 export class FaturaEntity extends BaseEntity {

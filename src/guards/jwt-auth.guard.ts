@@ -5,13 +5,14 @@ import { instanceToPlain } from 'class-transformer';
 import { TenantRequest } from 'src';
 
 import { IS_PUBLIC_KEY } from 'src/decorators/is-public.decorator';
+
 import { AuthService } from '../modules/auth/auth.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
     private reflector: Reflector,
-    private authService: AuthService
+    private authService: AuthService,
   ) {
     super();
   }

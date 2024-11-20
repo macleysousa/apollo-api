@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { CodigoBarrasService } from './codigo-barras.service';
 import { CodigoBarrasController } from './codigo-barras.controller';
+import { CodigoBarrasService } from './codigo-barras.service';
 import { CodigoBarrasEntity } from './entities/codigo-barras.entity';
 
 @Module({

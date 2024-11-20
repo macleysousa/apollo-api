@@ -1,5 +1,5 @@
-import * as dotenv from 'dotenv';
 import { AES, enc } from 'crypto-js';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 

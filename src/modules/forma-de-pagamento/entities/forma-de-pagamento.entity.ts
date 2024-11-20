@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
-
 import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 
 @Entity({ name: 'formas_de_pagamento' })

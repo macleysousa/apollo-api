@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, Length } from 'class-validator';
+
 import { IsBetween } from 'src/commons/validations/is-between.validation';
 
 export class CreateTabelaDePrecoDto {

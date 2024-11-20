@@ -1,16 +1,16 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 
-import { CreateComponenteGrupoDto } from './dto/criar-componente-grupo.dto';
 import { UpdateComponentGroupDto } from './dto/atualizar-componente-grupo.dto';
+import { CreateComponenteGrupoDto } from './dto/criar-componente-grupo.dto';
 import { ComponenteGrupoEntity } from './entities/componente-grupo.entity';
 
 @Injectable()
 export class ComponenteGrupoService {
   constructor(
     @InjectRepository(ComponenteGrupoEntity)
-    private repository: Repository<ComponenteGrupoEntity>
+    private repository: Repository<ComponenteGrupoEntity>,
   ) {}
 
   async create({ nome }: CreateComponenteGrupoDto): Promise<ComponenteGrupoEntity> {

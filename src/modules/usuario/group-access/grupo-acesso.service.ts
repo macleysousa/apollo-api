@@ -13,13 +13,15 @@ export class UsuarioGrupoService {
   constructor(
     @Inject(REQUEST) private request: AuthRequest,
     @InjectRepository(UsuarioGrupoEntity)
-    private repository: Repository<UsuarioGrupoEntity>
+    private repository: Repository<UsuarioGrupoEntity>,
   ) {}
 
   async add(usuarioId: number, createGroupAccessDto: AdicionarUsuarioGrupoDto): Promise<UsuarioGrupoEntity> {
-    const access = await this.repository.save({ ...createGroupAccessDto, usuarioId, operadorId: this.request.usuario.id }).catch(() => {
-      throw new BadRequestException(`usuário, empresa ou grupo inválido`);
-    });
+    const access = await this.repository
+      .save({ ...createGroupAccessDto, usuarioId, operadorId: this.request.usuario.id })
+      .catch(() => {
+        throw new BadRequestException(`usuário, empresa ou grupo inválido`);
+      });
     return this.findByBranchIdAndGroupId(access.usuarioId, access.empresaId, access.grupoId);
   }
 
@@ -27,7 +29,11 @@ export class UsuarioGrupoService {
     return this.repository.find({ where: { usuarioId }, relations });
   }
 
-  async findByBranchId(usuarioId: number, empresaId: number, relations = ['grupo', 'grupo.itens']): Promise<UsuarioGrupoEntity[]> {
+  async findByBranchId(
+    usuarioId: number,
+    empresaId: number,
+    relations = ['grupo', 'grupo.itens'],
+  ): Promise<UsuarioGrupoEntity[]> {
     return this.repository.find({ where: { usuarioId, empresaId }, relations });
   }
 
@@ -35,7 +41,7 @@ export class UsuarioGrupoService {
     usuarioId: number,
     empresaId: number,
     grupoId: number,
-    relations = ['grupo', 'grupo.itens']
+    relations = ['grupo', 'grupo.itens'],
   ): Promise<UsuarioGrupoEntity> {
     return this.repository.findOne({ where: { usuarioId, empresaId, grupoId }, relations });
   }

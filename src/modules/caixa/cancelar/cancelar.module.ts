@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { CancelarService } from './cancelar.service';
+
 import { CancelarController } from './cancelar.controller';
+import { CancelarService } from './cancelar.service';
 
 @Module({
   controllers: [CancelarController],

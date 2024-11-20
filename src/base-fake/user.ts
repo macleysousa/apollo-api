@@ -1,8 +1,9 @@
-import { UsuarioAcessoEntity } from 'src/modules/usuario/entities/usuario-acessos.entity';
 import { UsuarioEntity } from 'src/modules/usuario/entities/usuario.entity';
-import { Role } from 'src/modules/usuario/enums/usuario-tipo.enum';
+import { UsuarioAcessoEntity } from 'src/modules/usuario/entities/usuario-acessos.entity';
 import { UsuarioSituacao } from 'src/modules/usuario/enums/usuario-situacao.enum';
+import { Role } from 'src/modules/usuario/enums/usuario-tipo.enum';
 import { UsuarioTerminalEntity } from 'src/modules/usuario/terminal/entities/terminal.entity';
+
 import { empresaFakeRepository } from './empresa';
 
 class UserFakeRepository {

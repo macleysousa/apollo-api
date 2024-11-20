@@ -1,7 +1,8 @@
 import { plainToClass } from 'class-transformer';
 
-import { CreateProdutoDto } from './create-produto.dto';
 import { CreateCodigoBarrasDto } from '../codigo-barras/dto/create-codigo-barras.dto';
+
+import { CreateProdutoDto } from './create-produto.dto';
 
 describe('CreateProdutoDto', () => {
   it('should convert codigoBarras to instances of CreateCodigoBarrasDto', () => {

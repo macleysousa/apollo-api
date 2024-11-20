@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -6,6 +6,7 @@ import { ContextService } from 'src/context/context.service';
 
 import { EstoqueService } from '../estoque/estoque.service';
 import { RomaneioService } from '../romaneio/romaneio.service';
+
 import { CancelPedidoDto } from './dto/cancel-pedido.dto';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
@@ -23,7 +24,7 @@ export class PedidoService {
     @Inject(forwardRef(() => EstoqueService))
     private readonly estoqueService: EstoqueService,
     @Inject(forwardRef(() => RomaneioService))
-    private readonly romaneioService: RomaneioService
+    private readonly romaneioService: RomaneioService,
   ) {}
 
   async create(dto: CreatePedidoDto): Promise<PedidoEntity> {
@@ -153,7 +154,9 @@ export class PedidoService {
 
       const prdsInsufi = produtos.filter((e) => estoque.first((x) => x.produtoId === e.produtoId).saldo < e.atendido);
       if (prdsInsufi.length > 0) {
-        throw new BadRequestException(`Não há saldo suficiente para os produtos: ${prdsInsufi.map((e) => e.produtoId).join(', ')}`);
+        throw new BadRequestException(
+          `Não há saldo suficiente para os produtos: ${prdsInsufi.map((e) => e.produtoId).join(', ')}`,
+        );
       }
     }
 
@@ -173,7 +176,7 @@ from pedidos_itens i
 inner join empresas e on e.id = i.empresaId
 inner join produtos p on p.id = i.produtoId
 where i.pedidoId = ${id} and i.atendido > 0)
-      `
+      `,
     );
 
     if (pedido.tipo == 'transferencia_saida') {

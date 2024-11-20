@@ -1,14 +1,14 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
-import { ApiComponent } from 'src/decorators/api-componente.decorator';
 import { ParsePessoaPipe } from 'src/commons/pipes/parsePessoa.pipe';
+import { ApiComponent } from 'src/decorators/api-componente.decorator';
+import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 
-import { PessoaEnderecoService } from './pessoa-endereco.service';
 import { CreatePessoaEnderecoDto } from './dto/create-pessoa-endereco.dto';
 import { UpdatePessoaEnderecoDto } from './dto/update-pessoa-endereco.dto';
 import { PessoaEnderecoEntity } from './entities/pessoa-endereco.entity';
+import { PessoaEnderecoService } from './pessoa-endereco.service';
 
 @ApiTags('Pessoas Endereços')
 @Controller('pessoas/:pessoaId/enderecos')
@@ -21,7 +21,7 @@ export class PessoaEnderecoController {
   @Post()
   async create(
     @Param('pessoaId', ParsePessoaPipe) id: number,
-    @Body() createPessoaEnderecoDto: CreatePessoaEnderecoDto
+    @Body() createPessoaEnderecoDto: CreatePessoaEnderecoDto,
   ): Promise<PessoaEnderecoEntity> {
     return this.service.create(id, createPessoaEnderecoDto);
   }
@@ -32,7 +32,10 @@ export class PessoaEnderecoController {
   }
 
   @Put()
-  async update(@Param('pessoaId') id: number, @Body() updatePessoaEnderecoDto: UpdatePessoaEnderecoDto): Promise<PessoaEnderecoEntity> {
+  async update(
+    @Param('pessoaId') id: number,
+    @Body() updatePessoaEnderecoDto: UpdatePessoaEnderecoDto,
+  ): Promise<PessoaEnderecoEntity> {
     return this.service.update(id, updatePessoaEnderecoDto);
   }
 

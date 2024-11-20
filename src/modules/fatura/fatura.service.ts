@@ -1,7 +1,7 @@
+import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isDate } from 'class-validator';
-import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { In, IsNull, Not, Repository } from 'typeorm';
 
 import { TipoDocumento } from 'src/commons/enum/tipo-documento';
@@ -13,8 +13,8 @@ import { CreateFaturaManualDto } from './dto/create-fatura-manual.dto';
 import { UpdateFaturaManualDto } from './dto/update-fatura-manual.dto';
 import { FaturaEntity } from './entities/fatura.entity';
 import { FaturaSituacao } from './enum/fatura-situacao.enum';
-import { Relations } from './relations/relations.type';
 import { FaturaParcelaService } from './parcela/parcela.service';
+import { Relations } from './relations/relations.type';
 
 interface filter {
   empresaIds: number[];
@@ -30,7 +30,7 @@ export class FaturaService {
     @InjectRepository(FaturaEntity)
     private readonly repository: Repository<FaturaEntity>,
     private readonly parcelaService: FaturaParcelaService,
-    private readonly contextService: ContextService
+    private readonly contextService: ContextService,
   ) {}
 
   async createManual(createFaturaDto: CreateFaturaManualDto): Promise<FaturaEntity> {

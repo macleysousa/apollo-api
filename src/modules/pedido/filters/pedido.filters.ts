@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsEnum, IsOptional } from 'class-validator';
 
-import { TipoPedido, TipoPedidoType } from '../enum/tipo-pedido.enum';
 import { SituacaoPedido, SituacaoPedidoType } from '../enum/situacao-pedido.enum';
+import { TipoPedido, TipoPedidoType } from '../enum/tipo-pedido.enum';
 
 export class PedidoFilter {
   @ApiProperty({ type: Number, isArray: true, required: false })

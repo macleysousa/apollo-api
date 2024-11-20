@@ -9,7 +9,7 @@ import { Parametro } from './enum/parametros';
 export class ParametroService {
   constructor(
     @InjectRepository(ParametroEntity)
-    private repository: Repository<ParametroEntity>
+    private repository: Repository<ParametroEntity>,
   ) {}
 
   async popular(): Promise<void> {

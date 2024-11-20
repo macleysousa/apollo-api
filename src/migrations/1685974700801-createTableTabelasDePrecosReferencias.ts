@@ -60,7 +60,7 @@ export class CreateTableTabelasDePrecosReferencias1685974700801 implements Migra
             onUpdate: 'CASCADE',
           },
         ],
-      })
+      }),
     );
   }
 

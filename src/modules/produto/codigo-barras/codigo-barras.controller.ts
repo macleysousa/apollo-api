@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ParseIntPipe } from '@nestjs/common/pipes';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
 
 import { CodigoBarrasService } from './codigo-barras.service';

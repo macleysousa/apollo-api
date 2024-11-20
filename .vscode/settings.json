@@ -1,11 +1,8 @@
 {
-    "editor.formatOnSave": true,
-    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
-    "[typescript]": {
-        "editor.defaultFormatter": "vscode.typescript-language-features",
-        "files.insertFinalNewline": false,
-    },
-    "editor.codeActionsOnSave": {
-        "source.fixAll": "explicit"
-    },
+  "editor.formatOnSave": true,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "material-icon-theme.activeIconPack": "nest",
 }

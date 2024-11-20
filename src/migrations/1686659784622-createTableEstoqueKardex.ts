@@ -82,7 +82,7 @@ export class CreateTableEstoqueKardex1686659784622 implements MigrationInterface
             onUpdate: `CASCADE`,
           },
         ],
-      })
+      }),
     );
   }
 

@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { componentGroupItemFakeRepository } from 'src/base-fake/component-group-item';
 import { Repository } from 'typeorm';
+
+import { componentGroupItemFakeRepository } from 'src/base-fake/component-group-item';
 
 import { ComponenteGrupoItemService } from './componente-grupo-item.service';
 import { AddComponentGroupItemDto } from './dto/create-component-group-item.dto';

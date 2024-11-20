@@ -1,12 +1,14 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query, UnauthorizedException } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { CurrentUser } from 'src/decorators/current-auth.decorator';
 
 import { ApiComponent } from '../../decorators/api-componente.decorator';
-import { CriarUsuarioDto } from './dto/criar-usuario.dto';
+
 import { AtualizarUsuarioDto } from './dto/atualizar-usuario.dto';
-import { UsuarioAcessoEntity } from './entities/usuario-acessos.entity';
+import { CriarUsuarioDto } from './dto/criar-usuario.dto';
 import { UsuarioEntity } from './entities/usuario.entity';
+import { UsuarioAcessoEntity } from './entities/usuario-acessos.entity';
 import { Role } from './enums/usuario-tipo.enum';
 import { UsuarioService } from './usuario.service';
 
@@ -46,7 +48,7 @@ export class UsuarioController {
   async findAccesses(
     @Param('id', ParseIntPipe) id: number,
     @Query('empresaId') empresaId?: string,
-    @Query('componente') componente?: string
+    @Query('componente') componente?: string,
   ): Promise<UsuarioAcessoEntity[]> {
     return this.userService.findAccesses(id, { empresaId: empresaId ? Number(empresaId) : null, componenteId: componente });
   }
@@ -56,7 +58,7 @@ export class UsuarioController {
   async update(
     @CurrentUser() user: UsuarioEntity,
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: AtualizarUsuarioDto
+    @Body() updateUserDto: AtualizarUsuarioDto,
   ): Promise<UsuarioEntity> {
     if (user.tipo != Role.sysadmin && updateUserDto.tipo == Role.sysadmin) {
       throw new UnauthorizedException('To update user to sysadmin you must have sysadmin access');

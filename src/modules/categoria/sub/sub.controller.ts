@@ -1,13 +1,13 @@
-import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
 import { IsPublic } from 'src/decorators/is-public.decorator';
 
-import { SubCategoriaService } from './sub.service';
 import { CreateSubCategoriaDto } from './dto/create-sub.dto';
 import { UpdateSubCategoriaDto } from './dto/update-sub.dto';
 import { SubCategoriaEntity } from './entities/sub.entity';
+import { SubCategoriaService } from './sub.service';
 
 @ApiTags('Categorias')
 @Controller('categorias/:id/sub')
@@ -30,7 +30,7 @@ export class SubCategoriaController {
   async find(
     @Param('id', ParseIntPipe) id: number,
     @Query('name') name?: string,
-    @Query('active') active?: unknown
+    @Query('active') active?: unknown,
   ): Promise<SubCategoriaEntity[]> {
     return this.subService.find(id, name, active);
   }
@@ -38,7 +38,10 @@ export class SubCategoriaController {
   @Get(':subId')
   @IsPublic()
   @ApiResponse({ status: 200, type: SubCategoriaEntity })
-  async findById(@Param('id', ParseIntPipe) id: number, @Param('subId', ParseIntPipe) subId: number): Promise<SubCategoriaEntity> {
+  async findById(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('subId', ParseIntPipe) subId: number,
+  ): Promise<SubCategoriaEntity> {
     return this.subService.findById(id, subId);
   }
 
@@ -47,7 +50,7 @@ export class SubCategoriaController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Param('subId', ParseIntPipe) subId: number,
-    @Body() updateSubDto: UpdateSubCategoriaDto
+    @Body() updateSubDto: UpdateSubCategoriaDto,
   ): Promise<SubCategoriaEntity> {
     return this.subService.update(id, subId, updateSubDto);
   }

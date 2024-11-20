@@ -8,7 +8,7 @@ export class AddColumnRomaneios1693479478863 implements MigrationInterface {
         name: 'consignacaoId',
         type: 'bigint',
         isNullable: true,
-      })
+      }),
     );
 
     await queryRunner.createIndex('romaneios', new TableIndex({ columnNames: ['consignacaoId'] }));
@@ -21,10 +21,12 @@ export class AddColumnRomaneios1693479478863 implements MigrationInterface {
         referencedTableName: 'consignacoes',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-      })
+      }),
     );
 
-    await queryRunner.query(`ALTER TABLE romaneios CHANGE COLUMN consignacaoId consignacaoId BIGINT NULL DEFAULT NULL AFTER pago;`);
+    await queryRunner.query(
+      `ALTER TABLE romaneios CHANGE COLUMN consignacaoId consignacaoId BIGINT NULL DEFAULT NULL AFTER pago;`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

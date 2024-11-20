@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
+import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
 import { CategoriaEntity } from 'src/modules/categoria/entities/category.entity';
 import { SubCategoriaEntity } from 'src/modules/categoria/sub/entities/sub.entity';
-import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
 
 @Entity({ name: 'referencias' })
 export class ReferenciaEntity extends BaseEntity {

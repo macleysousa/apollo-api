@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { componentFakeRepository } from 'src/base-fake/component';
 import { IsNull, Not, Repository } from 'typeorm';
+
+import { componentFakeRepository } from 'src/base-fake/component';
+
 import { ComponenteService } from './componente.service';
 import { ComponenteEntity } from './entities/componente.entity';
 

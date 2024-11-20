@@ -1,5 +1,6 @@
-import { IsDocumentoConstraint } from './is-documento-unique.validation';
 import { PessoaService } from '../pessoa.service';
+
+import { IsDocumentoConstraint } from './is-documento-unique.validation';
 
 describe('IsDocumentoConstraint', () => {
   let constraint: IsDocumentoConstraint;

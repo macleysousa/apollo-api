@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { userFakeRepository } from 'src/base-fake/user';
+
 import { UsuarioService } from '../usuario.service';
+
 import { IsUsuarioConstraint } from './is-usuario-unique.validation';
 
 describe('Validation username', () => {

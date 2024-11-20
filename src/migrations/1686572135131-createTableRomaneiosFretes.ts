@@ -63,7 +63,7 @@ export class CreateTableRomaneiosFretes1686572135131 implements MigrationInterfa
             onUpdate: 'CASCADE',
           },
         ],
-      })
+      }),
     );
   }
 

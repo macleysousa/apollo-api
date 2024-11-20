@@ -3,9 +3,9 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 
-import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
 import { ModalidadeRomaneio } from '../enum/modalidade-romaneio.enum';
 import { OperacaoRomaneio, OperacaoRomaneioType } from '../enum/operacao-romaneio.enum';
+import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
 
 @Entity({ name: 'romaneios' })
 export class RomaneioEntity extends BaseEntity {

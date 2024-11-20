@@ -10,7 +10,7 @@ import { PessoaEnderecoEntity } from './entities/pessoa-endereco.entity';
 export class PessoaEnderecoService {
   constructor(
     @InjectRepository(PessoaEnderecoEntity)
-    private repository: Repository<PessoaEnderecoEntity>
+    private repository: Repository<PessoaEnderecoEntity>,
   ) {}
 
   async create(pessoaId: number, createPessoaEnderecoDto: CreatePessoaEnderecoDto): Promise<PessoaEnderecoEntity> {

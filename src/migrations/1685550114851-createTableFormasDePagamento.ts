@@ -49,7 +49,7 @@ export class CreateTableFormasDePagamento1685550114851 implements MigrationInter
             default: 'now()',
           },
         ],
-      })
+      }),
     );
 
     await queryRunner.query(`

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } from 'class-validator';
-import { ValidatorConstraint, ValidationArguments } from 'class-validator';
+import { ValidationArguments, ValidatorConstraint } from 'class-validator';
+
 import { ModalidadeRomaneioType } from 'src/modules/romaneio/enum/modalidade-romaneio.enum';
 import { OperacaoRomaneioType } from 'src/modules/romaneio/enum/operacao-romaneio.enum';
-
 import { SituacaoRomaneio, SituacaoRomaneioType } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
 import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
 

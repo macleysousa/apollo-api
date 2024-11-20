@@ -3,12 +3,12 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ParseEmpresaPipe } from 'src/commons/pipes/parseEmpresa.pipe';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
+import { Parametro } from 'src/modules/parametro/enum/parametros';
 
 import { CreateParametroDto } from './dto/create-parametro.dto';
+import { UpdateEmpresaParametroDto } from './dto/update-parametro.dto';
 import { EmpresaParametroService } from './parametro.service';
 import { EmpresaParametroView } from './views/parametro.view';
-import { UpdateEmpresaParametroDto } from './dto/update-parametro.dto';
-import { Parametro } from 'src/modules/parametro/enum/parametros';
 
 @ApiTags('Empresas Parâmetros')
 @Controller('empresas/:empresaId/parametros')
@@ -21,7 +21,7 @@ export class EmpresaParametroController {
   @ApiResponse({ status: 201, type: EmpresaParametroView })
   create(
     @Param('empresaId', ParseEmpresaPipe) empresaId: number,
-    @Body() createParametroDto: CreateParametroDto
+    @Body() createParametroDto: CreateParametroDto,
   ): Promise<EmpresaParametroView> {
     return this.service.create(empresaId, createParametroDto);
   }
@@ -36,7 +36,7 @@ export class EmpresaParametroController {
   @ApiResponse({ status: 200, type: EmpresaParametroView })
   findByParametroId(
     @Param('empresaId', ParseEmpresaPipe) empresaId: number,
-    @Param('parametroId') parametroId: Parametro
+    @Param('parametroId') parametroId: Parametro,
   ): Promise<EmpresaParametroView> {
     return this.service.findByParametroId(empresaId, parametroId);
   }
@@ -46,7 +46,7 @@ export class EmpresaParametroController {
   async update(
     @Param('empresaId', ParseEmpresaPipe) empresaId: number,
     @Param('parametroId') parametroId: Parametro,
-    @Body() updateEmpresaParametroDto: UpdateEmpresaParametroDto
+    @Body() updateEmpresaParametroDto: UpdateEmpresaParametroDto,
   ): Promise<EmpresaParametroView> {
     return this.service.update(empresaId, parametroId, updateEmpresaParametroDto);
   }

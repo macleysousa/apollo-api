@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { faturaFakeRepository } from 'src/base-fake/fatura';
 
 import { EmpresaService } from '../empresa/empresa.service';
+
 import { CreateFaturaManualDto } from './dto/create-fatura-manual.dto';
 import { UpdateFaturaManualDto } from './dto/update-fatura-manual.dto';
 import { FaturaSituacao } from './enum/fatura-situacao.enum';
@@ -71,7 +72,12 @@ describe('FaturaController', () => {
 
       const result = await controller.find(empresaIds, faturaIds, pessoaIds, dataInicio, dataFim, relations, page, limit);
 
-      expect(service.find).toHaveBeenCalledWith({ empresaIds, faturaIds, pessoaIds, dataInicio, dataFim }, page, limit, relations);
+      expect(service.find).toHaveBeenCalledWith(
+        { empresaIds, faturaIds, pessoaIds, dataInicio, dataFim },
+        page,
+        limit,
+        relations,
+      );
       expect(result).toEqual(faturas);
     });
   });

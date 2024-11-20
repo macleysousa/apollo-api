@@ -146,7 +146,7 @@ describe('CaixaExtratoService', () => {
           caixaId: caixaId,
           liquidacao: liquidacao,
           operadorId: operadorId,
-        }))
+        })),
       );
       expect(result).toEqual(expectedResult);
     });
@@ -172,7 +172,9 @@ describe('CaixaExtratoService', () => {
       const motivoCancelamento = 'Motivo de cancelamento';
       const error = new BadRequestException(`Não é possível cancelar liquidação de fechamento de caixa`);
 
-      jest.spyOn(service, 'findByLiquidacao').mockResolvedValueOnce([{ tipoHistorico: TipoHistorico.Fechamento_de_caixa }] as any);
+      jest
+        .spyOn(service, 'findByLiquidacao')
+        .mockResolvedValueOnce([{ tipoHistorico: TipoHistorico.Fechamento_de_caixa }] as any);
 
       await expect(service.cancelar(empresaId, caixaId, liquidacao, motivoCancelamento)).rejects.toThrow(error);
     });
@@ -197,13 +199,15 @@ describe('CaixaExtratoService', () => {
 
       jest.spyOn(repository, 'update').mockResolvedValueOnce(undefined);
 
-      jest.spyOn(service, 'findByLiquidacao').mockResolvedValueOnce([{ tipoHistorico: TipoHistorico.Venda, cancelado: false }] as any);
+      jest
+        .spyOn(service, 'findByLiquidacao')
+        .mockResolvedValueOnce([{ tipoHistorico: TipoHistorico.Venda, cancelado: false }] as any);
 
       await service.cancelar(empresaId, caixaId, liquidacao, motivoCancelamento);
 
       expect(repository.update).toHaveBeenCalledWith(
         { empresaId, caixaId, liquidacao },
-        { operadorId: expect.any(Number), motivoCancelamento, cancelado: true }
+        { operadorId: expect.any(Number), motivoCancelamento, cancelado: true },
       );
     });
   });

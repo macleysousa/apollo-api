@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -13,7 +13,7 @@ export class CaixaService {
   constructor(
     @InjectRepository(CaixaEntity)
     private readonly repository: Repository<CaixaEntity>,
-    private readonly contextService: ContextService
+    private readonly contextService: ContextService,
   ) {}
 
   async open({ empresaId, terminalId }: CreateCaixaDto): Promise<CaixaEntity> {

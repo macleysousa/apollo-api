@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { AddComponentGroupItemDto } from './dto/create-component-group-item.dto';
 import { ComponenteGrupoItemEntity } from './entities/componente-grupo-item.entity';
 
@@ -8,7 +9,7 @@ import { ComponenteGrupoItemEntity } from './entities/componente-grupo-item.enti
 export class ComponenteGrupoItemService {
   constructor(
     @InjectRepository(ComponenteGrupoItemEntity)
-    private repository: Repository<ComponenteGrupoItemEntity>
+    private repository: Repository<ComponenteGrupoItemEntity>,
   ) {}
 
   async add(grupoId: number, { componenteId }: AddComponentGroupItemDto): Promise<ComponenteGrupoItemEntity[]> {

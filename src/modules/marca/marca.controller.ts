@@ -1,12 +1,14 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { IsPublic } from 'src/decorators/is-public.decorator';
+
 import { ApiComponent } from '../../decorators/api-componente.decorator';
 
-import { MarcaService } from './marca.service';
 import { CreateMarcaDto } from './dto/create-marca.dto';
 import { UpdateMarcaDto } from './dto/update-marca.dto';
 import { MarcaEntity } from './entities/marca.entity';
+import { MarcaService } from './marca.service';
 
 @ApiTags('Marcas')
 @Controller('marcas')

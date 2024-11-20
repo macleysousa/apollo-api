@@ -1,11 +1,11 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { TamanhoConstraint } from 'src/commons/validations/is-tamanho.validation';
 
-import { TamanhoService } from './tamanho.service';
-import { TamanhoController } from './tamanho.controller';
 import { TamanhoEntity } from './entities/tamanho.entity';
+import { TamanhoController } from './tamanho.controller';
+import { TamanhoService } from './tamanho.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TamanhoEntity])],

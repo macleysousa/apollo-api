@@ -11,7 +11,7 @@ import { EmpresaFormaPagamentoEntity } from './entities/forma-de-pagamento.entit
 export class EmpresaFormaPagamentoService {
   constructor(
     @InjectRepository(EmpresaFormaPagamentoEntity)
-    private repository: Repository<EmpresaFormaPagamentoEntity>
+    private repository: Repository<EmpresaFormaPagamentoEntity>,
   ) {}
 
   async add(empresaId: number, addFormaPagamentoDto: AddEmpresaFormaPagamentoDto): Promise<FormaDePagamentoEntity> {

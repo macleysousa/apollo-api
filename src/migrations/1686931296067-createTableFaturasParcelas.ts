@@ -179,7 +179,7 @@ export class CreateTableFaturasParcelas1686931296067 implements MigrationInterfa
             onUpdate: 'CASCADE',
           },
         ],
-      })
+      }),
     );
   }
 

@@ -2,10 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { FormaDePagamentoEntity } from 'src/modules/forma-de-pagamento/entities/forma-de-pagamento.entity';
 
+import { EmpresaService } from '../empresa.service';
+
 import { AddEmpresaFormaPagamentoDto } from './dto/add-forma-de-pagamento.dto';
 import { EmpresaFormaPagamentoController } from './forma-de-pagamento.controller';
 import { EmpresaFormaPagamentoService } from './forma-de-pagamento.service';
-import { EmpresaService } from '../empresa.service';
 
 describe('EmpresaFormaPagamentoController', () => {
   let controller: EmpresaFormaPagamentoController;

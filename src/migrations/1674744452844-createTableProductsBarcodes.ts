@@ -43,7 +43,7 @@ export class createTableProductsBarcodes1674744452844 implements MigrationInterf
             onUpdate: 'CASCADE',
           }),
         ],
-      })
+      }),
     );
   }
 

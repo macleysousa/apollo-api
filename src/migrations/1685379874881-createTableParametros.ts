@@ -25,7 +25,7 @@ export class CreateTableParametros1685379874881 implements MigrationInterface {
             default: false,
           },
         ],
-      })
+      }),
     );
   }
 

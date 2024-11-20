@@ -7,6 +7,7 @@ import { ImportProdutoDto } from '../produto/dto/import-produto.dto';
 import { ProdutoService } from '../produto/produto.service';
 import { ImportPrecoDto } from '../tabela-de-preco/referencia/dto/import-precos.dto';
 import { PrecoReferenciaService } from '../tabela-de-preco/referencia/referencia.service';
+
 import { ImportService } from './import.service';
 
 jest.mock('src/commons/parses/csv-to-object', () => ({ parseCsvToProduto: jest.fn(), parseCsvToRefereciaPreco: jest.fn() }));

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } from 'class-validator';
-import { ValidatorConstraint, ValidationArguments } from 'class-validator';
+import { ValidationArguments, ValidatorConstraint } from 'class-validator';
+
 import { EmpresaService } from 'src/modules/empresa/empresa.service';
 
 @Injectable()

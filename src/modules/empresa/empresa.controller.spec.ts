@@ -2,9 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { empresaFakeRepository } from 'src/base-fake/empresa';
 
+import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { EmpresaController } from './empresa.controller';
 import { EmpresaService } from './empresa.service';
-import { CreateEmpresaDto } from './dto/create-empresa.dto';
 
 describe('BranchController', () => {
   let controller: EmpresaController;

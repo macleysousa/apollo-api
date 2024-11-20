@@ -1,11 +1,12 @@
+import { Pagination } from 'nestjs-typeorm-paginate';
 import { Controller, DefaultValuePipe, Get, ParseIntPipe, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Pagination } from 'nestjs-typeorm-paginate';
 
-import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 import { ParseBetweenPipe } from 'src/commons/pipes/parseBetween.pipe';
+import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 
 import { ApiComponent } from '../../decorators/api-componente.decorator';
+
 import { EstoqueService } from './estoque.service';
 import { EstoqueView } from './views/estoque.view';
 
@@ -36,7 +37,7 @@ export class EstoqueController {
     @Query('corIds', new DefaultValuePipe([])) corIds: number[],
     @Query('tamanhoIds', new DefaultValuePipe([])) tamanhoIds: number[],
     @Query('page', new DefaultValuePipe(1), new ParseBetweenPipe(1, 1000)) page: number,
-    @Query('limit', new DefaultValuePipe(100), new ParseBetweenPipe(1, 1000)) limit: number
+    @Query('limit', new DefaultValuePipe(100), new ParseBetweenPipe(1, 1000)) limit: number,
   ): Promise<Pagination<EstoqueView>> {
     return this.service.find(
       {
@@ -49,7 +50,7 @@ export class EstoqueController {
         tamanhoIds,
       },
       page,
-      limit
+      limit,
     );
   }
 }

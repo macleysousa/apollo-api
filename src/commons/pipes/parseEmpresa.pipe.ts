@@ -1,4 +1,4 @@
-import { Injectable, PipeTransform, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 
 import { EmpresaService } from 'src/modules/empresa/empresa.service';
 

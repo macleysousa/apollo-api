@@ -21,6 +21,7 @@ import { RomaneioView } from 'src/modules/romaneio/views/romaneio.view';
 import { CaixaExtratoEntity } from '../extrato/entities/extrato.entity';
 import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
 import { CaixaExtratoService } from '../extrato/extrato.service';
+
 import { PagamentoDto } from './dto/pagamento.dto';
 import { ReceberAdiantamentoDto } from './dto/receber-adiantamento.dto';
 import { ReceberFaturaDto } from './dto/receber-fatura.dto';
@@ -37,10 +38,13 @@ export class ReceberService {
     private readonly caixaExtratoService: CaixaExtratoService,
     private readonly romaneioService: RomaneioService,
     private readonly estoqueService: EstoqueService,
-    private readonly consignacaoService: ConsignacaoService
+    private readonly consignacaoService: ConsignacaoService,
   ) {}
 
-  async adiantamento(caixaId: number, { formasDePagamento, ...recebimento }: ReceberAdiantamentoDto): Promise<CaixaExtratoEntity[]> {
+  async adiantamento(
+    caixaId: number,
+    { formasDePagamento, ...recebimento }: ReceberAdiantamentoDto,
+  ): Promise<CaixaExtratoEntity[]> {
     const empresaId = this.contextService.empresaId();
 
     const faturas = await this.lancarFaturas(empresaId, recebimento, formasDePagamento);
@@ -72,7 +76,9 @@ export class ReceberService {
 
       const estInsuficiente = estoque.filter((x) => x.saldo < produtos.find((y) => y.produtoId == x.produtoId).quantidade);
       if (estInsuficiente.length > 0) {
-        throw new BadRequestException(`Estoque insuficiente para os produtos: ${estInsuficiente.map((x) => x.produtoId).join(', ')}`);
+        throw new BadRequestException(
+          `Estoque insuficiente para os produtos: ${estInsuficiente.map((x) => x.produtoId).join(', ')}`,
+        );
       }
     } else if (romaneio.operacao == OperacaoRomaneio.consignacao_saida && !romaneio.consignacaoId) {
       throw new BadRequestException('Consignação não informada');
@@ -98,7 +104,7 @@ export class ReceberService {
         const estoqueErrosVenda = await this.romaneioService.validarEstoque(empresa.id, romaneio.romaneioId);
         if (estoqueErrosVenda.length > 0) {
           throw new BadRequestException(
-            `Romaneio possui itens que o estoque não é suficiente para realizar a operação: ${estoqueErrosVenda.join(', ')}`
+            `Romaneio possui itens que o estoque não é suficiente para realizar a operação: ${estoqueErrosVenda.join(', ')}`,
           );
         }
 
@@ -123,7 +129,9 @@ export class ReceberService {
           throw new BadRequestException('Romaneios de devolução não informados');
         }
 
-        if (!(await this.romaneioService.validarDevolucao(empresa.id, romaneio.romaneioId, ['venda'], romaneio.romaneiosDevolucao))) {
+        if (
+          !(await this.romaneioService.validarDevolucao(empresa.id, romaneio.romaneioId, ['venda'], romaneio.romaneiosDevolucao))
+        ) {
           throw new BadRequestException('Romaneio possui itens que não podem ser devolvidos');
         }
 
@@ -135,7 +143,9 @@ export class ReceberService {
           tipoDocumento: TipoDocumento.Credito_de_Devolucao,
           tipoMovimento: TipoMovimento.Credito,
           observacao: `Crédito de devolução gerado a partir do romaneio ${romaneio.romaneioId}`,
-          itens: [{ parcela: 1, valor: romaneio.valorLiquido, caixaPagamento: caixaId, situacao: 'Encerrada' } as FaturaParcelaEntity],
+          itens: [
+            { parcela: 1, valor: romaneio.valorLiquido, caixaPagamento: caixaId, situacao: 'Encerrada' } as FaturaParcelaEntity,
+          ],
         });
 
         await this.pessoaExtratoService.lancarMovimento({
@@ -156,7 +166,7 @@ export class ReceberService {
         const estoqueErrosConsignaSaida = await this.romaneioService.validarEstoque(empresa.id, romaneio.romaneioId);
         if (estoqueErrosConsignaSaida.length > 0) {
           throw new BadRequestException(
-            `Romaneio possui itens que o estoque não é suficiente para realizar a operação: ${estoqueErrosConsignaSaida.join(', ')}`
+            `Romaneio possui itens que o estoque não é suficiente para realizar a operação: ${estoqueErrosConsignaSaida.join(', ')}`,
           );
         }
 
@@ -175,7 +185,7 @@ export class ReceberService {
             empresa.id,
             romaneio.romaneioId,
             ['consignacao_saida'],
-            romaneio.romaneiosDevolucao
+            romaneio.romaneiosDevolucao,
           ))
         ) {
           throw new BadRequestException('Romaneio possui itens que não podem ser devolvidos');
@@ -205,7 +215,7 @@ export class ReceberService {
         const estoqueErrosTransferenciaSaida = await this.romaneioService.validarEstoque(empresa.id, romaneio.romaneioId);
         if (estoqueErrosTransferenciaSaida.length > 0) {
           throw new BadRequestException(
-            `Romaneio possui itens que o estoque não é suficiente para realizar a operação: ${estoqueErrosTransferenciaSaida.join(', ')}`
+            `Romaneio possui itens que o estoque não é suficiente para realizar a operação: ${estoqueErrosTransferenciaSaida.join(', ')}`,
           );
         }
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
@@ -238,7 +248,11 @@ export class ReceberService {
     return this.caixaExtratoService.lancar(caixaId, liquidacaoId, liquidacaoFatura);
   }
 
-  async lancarFaturas(empresaId: number, recebimento: RecebimentoDto, formasDePagamento: PagamentoDto[]): Promise<FaturaEntity[]> {
+  async lancarFaturas(
+    empresaId: number,
+    recebimento: RecebimentoDto,
+    formasDePagamento: PagamentoDto[],
+  ): Promise<FaturaEntity[]> {
     const pagamentos = formasDePagamento
       .groupBy(({ controle, formaDePagamentoId }) => ({ controle, formaDePagamentoId }))
       .select((x) => ({

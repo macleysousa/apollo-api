@@ -4,9 +4,9 @@ import { ILike, Repository } from 'typeorm';
 
 import { empresaFakeRepository } from 'src/base-fake/empresa';
 
-import { EmpresaService } from './empresa.service';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
+import { EmpresaService } from './empresa.service';
 import { EmpresaEntity } from './entities/empresa.entity';
 
 describe('BranchService', () => {

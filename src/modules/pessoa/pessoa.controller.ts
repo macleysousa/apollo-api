@@ -1,18 +1,19 @@
-import { Controller, Get, Post, Body, Query, Param, Put, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
+import { Pagination } from 'nestjs-typeorm-paginate';
+import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { CurrentBranch } from 'src/decorators/current-auth.decorator';
-
-import { PessoaService } from './pessoa.service';
-import { CreatePessoaDto } from './dto/create-pessoa.dto';
-import { ApiComponent } from '../../decorators/api-componente.decorator';
-import { EmpresaEntity } from '../empresa/entities/empresa.entity';
-import { PessoaEntity } from './entities/pessoa.entity';
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
-import { Pagination } from 'nestjs-typeorm-paginate';
+import { CurrentBranch } from 'src/decorators/current-auth.decorator';
+
+import { ApiComponent } from '../../decorators/api-componente.decorator';
+import { EmpresaEntity } from '../empresa/entities/empresa.entity';
+
+import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { LiberarEmpresaAcessoDto } from './dto/liberar-empresa-acesso.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
+import { PessoaEntity } from './entities/pessoa.entity';
+import { PessoaService } from './pessoa.service';
 
 @ApiTags('Pessoas')
 @Controller('pessoas')
@@ -36,7 +37,7 @@ export class PessoaController {
   async find(
     @Query('searchTerm') searchTerm: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number
+    @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
   ): Promise<Pagination<PessoaEntity>> {
     return this.service.find(searchTerm, page, limit);
   }

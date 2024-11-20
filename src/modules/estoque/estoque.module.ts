@@ -1,9 +1,9 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { EstoqueService } from './estoque.service';
-import { EstoqueController } from './estoque.controller';
 import { EstoqueEntity } from './entities/estoque.entity';
+import { EstoqueController } from './estoque.controller';
+import { EstoqueService } from './estoque.service';
 import { EstoqueView } from './views/estoque.view';
 
 @Module({

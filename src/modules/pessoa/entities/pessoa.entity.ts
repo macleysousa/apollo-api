@@ -4,8 +4,8 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 
-import { PessoaTipo } from '../enum/pessoa-tipo.enum';
 import { ContatoTipo } from '../enum/contato-tipo.enum';
+import { PessoaTipo } from '../enum/pessoa-tipo.enum';
 
 @Entity({ name: 'pessoas' })
 export class PessoaEntity extends BaseEntity {

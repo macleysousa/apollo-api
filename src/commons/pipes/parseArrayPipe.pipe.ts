@@ -1,9 +1,10 @@
 import { ArgumentMetadata, BadRequestException, Injectable, ParseArrayOptions, PipeTransform } from '@nestjs/common';
-
-import { validateDto } from '../validate-dto';
-import { ValidationExceptionFactory } from 'src/exceptions/validations.exception';
 import { SwaggerEnumType } from '@nestjs/swagger/dist/types/swagger-enum.type';
 import { isEnum } from 'class-validator';
+
+import { ValidationExceptionFactory } from 'src/exceptions/validations.exception';
+
+import { validateDto } from '../validate-dto';
 
 @Injectable()
 export class ParseArrayPipe implements PipeTransform<unknown, Promise<unknown>> {

@@ -1,13 +1,14 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 
-import { FuncionarioService } from './funcionario.service';
+import { ApiComponent } from '../../decorators/api-componente.decorator';
+
 import { CreateFuncionarioDto } from './dto/create-funcionario.dto';
 import { UpdateFuncionarioDto } from './dto/update-funcionario.dto';
 import { FuncionarioEntity } from './entities/funcionario.entity';
-import { ApiComponent } from '../../decorators/api-componente.decorator';
+import { FuncionarioService } from './funcionario.service';
 
 @ApiBearerAuth()
 @ApiEmpresaAuth()
@@ -31,7 +32,7 @@ export class FuncionarioController {
   async find(
     @Query('empresaId') empresaId: number,
     @Query('nome') nome: string,
-    @Query('inativo') inativo: boolean
+    @Query('inativo') inativo: boolean,
   ): Promise<FuncionarioEntity[]> {
     return this.service.find(empresaId, nome, inativo);
   }

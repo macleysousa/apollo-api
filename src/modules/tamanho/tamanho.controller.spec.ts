@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { sizeFakeRepository } from 'src/base-fake/size';
+
 import { CreateTamanhoDto } from './dto/create-tamanho.dto';
 import { TamanhoController } from './tamanho.controller';
 import { TamanhoService } from './tamanho.service';

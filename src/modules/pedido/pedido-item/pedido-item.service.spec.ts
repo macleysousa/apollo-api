@@ -1,16 +1,18 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
+import { ContextService } from 'src/context/context.service';
+import { ProdutoService } from 'src/modules/produto/produto.service';
+
+import { PedidoService } from '../pedido.service';
+
+import { AddPedidoItemDto } from './dto/add-pedido-item.dto';
+import { ConferirPedidoItemDto } from './dto/conferir-pedido-item.dto';
+import { RemovePedidoItemDto } from './dto/remove-pedido-item.dto';
 import { PedidoItemEntity } from './entities/pedido-item.entity';
 import { PedidoItemService } from './pedido-item.service';
-import { Repository } from 'typeorm';
-import { PedidoService } from '../pedido.service';
-import { ProdutoService } from 'src/modules/produto/produto.service';
-import { ContextService } from 'src/context/context.service';
-import { AddPedidoItemDto } from './dto/add-pedido-item.dto';
-import { RemovePedidoItemDto } from './dto/remove-pedido-item.dto';
-import { BadRequestException } from '@nestjs/common';
-import { ConferirPedidoItemDto } from './dto/conferir-pedido-item.dto';
 
 describe('PedidoItemService', () => {
   let service: PedidoItemService;
@@ -128,7 +130,9 @@ describe('PedidoItemService', () => {
         empresaId: 1,
         valorUnitario: valor,
       });
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { pedidoId, produtoId: addPedidoItemDto.produtoId, sequencia: 1 } });
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { pedidoId, produtoId: addPedidoItemDto.produtoId, sequencia: 1 },
+      });
     });
   });
 
@@ -205,7 +209,12 @@ describe('PedidoItemService', () => {
       const pedidoId = 1;
       const removePedidoItemDto: RemovePedidoItemDto = { produtoId: 1, sequencia: 1, quantidade: 2 };
       const pedido = { id: pedidoId, situacao: 'em_andamento' } as any;
-      const item = { id: 1, produtoId: removePedidoItemDto.produtoId, sequencia: removePedidoItemDto.sequencia, solicitado: 2 } as any;
+      const item = {
+        id: 1,
+        produtoId: removePedidoItemDto.produtoId,
+        sequencia: removePedidoItemDto.sequencia,
+        solicitado: 2,
+      } as any;
 
       jest.spyOn(pedidoService, 'findById').mockResolvedValueOnce(pedido);
       jest.spyOn(repository, 'findOne').mockResolvedValueOnce(item);
@@ -243,7 +252,7 @@ describe('PedidoItemService', () => {
       });
       expect(repository.update).toHaveBeenCalledWith(
         { pedidoId, produtoId: removePedidoItemDto.produtoId, sequencia: removePedidoItemDto.sequencia },
-        { solicitado: item.solicitado - removePedidoItemDto.quantidade, operadorId }
+        { solicitado: item.solicitado - removePedidoItemDto.quantidade, operadorId },
       );
     });
   });
@@ -257,7 +266,7 @@ describe('PedidoItemService', () => {
       jest.spyOn(service, 'findByPedidoId').mockResolvedValueOnce(itens);
 
       await expect(service.conferirItens(pedidoId, conferirPedidoItemDto)).rejects.toThrowError(
-        'Um ou mais itens não foi encontrado no pedido'
+        'Um ou mais itens não foi encontrado no pedido',
       );
       expect(service.findByPedidoId).toHaveBeenCalledWith(pedidoId);
     });

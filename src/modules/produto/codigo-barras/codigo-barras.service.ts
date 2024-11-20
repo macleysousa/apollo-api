@@ -9,7 +9,7 @@ import { CodigoBarrasEntity } from './entities/codigo-barras.entity';
 export class CodigoBarrasService {
   constructor(
     @InjectRepository(CodigoBarrasEntity)
-    private repository: Repository<CodigoBarrasEntity>
+    private repository: Repository<CodigoBarrasEntity>,
   ) {}
 
   async upsert(dto: CreateCodigoBarrasDto[]): Promise<CreateCodigoBarrasDto[]> {

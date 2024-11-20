@@ -51,7 +51,7 @@ export class createTableComponentGroupItems1671558822130 implements MigrationInt
             onUpdate: 'CASCADE',
           }),
         ],
-      })
+      }),
     );
   }
 

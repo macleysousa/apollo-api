@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, In, Repository } from 'typeorm';
 
@@ -10,7 +10,7 @@ import { CategoriaEntity } from './entities/category.entity';
 export class CategoriaService {
   constructor(
     @InjectRepository(CategoriaEntity)
-    private repository: Repository<CategoriaEntity>
+    private repository: Repository<CategoriaEntity>,
   ) {}
 
   async upsert(createCategoryDto: CreateCategoriaDto[]): Promise<CategoriaEntity[]> {

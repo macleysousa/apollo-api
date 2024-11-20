@@ -93,7 +93,7 @@ export class CreateTablePedidosItens1694009802971 implements MigrationInterface 
             onUpdate: `RESTRICT`,
           },
         ],
-      })
+      }),
     );
 
     await queryRunner.createIndices(`pedidos_itens`, [

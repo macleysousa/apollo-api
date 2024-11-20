@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { EmpresaEntity } from '../empresa/entities/empresa.entity';
+
 import { ConsignacaoController } from './consignacao.controller';
 import { ConsignacaoService } from './consignacao.service';
 import { CancelConsinacaoDto } from './dto/cancelar-consignacao.dto';

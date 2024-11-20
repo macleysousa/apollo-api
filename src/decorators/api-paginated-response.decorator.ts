@@ -1,5 +1,5 @@
 import { applyDecorators, Type } from '@nestjs/common';
-import { ApiExtraModels, ApiForbiddenResponse, ApiOkResponse, getSchemaPath, ApiProperty } from '@nestjs/swagger';
+import { ApiExtraModels, ApiForbiddenResponse, ApiOkResponse, ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { IsArray } from 'class-validator';
 
 class PaginationMetaDTO {
@@ -46,6 +46,6 @@ export const ApiPaginatedResponse = <TModel extends Type<any>>(model: TModel) =>
           },
         ],
       },
-    })
+    }),
   );
 };

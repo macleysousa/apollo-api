@@ -1,14 +1,15 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+
+import { COMPONENT_KEY } from 'src/decorators/api-componente.decorator';
 import { IS_PUBLIC_KEY } from 'src/decorators/is-public.decorator';
 import { AuthService } from 'src/modules/auth/auth.service';
-import { COMPONENT_KEY } from 'src/decorators/api-componente.decorator';
 import { Role } from 'src/modules/usuario/enums/usuario-tipo.enum';
 @Injectable()
 export class ComponentGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

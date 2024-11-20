@@ -8,7 +8,7 @@ import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
 export class ParseRomaneioPipe implements PipeTransform<string, Promise<number>> {
   constructor(
     private readonly service: RomaneioService,
-    private readonly contextService: ContextService
+    private readonly contextService: ContextService,
   ) {}
 
   async transform(value: string): Promise<number> {
@@ -35,7 +35,7 @@ export class ParseRomaneioPipe implements PipeTransform<string, Promise<number>>
 export class ParseRomaneioEmAndamentoPipe implements PipeTransform<string, Promise<number>> {
   constructor(
     private readonly service: RomaneioService,
-    private readonly contextService: ContextService
+    private readonly contextService: ContextService,
   ) {}
 
   async transform(value: string): Promise<number> {
@@ -62,7 +62,7 @@ export class ParseRomaneioEmAndamentoPipe implements PipeTransform<string, Promi
 export class ParseRomaneioEncerradoPipe implements PipeTransform<string, Promise<number>> {
   constructor(
     private readonly service: RomaneioService,
-    private readonly contextService: ContextService
+    private readonly contextService: ContextService,
   ) {}
 
   async transform(value: string): Promise<number> {

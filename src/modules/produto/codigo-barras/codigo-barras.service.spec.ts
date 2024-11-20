@@ -59,7 +59,10 @@ describe('BarcodeService', () => {
 
       // Assert
       expect(repository.upsert).toHaveBeenCalledTimes(1);
-      expect(repository.upsert).toHaveBeenCalledWith({ produtoId, codigo: create.codigo }, { conflictPaths: ['produtoId', 'codigo'] });
+      expect(repository.upsert).toHaveBeenCalledWith(
+        { produtoId, codigo: create.codigo },
+        { conflictPaths: ['produtoId', 'codigo'] },
+      );
     });
   });
 

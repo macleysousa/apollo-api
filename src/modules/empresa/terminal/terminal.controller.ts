@@ -20,7 +20,7 @@ export class TerminalController {
   @ApiResponse({ status: 201, type: TerminalEntity })
   async create(
     @Param('empresaId', ParseEmpresaPipe) empresaId: number,
-    @Body() createTerminalDto: CreateTerminalDto
+    @Body() createTerminalDto: CreateTerminalDto,
   ): Promise<TerminalEntity> {
     return this.service.create(empresaId, createTerminalDto);
   }
@@ -33,7 +33,10 @@ export class TerminalController {
 
   @Get(':id')
   @ApiResponse({ status: 200, type: TerminalEntity })
-  async findById(@Param('empresaId', ParseEmpresaPipe) empresaId: number, @Param('id', ParseIntPipe) id: number): Promise<TerminalEntity> {
+  async findById(
+    @Param('empresaId', ParseEmpresaPipe) empresaId: number,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<TerminalEntity> {
     return this.service.findById(empresaId, id);
   }
 
@@ -42,7 +45,7 @@ export class TerminalController {
   async update(
     @Param('empresaId', ParseEmpresaPipe) empresaId: number,
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateTerminalDto: UpdateTerminalDto
+    @Body() updateTerminalDto: UpdateTerminalDto,
   ): Promise<TerminalEntity> {
     return this.service.update(empresaId, id, updateTerminalDto);
   }

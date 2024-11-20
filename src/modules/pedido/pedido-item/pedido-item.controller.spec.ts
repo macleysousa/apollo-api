@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { AddPedidoItemDto } from './dto/add-pedido-item.dto';
+import { RemovePedidoItemDto } from './dto/remove-pedido-item.dto';
+import { PedidoItemEntity } from './entities/pedido-item.entity';
 import { PedidoItemController } from './pedido-item.controller';
 import { PedidoItemService } from './pedido-item.service';
-import { AddPedidoItemDto } from './dto/add-pedido-item.dto';
-import { PedidoItemEntity } from './entities/pedido-item.entity';
-import { RemovePedidoItemDto } from './dto/remove-pedido-item.dto';
 
 describe('PedidoItemController', () => {
   let controller: PedidoItemController;

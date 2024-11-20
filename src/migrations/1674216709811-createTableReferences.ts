@@ -95,7 +95,7 @@ export class createTableReferences1674216709811 implements MigrationInterface {
             onUpdate: 'CASCADE',
           }),
         ],
-      })
+      }),
     );
   }
 

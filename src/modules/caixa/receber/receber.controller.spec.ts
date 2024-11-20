@@ -1,13 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ContextService } from 'src/context/context.service';
+import { FaturaSituacao } from 'src/modules/fatura/enum/fatura-situacao.enum';
+import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
 
 import { CaixaService } from '../caixa.service';
+import { CaixaSituacao } from '../enum/caixa-situacao.enum';
+
 import { ReceberController } from './receber.controller';
 import { ReceberService } from './receber.service';
-import { CaixaSituacao } from '../enum/caixa-situacao.enum';
-import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
-import { FaturaSituacao } from 'src/modules/fatura/enum/fatura-situacao.enum';
 
 describe('ReceberController', () => {
   let controller: ReceberController;

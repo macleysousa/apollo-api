@@ -59,7 +59,7 @@ export async function parseCsvToProduto<T>(file: Express.Multer.File): Promise<T
 
         produtos.push(value);
       }
-    })
+    }),
   );
 
   const values: T[] = [];
@@ -92,7 +92,7 @@ export async function parseCsvToProduto<T>(file: Express.Multer.File): Promise<T
       } as T;
 
       values.push(value);
-    })
+    }),
   );
 
   return values;
@@ -115,7 +115,7 @@ export async function parseCsvToRefereciaPreco<T>(file: Express.Multer.File): Pr
         } as T;
         values.push(value);
       }
-    })
+    }),
   );
 
   return values;

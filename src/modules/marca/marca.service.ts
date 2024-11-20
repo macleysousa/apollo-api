@@ -10,7 +10,7 @@ import { MarcaEntity } from './entities/marca.entity';
 export class MarcaService {
   constructor(
     @InjectRepository(MarcaEntity)
-    private repository: Repository<MarcaEntity>
+    private repository: Repository<MarcaEntity>,
   ) {}
 
   async create(createBrandDto: CreateMarcaDto): Promise<MarcaEntity> {

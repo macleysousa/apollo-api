@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber } from 'class-validator';
-import { IsBetween } from 'src/commons/validations/is-between.validation';
 
+import { IsBetween } from 'src/commons/validations/is-between.validation';
 import { IsEmpresa } from 'src/commons/validations/is-empresa.validation';
 
 export class LiberarEmpresaAcessoDto {

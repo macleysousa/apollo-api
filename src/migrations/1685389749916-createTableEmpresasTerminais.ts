@@ -39,7 +39,7 @@ export class CreateTableEmpresasTerminais1685389749916 implements MigrationInter
             default: 'now()',
           },
         ],
-      })
+      }),
     );
   }
 

@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { caixaFakeRepository } from 'src/base-fake/caixa';
+
 import { CaixaController } from './caixa.controller';
 import { CaixaService } from './caixa.service';
 import { CreateCaixaDto } from './dto/create-caixa.dto';
 import { CaixaEntity } from './entities/caixa.entity';
-import { caixaFakeRepository } from 'src/base-fake/caixa';
 
 describe('CaixaController', () => {
   let controller: CaixaController;

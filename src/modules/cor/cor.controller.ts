@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { ApiComponent } from '../../decorators/api-componente.decorator';
 
 import { CorService } from './cor.service';

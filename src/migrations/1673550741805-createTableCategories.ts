@@ -36,7 +36,7 @@ export class createTableCategories1673550741805 implements MigrationInterface {
             default: 'now()',
           },
         ],
-      })
+      }),
     );
   }
 

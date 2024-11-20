@@ -6,6 +6,7 @@ import { ILike, In, Repository } from 'typeorm';
 import { categoryFakeRepository } from 'src/base-fake/category';
 
 import { UpdateCategoriaDto } from '../dto/update-category.dto';
+
 import { CreateSubCategoriaDto } from './dto/create-sub.dto';
 import { UpdateSubCategoriaDto } from './dto/update-sub.dto';
 import { SubCategoriaEntity } from './entities/sub.entity';
@@ -84,7 +85,7 @@ describe('SubService', () => {
 
       // Assert
       expect(service.create(categoriaId, sub)).rejects.toEqual(
-        new BadRequestException(`Sub Category with name ${sub.nome} already exists`)
+        new BadRequestException(`Sub Category with name ${sub.nome} already exists`),
       );
     });
   });
@@ -206,7 +207,7 @@ describe('SubService', () => {
 
       // Assert
       expect(service.update(categoriaId, id, size)).rejects.toEqual(
-        new BadRequestException(`Sub Category with id ${id} not found to category with id ${categoriaId}`)
+        new BadRequestException(`Sub Category with id ${id} not found to category with id ${categoriaId}`),
       );
     });
 
@@ -220,7 +221,7 @@ describe('SubService', () => {
 
       // Assert
       expect(service.update(categoriaId, id, sub)).rejects.toEqual(
-        new BadRequestException(`Sub Category with name ${sub.nome} already exists in category with id ${categoriaId}`)
+        new BadRequestException(`Sub Category with name ${sub.nome} already exists in category with id ${categoriaId}`),
       );
     });
   });

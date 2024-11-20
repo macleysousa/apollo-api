@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { colorFakeRepository } from 'src/base-fake/color';
+
 import { CorController } from './cor.controller';
 import { CorService } from './cor.service';
 import { CreateCorDto } from './dto/create-cor.dto';

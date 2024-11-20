@@ -1,5 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { PontoEntity } from './entities/ponto.entity';
 import { PontoController } from './ponto.controller';
 import { PontoService } from './ponto.service';

@@ -1,9 +1,9 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { PessoaExtratoService } from './pessoa-extrato.service';
-import { PessoaExtratoController } from './pessoa-extrato.controller';
 import { PessoaExtratoEntity } from './entities/pessoa-extrato.entity';
+import { PessoaExtratoController } from './pessoa-extrato.controller';
+import { PessoaExtratoService } from './pessoa-extrato.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([PessoaExtratoEntity])],

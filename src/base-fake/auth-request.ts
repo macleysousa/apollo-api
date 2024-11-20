@@ -2,8 +2,8 @@ import { AuthRequest } from 'src/decorators/current-auth.decorator';
 import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 import { UsuarioEntity } from 'src/modules/usuario/entities/usuario.entity';
 
-import { userFakeRepository } from './user';
 import { empresaFakeRepository } from './empresa';
+import { userFakeRepository } from './user';
 
 export class AuthRequestFake implements AuthRequest {
   usuario: UsuarioEntity = userFakeRepository.findOne();

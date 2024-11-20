@@ -6,6 +6,7 @@ import { ContextService } from 'src/context/context.service';
 import { ProdutoService } from 'src/modules/produto/produto.service';
 
 import { PedidoService } from '../pedido.service';
+
 import { AddPedidoItemDto } from './dto/add-pedido-item.dto';
 import { ConferirPedidoItemDto } from './dto/conferir-pedido-item.dto';
 import { RemovePedidoItemDto } from './dto/remove-pedido-item.dto';
@@ -18,7 +19,7 @@ export class PedidoItemService {
     private readonly repository: Repository<PedidoItemEntity>,
     private readonly pedidoService: PedidoService,
     private readonly productService: ProdutoService,
-    private readonly contextService: ContextService
+    private readonly contextService: ContextService,
   ) {}
 
   async add(pedidoId: number, dto: AddPedidoItemDto): Promise<PedidoItemEntity> {

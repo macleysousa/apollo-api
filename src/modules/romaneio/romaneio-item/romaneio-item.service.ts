@@ -1,5 +1,6 @@
-import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { forEach } from 'lodash';
 import { In, Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
@@ -7,13 +8,13 @@ import { EstoqueService } from 'src/modules/estoque/estoque.service';
 import { PrecoReferenciaService } from 'src/modules/tabela-de-preco/referencia/referencia.service';
 
 import { ModalidadeRomaneio } from '../enum/modalidade-romaneio.enum';
+import { OperacaoRomaneio } from '../enum/operacao-romaneio.enum';
 import { SituacaoRomaneio, SituacaoRomaneioType } from '../enum/situacao-romaneio.enum';
 import { RomaneioService } from '../romaneio.service';
+
 import { AddRemoveRomaneioItemDto } from './dto/add-remove-romaneio-item.dto';
 import { RomaneioItemEntity } from './entities/romaneio-item.entity';
 import { RomaneioItemView } from './views/romaneio-item.view';
-import { OperacaoRomaneio } from '../enum/operacao-romaneio.enum';
-import { forEach } from 'lodash';
 
 interface InsertDto {
   romaneioId: number;
@@ -37,7 +38,7 @@ export class RomaneioItemService {
     private readonly romaneioService: RomaneioService,
     private readonly contextService: ContextService,
     private readonly estoqueService: EstoqueService,
-    private readonly precoService: PrecoReferenciaService
+    private readonly precoService: PrecoReferenciaService,
   ) {}
 
   async add(romaneioId: number, { produtoId, quantidade }: AddRemoveRomaneioItemDto): Promise<void> {
@@ -71,7 +72,9 @@ export class RomaneioItemService {
     if (romaneio.operacao == 'consignacao_acerto' || romaneio.operacao == 'consignacao_devolucao') {
       const consignacaoItems = await this.findByConsignacaoIds([romaneio.consignacaoId], [produtoId], ['encerrado']);
       const quantidadeConsignacaoItem =
-        consignacaoItems?.filter((x) => romaneio.romaneiosConsignacao.includes(x.romaneioId)).sum((x) => x.quantidade - x.devolvido) ?? 0;
+        consignacaoItems
+          ?.filter((x) => romaneio.romaneiosConsignacao.includes(x.romaneioId))
+          .sum((x) => x.quantidade - x.devolvido) ?? 0;
 
       if (quantidadeItem + quantidade > quantidadeConsignacaoItem) {
         throw new BadRequestException(`Saldo em consignação insuficiente para o produto "${produtoId}"`);
@@ -92,7 +95,7 @@ export class RomaneioItemService {
                 saldo: x.quantidade - x.devolvido - atual.sum((y) => y.quantidade),
               };
             })
-            .filter((x) => x.saldo > 0)
+            .filter((x) => x.saldo > 0),
         );
 
         for await (const item of produtosConsignacao) {
@@ -139,7 +142,7 @@ export class RomaneioItemService {
             valorUnitDesconto: x.valorUnitDesconto,
             saldo: x.quantidade - x.devolvido - devolucaoAtual.sum((y) => y.quantidade),
           };
-        })
+        }),
       );
 
       const romaneiosComSaldo = romaneiosSaldos.filter((x) => x.produtoId == produtoId && x.saldo > 0);
@@ -177,7 +180,13 @@ export class RomaneioItemService {
         }
       }
     } else if (quantidade > 0) {
-      await this.insert({ romaneioId, produtoId, quantidade, referenciaId: estoque.referenciaId, valorUnitario: precoReferencia.valor });
+      await this.insert({
+        romaneioId,
+        produtoId,
+        quantidade,
+        referenciaId: estoque.referenciaId,
+        valorUnitario: precoReferencia.valor,
+      });
     }
   }
 
@@ -207,13 +216,15 @@ export class RomaneioItemService {
   }
 
   async findByRomaneioIds(romaneioId: number[], produtoIds?: number[]): Promise<RomaneioItemView[]> {
-    return this.view.find({ where: { romaneioId: In(romaneioId), produtoId: produtoIds?.length > 0 ? In(produtoIds) : undefined } });
+    return this.view.find({
+      where: { romaneioId: In(romaneioId), produtoId: produtoIds?.length > 0 ? In(produtoIds) : undefined },
+    });
   }
 
   async findByConsignacaoIds(
     consignacaoIds: number[],
     produtoIds?: number[],
-    situacoes?: SituacaoRomaneioType[]
+    situacoes?: SituacaoRomaneioType[],
   ): Promise<RomaneioItemView[]> {
     return this.view.find({
       where: {
@@ -254,7 +265,7 @@ export class RomaneioItemService {
     } else {
       await this.repository.update(
         { romaneioId, produtoId, sequencia: item.sequencia },
-        { quantidade: item.quantidade - quantidade, operadorId: usuario.id }
+        { quantidade: item.quantidade - quantidade, operadorId: usuario.id },
       );
     }
   }

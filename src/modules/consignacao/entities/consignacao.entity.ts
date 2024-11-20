@@ -3,8 +3,8 @@ import { Column, Entity, JoinColumn, OneToMany, PrimaryColumn, PrimaryGeneratedC
 
 import { BaseEntity } from 'src/commons/base.entity';
 
-import { SituacaoConsignacao, SituacaoConsignacaoEnum } from '../enum/situacao-consignacao.enum';
 import { ConsignacaoItemEntity } from '../consignacao-item/entities/consignacao-item.entity';
+import { SituacaoConsignacao, SituacaoConsignacaoEnum } from '../enum/situacao-consignacao.enum';
 
 @Entity({ name: 'consignacoes' })
 export class ConsignacaoEntity extends BaseEntity {

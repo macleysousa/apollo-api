@@ -5,6 +5,7 @@ import { IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
 import { IsColor } from 'src/commons/validations/is-color.validation';
 import { IsReferencia } from 'src/commons/validations/is-referencia.validation';
 import { IsTamanho } from 'src/commons/validations/is-tamanho.validation';
+
 import { CreateCodigoBarrasDto } from '../codigo-barras/dto/create-codigo-barras.dto';
 
 export class CreateProdutoDto {

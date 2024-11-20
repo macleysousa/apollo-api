@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { productFakeRepository } from 'src/base-fake/product';
-import { CreateProdutoDto } from './dto/create-produto.dto';
-import { UpdateProdutoDto } from './dto/update-produto.dto';
 
+import { productFakeRepository } from 'src/base-fake/product';
+import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
+
+import { CreateProdutoDto } from './dto/create-produto.dto';
+import { ImportProdutoDto } from './dto/import-produto.dto';
+import { UpdateProdutoDto } from './dto/update-produto.dto';
 import { ProdutoController } from './produto.controller';
 import { ProdutoService } from './produto.service';
-import { ImportProdutoDto } from './dto/import-produto.dto';
-import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
 
 describe('ProductController', () => {
   let controller: ProdutoController;

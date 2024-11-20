@@ -1,6 +1,8 @@
 import { ValidationArguments } from 'class-validator';
-import { IsPessoaConstraint } from './is-pessoa.validation';
+
 import { PessoaService } from 'src/modules/pessoa/pessoa.service';
+
+import { IsPessoaConstraint } from './is-pessoa.validation';
 
 describe('IsPessoaConstraint', () => {
   let constraint: IsPessoaConstraint;

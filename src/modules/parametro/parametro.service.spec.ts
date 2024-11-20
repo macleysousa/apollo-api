@@ -48,7 +48,9 @@ describe('ParametroService', () => {
 
       await service.find(id, descricao);
 
-      expect(repository.find).toHaveBeenCalledWith({ where: { id: ILike(`%${id ?? ''}%`), descricao: ILike(`%${descricao ?? ''}%`) } });
+      expect(repository.find).toHaveBeenCalledWith({
+        where: { id: ILike(`%${id ?? ''}%`), descricao: ILike(`%${descricao ?? ''}%`) },
+      });
     });
 
     it('should call service.find with empty parameters if none are provided', async () => {
@@ -57,7 +59,9 @@ describe('ParametroService', () => {
 
       await service.find(id, descricao);
 
-      expect(repository.find).toHaveBeenCalledWith({ where: { id: ILike(`%${id ?? ''}%`), descricao: ILike(`%${descricao ?? ''}%`) } });
+      expect(repository.find).toHaveBeenCalledWith({
+        where: { id: ILike(`%${id ?? ''}%`), descricao: ILike(`%${descricao ?? ''}%`) },
+      });
     });
   });
 

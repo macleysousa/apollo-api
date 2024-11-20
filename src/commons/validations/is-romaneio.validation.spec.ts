@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ValidationArguments } from 'class-validator';
 
+import { ModalidadeRomaneio } from 'src/modules/romaneio/enum/modalidade-romaneio.enum';
 import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
 import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
-import { ModalidadeRomaneio } from 'src/modules/romaneio/enum/modalidade-romaneio.enum';
 
 import { RomaneioConstraint } from './is-romaneio.validation';
 
@@ -51,7 +51,9 @@ describe('RomaneioConstraint', () => {
 
     const result = await constraint.validate(romaneioId, { constraints: [options] } as any);
     expect(result).toBe(false);
-    expect(constraint.messageError).toBe(`Romaneio ${romaneioId} não está com uma situação válida: ${options.situacao.join(', ')}`);
+    expect(constraint.messageError).toBe(
+      `Romaneio ${romaneioId} não está com uma situação válida: ${options.situacao.join(', ')}`,
+    );
   });
 
   it('should return false if romaneio has the wrong modalidade', async () => {
@@ -63,7 +65,9 @@ describe('RomaneioConstraint', () => {
 
     const result = await constraint.validate(romaneioId, { constraints: [options] } as any);
     expect(result).toBe(false);
-    expect(constraint.messageError).toBe(`Romaneio ${romaneioId} não está com uma modalidade válida: ${options.modalidade.join(', ')}`);
+    expect(constraint.messageError).toBe(
+      `Romaneio ${romaneioId} não está com uma modalidade válida: ${options.modalidade.join(', ')}`,
+    );
   });
 
   it('should return false if romaneio has the wrong operação', async () => {
@@ -75,7 +79,9 @@ describe('RomaneioConstraint', () => {
 
     const result = await constraint.validate(romaneioId, { constraints: [options] } as any);
     expect(result).toBe(false);
-    expect(constraint.messageError).toBe(`Romaneio ${romaneioId} não está com uma operação válida: ${options.operacao.join(', ')}`);
+    expect(constraint.messageError).toBe(
+      `Romaneio ${romaneioId} não está com uma operação válida: ${options.operacao.join(', ')}`,
+    );
   });
 
   it('should return true', async () => {

@@ -113,7 +113,9 @@ describe('PessoaExtratoService', () => {
       expect(repository.createQueryBuilder().where).toHaveBeenCalledWith({ empresaId: Not(IsNull()) });
       expect(repository.createQueryBuilder().andWhere).toHaveBeenCalledWith({ empresaId: In(filter.empresaIds) });
       expect(repository.createQueryBuilder().andWhere).toHaveBeenCalledWith({ pessoaId: filter.pessoaId });
-      expect(repository.createQueryBuilder().andWhere).toHaveBeenCalledWith('p.data >= :dataInicio', { dataInicio: expect.any(Date) });
+      expect(repository.createQueryBuilder().andWhere).toHaveBeenCalledWith('p.data >= :dataInicio', {
+        dataInicio: expect.any(Date),
+      });
       expect(repository.createQueryBuilder().andWhere).toHaveBeenCalledWith('p.data <= :dataFim', { dataFim: expect.any(Date) });
       expect(repository.createQueryBuilder().getMany).toHaveBeenCalled();
       expect(response).toBe(result);
@@ -145,8 +147,12 @@ describe('PessoaExtratoService', () => {
       expect(repository.createQueryBuilder().where).toHaveBeenCalledWith({ empresaId: Not(IsNull()) });
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ empresaId: expect.anything() });
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ pessoaId: expect.anything() });
-      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('p.data >= :dataInicio', { dataInicio: expect.any(Date) });
-      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('p.data <= :dataFim', { dataFim: expect.any(Date) });
+      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('p.data >= :dataInicio', {
+        dataInicio: expect.any(Date),
+      });
+      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('p.data <= :dataFim', {
+        dataFim: expect.any(Date),
+      });
       expect(repository.createQueryBuilder().getMany).toHaveBeenCalled();
       expect(response).toBe(result);
     });
@@ -177,8 +183,12 @@ describe('PessoaExtratoService', () => {
       expect(repository.createQueryBuilder().where).toHaveBeenCalledWith({ empresaId: Not(IsNull()) });
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ empresaId: expect.anything() });
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ pessoaId: expect.anything() });
-      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('p.data >= :dataInicio', { dataInicio: expect.any(Date) });
-      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('p.data <= :dataFim', { dataFim: expect.any(Date) });
+      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('p.data >= :dataInicio', {
+        dataInicio: expect.any(Date),
+      });
+      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('p.data <= :dataFim', {
+        dataFim: expect.any(Date),
+      });
       expect(repository.createQueryBuilder().getMany).toHaveBeenCalled();
       expect(response).toBe(result);
     });

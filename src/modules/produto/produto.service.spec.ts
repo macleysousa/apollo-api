@@ -11,6 +11,7 @@ import { SubCategoriaService } from '../categoria/sub/sub.service';
 import { CorService } from '../cor/cor.service';
 import { ReferenciaService } from '../referencia/referencia.service';
 import { TamanhoService } from '../tamanho/tamanho.service';
+
 import { CodigoBarrasService } from './codigo-barras/codigo-barras.service';
 import { CreateProdutoDto } from './dto/create-produto.dto';
 import { ImportProdutoDto } from './dto/import-produto.dto';
@@ -202,7 +203,9 @@ describe('ProductService', () => {
       // Act
 
       // Assert
-      expect(service.create(createDto)).rejects.toEqual(new BadRequestException(`Product with id ${createDto.id} already exists`));
+      expect(service.create(createDto)).rejects.toEqual(
+        new BadRequestException(`Product with id ${createDto.id} already exists`),
+      );
     });
   });
 
@@ -232,7 +235,9 @@ describe('ProductService', () => {
       expect(repository.createQueryBuilder().orWhere).toHaveBeenCalledWith('referencia.idExterno LIKE :idExterno', {
         idExterno: `%${searchTerm}%`,
       });
-      expect(repository.createQueryBuilder().orWhere).toHaveBeenCalledWith('codigo.code LIKE :codigo', { codigo: `%${searchTerm}%` });
+      expect(repository.createQueryBuilder().orWhere).toHaveBeenCalledWith('codigo.code LIKE :codigo', {
+        codigo: `%${searchTerm}%`,
+      });
 
       expect(result).toEqual(productFakeRepository.findPaginate());
     });

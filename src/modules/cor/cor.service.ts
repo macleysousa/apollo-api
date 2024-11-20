@@ -11,7 +11,7 @@ import { CorFilter } from './filters/cor.filter';
 export class CorService {
   constructor(
     @InjectRepository(CorEntity)
-    private repository: Repository<CorEntity>
+    private repository: Repository<CorEntity>,
   ) {}
 
   async upsert(dto: CreateCorDto[]): Promise<CorEntity[]> {

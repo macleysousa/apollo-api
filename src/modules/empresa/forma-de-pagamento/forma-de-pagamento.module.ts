@@ -1,9 +1,9 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { EmpresaFormaPagamentoService } from './forma-de-pagamento.service';
-import { EmpresaFormaPagamentoController } from './forma-de-pagamento.controller';
 import { EmpresaFormaPagamentoEntity } from './entities/forma-de-pagamento.entity';
+import { EmpresaFormaPagamentoController } from './forma-de-pagamento.controller';
+import { EmpresaFormaPagamentoService } from './forma-de-pagamento.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([EmpresaFormaPagamentoEntity])],

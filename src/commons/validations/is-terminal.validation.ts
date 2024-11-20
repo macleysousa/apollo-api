@@ -6,8 +6,8 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { ContextService } from 'src/context/context.service';
 
+import { ContextService } from 'src/context/context.service';
 import { TerminalService } from 'src/modules/empresa/terminal/terminal.service';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class TerminalConstraint implements ValidatorConstraintInterface {
   messageError: string;
   constructor(
     private readonly contextService: ContextService,
-    private readonly terminalService: TerminalService
+    private readonly terminalService: TerminalService,
   ) {}
 
   async validate(value: number, args?: ValidationArguments): Promise<boolean> {

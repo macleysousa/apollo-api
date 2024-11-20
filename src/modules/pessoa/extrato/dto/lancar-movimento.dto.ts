@@ -4,9 +4,9 @@ import { IsEnum, IsNotEmpty, IsOptional, Min } from 'class-validator';
 import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
 import { IsBetween } from 'src/commons/validations/is-between.validation';
 import { IsPessoa } from 'src/commons/validations/is-pessoa.validation';
+import { IsRomaneio } from 'src/commons/validations/is-romaneio.validation';
 
 import { TipoDocumento } from '../enum/tipo-documento.enum';
-import { IsRomaneio } from 'src/commons/validations/is-romaneio.validation';
 
 export class LancarMovimentoPessoaDto {
   @ApiProperty()

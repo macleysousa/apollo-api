@@ -162,7 +162,7 @@ export class CreateTableRomaneios1685974701816 implements MigrationInterface {
             columnNames: ['situacao'],
           },
         ],
-      })
+      }),
     );
   }
 

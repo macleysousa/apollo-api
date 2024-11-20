@@ -4,9 +4,10 @@ import { romaneioFakeRepository } from 'src/base-fake/romaneio';
 import { ContextService } from 'src/context/context.service';
 import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 
-import { RomaneioService } from '../romaneio.service';
-import { CreateRomaneioFreteDto } from './dto/create-romaneio-frete.dto';
 import { TipoFrete } from '../../../commons/enum/tipo-frete';
+import { RomaneioService } from '../romaneio.service';
+
+import { CreateRomaneioFreteDto } from './dto/create-romaneio-frete.dto';
 import { RomaneioFreteController } from './romaneio-frete.controller';
 import { RomaneioFreteService } from './romaneio-frete.service';
 
@@ -55,7 +56,12 @@ describe('RomaneioFreteController', () => {
     it('should call service.upsert() with the correct parameters', async () => {
       const empresa = { id: 1 } as EmpresaEntity;
       const romanioId = 1;
-      const createRomaneioFreteDto: CreateRomaneioFreteDto = { tipo: TipoFrete.CIF, valor: 100, prazo: 10, observacao: 'Observação' };
+      const createRomaneioFreteDto: CreateRomaneioFreteDto = {
+        tipo: TipoFrete.CIF,
+        valor: 100,
+        prazo: 10,
+        observacao: 'Observação',
+      };
 
       const result = await controller.create(empresa, romanioId, createRomaneioFreteDto);
 

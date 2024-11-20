@@ -112,7 +112,7 @@ export class CreateTableConsignacaoItens1693426713509 implements MigrationInterf
             onDelete: 'CASCADE',
           },
         ],
-      })
+      }),
     );
   }
 

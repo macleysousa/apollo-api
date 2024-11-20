@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository, Not, IsNull } from 'typeorm';
+import { In, IsNull, Not, Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
 
+import { LancarMovimentoPessoaDto } from './dto/lancar-movimento.dto';
 import { PessoaExtratoEntity } from './entities/pessoa-extrato.entity';
 import { TipoDocumento } from './enum/tipo-documento.enum';
-import { LancarMovimentoPessoaDto } from './dto/lancar-movimento.dto';
 
 interface filter {
   empresaIds?: number[];
@@ -21,7 +21,7 @@ export class PessoaExtratoService {
   constructor(
     @InjectRepository(PessoaExtratoEntity)
     private repository: Repository<PessoaExtratoEntity>,
-    private contextService: ContextService
+    private contextService: ContextService,
   ) {}
 
   async lancarMovimento(dto: LancarMovimentoPessoaDto): Promise<PessoaExtratoEntity> {

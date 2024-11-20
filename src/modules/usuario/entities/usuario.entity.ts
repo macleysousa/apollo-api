@@ -1,13 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Transform } from 'class-transformer';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
 import { BaseEntity } from 'src/commons/base.entity';
 import { decrypt, encrypt } from 'src/commons/crypto';
-
-import { Role } from '../enums/usuario-tipo.enum';
-import { UsuarioSituacao } from '../enums/usuario-situacao.enum';
-import { UsuarioTerminalEntity } from '../terminal/entities/terminal.entity';
 import { TerminalEntity } from 'src/modules/empresa/terminal/entities/terminal.entity';
+
+import { UsuarioSituacao } from '../enums/usuario-situacao.enum';
+import { Role } from '../enums/usuario-tipo.enum';
+import { UsuarioTerminalEntity } from '../terminal/entities/terminal.entity';
 
 @Entity({ name: 'usuarios' })
 export class UsuarioEntity extends BaseEntity {

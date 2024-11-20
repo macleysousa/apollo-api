@@ -39,7 +39,7 @@ export class CreateTableTabelasDePrecos1685974699790 implements MigrationInterfa
             default: 'now()',
           },
         ],
-      })
+      }),
     );
   }
 

@@ -1,10 +1,12 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { userFakeRepository } from 'src/base-fake/user';
-import { CriarUsuarioDto } from './dto/criar-usuario.dto';
+
 import { AtualizarUsuarioDto } from './dto/atualizar-usuario.dto';
-import { Role } from './enums/usuario-tipo.enum';
+import { CriarUsuarioDto } from './dto/criar-usuario.dto';
 import { UsuarioSituacao } from './enums/usuario-situacao.enum';
+import { Role } from './enums/usuario-tipo.enum';
 import { UsuarioController } from './usuario.controller';
 import { UsuarioService } from './usuario.service';
 
@@ -57,7 +59,7 @@ describe('UserController', () => {
       // Assert
 
       expect(userController.create(user, createUserDto)).rejects.toEqual(
-        new UnauthorizedException('Para criar o usuário do tipo sysadmin, você deve ter acesso sysadmin')
+        new UnauthorizedException('Para criar o usuário do tipo sysadmin, você deve ter acesso sysadmin'),
       );
     });
 
@@ -167,7 +169,7 @@ describe('UserController', () => {
 
       // Assert
       expect(userController.update(user, userId, updateUserDto)).rejects.toEqual(
-        new UnauthorizedException('To update user to sysadmin you must have sysadmin access')
+        new UnauthorizedException('To update user to sysadmin you must have sysadmin access'),
       );
     });
 

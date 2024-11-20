@@ -8,13 +8,13 @@ import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { TipoInclusao } from 'src/commons/enum/tipo-inclusao';
 import { ContextService } from 'src/context/context.service';
 
+import { CreateFaturaAutimaticaDto } from './dto/create-fatura-automatica.dto';
 import { CreateFaturaManualDto } from './dto/create-fatura-manual.dto';
 import { UpdateFaturaManualDto } from './dto/update-fatura-manual.dto';
 import { FaturaEntity } from './entities/fatura.entity';
 import { FaturaSituacao } from './enum/fatura-situacao.enum';
 import { FaturaService } from './fatura.service';
 import { FaturaParcelaService } from './parcela/parcela.service';
-import { CreateFaturaAutimaticaDto } from './dto/create-fatura-automatica.dto';
 
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({
@@ -203,8 +203,12 @@ describe('FaturaService', () => {
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ empresaId: expect.any(Object) });
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ id: expect.any(Object) });
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ pessoaId: expect.any(Object) });
-      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('f.data <= :dataFim', { dataFim: filter.dataFim });
-      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('f.data <= :dataFim', { dataFim: filter.dataFim });
+      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('f.data <= :dataFim', {
+        dataFim: filter.dataFim,
+      });
+      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('f.data <= :dataFim', {
+        dataFim: filter.dataFim,
+      });
 
       expect(result).toEqual(faturaFakeRepository.findPaginate());
     });
@@ -222,8 +226,12 @@ describe('FaturaService', () => {
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ empresaId: expect.any(Object) });
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ id: expect.any(Object) });
       expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith({ pessoaId: expect.any(Object) });
-      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('f.data <= :dataFim', { dataFim: expect.any(Date) });
-      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('f.data <= :dataFim', { dataFim: expect.any(Date) });
+      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('f.data <= :dataFim', {
+        dataFim: expect.any(Date),
+      });
+      expect(repository.createQueryBuilder().andWhere).not.toHaveBeenCalledWith('f.data <= :dataFim', {
+        dataFim: expect.any(Date),
+      });
 
       expect(result).toEqual(faturaFakeRepository.findPaginate());
     });

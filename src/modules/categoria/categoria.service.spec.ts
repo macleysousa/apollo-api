@@ -88,7 +88,9 @@ describe('CategoryService', () => {
       // Act
 
       // Assert
-      expect(service.create(category)).rejects.toEqual(new BadRequestException(`Category with name ${category.nome} already exists`));
+      expect(service.create(category)).rejects.toEqual(
+        new BadRequestException(`Category with name ${category.nome} already exists`),
+      );
     });
   });
 

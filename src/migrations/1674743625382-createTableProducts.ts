@@ -68,7 +68,7 @@ export class createTableProducts1674743625382 implements MigrationInterface {
             onUpdate: 'CASCADE',
           }),
         ],
-      })
+      }),
     );
   }
 

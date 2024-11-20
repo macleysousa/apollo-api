@@ -1,10 +1,14 @@
 const typescriptParser = require('@typescript-eslint/parser');
 const typescriptPlugin = require('@typescript-eslint/eslint-plugin');
+const importPlugin = require('eslint-plugin-import');
+const simpleImportSortPlugin = require('eslint-plugin-simple-import-sort');
 const prettierPlugin = require('eslint-plugin-prettier');
 
+/** @type {import('eslint').Linter.FlatConfig[]} */
 const config = [
   {
     files: ['**/*.ts', '**/*.tsx'],
+    ignores: ['.eslintrc.js', '**/src/i18n/**'],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
@@ -15,6 +19,8 @@ const config = [
     },
     plugins: {
       '@typescript-eslint': typescriptPlugin,
+      import: importPlugin,
+      'simple-import-sort': simpleImportSortPlugin,
       prettier: prettierPlugin,
     },
     rules: {
@@ -29,17 +35,36 @@ const config = [
       'prettier/prettier': [
         'error',
         {
-          'trailingComma': 'es5',
-          'endOfLine': 'auto',
-          'singleQuote': true,
-          'tabWidth': 2,
-          'maxLineLength': 160,
+          trailingComma: 'all',
+          endOfLine: 'auto',
+          singleQuote: true,
+          tabWidth: 2,
+          printWidth: 130,
         },
-      ]
+      ],
+      'simple-import-sort/imports': [
+        'warn',
+        {
+          groups: [
+            ['^nest(.*)$', '^@?\\w'],
+            ['^src/(.*)$'],
+            ['^(../)+(.*)$'],
+            ['^./(.*)$'],
+          ],
+        },
+      ],
+      'simple-import-sort/exports': 'warn',
+      'import/order': 'off',
+      'import/no-unresolved': 'off',
     },
-  },
-  {
-    ignores: ['eslint.config.js'],
+    settings: {
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: './tsconfig.json',
+        },
+      },
+    },
   },
   {
     languageOptions: {

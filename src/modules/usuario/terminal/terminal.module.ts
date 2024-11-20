@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { UsuarioTerminalService } from './terminal.service';
-import { UsuarioTerminalController } from './terminal.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { UsuarioTerminalEntity } from './entities/terminal.entity';
+import { UsuarioTerminalController } from './terminal.controller';
+import { UsuarioTerminalService } from './terminal.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UsuarioTerminalEntity])],

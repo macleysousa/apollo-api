@@ -1,6 +1,6 @@
+import { Pagination } from 'nestjs-typeorm-paginate';
 import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { ParseBetweenPipe } from 'src/commons/pipes/parseBetween.pipe';
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
@@ -8,6 +8,7 @@ import { CurrentBranch } from 'src/decorators/current-auth.decorator';
 
 import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { EmpresaEntity } from '../empresa/entities/empresa.entity';
+
 import { CreateFaturaManualDto } from './dto/create-fatura-manual.dto';
 import { UpdateFaturaManualDto } from './dto/update-fatura-manual.dto';
 import { FaturaEntity } from './entities/fatura.entity';
@@ -45,7 +46,7 @@ export class FaturaController {
     @Query('dataFim', new DefaultValuePipe(Date)) dataFim: Date,
     @Query('incluir', new DefaultValuePipe([])) relations: Relations[],
     @Query('page', new DefaultValuePipe(1), new ParseBetweenPipe(1, 1000)) page: number,
-    @Query('limit', new DefaultValuePipe(100), new ParseBetweenPipe(1, 1000)) limit: number
+    @Query('limit', new DefaultValuePipe(100), new ParseBetweenPipe(1, 1000)) limit: number,
   ): Promise<Pagination<FaturaEntity>> {
     return this.service.find({ empresaIds, faturaIds, pessoaIds, dataInicio, dataFim }, page, limit, relations);
   }
@@ -56,7 +57,7 @@ export class FaturaController {
   async findById(
     @CurrentBranch() empresa: EmpresaEntity,
     @Param('id', ParseIntPipe) id: number,
-    @Query('incluir', new DefaultValuePipe([])) relations: Relations[]
+    @Query('incluir', new DefaultValuePipe([])) relations: Relations[],
   ): Promise<FaturaEntity> {
     return this.service.findById(empresa.id, id, relations);
   }
@@ -65,7 +66,7 @@ export class FaturaController {
   async update(
     @CurrentBranch() empresa: EmpresaEntity,
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateFaturaDto: UpdateFaturaManualDto
+    @Body() updateFaturaDto: UpdateFaturaManualDto,
   ) {
     return this.service.update(empresa.id, id, updateFaturaDto);
   }

@@ -1,7 +1,8 @@
-import { DynamicModule, Module, forwardRef } from '@nestjs/common';
+import { DynamicModule, forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { RomaneioModule } from '../romaneio.module';
+
 import { RomaneioItemEntity } from './entities/romaneio-item.entity';
 import { RomaneioItemController } from './romaneio-item.controller';
 import { RomaneioItemService } from './romaneio-item.service';

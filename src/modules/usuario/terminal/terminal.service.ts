@@ -11,11 +11,14 @@ import { UsuarioTerminalEntity } from './entities/terminal.entity';
 export class UsuarioTerminalService {
   constructor(
     @InjectRepository(UsuarioTerminalEntity)
-    private repository: Repository<UsuarioTerminalEntity>
+    private repository: Repository<UsuarioTerminalEntity>,
   ) {}
 
   async add(usuarioId: number, addUsuarioTerminalDto: AddUsuarioTerminalDto): Promise<TerminalEntity> {
-    await this.repository.upsert({ ...addUsuarioTerminalDto, usuarioId }, { conflictPaths: ['usuarioId', 'empresaId', 'terminalId'] });
+    await this.repository.upsert(
+      { ...addUsuarioTerminalDto, usuarioId },
+      { conflictPaths: ['usuarioId', 'empresaId', 'terminalId'] },
+    );
 
     const { terminal } = await this.findByTerminalId(usuarioId, addUsuarioTerminalDto.terminalId);
     return terminal;

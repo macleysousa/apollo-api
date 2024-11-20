@@ -137,7 +137,7 @@ export class CreateTableRomaneioItens1686318246326 implements MigrationInterface
             onUpdate: `CASCADE`,
           },
         ],
-      })
+      }),
     );
   }
 

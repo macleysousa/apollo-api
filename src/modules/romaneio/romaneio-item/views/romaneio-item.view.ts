@@ -4,10 +4,10 @@ import { JoinColumn, ManyToOne, ViewColumn, ViewEntity } from 'typeorm';
 
 import { BaseView } from 'src/commons/base.view';
 
-import { RomaneioView } from '../../views/romaneio.view';
+import { ModalidadeRomaneioType } from '../../enum/modalidade-romaneio.enum';
 import { OperacaoRomaneioType } from '../../enum/operacao-romaneio.enum';
 import { SituacaoRomaneioType } from '../../enum/situacao-romaneio.enum';
-import { ModalidadeRomaneioType } from '../../enum/modalidade-romaneio.enum';
+import { RomaneioView } from '../../views/romaneio.view';
 
 @ViewEntity({ name: 'view_romaneios_itens' })
 export class RomaneioItemView extends BaseView {

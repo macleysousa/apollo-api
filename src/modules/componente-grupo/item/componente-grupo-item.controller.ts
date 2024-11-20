@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ApiComponent } from '../../../decorators/api-componente.decorator';
+
 import { ComponenteGrupoItemService } from './componente-grupo-item.service';
 import { AddComponentGroupItemDto } from './dto/create-component-group-item.dto';
 import { ComponenteGrupoItemEntity } from './entities/componente-grupo-item.entity';
@@ -17,7 +18,7 @@ export class ComponenteGrupoItemController {
   @ApiResponse({ type: ComponenteGrupoItemEntity, status: 201 })
   async add(
     @Param('id', ParseIntPipe) id: number,
-    @Body() createComponentGroupItemDto: AddComponentGroupItemDto
+    @Body() createComponentGroupItemDto: AddComponentGroupItemDto,
   ): Promise<ComponenteGrupoItemEntity[]> {
     return this.service.add(id, createComponentGroupItemDto);
   }
@@ -30,7 +31,10 @@ export class ComponenteGrupoItemController {
 
   @Get('/:componente')
   @ApiResponse({ type: ComponenteGrupoItemEntity, status: 200 })
-  async findByComponent(@Param('id', ParseIntPipe) id: number, @Param('componente') component: string): Promise<ComponenteGrupoItemEntity> {
+  async findByComponent(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('componente') component: string,
+  ): Promise<ComponenteGrupoItemEntity> {
     return this.service.findByComponent(id, component);
   }
 

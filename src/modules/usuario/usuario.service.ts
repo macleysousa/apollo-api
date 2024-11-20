@@ -1,10 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, IsNull, Not, Repository } from 'typeorm';
-import { CriarUsuarioDto } from './dto/criar-usuario.dto';
+
 import { AtualizarUsuarioDto } from './dto/atualizar-usuario.dto';
-import { UsuarioAcessoEntity } from './entities/usuario-acessos.entity';
+import { CriarUsuarioDto } from './dto/criar-usuario.dto';
 import { UsuarioEntity } from './entities/usuario.entity';
+import { UsuarioAcessoEntity } from './entities/usuario-acessos.entity';
 
 @Injectable()
 export class UsuarioService {
@@ -12,7 +13,7 @@ export class UsuarioService {
     @InjectRepository(UsuarioEntity)
     private userRepository: Repository<UsuarioEntity>,
     @InjectRepository(UsuarioAcessoEntity)
-    private userAccessView: Repository<UsuarioAcessoEntity>
+    private userAccessView: Repository<UsuarioAcessoEntity>,
   ) {}
 
   async create(createUserDto: CriarUsuarioDto): Promise<UsuarioEntity> {

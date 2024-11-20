@@ -1,9 +1,9 @@
-import { Module, DynamicModule, forwardRef } from '@nestjs/common';
+import { DynamicModule, forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { FaturaService } from './fatura.service';
-import { FaturaController } from './fatura.controller';
 import { FaturaEntity } from './entities/fatura.entity';
+import { FaturaController } from './fatura.controller';
+import { FaturaService } from './fatura.service';
 import { ParcelaModule } from './parcela/parcela.module';
 
 @Module({

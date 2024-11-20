@@ -3,8 +3,8 @@ import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from
 
 import { BaseEntity } from 'src/commons/base.entity';
 
-import { TipoPedido, TipoPedidoType } from '../enum/tipo-pedido.enum';
 import { SituacaoPedido, SituacaoPedidoType } from '../enum/situacao-pedido.enum';
+import { TipoPedido, TipoPedidoType } from '../enum/tipo-pedido.enum';
 import { PedidoItemEntity } from '../pedido-item/entities/pedido-item.entity';
 
 @Entity({ name: 'pedidos' })

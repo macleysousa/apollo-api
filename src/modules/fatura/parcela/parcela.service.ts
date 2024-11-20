@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Inject, forwardRef } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -6,6 +6,7 @@ import { ContextService } from 'src/context/context.service';
 
 import { FaturaSituacao } from '../enum/fatura-situacao.enum';
 import { FaturaService } from '../fatura.service';
+
 import { UpsertParcelaDto } from './dto/upsert-parcela.dto';
 import { FaturaParcelaEntity } from './entities/parcela.entity';
 import { ParcelaSituacao } from './enum/parcela-situacao.enum';
@@ -17,7 +18,7 @@ export class FaturaParcelaService {
     private readonly repository: Repository<FaturaParcelaEntity>,
     @Inject(forwardRef(() => FaturaService))
     private readonly faturaService: FaturaService,
-    private readonly contextService: ContextService
+    private readonly contextService: ContextService,
   ) {}
 
   async add(faturaId: number, dto: UpsertParcelaDto): Promise<FaturaParcelaEntity> {
@@ -52,7 +53,7 @@ export class FaturaParcelaService {
           vencimento: dto.vencimento ?? empresa.data,
           operadorId: usuario.id,
         },
-        { conflictPaths: ['empresaId', 'faturaId', 'parcela'] }
+        { conflictPaths: ['empresaId', 'faturaId', 'parcela'] },
       )
       .catch(() => {
         throw new BadRequestException('Não foi possível adicionar/alterar a parcela.');
@@ -76,7 +77,8 @@ export class FaturaParcelaService {
   async remove(empresaId: number, faturaId: number, parcela: number): Promise<void> {
     const parcelaEntity = await this.findByParcela(empresaId, faturaId, parcela);
     if (!parcelaEntity) throw new BadRequestException('Parcela não encontrada.');
-    else if (parcelaEntity.situacao !== ParcelaSituacao.Normal) throw new BadRequestException('Parcela não está com situação "normal".');
+    else if (parcelaEntity.situacao !== ParcelaSituacao.Normal)
+      throw new BadRequestException('Parcela não está com situação "normal".');
 
     await this.repository.delete({ empresaId, faturaId, parcela }).catch(() => {
       throw new BadRequestException('Não foi possível remover a parcela.');
@@ -88,7 +90,8 @@ export class FaturaParcelaService {
 
     const parcelaEntity = await this.findByParcela(empresaId, faturaId, parcela);
     if (!parcelaEntity) throw new BadRequestException('Parcela não encontrada.');
-    else if (parcelaEntity.situacao !== ParcelaSituacao.Normal) throw new BadRequestException('Parcela não está com situação "normal".');
+    else if (parcelaEntity.situacao !== ParcelaSituacao.Normal)
+      throw new BadRequestException('Parcela não está com situação "normal".');
 
     await this.repository
       .update(
@@ -99,7 +102,7 @@ export class FaturaParcelaService {
           operadorId: usuario.id,
           valorPago: parcelaEntity.valor - parcelaEntity.valorDesconto,
           pagamento: 'now()',
-        }
+        },
       )
       .catch(() => {
         throw new BadRequestException('Não foi possível receber a parcela.');

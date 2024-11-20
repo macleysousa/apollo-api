@@ -1,15 +1,17 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { referenceFakeRepository } from 'src/base-fake/reference';
 import { ILike, Repository } from 'typeorm';
+
+import { referenceFakeRepository } from 'src/base-fake/reference';
+
+import { ImportPrecoDto } from '../tabela-de-preco/referencia/dto/import-precos.dto';
+import { PrecoReferenciaService } from '../tabela-de-preco/referencia/referencia.service';
 
 import { CreateReferenciaDto } from './dto/create-referencia.dto';
 import { UpdateReferenciaDto } from './dto/update-referencia.dto';
 import { ReferenciaEntity } from './entities/referencia.entity';
 import { ReferenciaService } from './referencia.service';
-import { PrecoReferenciaService } from '../tabela-de-preco/referencia/referencia.service';
-import { ImportPrecoDto } from '../tabela-de-preco/referencia/dto/import-precos.dto';
 
 describe('ReferenceService', () => {
   let service: ReferenciaService;
@@ -72,7 +74,9 @@ describe('ReferenceService', () => {
     it('should upsert a reference with precos', async () => {
       // Arrange
       const precosDto: ImportPrecoDto[] = [{ tabelaDePrecoId: 1, referenciaId: 1, valor: 0.9 }];
-      const referenciasDto: CreateReferenciaDto[] = [{ id: 1, nome: 'reference', idExterno: '0001', marcaId: 1, precos: precosDto }];
+      const referenciasDto: CreateReferenciaDto[] = [
+        { id: 1, nome: 'reference', idExterno: '0001', marcaId: 1, precos: precosDto },
+      ];
 
       const precos = referenciasDto.filter((r) => r.precos).map((r) => r.precos);
 

@@ -8,6 +8,7 @@ import { ApiQueryEnum } from 'src/decorators/api-query-enum.decorator';
 import { CurrentBranch } from 'src/decorators/current-auth.decorator';
 
 import { EmpresaEntity } from '../empresa/entities/empresa.entity';
+
 import { ConsignacaoService } from './consignacao.service';
 import { CancelConsinacaoDto } from './dto/cancelar-consignacao.dto';
 import { OpenConsignacaoDto } from './dto/open-consignacao.dto';
@@ -47,7 +48,7 @@ export class ConsignacaoController {
   async findById(
     @CurrentBranch() empresa: EmpresaEntity,
     @Param('id') id: number,
-    @Query('incluir', new ParseArrayPipe({ enum: ConsignacaoIncluirEnum })) includes: ConsignacaoIncluir[]
+    @Query('incluir', new ParseArrayPipe({ enum: ConsignacaoIncluirEnum })) includes: ConsignacaoIncluir[],
   ): Promise<ConsignacaoView> {
     return this.service.findById(empresa.id, id, includes);
   }
@@ -59,7 +60,7 @@ export class ConsignacaoController {
   async atualizar(
     @CurrentBranch() empresa: EmpresaEntity,
     @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UpdateConsignacaoDto
+    @Body() dto: UpdateConsignacaoDto,
   ): Promise<ConsignacaoView> {
     return this.service.update(empresa.id, id, dto);
   }
@@ -87,7 +88,7 @@ export class ConsignacaoController {
   async cancel(
     @CurrentBranch() empresa: EmpresaEntity,
     @Param('id', ParseIntPipe) id: number,
-    @Body() dto: CancelConsinacaoDto
+    @Body() dto: CancelConsinacaoDto,
   ): Promise<void> {
     return this.service.cancel(empresa.id, id, dto);
   }

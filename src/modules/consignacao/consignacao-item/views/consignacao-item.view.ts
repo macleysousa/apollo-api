@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { JoinColumn, ManyToOne, OneToMany, ViewColumn, ViewEntity } from 'typeorm';
 
 import { BaseView } from 'src/commons/base.view';
-import { Exclude } from 'class-transformer';
+
 import { ConsignacaoView } from '../../views/consignacao.view';
 
 @ViewEntity({ name: 'view_consignacoes_itens' })

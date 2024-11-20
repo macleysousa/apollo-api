@@ -1,10 +1,10 @@
+import { Pagination } from 'nestjs-typeorm-paginate';
 import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { ParseBetweenPipe } from 'src/commons/pipes/parseBetween.pipe';
-import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
+import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 
 import { AddPrecoReferenciaDto } from './dto/add-referencia.dto';
 import { PrecoReferenciaService } from './referencia.service';
@@ -21,7 +21,7 @@ export class PrecoReferenciaController {
   @ApiResponse({ status: 201, type: PrecoReferenciaView })
   async add(
     @Param('tabelaDePrecoId', ParseIntPipe) tabelaDePrecoId: number,
-    @Body() upSertPrecoReferenciaDto: AddPrecoReferenciaDto
+    @Body() upSertPrecoReferenciaDto: AddPrecoReferenciaDto,
   ): Promise<PrecoReferenciaView> {
     return this.service.add(tabelaDePrecoId, upSertPrecoReferenciaDto);
   }
@@ -37,7 +37,7 @@ export class PrecoReferenciaController {
     @Query('referenciaIds', new DefaultValuePipe([])) referenciaIds: number[],
     @Query('referenciaIdExternos', new DefaultValuePipe([])) referenciaIdExternos: string[],
     @Query('page', new DefaultValuePipe(1), new ParseBetweenPipe(1, 1000)) page: number,
-    @Query('limit', new DefaultValuePipe(100), new ParseBetweenPipe(1, 1000)) limit: number
+    @Query('limit', new DefaultValuePipe(100), new ParseBetweenPipe(1, 1000)) limit: number,
   ): Promise<Pagination<PrecoReferenciaView>> {
     return this.service.find(tabelaDePrecoId, { referenciaIds, referenciaIdExternos, page, limit });
   }
@@ -46,7 +46,7 @@ export class PrecoReferenciaController {
   @ApiResponse({ status: 200, type: PrecoReferenciaView })
   async findByReferenciaId(
     @Param('tabelaDePrecoId', ParseIntPipe) tabelaDePrecoId: number,
-    @Param('referenciaId', ParseIntPipe) referenciaId: number
+    @Param('referenciaId', ParseIntPipe) referenciaId: number,
   ): Promise<PrecoReferenciaView> {
     return this.service.findByReferenciaId(tabelaDePrecoId, referenciaId);
   }

@@ -2,6 +2,7 @@ import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
 
 import { TipoHistorico } from '../enum/tipo-historico.enum';
+
 import { LancarMovimento } from './lancar-movimento.dto';
 
 describe('LancarMovimento', () => {

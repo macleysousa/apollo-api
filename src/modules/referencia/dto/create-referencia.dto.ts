@@ -3,8 +3,8 @@ import { Type } from 'class-transformer';
 import { IsArray, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
 
 import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
-import { IsSubCategoria } from 'src/commons/validations/is-categoria-sub.validation';
 import { IsCategoria } from 'src/commons/validations/is-categoria.validation';
+import { IsSubCategoria } from 'src/commons/validations/is-categoria-sub.validation';
 import { IsMarca } from 'src/commons/validations/is-marca.validation';
 import { ImportPrecoDto } from 'src/modules/tabela-de-preco/referencia/dto/import-precos.dto';
 

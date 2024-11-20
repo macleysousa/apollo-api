@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { empresaFakeRepository } from 'src/base-fake/empresa';
 
 import { EmpresaService } from '../empresa.service';
+
 import { CreateTerminalDto } from './dto/create-terminal.dto';
 import { UpdateTerminalDto } from './dto/update-terminal.dto';
 import { TerminalEntity } from './entities/terminal.entity';

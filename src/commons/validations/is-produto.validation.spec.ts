@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ValidationArguments } from 'class-validator';
 
 import { ProdutoService } from 'src/modules/produto/produto.service';
 
 import { ProdutoConstraint } from './is-produto.validation';
-import { ValidationArguments } from 'class-validator';
 
 describe('ProdutoConstraint', () => {
   let constraint: ProdutoConstraint;

@@ -6,9 +6,9 @@ import { EmpresaConstraint } from 'src/commons/validations/is-empresa.validation
 import { EmpresaController } from './empresa.controller';
 import { EmpresaService } from './empresa.service';
 import { EmpresaEntity } from './entities/empresa.entity';
-import { TerminalModule } from './terminal/terminal.module';
 import { EmpresaFormaPagamentoModule } from './forma-de-pagamento/forma-de-pagamento.module';
 import { ParametroModule } from './parametro/parametro.module';
+import { TerminalModule } from './terminal/terminal.module';
 
 @Module({
   imports: [

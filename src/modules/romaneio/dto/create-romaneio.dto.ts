@@ -1,16 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { ArrayMinSize, IsArray, IsEnum, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
 
-import { IsPessoa } from 'src/commons/validations/is-pessoa.validation';
+import { IsConsigancao } from 'src/commons/validations/is-consignacao.validation';
 import { IsFuncionario } from 'src/commons/validations/is-funcionario.validation';
+import { IsPessoa } from 'src/commons/validations/is-pessoa.validation';
+import { IsRomaneio } from 'src/commons/validations/is-romaneio.validation';
 import { IsTabelaDePreco } from 'src/commons/validations/is-tabela-de-preco.validation';
 
 import { ModalidadeRomaneio } from '../enum/modalidade-romaneio.enum';
 import { OperacaoRomaneio, OperacaoRomaneioType } from '../enum/operacao-romaneio.enum';
-import { IsRomaneio } from 'src/commons/validations/is-romaneio.validation';
 import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
-import { Exclude } from 'class-transformer';
-import { IsConsigancao } from 'src/commons/validations/is-consignacao.validation';
 
 export class CreateRomaneioDto {
   @ApiProperty()

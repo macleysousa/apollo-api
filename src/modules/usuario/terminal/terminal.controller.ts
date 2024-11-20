@@ -19,7 +19,7 @@ export class UsuarioTerminalController {
   @ApiResponse({ status: 201, type: TerminalEntity })
   async add(
     @Param('usuarioId', ParseUsuarioPipe) usuarioId: number,
-    @Body() addTerminalDto: AddUsuarioTerminalDto
+    @Body() addTerminalDto: AddUsuarioTerminalDto,
   ): Promise<TerminalEntity> {
     return this.service.add(usuarioId, addTerminalDto);
   }
@@ -34,7 +34,7 @@ export class UsuarioTerminalController {
   @ApiResponse({ status: 200, type: [TerminalEntity] })
   async findByEmpresaId(
     @Param('usuarioId', ParseUsuarioPipe) usuarioId: number,
-    @Param('empresaId') empresaId: number
+    @Param('empresaId') empresaId: number,
   ): Promise<TerminalEntity[]> {
     return this.service.findByEmpresaId(usuarioId, empresaId);
   }

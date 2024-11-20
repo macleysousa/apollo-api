@@ -1,7 +1,7 @@
 import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ComponenteService } from './componente.service';
 
+import { ComponenteService } from './componente.service';
 import { ComponenteEntity } from './entities/componente.entity';
 
 @ApiTags('Componentes')

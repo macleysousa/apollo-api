@@ -139,7 +139,7 @@ export class CrateTablePessoasExtato1687214865833 implements MigrationInterface 
             onUpdate: 'CASCADE',
           },
         ],
-      })
+      }),
     );
 
     await queryRunner.query(`DROP TRIGGER IF EXISTS pessoas_extrato_before_insert`);

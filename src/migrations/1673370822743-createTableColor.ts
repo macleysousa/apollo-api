@@ -36,7 +36,7 @@ export class createTableColor1673370822743 implements MigrationInterface {
             default: 'now()',
           },
         ],
-      })
+      }),
     );
   }
 

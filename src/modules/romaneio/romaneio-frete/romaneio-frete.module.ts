@@ -1,7 +1,8 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { RomaneioModule } from '../romaneio.module';
+
 import { RomaneioFreteEntity } from './entities/romaneio-frete.entity';
 import { RomaneioFreteController } from './romaneio-frete.controller';
 import { RomaneioFreteService } from './romaneio-frete.service';

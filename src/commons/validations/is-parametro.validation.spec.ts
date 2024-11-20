@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ParametroService } from 'src/modules/parametro/parametro.service';
-import { ParametroConstraint } from './is-parametro.validation';
 import { ValidationArguments } from 'class-validator';
+
+import { ParametroService } from 'src/modules/parametro/parametro.service';
+
+import { ParametroConstraint } from './is-parametro.validation';
 
 describe('ParametroConstraint', () => {
   let constraint: ParametroConstraint;

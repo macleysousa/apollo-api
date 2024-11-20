@@ -1,11 +1,11 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { TerminalConstraint } from 'src/commons/validations/is-terminal.validation';
 
-import { TerminalService } from './terminal.service';
-import { TerminalController } from './terminal.controller';
 import { TerminalEntity } from './entities/terminal.entity';
+import { TerminalController } from './terminal.controller';
+import { TerminalService } from './terminal.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TerminalEntity])],

@@ -2,12 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Transform } from 'class-transformer';
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-import { CodigoBarrasEntity } from '../codigo-barras/entities/codigo-barras.entity';
-
 import { BaseEntity } from 'src/commons/base.entity';
 import { CorEntity } from 'src/modules/cor/entities/cor.entity';
 import { ReferenciaEntity } from 'src/modules/referencia/entities/referencia.entity';
 import { TamanhoEntity } from 'src/modules/tamanho/entities/tamanho.entity';
+
+import { CodigoBarrasEntity } from '../codigo-barras/entities/codigo-barras.entity';
 
 @Entity({ name: 'produtos' })
 export class ProdutoEntity extends BaseEntity {

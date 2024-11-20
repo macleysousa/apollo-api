@@ -1,9 +1,11 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { ValidationArguments } from 'class-validator';
+
+import { userFakeRepository } from 'src/base-fake/user';
 import { ContextService } from 'src/context/context.service';
 import { TerminalService } from 'src/modules/empresa/terminal/terminal.service';
+
 import { TerminalConstraint } from './is-terminal.validation';
-import { ValidationArguments } from 'class-validator';
-import { userFakeRepository } from 'src/base-fake/user';
-import { Test, TestingModule } from '@nestjs/testing';
 
 describe('TerminalConstraint', () => {
   let constraint: TerminalConstraint;

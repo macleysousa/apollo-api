@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
 
-import { IsValidDocument } from 'src/commons/validations/is-document.validation';
 import { IsBetween } from 'src/commons/validations/is-between.validation';
+import { IsValidDocument } from 'src/commons/validations/is-document.validation';
 
+import { ContatoTipo } from '../enum/contato-tipo.enum';
 import { PessoaTipo } from '../enum/pessoa-tipo.enum';
 import { IsDocumentoUnique } from '../validation/is-documento-unique.validation';
-import { ContatoTipo } from '../enum/contato-tipo.enum';
 
 export class CreatePessoaDto {
   @ApiProperty({ required: false })

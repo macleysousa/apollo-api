@@ -1,9 +1,9 @@
-import { InjectRepository } from '@nestjs/typeorm';
-import { PontoEntity } from './entities/ponto.entity';
-import { In, IsNull, Not, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { ProdutoEntity } from '../produto/entities/produto.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
+
 import { PontoDTO } from './dto/ponto.dto';
+import { PontoEntity } from './entities/ponto.entity';
 
 interface filter {
   clienteId: number;
@@ -13,7 +13,7 @@ interface filter {
 export class PontoService {
   constructor(
     @InjectRepository(PontoEntity)
-    private repository: Repository<PontoEntity>
+    private repository: Repository<PontoEntity>,
   ) {}
 
   async find(filter?: filter): Promise<Array<PontoEntity>> {

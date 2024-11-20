@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 
-import { ReceberService } from './receber.service';
-import { ReceberController } from './receber.controller';
 import { ExtratoModule } from '../extrato/extrato.module';
+
+import { ReceberController } from './receber.controller';
+import { ReceberService } from './receber.service';
 
 @Module({
   imports: [ExtratoModule],

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+
 import { IsCategoria } from 'src/commons/validations/is-categoria.validation';
 
 export class CreateSubCategoriaDto {

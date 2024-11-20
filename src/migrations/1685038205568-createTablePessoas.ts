@@ -117,7 +117,7 @@ export class CreateTablePessoas1685038205568 implements MigrationInterface {
             onUpdate: 'CASCADE',
           }),
         ],
-      })
+      }),
     );
   }
 

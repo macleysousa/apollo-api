@@ -4,8 +4,8 @@ import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, ValidateNested } fro
 
 import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
 import { IsMarca } from 'src/commons/validations/is-marca.validation';
-
 import { IsTabelaDePreco } from 'src/commons/validations/is-tabela-de-preco.validation';
+
 import { CreateCodigoBarrasDto } from '../codigo-barras/dto/create-codigo-barras.dto';
 
 export class ImportProdutoPrecosDto {

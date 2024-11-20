@@ -142,7 +142,7 @@ export class CreateTableConsignacao1693417720519 implements MigrationInterface {
             onUpdate: 'RESTRICT',
           },
         ],
-      })
+      }),
     );
   }
 

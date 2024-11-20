@@ -8,6 +8,7 @@ import { userFakeRepository } from 'src/base-fake/user';
 
 import { EmpresaService } from '../empresa/empresa.service';
 import { UsuarioService } from '../usuario/usuario.service';
+
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/login.dto';
 
@@ -224,7 +225,7 @@ describe('AuthService', () => {
 
       // Assert
       expect(authService.validateComponent(usuarioId, empresaId, componenteId)).rejects.toEqual(
-        new UnauthorizedException(`o componente ${componenteId} foi descontinuado`)
+        new UnauthorizedException(`o componente ${componenteId} foi descontinuado`),
       );
 
       expect(userService.findAccesses).toHaveBeenCalledTimes(1);

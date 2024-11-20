@@ -14,6 +14,6 @@ export function ApiQueryEnum(options: { name: string; enum: SwaggerEnumType; isA
           enum: options.enum,
         },
       },
-    } as any)
+    } as any),
   );
 }

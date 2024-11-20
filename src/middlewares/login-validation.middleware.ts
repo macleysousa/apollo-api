@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NestMiddleware } from '@nestjs/common';
-import { NextFunction, Request, Response } from 'express';
 import { validate } from 'class-validator';
+import { NextFunction, Request, Response } from 'express';
+
 import { LoginDTO } from 'src/modules/auth/dto/login.dto';
 
 @Injectable()
@@ -18,7 +19,7 @@ export class LoginValidationMiddleware implements NestMiddleware {
       throw new BadRequestException(
         validations.reduce((acc, curr) => {
           return [...acc, ...Object.values(curr.constraints)];
-        }, [])
+        }, []),
       );
     }
 

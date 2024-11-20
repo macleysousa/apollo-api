@@ -4,12 +4,13 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { ILike, IsNull, Not, Repository } from 'typeorm';
 
 import { userFakeRepository } from 'src/base-fake/user';
-import { CriarUsuarioDto } from './dto/criar-usuario.dto';
+
 import { AtualizarUsuarioDto } from './dto/atualizar-usuario.dto';
-import { UsuarioAcessoEntity } from './entities/usuario-acessos.entity';
+import { CriarUsuarioDto } from './dto/criar-usuario.dto';
 import { UsuarioEntity } from './entities/usuario.entity';
-import { Role } from './enums/usuario-tipo.enum';
+import { UsuarioAcessoEntity } from './entities/usuario-acessos.entity';
 import { UsuarioSituacao } from './enums/usuario-situacao.enum';
+import { Role } from './enums/usuario-tipo.enum';
 import { UsuarioService } from './usuario.service';
 
 describe('UserService', () => {

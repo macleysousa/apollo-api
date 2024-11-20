@@ -4,9 +4,9 @@ import { CancelPedidoDto } from './dto/cancel-pedido.dto';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { PedidoFilter } from './filters/pedido.filters';
+import { PedidoInclude } from './includes/pedido.include';
 import { PedidoController } from './pedido.controller';
 import { PedidoService } from './pedido.service';
-import { PedidoInclude } from './includes/pedido.include';
 
 describe('PedidoController', () => {
   let controller: PedidoController;

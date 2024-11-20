@@ -10,7 +10,7 @@ import { FuncionarioEntity } from './entities/funcionario.entity';
 export class FuncionarioService {
   constructor(
     @InjectRepository(FuncionarioEntity)
-    private repository: Repository<FuncionarioEntity>
+    private repository: Repository<FuncionarioEntity>,
   ) {}
 
   async create(createFuncionarioDto: CreateFuncionarioDto): Promise<FuncionarioEntity> {

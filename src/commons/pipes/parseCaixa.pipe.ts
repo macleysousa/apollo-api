@@ -8,7 +8,7 @@ import { CaixaSituacao } from 'src/modules/caixa/enum/caixa-situacao.enum';
 export class ParseCaixaPipe implements PipeTransform<string, Promise<number>> {
   constructor(
     private readonly service: CaixaService,
-    private readonly contextService: ContextService
+    private readonly contextService: ContextService,
   ) {}
 
   async transform(value: string): Promise<number> {
@@ -36,7 +36,7 @@ export class ParseCaixaPipe implements PipeTransform<string, Promise<number>> {
 export class ParseCaixaAbertoPipe implements PipeTransform<string, Promise<number>> {
   constructor(
     private readonly service: CaixaService,
-    private readonly contextService: ContextService
+    private readonly contextService: ContextService,
   ) {}
 
   async transform(value: string): Promise<number> {

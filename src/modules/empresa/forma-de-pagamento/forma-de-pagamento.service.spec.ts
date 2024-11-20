@@ -4,9 +4,9 @@ import { Repository } from 'typeorm';
 
 import { FormaDePagamentoEntity } from 'src/modules/forma-de-pagamento/entities/forma-de-pagamento.entity';
 
-import { EmpresaFormaPagamentoService } from './forma-de-pagamento.service';
 import { AddEmpresaFormaPagamentoDto } from './dto/add-forma-de-pagamento.dto';
 import { EmpresaFormaPagamentoEntity } from './entities/forma-de-pagamento.entity';
+import { EmpresaFormaPagamentoService } from './forma-de-pagamento.service';
 
 describe('EmpresaFormaPagamentoService', () => {
   let service: EmpresaFormaPagamentoService;
@@ -54,7 +54,7 @@ describe('EmpresaFormaPagamentoService', () => {
 
       expect(repository.upsert).toHaveBeenCalledWith(
         { ...addFormaPagamentoDto, empresaId },
-        { conflictPaths: ['empresaId', 'formaPagamentoId'] }
+        { conflictPaths: ['empresaId', 'formaPagamentoId'] },
       );
       expect(service.findByFormaPagamentoId).toHaveBeenCalledWith(empresaId, addFormaPagamentoDto.formaPagamentoId);
       expect(result).toBe(empresaFormaPagamento.formaDePagamento);

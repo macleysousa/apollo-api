@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 
-import { Role } from '../enums/usuario-tipo.enum';
 import { UsuarioSituacao } from '../enums/usuario-situacao.enum';
-import { IsUsuarioUnique } from '../validations/is-usuario-unique.validation';
+import { Role } from '../enums/usuario-tipo.enum';
 import { IsUsuarioValidation } from '../validations/is-usuario.validation';
+import { IsUsuarioUnique } from '../validations/is-usuario-unique.validation';
 
 export class CriarUsuarioDto {
   @IsNotEmpty()

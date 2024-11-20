@@ -34,7 +34,7 @@ export class createTableComponents1671454613197 implements MigrationInterface {
             default: 'now()',
           },
         ],
-      })
+      }),
     );
   }
 

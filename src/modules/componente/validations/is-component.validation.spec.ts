@@ -1,7 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { componentFakeRepository } from 'src/base-fake/component';
+
 import { ComponenteService } from '../componente.service';
+
 import { IsComponentValidConstraint } from './is-component.validation';
 
 describe('Validation component exist', () => {

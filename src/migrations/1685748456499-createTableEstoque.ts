@@ -57,7 +57,7 @@ export class CreateTableEstoque1685748456499 implements MigrationInterface {
             onUpdate: 'CASCADE',
           },
         ],
-      })
+      }),
     );
   }
 

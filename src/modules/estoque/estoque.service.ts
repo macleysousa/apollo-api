@@ -1,10 +1,10 @@
+import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, IsNull, Not, Repository } from 'typeorm';
 
 import { EstoqueEntity } from './entities/estoque.entity';
 import { EstoqueView } from './views/estoque.view';
-import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 interface filter {
   empresaIds: number[];
@@ -21,7 +21,7 @@ export class EstoqueService {
     @InjectRepository(EstoqueEntity)
     private repository: Repository<EstoqueEntity>,
     @InjectRepository(EstoqueView)
-    private view: Repository<EstoqueView>
+    private view: Repository<EstoqueView>,
   ) {}
 
   async find(filter?: filter, page = 1, limit = 100): Promise<Pagination<EstoqueView>> {

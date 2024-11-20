@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ValidationArguments } from 'class-validator';
+
 import { referenceFakeRepository } from 'src/base-fake/reference';
 import { ReferenciaService } from 'src/modules/referencia/referencia.service';
 
 import { ReferenciaConstraint } from './is-referencia.validation';
-import { ValidationArguments } from 'class-validator';
 
 describe('Reference validation', () => {
   let constraint: ReferenciaConstraint;

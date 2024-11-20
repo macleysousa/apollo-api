@@ -19,7 +19,7 @@ export class EmpresaFormaPagamentoController {
   @ApiResponse({ status: 201, type: FormaDePagamentoEntity })
   async addFormaDePagamento(
     @Param('empresaId', ParseEmpresaPipe) empresaId: number,
-    @Body() addFormaDePagamentoDto: AddEmpresaFormaPagamentoDto
+    @Body() addFormaDePagamentoDto: AddEmpresaFormaPagamentoDto,
   ) {
     return this.service.add(empresaId, addFormaDePagamentoDto);
   }
@@ -34,7 +34,7 @@ export class EmpresaFormaPagamentoController {
   @ApiResponse({ status: 200, type: FormaDePagamentoEntity })
   async findByFormaPagamentoId(
     @Param('empresaId', ParseEmpresaPipe) empresaId: number,
-    @Param('id', ParseIntPipe) id: number
+    @Param('id', ParseIntPipe) id: number,
   ): Promise<FormaDePagamentoEntity> {
     return this.service.findByFormaPagamentoId(empresaId, id);
   }

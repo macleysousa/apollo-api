@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query } from '@n
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ApiComponent } from '../../decorators/api-componente.decorator';
+
 import { CreateFormaDePagamentoDto } from './dto/create-forma-de-pagamento.dto';
 import { UpdateFormaDePagamentoDto } from './dto/update-forma-de-pagamento.dto';
 import { FormaDePagamentoEntity } from './entities/forma-de-pagamento.entity';
@@ -35,7 +36,10 @@ export class FormaDePagamentoController {
 
   @Put(':id')
   @ApiResponse({ type: FormaDePagamentoEntity, status: 200 })
-  async update(@Param('id', ParseIntPipe) id: number, @Body() updateForPagDto: UpdateFormaDePagamentoDto): Promise<FormaDePagamentoEntity> {
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateForPagDto: UpdateFormaDePagamentoDto,
+  ): Promise<FormaDePagamentoEntity> {
     return this.service.update(id, updateForPagDto);
   }
 }

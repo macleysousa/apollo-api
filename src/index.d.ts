@@ -1,8 +1,8 @@
 import { Request } from 'express';
 
-import { UserEntity } from './modules/user/entity/user.entity';
 import { EmpresaEntity } from './modules/empresa/entities/empresa.entity';
 import { EmpresaParametroView } from './modules/empresa/parametro/views/parametro.view';
+import { UserEntity } from './modules/user/entity/user.entity';
 
 interface TenantRequest extends Request {
   id?: number;

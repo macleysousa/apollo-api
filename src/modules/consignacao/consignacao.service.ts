@@ -1,18 +1,19 @@
-import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
 
+import { RomaneioItemService } from '../romaneio/romaneio-item/romaneio-item.service';
+
+import { ConsignacaoItemService } from './consignacao-item/consignacao-item.service';
+import { UpsertConsignacaoItemDto } from './consignacao-item/dto/upsert-consignacao-item.dto';
 import { CancelConsinacaoDto } from './dto/cancelar-consignacao.dto';
 import { OpenConsignacaoDto } from './dto/open-consignacao.dto';
 import { UpdateConsignacaoDto } from './dto/update-consignacao.dto';
 import { ConsignacaoEntity } from './entities/consignacao.entity';
 import { ConsignacaoFilter } from './filters/consignacao-filter';
 import { ConsignacaoIncluir } from './includes/consignacao.includ';
-import { RomaneioItemService } from '../romaneio/romaneio-item/romaneio-item.service';
-import { ConsignacaoItemService } from './consignacao-item/consignacao-item.service';
-import { UpsertConsignacaoItemDto } from './consignacao-item/dto/upsert-consignacao-item.dto';
 import { ConsignacaoView } from './views/consignacao.view';
 
 @Injectable()
@@ -25,7 +26,7 @@ export class ConsignacaoService {
     @Inject(forwardRef(() => RomaneioItemService))
     private readonly romanaioItemService: RomaneioItemService,
     private readonly contextService: ContextService,
-    private readonly consignacaoItemService: ConsignacaoItemService
+    private readonly consignacaoItemService: ConsignacaoItemService,
   ) {}
 
   async open(dto: OpenConsignacaoDto): Promise<ConsignacaoView> {
@@ -33,7 +34,11 @@ export class ConsignacaoService {
     const empresaId = this.contextService.empresaId();
     const dataAbertura = this.contextService.data();
 
-    const pessoaConsignacao = await this.find({ empresaIds: [empresaId], pessoaIds: [dto.pessoaId], situacoes: ['em_andamento'] });
+    const pessoaConsignacao = await this.find({
+      empresaIds: [empresaId],
+      pessoaIds: [dto.pessoaId],
+      situacoes: ['em_andamento'],
+    });
     if (pessoaConsignacao?.length > 0) {
       throw new BadRequestException('Já existe uma consignação aberta para esta pessoa');
     }

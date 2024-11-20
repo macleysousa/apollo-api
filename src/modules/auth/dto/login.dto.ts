@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, MinLength } from 'class-validator';
-import { IsEmpresa } from 'src/commons/validations/is-empresa.validation';
 
+import { IsEmpresa } from 'src/commons/validations/is-empresa.validation';
 import { IsUsuarioValidation } from 'src/modules/usuario/validations/is-usuario.validation';
 
 export class LoginDTO {

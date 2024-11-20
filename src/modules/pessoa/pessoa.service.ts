@@ -1,6 +1,6 @@
+import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { ILike, IsNull, Not, Repository } from 'typeorm';
 
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
@@ -11,7 +11,7 @@ import { PessoaEntity } from './entities/pessoa.entity';
 export class PessoaService {
   constructor(
     @InjectRepository(PessoaEntity)
-    private repository: Repository<PessoaEntity>
+    private repository: Repository<PessoaEntity>,
   ) {}
 
   async create(empresaId: number, createPessoaDto: CreatePessoaDto): Promise<PessoaEntity> {

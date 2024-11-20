@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ApiComponent } from '../../decorators/api-componente.decorator';
+
 import { ComponenteGrupoService } from './componente-grupo.service';
-import { CreateComponenteGrupoDto } from './dto/criar-componente-grupo.dto';
 import { UpdateComponentGroupDto } from './dto/atualizar-componente-grupo.dto';
+import { CreateComponenteGrupoDto } from './dto/criar-componente-grupo.dto';
 import { ComponenteGrupoEntity } from './entities/componente-grupo.entity';
 
 @ApiTags('Componentes Grupos')
@@ -37,7 +38,7 @@ export class ComponenteGrupoController {
   @ApiResponse({ type: ComponenteGrupoEntity, status: 200 })
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateComponentGroupDto: UpdateComponentGroupDto
+    @Body() updateComponentGroupDto: UpdateComponentGroupDto,
   ): Promise<ComponenteGrupoEntity> {
     return this.service.update(id, updateComponentGroupDto);
   }

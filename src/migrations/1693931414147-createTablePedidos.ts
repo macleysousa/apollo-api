@@ -176,7 +176,7 @@ export class CreateTablePedidos1693931414147 implements MigrationInterface {
             onUpdate: 'RESTRICT',
           },
         ],
-      })
+      }),
     );
   }
 

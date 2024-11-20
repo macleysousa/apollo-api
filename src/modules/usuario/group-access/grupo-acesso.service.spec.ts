@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { empresaFakeRepository } from 'src/base-fake/empresa';
 import { userFakeRepository } from 'src/base-fake/user';
 import { userGroupAccessFakeRepository } from 'src/base-fake/user-group-access';
 import { AuthRequest } from 'src/decorators/current-auth.decorator';
@@ -11,7 +12,6 @@ import { AuthRequest } from 'src/decorators/current-auth.decorator';
 import { AdicionarUsuarioGrupoDto } from './dto/adicionar-usuario-grupo.dto';
 import { UsuarioGrupoEntity } from './entities/grupo-acesso.entity';
 import { UsuarioGrupoService } from './grupo-acesso.service';
-import { empresaFakeRepository } from 'src/base-fake/empresa';
 
 describe('GroupAccessService', () => {
   let service: UsuarioGrupoService;

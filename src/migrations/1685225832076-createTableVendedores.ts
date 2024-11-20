@@ -67,7 +67,7 @@ export class CreateTablefuncionarios1685225832076 implements MigrationInterface 
             onUpdate: 'CASCADE',
           },
         ],
-      })
+      }),
     );
   }
 

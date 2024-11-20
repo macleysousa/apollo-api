@@ -54,7 +54,7 @@ export class CreateTablePontos1708194723596 implements MigrationInterface {
             onUpdate: 'RESTRICT',
           },
         ],
-      })
+      }),
     );
   }
 

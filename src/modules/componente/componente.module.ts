@@ -1,8 +1,8 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ComponenteService } from './componente.service';
 import { ComponenteController } from './componente.controller';
+import { ComponenteService } from './componente.service';
 import { ComponenteEntity } from './entities/componente.entity';
 import { IsComponentValidConstraint } from './validations/is-component.validation';
 

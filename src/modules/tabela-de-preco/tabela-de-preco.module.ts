@@ -1,12 +1,12 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { TabelaDePrecoConstraint } from 'src/commons/validations/is-tabela-de-preco.validation';
 
-import { TabelaDePrecoService } from './tabela-de-preco.service';
-import { TabelaDePrecoController } from './tabela-de-preco.controller';
 import { TabelaDePrecoEntity } from './entities/tabela-de-preco.entity';
 import { ReferenciaModule } from './referencia/referencia.module';
+import { TabelaDePrecoController } from './tabela-de-preco.controller';
+import { TabelaDePrecoService } from './tabela-de-preco.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TabelaDePrecoEntity]), ReferenciaModule.forRoot()],

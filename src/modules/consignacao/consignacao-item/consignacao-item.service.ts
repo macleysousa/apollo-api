@@ -16,7 +16,7 @@ export class ConsignacaoItemService {
     private readonly repository: Repository<ConsignacaoItemEntity>,
     @InjectRepository(ConsignacaoItemView)
     private readonly view: Repository<ConsignacaoItemView>,
-    private readonly contextService: ContextService
+    private readonly contextService: ContextService,
   ) {}
 
   async find(filter: ConsignacaoItemFilter): Promise<ConsignacaoItemView[]> {

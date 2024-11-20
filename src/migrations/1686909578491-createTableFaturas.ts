@@ -123,7 +123,7 @@ export class CreateTableFaturas1686909578491 implements MigrationInterface {
             onUpdate: 'CASCADE',
           },
         ],
-      })
+      }),
     );
 
     await queryRunner.query(`DROP TRIGGER IF EXISTS faturas_after_update`);

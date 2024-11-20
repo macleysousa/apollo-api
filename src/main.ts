@@ -4,10 +4,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import { NextFunction } from 'express';
 
-import 'system-x64';
-
 import { AppModule } from './app.module';
 import { ValidationExceptionFactory } from './exceptions/validations.exception';
+
+import 'system-x64';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,7 +19,7 @@ async function bootstrap() {
       transform: true,
       whitelist: true,
       exceptionFactory: ValidationExceptionFactory,
-    })
+    }),
   );
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });

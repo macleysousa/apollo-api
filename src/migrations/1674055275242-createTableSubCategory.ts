@@ -50,7 +50,7 @@ export class createTableSubCategory1674055275242 implements MigrationInterface {
             onUpdate: 'CASCADE',
           }),
         ],
-      })
+      }),
     );
   }
 

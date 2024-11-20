@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, Min } from 'class-validator';
+
 import { IsEmpresa } from 'src/commons/validations/is-empresa.validation';
 import { IsProduto } from 'src/commons/validations/is-produto.validation';
 import { IsRomaneio } from 'src/commons/validations/is-romaneio.validation';

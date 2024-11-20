@@ -11,7 +11,7 @@ import { EmpresaInclude } from './includes/empresa.include';
 export class EmpresaService {
   constructor(
     @InjectRepository(EmpresaEntity)
-    private repository: Repository<EmpresaEntity>
+    private repository: Repository<EmpresaEntity>,
   ) {}
 
   async create(createBranchDto: CreateEmpresaDto): Promise<EmpresaEntity> {

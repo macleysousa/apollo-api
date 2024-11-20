@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Response } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+
 import { IsPublic } from 'src/decorators/is-public.decorator';
 
 import { AuthService } from './auth.service';

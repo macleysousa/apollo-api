@@ -1,18 +1,19 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+
 import { EmpresaService } from '../empresa/empresa.service';
 import { EmpresaEntity } from '../empresa/entities/empresa.entity';
+import { UsuarioEntity } from '../usuario/entities/usuario.entity';
+import { UsuarioService } from '../usuario/usuario.service';
 
 import { LoginDTO } from './dto/login.dto';
-import { UsuarioService } from '../usuario/usuario.service';
-import { UsuarioEntity } from '../usuario/entities/usuario.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private usuarioService: UsuarioService,
-    private empresaService: EmpresaService
+    private empresaService: EmpresaService,
   ) {}
 
   async login({ usuario, senha, empresaId }: LoginDTO): Promise<{ token: string; refreshToken: string }> {
@@ -53,9 +54,11 @@ export class AuthService {
   async refreshToken(refreshToken: string): Promise<{ token: string }> {
     const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
-    const { id, usuario, nome, empresaId } = await this.jwtService.verifyAsync(refreshToken, { secret: REFRESH_TOKEN_SECRET }).catch(() => {
-      throw new UnauthorizedException('refresh token invalid');
-    });
+    const { id, usuario, nome, empresaId } = await this.jwtService
+      .verifyAsync(refreshToken, { secret: REFRESH_TOKEN_SECRET })
+      .catch(() => {
+        throw new UnauthorizedException('refresh token invalid');
+      });
 
     return { token: this.jwtService.sign({ id, usuario, nome, empresaId }) };
   }

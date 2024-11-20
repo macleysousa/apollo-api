@@ -3,10 +3,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { userFakeRepository } from 'src/base-fake/user';
+
 import { AddUsuarioTerminalDto } from './dto/add-terminal.dto';
 import { UsuarioTerminalEntity } from './entities/terminal.entity';
 import { UsuarioTerminalService } from './terminal.service';
-import { userFakeRepository } from 'src/base-fake/user';
 
 describe('UsuarioTerminalService', () => {
   let service: UsuarioTerminalService;
@@ -50,7 +51,7 @@ describe('UsuarioTerminalService', () => {
 
       expect(repository.upsert).toHaveBeenCalledWith(
         { ...addUsuarioTerminalDto, usuarioId },
-        { conflictPaths: ['usuarioId', 'empresaId', 'terminalId'] }
+        { conflictPaths: ['usuarioId', 'empresaId', 'terminalId'] },
       );
       expect(service.findByTerminalId).toHaveBeenCalledWith(usuarioId, addUsuarioTerminalDto.terminalId);
       expect(result).toEqual(userFakeRepository.findOneTerminal().terminal);

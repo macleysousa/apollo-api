@@ -1,15 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { pessoaEnderecoFakeRepository } from 'src/base-fake/pessoa-endereco';
 import { pessoaFakeRepository } from 'src/base-fake/pessoa';
+import { pessoaEnderecoFakeRepository } from 'src/base-fake/pessoa-endereco';
 
-import { PessoaEnderecoController } from './pessoa-endereco.controller';
-import { PessoaEnderecoService } from './pessoa-endereco.service';
+import { PessoaService } from '../pessoa.service';
+
 import { CreatePessoaEnderecoDto } from './dto/create-pessoa-endereco.dto';
 import { UpdatePessoaEnderecoDto } from './dto/update-pessoa-endereco.dto';
 import { PessoaEnderecoEntity } from './entities/pessoa-endereco.entity';
-import { PessoaService } from '../pessoa.service';
 import { EnderecoTipo } from './enum/endereco-tipo.enum';
+import { PessoaEnderecoController } from './pessoa-endereco.controller';
+import { PessoaEnderecoService } from './pessoa-endereco.service';
 
 describe('PessoaEnderecoController', () => {
   let controller: PessoaEnderecoController;

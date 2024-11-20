@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FuncionarioConstraint } from './is-funcionario.validation';
-import { FuncionarioService } from 'src/modules/funcionario/funcionario.service';
 import { ValidationArguments } from 'class-validator';
+
+import { FuncionarioService } from 'src/modules/funcionario/funcionario.service';
+
+import { FuncionarioConstraint } from './is-funcionario.validation';
 
 describe('FuncionarioConstraint', () => {
   let constraint: FuncionarioConstraint;

@@ -1,11 +1,11 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ParametroConstraint } from 'src/commons/validations/is-parametro.validation';
 
-import { ParametroService } from './parametro.service';
-import { ParametroController } from './parametro.controller';
 import { ParametroEntity } from './entities/parametro.entity';
+import { ParametroController } from './parametro.controller';
+import { ParametroService } from './parametro.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ParametroEntity])],

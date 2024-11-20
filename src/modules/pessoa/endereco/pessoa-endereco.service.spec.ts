@@ -1,15 +1,15 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { BadRequestException } from '@nestjs/common';
 
 import { pessoaEnderecoFakeRepository } from 'src/base-fake/pessoa-endereco';
 
-import { PessoaEnderecoService } from './pessoa-endereco.service';
-import { PessoaEnderecoEntity } from './entities/pessoa-endereco.entity';
 import { CreatePessoaEnderecoDto } from './dto/create-pessoa-endereco.dto';
 import { UpdatePessoaEnderecoDto } from './dto/update-pessoa-endereco.dto';
+import { PessoaEnderecoEntity } from './entities/pessoa-endereco.entity';
 import { EnderecoTipo } from './enum/endereco-tipo.enum';
+import { PessoaEnderecoService } from './pessoa-endereco.service';
 
 describe('PessoaEnderecoService', () => {
   let service: PessoaEnderecoService;

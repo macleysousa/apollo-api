@@ -3,12 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { RomaneioConstraint } from 'src/commons/validations/is-romaneio.validation';
 
-import { RomaneioService } from './romaneio.service';
-import { RomaneioController } from './romaneio.controller';
 import { RomaneioEntity } from './entities/romaneio.entity';
+import { RomaneioController } from './romaneio.controller';
+import { RomaneioService } from './romaneio.service';
+import { RomaneioFreteModule } from './romaneio-frete/romaneio-frete.module';
 import { RomaneioItemModule } from './romaneio-item/romaneio-item.module';
 import { RomaneioView } from './views/romaneio.view';
-import { RomaneioFreteModule } from './romaneio-frete/romaneio-frete.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([RomaneioEntity, RomaneioView]), RomaneioItemModule.forRoot(), RomaneioFreteModule],

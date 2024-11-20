@@ -1,9 +1,9 @@
+import { TipoFrete } from 'src/commons/enum/tipo-frete';
 import { PaginatedDTO } from 'src/decorators/api-paginated-response.decorator';
 import { ModalidadeRomaneio } from 'src/modules/romaneio/enum/modalidade-romaneio.enum';
 import { OperacaoRomaneio } from 'src/modules/romaneio/enum/operacao-romaneio.enum';
 import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
 import { RomaneioFreteEntity } from 'src/modules/romaneio/romaneio-frete/entities/romaneio-frete.entity';
-import { TipoFrete } from 'src/commons/enum/tipo-frete';
 import { RomaneioItemView } from 'src/modules/romaneio/romaneio-item/views/romaneio-item.view';
 import { RomaneioView } from 'src/modules/romaneio/views/romaneio.view';
 

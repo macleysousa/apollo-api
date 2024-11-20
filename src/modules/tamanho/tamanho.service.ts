@@ -11,7 +11,7 @@ import { TamanhoFilter } from './filters/tamanho.filter';
 export class TamanhoService {
   constructor(
     @InjectRepository(TamanhoEntity)
-    private readonly repository: Repository<TamanhoEntity>
+    private readonly repository: Repository<TamanhoEntity>,
   ) {}
 
   async upsert(dto: CreateTamanhoDto[]): Promise<TamanhoEntity[]> {

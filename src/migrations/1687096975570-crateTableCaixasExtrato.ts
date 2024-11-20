@@ -127,7 +127,7 @@ export class CrateTableCaixasExtrato1687096975570 implements MigrationInterface 
             onUpdate: 'CASCADE',
           },
         ],
-      })
+      }),
     );
   }
 

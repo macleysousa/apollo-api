@@ -100,7 +100,7 @@ export class CreateTableCaixas1685389836832 implements MigrationInterface {
             onUpdate: 'CASCADE',
           }),
         ],
-      })
+      }),
     );
   }
 

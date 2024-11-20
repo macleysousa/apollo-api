@@ -45,7 +45,7 @@ export class CreateTableUsuariosTerminais1685455848507 implements MigrationInter
             onUpdate: 'CASCADE',
           }),
         ],
-      })
+      }),
     );
   }
 

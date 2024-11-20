@@ -9,11 +9,18 @@ import { RomaneioFreteEntity } from './entities/romaneio-frete.entity';
 export class RomaneioFreteService {
   constructor(
     @InjectRepository(RomaneioFreteEntity)
-    private readonly repository: Repository<RomaneioFreteEntity>
+    private readonly repository: Repository<RomaneioFreteEntity>,
   ) {}
 
-  async upsert(empresaId: number, romaneioId: number, createRomaneioFreteDto: CreateRomaneioFreteDto): Promise<RomaneioFreteEntity> {
-    await this.repository.upsert({ ...createRomaneioFreteDto, empresaId, romaneioId }, { conflictPaths: ['empresaId', 'romaneioId'] });
+  async upsert(
+    empresaId: number,
+    romaneioId: number,
+    createRomaneioFreteDto: CreateRomaneioFreteDto,
+  ): Promise<RomaneioFreteEntity> {
+    await this.repository.upsert(
+      { ...createRomaneioFreteDto, empresaId, romaneioId },
+      { conflictPaths: ['empresaId', 'romaneioId'] },
+    );
 
     return this.findByRomaneioId(empresaId, romaneioId);
   }

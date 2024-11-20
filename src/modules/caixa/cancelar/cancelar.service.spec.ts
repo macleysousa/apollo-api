@@ -7,11 +7,12 @@ import { PessoaExtratoService } from 'src/modules/pessoa/extrato/pessoa-extrato.
 import { ModalidadeRomaneio } from 'src/modules/romaneio/enum/modalidade-romaneio.enum';
 import { OperacaoRomaneio } from 'src/modules/romaneio/enum/operacao-romaneio.enum';
 import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
-import { RomaneioItemService } from 'src/modules/romaneio/romaneio-item/romaneio-item.service';
 import { RomaneioService } from 'src/modules/romaneio/romaneio.service';
+import { RomaneioItemService } from 'src/modules/romaneio/romaneio-item/romaneio-item.service';
 
 import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
 import { CaixaExtratoService } from '../extrato/extrato.service';
+
 import { CancelarService } from './cancelar.service';
 import { CancelarAdiantamentoDto } from './dto/cancelar-adianteamento.dto';
 import { CancelarRomaneioDto } from './dto/cancelar-romaneio.dto';
@@ -132,7 +133,7 @@ describe('CancelarService', () => {
       jest.spyOn(pessoaExtratoService, 'findSaldoAdiantamento').mockResolvedValue(50);
 
       await expect(service.adiantamento(caixaId, dto)).rejects.toThrowError(
-        `Saldo em adiantamento insuficiente para realizar o cancelamento`
+        `Saldo em adiantamento insuficiente para realizar o cancelamento`,
       );
     });
 
@@ -215,10 +216,17 @@ describe('CancelarService', () => {
     it('should throw BadRequestException if romaneio have itens returned', async () => {
       const caixaId = 1;
       const dto: CancelarRomaneioDto = { romaneioId: 2, motivo: 'Motivo' };
-      const romaneio = { caixaId: 1, situacao: SituacaoRomaneio.encerrado, operacao: OperacaoRomaneio.venda, valorLiquido: 100 } as any;
+      const romaneio = {
+        caixaId: 1,
+        situacao: SituacaoRomaneio.encerrado,
+        operacao: OperacaoRomaneio.venda,
+        valorLiquido: 100,
+      } as any;
       const romaneioItens = [{ produtoId: 1, quantidade: 10, devolvido: 1, romaneiDevolucaoId: 1 }] as any;
       const estoque = [{ produtoId: 1, saldo: 10 }] as any;
-      const error = new BadRequestException(`O romaneio "${dto.romaneioId}" já possui produtos devolvidos, não é possível cancelar`);
+      const error = new BadRequestException(
+        `O romaneio "${dto.romaneioId}" já possui produtos devolvidos, não é possível cancelar`,
+      );
 
       jest.spyOn(romaneioService, 'findById').mockResolvedValue(romaneio);
       jest.spyOn(romaneioItemService, 'findByRomaneioId').mockResolvedValue(romaneioItens);

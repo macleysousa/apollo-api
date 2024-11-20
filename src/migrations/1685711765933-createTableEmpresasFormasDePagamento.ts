@@ -33,7 +33,7 @@ export class CreateTableEmpresasFormasDePagamento1685711765933 implements Migrat
             onUpdate: 'CASCADE',
           },
         ],
-      })
+      }),
     );
   }
 

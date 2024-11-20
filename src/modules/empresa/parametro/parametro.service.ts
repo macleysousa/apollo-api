@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { Parametro } from 'src/modules/parametro/enum/parametros';
+
 import { CreateParametroDto } from './dto/create-parametro.dto';
+import { UpdateEmpresaParametroDto } from './dto/update-parametro.dto';
 import { EmpresaParametroEntity } from './entities/parametro.entity';
 import { EmpresaParametroView } from './views/parametro.view';
-import { UpdateEmpresaParametroDto } from './dto/update-parametro.dto';
-import { Parametro } from 'src/modules/parametro/enum/parametros';
 
 @Injectable()
 export class EmpresaParametroService {
@@ -14,7 +15,7 @@ export class EmpresaParametroService {
     @InjectRepository(EmpresaParametroEntity)
     private repository: Repository<EmpresaParametroEntity>,
     @InjectRepository(EmpresaParametroView)
-    private view: Repository<EmpresaParametroView>
+    private view: Repository<EmpresaParametroView>,
   ) {}
 
   async create(empresaId: number, createParametroDto: CreateParametroDto): Promise<EmpresaParametroView> {
@@ -30,7 +31,11 @@ export class EmpresaParametroService {
     return this.view.findOne({ where: { empresaId, parametroId } });
   }
 
-  async update(empresaId: number, parametroId: Parametro, updateParametroDto: UpdateEmpresaParametroDto): Promise<EmpresaParametroView> {
+  async update(
+    empresaId: number,
+    parametroId: Parametro,
+    updateParametroDto: UpdateEmpresaParametroDto,
+  ): Promise<EmpresaParametroView> {
     await this.repository.upsert({ ...updateParametroDto, empresaId }, { conflictPaths: ['empresaId', 'parametroId'] });
     return this.findByParametroId(empresaId, parametroId);
   }

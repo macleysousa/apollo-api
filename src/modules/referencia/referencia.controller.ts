@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
-import { ReferenciaService } from './referencia.service';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { ParseIntPipe } from '@nestjs/common/pipes';
+import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+import { ApiComponent } from '../../decorators/api-componente.decorator';
+
 import { CreateReferenciaDto } from './dto/create-referencia.dto';
 import { UpdateReferenciaDto } from './dto/update-referencia.dto';
-import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { ReferenciaEntity } from './entities/referencia.entity';
-import { ParseIntPipe } from '@nestjs/common/pipes';
+import { ReferenciaService } from './referencia.service';
 
 @ApiTags('Referências')
 @Controller('referencias')
@@ -36,7 +38,10 @@ export class ReferenciaController {
 
   @Put(':id')
   @ApiResponse({ type: ReferenciaEntity, status: 200 })
-  async update(@Param('id', ParseIntPipe) id: number, @Body() updateReferenceDto: UpdateReferenciaDto): Promise<ReferenciaEntity> {
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateReferenceDto: UpdateReferenciaDto,
+  ): Promise<ReferenciaEntity> {
     return this.referenceService.update(id, updateReferenceDto);
   }
 

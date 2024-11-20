@@ -1,9 +1,10 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { CategoriaConstraint } from 'src/commons/validations/is-categoria.validation';
 
-import { CategoriaService } from './categoria.service';
 import { CategoriaController } from './categoria.controller';
+import { CategoriaService } from './categoria.service';
 import { CategoriaEntity } from './entities/category.entity';
 import { SubCategoriaModule } from './sub/sub.module';
 

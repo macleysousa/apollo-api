@@ -113,7 +113,7 @@ export class CreateTableRomaneioItensDevolvidos1686342757510 implements Migratio
             onDelete: 'RESTRICT',
           },
         ],
-      })
+      }),
     );
   }
 

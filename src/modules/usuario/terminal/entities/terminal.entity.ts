@@ -1,8 +1,9 @@
-import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from 'typeorm';
 
 import { TerminalEntity } from 'src/modules/empresa/terminal/entities/terminal.entity';
+
 import { UsuarioEntity } from '../../entities/usuario.entity';
 
 @Entity({ name: 'usuarios_terminais' })

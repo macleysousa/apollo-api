@@ -6,6 +6,7 @@ import { LoginValidationMiddleware } from 'src/middlewares/login-validation.midd
 
 import { EmpresaModule } from '../empresa/empresa.module';
 import { UsuarioModule } from '../usuario/usuario.module';
+
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 

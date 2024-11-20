@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { EmpresaParametroService } from './parametro.service';
+
+import { empresaParametroFakeRepository } from 'src/base-fake/empresa-parametro';
+
 import { CreateParametroDto } from './dto/create-parametro.dto';
 import { EmpresaParametroEntity } from './entities/parametro.entity';
+import { EmpresaParametroService } from './parametro.service';
 import { EmpresaParametroView } from './views/parametro.view';
-import { empresaParametroFakeRepository } from 'src/base-fake/empresa-parametro';
 
 describe('ParametroService', () => {
   let service: EmpresaParametroService;
@@ -54,7 +56,10 @@ describe('ParametroService', () => {
       const result = await service.create(empresaId, createParametroDto);
 
       // Assert
-      expect(repository.upsert).toHaveBeenCalledWith({ ...createParametroDto, empresaId }, { conflictPaths: ['empresaId', 'parametroId'] });
+      expect(repository.upsert).toHaveBeenCalledWith(
+        { ...createParametroDto, empresaId },
+        { conflictPaths: ['empresaId', 'parametroId'] },
+      );
       expect(result).toEqual(parametroView);
     });
   });
@@ -104,7 +109,10 @@ describe('ParametroService', () => {
       const result = await service.update(empresaId, parametroId, updateParametroDto);
 
       // Assert
-      expect(repository.upsert).toHaveBeenCalledWith({ ...updateParametroDto, empresaId }, { conflictPaths: ['empresaId', 'parametroId'] });
+      expect(repository.upsert).toHaveBeenCalledWith(
+        { ...updateParametroDto, empresaId },
+        { conflictPaths: ['empresaId', 'parametroId'] },
+      );
       expect(result).toEqual(parametroView);
     });
   });

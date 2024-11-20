@@ -1,14 +1,14 @@
 import { Body, Controller, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
+import { ParseCaixaAbertoPipe } from 'src/commons/pipes/parseCaixa.pipe';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
+import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 
 import { ReceberAdiantamentoDto } from './dto/receber-adiantamento.dto';
-import { ReceberService } from './receber.service';
 import { ReceberFaturaDto } from './dto/receber-fatura.dto';
 import { ReceberRomaneioDto } from './dto/receber-romaneio.dto';
-import { ParseCaixaAbertoPipe } from 'src/commons/pipes/parseCaixa.pipe';
+import { ReceberService } from './receber.service';
 
 @ApiBearerAuth()
 @ApiEmpresaAuth()
@@ -21,7 +21,7 @@ export class ReceberController {
   @Post('/adiantamento')
   async adiantamento(
     @Param('caixaId', ParseCaixaAbertoPipe) caixaId: number,
-    @Body() adiantamentoDto: ReceberAdiantamentoDto
+    @Body() adiantamentoDto: ReceberAdiantamentoDto,
   ): Promise<unknown> {
     return this.service.adiantamento(caixaId, adiantamentoDto);
   }
@@ -32,7 +32,10 @@ export class ReceberController {
   }
 
   @Post('/romaneio')
-  async romaneio(@Param('caixaId', ParseCaixaAbertoPipe) caixaId: number, @Body() romaneioDto: ReceberRomaneioDto): Promise<unknown> {
+  async romaneio(
+    @Param('caixaId', ParseCaixaAbertoPipe) caixaId: number,
+    @Body() romaneioDto: ReceberRomaneioDto,
+  ): Promise<unknown> {
     return this.service.romaneio(caixaId, romaneioDto);
   }
 }

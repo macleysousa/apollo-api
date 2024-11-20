@@ -69,7 +69,7 @@ export class createTableUserGroupAccesses1672148663309 implements MigrationInter
             referencedTableName: 'usuarios',
           }),
         ],
-      })
+      }),
     );
   }
 

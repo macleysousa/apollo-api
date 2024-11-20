@@ -1,8 +1,8 @@
 import { Controller, DefaultValuePipe, Get, Param, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
+import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 
 import { PessoaExtratoEntity } from './entities/pessoa-extrato.entity';
 import { TipoDocumento } from './enum/tipo-documento.enum';
@@ -26,7 +26,7 @@ export class PessoaExtratoController {
     @Param('pessoaId') pessoaId: number,
     @Query('empresaIds', new DefaultValuePipe([])) empresaIds: number[],
     @Query('dataInicio', new DefaultValuePipe(Date)) dataInicio: Date,
-    @Query('dataFim', new DefaultValuePipe(Date)) dataFim: Date
+    @Query('dataFim', new DefaultValuePipe(Date)) dataFim: Date,
   ): Promise<PessoaExtratoEntity[]> {
     return this.service.find({ empresaIds, pessoaId, dataInicio, dataFim });
   }
@@ -41,7 +41,7 @@ export class PessoaExtratoController {
     @Param('pessoaId') pessoaId: number,
     @Query('empresaIds', new DefaultValuePipe([])) empresaIds: number[],
     @Query('dataInicio', new DefaultValuePipe(Date)) dataInicio: Date,
-    @Query('dataFim', new DefaultValuePipe(Date)) dataFim: Date
+    @Query('dataFim', new DefaultValuePipe(Date)) dataFim: Date,
   ): Promise<PessoaExtratoEntity[]> {
     return this.service.find({ empresaIds, pessoaId, dataInicio, dataFim, tipoDocumento: [TipoDocumento.Adiantamento] });
   }
@@ -56,7 +56,7 @@ export class PessoaExtratoController {
     @Param('pessoaId') pessoaId: number,
     @Query('empresaIds', new DefaultValuePipe([])) empresaIds: number[],
     @Query('dataInicio', new DefaultValuePipe(Date)) dataInicio: Date,
-    @Query('dataFim', new DefaultValuePipe(Date)) dataFim: Date
+    @Query('dataFim', new DefaultValuePipe(Date)) dataFim: Date,
   ): Promise<PessoaExtratoEntity[]> {
     return this.service.find({ empresaIds, pessoaId, dataInicio, dataFim, tipoDocumento: [TipoDocumento.Credito_de_Devolucao] });
   }

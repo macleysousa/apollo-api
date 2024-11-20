@@ -99,7 +99,7 @@ export class createTableBranches1671815503457 implements MigrationInterface {
             default: 'now()',
           },
         ],
-      })
+      }),
     );
   }
 

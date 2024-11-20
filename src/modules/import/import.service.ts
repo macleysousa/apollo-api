@@ -9,14 +9,14 @@ import { ValidationExceptionFactory } from 'src/exceptions/validations.exception
 import { ImportProdutoDto } from '../produto/dto/import-produto.dto';
 import { ProdutoService } from '../produto/produto.service';
 import { AddPrecoReferenciaDto } from '../tabela-de-preco/referencia/dto/add-referencia.dto';
-import { PrecoReferenciaService } from '../tabela-de-preco/referencia/referencia.service';
 import { ImportPrecoDto } from '../tabela-de-preco/referencia/dto/import-precos.dto';
+import { PrecoReferenciaService } from '../tabela-de-preco/referencia/referencia.service';
 
 @Injectable()
 export class ImportService {
   constructor(
     private readonly produtoService: ProdutoService,
-    private readonly precoReferenciaService: PrecoReferenciaService
+    private readonly precoReferenciaService: PrecoReferenciaService,
   ) {}
 
   async produtosCSV(files: Express.Multer.File[]): Promise<void> {

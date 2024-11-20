@@ -1,10 +1,11 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { CaixaExtratoEntity } from './entities/extrato.entity';
-import { LancarMovimento } from './dto/lancar-movimento.dto';
 import { ContextService } from 'src/context/context.service';
+
+import { LancarMovimento } from './dto/lancar-movimento.dto';
+import { CaixaExtratoEntity } from './entities/extrato.entity';
 import { TipoHistorico } from './enum/tipo-historico.enum';
 
 @Injectable()
@@ -12,7 +13,7 @@ export class CaixaExtratoService {
   constructor(
     @InjectRepository(CaixaExtratoEntity)
     private readonly repository: Repository<CaixaExtratoEntity>,
-    private readonly contextService: ContextService
+    private readonly contextService: ContextService,
   ) {}
 
   async find(empresaId: number, caixaId: number): Promise<CaixaExtratoEntity[]> {
@@ -45,7 +46,7 @@ export class CaixaExtratoService {
         caixaId: caixaId,
         liquidacao: liquidacao,
         operadorId: operadorId,
-      }))
+      })),
     );
 
     return this.findByLiquidacao(empresa.id, caixaId, liquidacao);

@@ -3,20 +3,20 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
+import { empresaFakeRepository } from 'src/base-fake/empresa';
+import { romaneioFakeRepository } from 'src/base-fake/romaneio';
+import { userFakeRepository } from 'src/base-fake/user';
 import { ContextService } from 'src/context/context.service';
 import { EstoqueService } from 'src/modules/estoque/estoque.service';
 import { PrecoReferenciaService } from 'src/modules/tabela-de-preco/referencia/referencia.service';
 
-import { empresaFakeRepository } from 'src/base-fake/empresa';
-import { romaneioFakeRepository } from 'src/base-fake/romaneio';
-import { userFakeRepository } from 'src/base-fake/user';
-
+import { SituacaoRomaneio, SituacaoRomaneioType } from '../enum/situacao-romaneio.enum';
 import { RomaneioService } from '../romaneio.service';
+import { RomaneioView } from '../views/romaneio.view';
+
 import { RomaneioItemEntity } from './entities/romaneio-item.entity';
 import { RomaneioItemService } from './romaneio-item.service';
 import { RomaneioItemView } from './views/romaneio-item.view';
-import { SituacaoRomaneio, SituacaoRomaneioType } from '../enum/situacao-romaneio.enum';
-import { RomaneioView } from '../views/romaneio.view';
 
 describe('RomaneioItemService', () => {
   let service: RomaneioItemService;
@@ -201,7 +201,7 @@ describe('RomaneioItemService', () => {
       jest.spyOn(service, 'findByConsignacaoIds').mockResolvedValue([{ quantidade: 4, devolvido: 0 }] as any);
 
       await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrowError(
-        `Saldo em consignação insuficiente para o produto "${produtoId}"`
+        `Saldo em consignação insuficiente para o produto "${produtoId}"`,
       );
     });
 
@@ -230,7 +230,7 @@ describe('RomaneioItemService', () => {
       jest.spyOn(service, 'findByConsignacaoIds').mockResolvedValue(undefined);
 
       await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrowError(
-        `Saldo em consignação insuficiente para o produto "${produtoId}"`
+        `Saldo em consignação insuficiente para o produto "${produtoId}"`,
       );
     });
 
@@ -395,7 +395,7 @@ describe('RomaneioItemService', () => {
       jest.spyOn(service, 'findByRomaneioIds').mockResolvedValue(romaneiosDevolucao);
 
       await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrowError(
-        `Saldo de devolução do produto "${produtoId}" insuficiente para realizar a operação`
+        `Saldo de devolução do produto "${produtoId}" insuficiente para realizar a operação`,
       );
     });
 
@@ -698,7 +698,7 @@ describe('RomaneioItemService', () => {
       expect(view.findOne).toHaveBeenCalledWith({ where: { romaneioId, produtoId }, order: { sequencia: 'DESC' } });
       expect(repository.update).toHaveBeenCalledWith(
         { romaneioId, produtoId, sequencia: 1 },
-        { quantidade: 10 - quantidade, operadorId: usuario.id }
+        { quantidade: 10 - quantidade, operadorId: usuario.id },
       );
     });
 

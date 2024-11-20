@@ -2,11 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 
+import { TipoDocumento } from 'src/commons/enum/tipo-documento';
+
 import { CreateFormaDePagamentoDto } from './dto/create-forma-de-pagamento.dto';
 import { UpdateFormaDePagamentoDto } from './dto/update-forma-de-pagamento.dto';
 import { FormaDePagamentoEntity } from './entities/forma-de-pagamento.entity';
 import { FormaDePagamentoService } from './forma-de-pagamento.service';
-import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 
 describe('FormaDePagamentoService', () => {
   let service: FormaDePagamentoService;

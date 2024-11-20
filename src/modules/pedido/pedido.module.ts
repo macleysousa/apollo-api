@@ -1,9 +1,9 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { PedidoService } from './pedido.service';
-import { PedidoController } from './pedido.controller';
 import { PedidoEntity } from './entities/pedido.entity';
+import { PedidoController } from './pedido.controller';
+import { PedidoService } from './pedido.service';
 import { PedidoItemModule } from './pedido-item/pedido-item.module';
 
 @Module({

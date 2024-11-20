@@ -1,13 +1,13 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { UsuarioService } from './usuario.service';
-import { UsuarioController } from './usuario.controller';
 import { UsuarioEntity } from './entities/usuario.entity';
-import { IsUsuarioConstraint } from './validations/is-usuario-unique.validation';
-import { GroupAccessModule } from './group-access/grupo-acesso.module';
 import { UsuarioAcessoEntity } from './entities/usuario-acessos.entity';
+import { GroupAccessModule } from './group-access/grupo-acesso.module';
 import { UsuarioTerminalModule } from './terminal/terminal.module';
+import { UsuarioController } from './usuario.controller';
+import { UsuarioService } from './usuario.service';
+import { IsUsuarioConstraint } from './validations/is-usuario-unique.validation';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UsuarioEntity, UsuarioAcessoEntity]), GroupAccessModule, UsuarioTerminalModule],

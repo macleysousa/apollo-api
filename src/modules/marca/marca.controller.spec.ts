@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { brandFakeRepository } from 'src/base-fake/brand';
 
-import { MarcaController } from './marca.controller';
-import { MarcaService } from './marca.service';
 import { CreateMarcaDto } from './dto/create-marca.dto';
 import { UpdateMarcaDto } from './dto/update-marca.dto';
+import { MarcaController } from './marca.controller';
+import { MarcaService } from './marca.service';
 
 describe('BrandController', () => {
   let controller: MarcaController;

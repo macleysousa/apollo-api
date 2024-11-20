@@ -1,12 +1,13 @@
+import { Pagination } from 'nestjs-typeorm-paginate';
 import { Body, Controller, DefaultValuePipe, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ParseIntPipe } from '@nestjs/common/pipes';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Pagination } from 'nestjs-typeorm-paginate';
 
-import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 import { ParseArrayPipe } from 'src/commons/pipes/parseArrayPipe.pipe';
+import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 
 import { ApiComponent } from '../../decorators/api-componente.decorator';
+
 import { CreateProdutoDto } from './dto/create-produto.dto';
 import { ImportProdutoDto } from './dto/import-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';
@@ -34,7 +35,7 @@ export class ProdutoController {
   async find(
     @Query('searchTerm') searchTerm: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number
+    @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
   ): Promise<Pagination<ProdutoEntity>> {
     return this.service.find(searchTerm, page, limit);
   }

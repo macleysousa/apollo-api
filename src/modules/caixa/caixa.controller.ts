@@ -4,6 +4,7 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 
 import { ApiComponent } from '../../decorators/api-componente.decorator';
+
 import { CaixaService } from './caixa.service';
 import { CreateCaixaDto } from './dto/create-caixa.dto';
 import { CaixaEntity } from './entities/caixa.entity';

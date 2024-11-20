@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { tableaDePrecoFakeRepository } from 'src/base-fake/tabela-de-preco';
+
 import { PrecoReferenciaController } from './referencia.controller';
 import { PrecoReferenciaService } from './referencia.service';
-import { tableaDePrecoFakeRepository } from 'src/base-fake/tabela-de-preco';
 
 describe('ReferenciaController', () => {
   let controller: PrecoReferenciaController;

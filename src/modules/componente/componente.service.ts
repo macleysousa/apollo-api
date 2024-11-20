@@ -3,13 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, IsNull, Not, Repository } from 'typeorm';
 
 import { components } from '../../decorators/api-componente.decorator';
+
 import { ComponenteEntity } from './entities/componente.entity';
 
 @Injectable()
 export class ComponenteService {
   constructor(
     @InjectRepository(ComponenteEntity)
-    private componentRepository: Repository<ComponenteEntity>
+    private componentRepository: Repository<ComponenteEntity>,
   ) {}
 
   async popular(): Promise<void> {

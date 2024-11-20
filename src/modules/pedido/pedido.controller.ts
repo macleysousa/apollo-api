@@ -1,16 +1,16 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
+import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 
 import { CancelPedidoDto } from './dto/cancel-pedido.dto';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { PedidoEntity } from './entities/pedido.entity';
-import { PedidoService } from './pedido.service';
 import { PedidoFilter } from './filters/pedido.filters';
 import { PedidoInclude, PedidoIncludeEnum } from './includes/pedido.include';
+import { PedidoService } from './pedido.service';
 
 @ApiBearerAuth()
 @ApiEmpresaAuth()
@@ -57,7 +57,10 @@ export class PedidoController {
   @ApiOperation({ summary: 'PEDFM003 - Processar conferencia do Pedido' })
   @ApiComponent('PEDFM003', 'Processar conferencia do Pedido')
   @ApiQuery({ name: 'processarComDivegencia', type: Boolean, required: false })
-  async conferir(@Param('id', ParseIntPipe) id: number, @Query('processarComDivegencia') processarComDivegencia: boolean): Promise<void> {
+  async conferir(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('processarComDivegencia') processarComDivegencia: boolean,
+  ): Promise<void> {
     await this.service.conferir(id, processarComDivegencia);
   }
 

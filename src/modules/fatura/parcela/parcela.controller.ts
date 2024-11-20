@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { CurrentBranch } from 'src/decorators/current-auth.decorator';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
+import { CurrentBranch } from 'src/decorators/current-auth.decorator';
 import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 
 import { UpsertParcelaDto } from './dto/upsert-parcela.dto';
@@ -26,7 +26,7 @@ export class FaturaParcelaController {
   @ApiResponse({ status: 200, type: [FaturaParcelaEntity] })
   async findByFaturaId(
     @CurrentBranch() empresa: EmpresaEntity,
-    @Param('faturaId', ParseIntPipe) faturaId: number
+    @Param('faturaId', ParseIntPipe) faturaId: number,
   ): Promise<FaturaParcelaEntity[]> {
     return this.service.findByFaturaId(empresa.id, faturaId);
   }
@@ -36,7 +36,7 @@ export class FaturaParcelaController {
   findByParcela(
     @CurrentBranch() empresa: EmpresaEntity,
     @Param('faturaId', ParseIntPipe) faturaId: number,
-    @Param('parcela', ParseIntPipe) id: number
+    @Param('parcela', ParseIntPipe) id: number,
   ): Promise<FaturaParcelaEntity> {
     return this.service.findByParcela(empresa.id, faturaId, id);
   }
@@ -46,7 +46,7 @@ export class FaturaParcelaController {
   remove(
     @CurrentBranch() empresa: EmpresaEntity,
     @Param('faturaId', ParseIntPipe) faturaId: number,
-    @Param('parcela', ParseIntPipe) id: number
+    @Param('parcela', ParseIntPipe) id: number,
   ): Promise<void> {
     return this.service.remove(empresa.id, faturaId, id);
   }

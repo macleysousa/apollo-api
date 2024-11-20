@@ -1,11 +1,14 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
-import { PontoService } from './ponto.service';
-import { PontoEntity } from './entities/ponto.entity';
-import { Roles } from '../usuario/roles.decorator';
+
 import { Role } from '../usuario/enums/usuario-tipo.enum';
+import { Roles } from '../usuario/roles.decorator';
+
 import { PontoDTO } from './dto/ponto.dto';
+import { PontoEntity } from './entities/ponto.entity';
+import { PontoService } from './ponto.service';
 
 @ApiTags('pontos')
 @Controller('pontos')

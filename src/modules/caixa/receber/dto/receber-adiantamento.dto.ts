@@ -1,10 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayMinSize, IsNotEmpty, IsNumber, IsOptional, MaxLength, IsArray, ValidateNested, ArrayNotEmpty } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  ArrayMinSize,
+  ArrayNotEmpty,
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  MaxLength,
+  ValidateNested,
+} from 'class-validator';
 
 import { IsPessoa } from 'src/commons/validations/is-pessoa.validation';
 
 import { PagamentoDto } from './pagamento.dto';
-import { Type } from 'class-transformer';
 
 export class ReceberAdiantamentoDto {
   @ApiProperty()

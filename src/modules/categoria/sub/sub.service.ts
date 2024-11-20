@@ -10,22 +10,22 @@ import { SubCategoriaEntity } from './entities/sub.entity';
 export class SubCategoriaService {
   constructor(
     @InjectRepository(SubCategoriaEntity)
-    private repository: Repository<SubCategoriaEntity>
+    private repository: Repository<SubCategoriaEntity>,
   ) {}
 
   async upsert(dto: CreateSubCategoriaDto[]): Promise<SubCategoriaEntity[]> {
     const subs = await this.findByNames(
       undefined,
-      dto.map((c) => c.nome)
+      dto.map((c) => c.nome),
     );
 
     await this.repository.save(
-      dto.map((c) => subs.find((cat) => cat.categoriaId == c.categoriaId && cat.nome == c.nome) ?? c).filter((c) => c)
+      dto.map((c) => subs.find((cat) => cat.categoriaId == c.categoriaId && cat.nome == c.nome) ?? c).filter((c) => c),
     );
 
     return this.findByNames(
       null,
-      dto.map((c) => c.nome)
+      dto.map((c) => c.nome),
     );
   }
 
@@ -40,7 +40,11 @@ export class SubCategoriaService {
 
   async find(categoryId: number, name?: string, active?: unknown): Promise<SubCategoriaEntity[]> {
     return this.repository.find({
-      where: { categoriaId: categoryId, nome: ILike(`%${name ?? ''}%`), inativa: active == undefined ? undefined : Boolean(active) },
+      where: {
+        categoriaId: categoryId,
+        nome: ILike(`%${name ?? ''}%`),
+        inativa: active == undefined ? undefined : Boolean(active),
+      },
     });
   }
 
@@ -64,7 +68,9 @@ export class SubCategoriaService {
 
     const subByName = await this.findByName(categoryId, updateSubDto.nome);
     if (subByName && subByName.id != id) {
-      throw new BadRequestException(`Sub Category with name ${updateSubDto.nome} already exists in category with id ${categoryId}`);
+      throw new BadRequestException(
+        `Sub Category with name ${updateSubDto.nome} already exists in category with id ${categoryId}`,
+      );
     }
 
     await this.repository.update(id, updateSubDto);

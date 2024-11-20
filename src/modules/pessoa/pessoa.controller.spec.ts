@@ -1,13 +1,13 @@
 import { Test } from '@nestjs/testing';
 
-import { pessoaFakeRepository } from 'src/base-fake/pessoa';
 import { empresaFakeRepository } from 'src/base-fake/empresa';
+import { pessoaFakeRepository } from 'src/base-fake/pessoa';
 
-import { PessoaController } from './pessoa.controller';
-import { PessoaService } from './pessoa.service';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { LiberarEmpresaAcessoDto } from './dto/liberar-empresa-acesso.dto';
 import { PessoaTipo } from './enum/pessoa-tipo.enum';
+import { PessoaController } from './pessoa.controller';
+import { PessoaService } from './pessoa.service';
 
 describe('PessoaController', () => {
   let controller: PessoaController;

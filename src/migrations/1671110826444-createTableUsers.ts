@@ -1,8 +1,8 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 import { encrypt } from 'src/commons/crypto';
-import { Role } from 'src/modules/usuario/enums/usuario-tipo.enum';
 import { UsuarioSituacao } from 'src/modules/usuario/enums/usuario-situacao.enum';
+import { Role } from 'src/modules/usuario/enums/usuario-tipo.enum';
 
 export class createTableUsers1671110826444 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -59,12 +59,12 @@ export class createTableUsers1671110826444 implements MigrationInterface {
             default: 'now()',
           },
         ],
-      })
+      }),
     );
 
     await queryRunner.query(
       `INSERT INTO usuarios(usuario,nome,senha,tipo,situacao)
-            VALUES ('apollo','developer','${encrypt('start')}','${Role.sysadmin}','${UsuarioSituacao.ativo}')`
+            VALUES ('apollo','developer','${encrypt('start')}','${Role.sysadmin}','${UsuarioSituacao.ativo}')`,
     );
   }
 

@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
-import { Exclude } from 'class-transformer';
+
 import { EmpresaEntity } from '../../entities/empresa.entity';
 
 @Entity({ name: 'empresas_terminais' })

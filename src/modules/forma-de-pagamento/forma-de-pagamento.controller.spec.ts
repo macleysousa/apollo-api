@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { TipoDocumento } from 'src/commons/enum/tipo-documento';
+
 import { CreateFormaDePagamentoDto } from './dto/create-forma-de-pagamento.dto';
 import { UpdateFormaDePagamentoDto } from './dto/update-forma-de-pagamento.dto';
 import { FormaDePagamentoEntity } from './entities/forma-de-pagamento.entity';
 import { FormaDePagamentoController } from './forma-de-pagamento.controller';
 import { FormaDePagamentoService } from './forma-de-pagamento.service';
-import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 
 describe('FormaDePagamentoController', () => {
   let controller: FormaDePagamentoController;

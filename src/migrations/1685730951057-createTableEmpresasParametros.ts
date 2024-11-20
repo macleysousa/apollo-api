@@ -47,7 +47,7 @@ export class CreateTableEmpresasParametros1685730951057 implements MigrationInte
             onUpdate: 'CASCADE',
           },
         ],
-      })
+      }),
     );
   }
 

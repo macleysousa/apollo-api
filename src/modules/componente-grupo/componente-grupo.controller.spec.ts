@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { componentGroupFakeRepository } from 'src/base-fake/component-group';
+
 import { ComponenteGrupoController } from './componente-grupo.controller';
 import { ComponenteGrupoService } from './componente-grupo.service';
-import { CreateComponenteGrupoDto } from './dto/criar-componente-grupo.dto';
 import { UpdateComponentGroupDto } from './dto/atualizar-componente-grupo.dto';
+import { CreateComponenteGrupoDto } from './dto/criar-componente-grupo.dto';
 
 describe('ComponentGroupController', () => {
   let controller: ComponenteGrupoController;

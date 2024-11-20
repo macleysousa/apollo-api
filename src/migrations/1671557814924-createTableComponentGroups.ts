@@ -30,7 +30,7 @@ export class createTableComponentGroups1671557814924 implements MigrationInterfa
             default: 'now()',
           },
         ],
-      })
+      }),
     );
   }
 

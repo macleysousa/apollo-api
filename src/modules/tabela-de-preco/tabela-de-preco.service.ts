@@ -10,7 +10,7 @@ import { TabelaDePrecoEntity } from './entities/tabela-de-preco.entity';
 export class TabelaDePrecoService {
   constructor(
     @InjectRepository(TabelaDePrecoEntity)
-    private readonly repository: Repository<TabelaDePrecoEntity>
+    private readonly repository: Repository<TabelaDePrecoEntity>,
   ) {}
 
   async create(createTabelaDePrecoDto: CreateTabelaDePrecoDto): Promise<TabelaDePrecoEntity> {

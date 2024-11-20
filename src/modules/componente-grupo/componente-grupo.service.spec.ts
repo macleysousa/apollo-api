@@ -5,8 +5,8 @@ import { ILike, Repository } from 'typeorm';
 import { componentGroupFakeRepository } from 'src/base-fake/component-group';
 
 import { ComponenteGrupoService } from './componente-grupo.service';
-import { CreateComponenteGrupoDto } from './dto/criar-componente-grupo.dto';
 import { UpdateComponentGroupDto } from './dto/atualizar-componente-grupo.dto';
+import { CreateComponenteGrupoDto } from './dto/criar-componente-grupo.dto';
 import { ComponenteGrupoEntity } from './entities/componente-grupo.entity';
 
 describe('ComponentGroupService', () => {

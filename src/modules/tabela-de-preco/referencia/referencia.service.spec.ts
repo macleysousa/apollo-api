@@ -2,14 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
-import { ContextService } from 'src/context/context.service';
 import { tableaDePrecoFakeRepository } from 'src/base-fake/tabela-de-preco';
+import { ContextService } from 'src/context/context.service';
 
-import { PrecoReferencia } from './entities/referencia.entity';
-import { PrecoReferenciaView } from './views/referencia.view';
 import { TabelaDePrecoService } from '../tabela-de-preco.service';
-import { PrecoReferenciaService } from './referencia.service';
+
 import { ImportPrecoDto } from './dto/import-precos.dto';
+import { PrecoReferencia } from './entities/referencia.entity';
+import { PrecoReferenciaService } from './referencia.service';
+import { PrecoReferenciaView } from './views/referencia.view';
 
 // Mock the external module and the paginate function
 jest.mock('nestjs-typeorm-paginate', () => ({
@@ -115,7 +116,7 @@ describe('PrecoReferenciaService', () => {
       expect(result).toBe(precoReferenciaView);
       expect(repository.upsert).toHaveBeenCalledWith(
         { tabelaDePrecoId, referenciaId, valor: Math.floor(valor) + terminador, operadorId },
-        { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] }
+        { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] },
       );
       expect(service.findByReferenciaId).toHaveBeenCalledWith(tabelaDePrecoId, referenciaId);
     });

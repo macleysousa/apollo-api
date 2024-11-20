@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } from 'class-validator';
-import { ValidatorConstraint, ValidationArguments } from 'class-validator';
+import { ValidationArguments, ValidatorConstraint } from 'class-validator';
+
 import { SubCategoriaService } from 'src/modules/categoria/sub/sub.service';
 
 @Injectable()
