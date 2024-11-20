@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RequestContext } from 'nestjs-easy-context';
 
+import { TenantRequest } from 'src';
 import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 import { UsuarioEntity } from 'src/modules/usuario/entities/usuario.entity';
 
 import { ContextService } from './context.service';
-import { TenantRequest } from 'src';
 
 describe('ContextService', () => {
   let service: ContextService;
@@ -15,7 +15,7 @@ describe('ContextService', () => {
       providers: [ContextService],
     }).compile();
 
-    service = module.get<ContextService>(ContextService);
+    service = await module.resolve<ContextService>(ContextService);
   });
 
   describe('usuario', () => {
