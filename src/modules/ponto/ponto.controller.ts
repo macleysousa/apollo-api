@@ -13,7 +13,7 @@ import { PontoService } from './ponto.service';
 @ApiTags('pontos')
 @Controller('pontos')
 @ApiBearerAuth()
-@ApiComponent('FI000001', 'Fidelizacao de clientes')
+@ApiComponent('FI000001', 'Fidelização de clientes')
 export class PontoController {
   constructor(private readonly service: PontoService) {}
 

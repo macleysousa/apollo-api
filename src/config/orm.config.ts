@@ -6,7 +6,7 @@ dotenv.config();
 
 const { DB_TYPE, DB_DATABASE, DB_HOSTNAME, DB_USERNAME, DB_ENTITIES, DB_MIGRATIONS } = process.env;
 
-if (!DB_TYPE || !DB_HOSTNAME || !DB_DATABASE || !DB_USERNAME) {
+if (!DB_HOSTNAME || !DB_DATABASE || !DB_USERNAME) {
   throw new Error('Database variable DB_* has not been set properly');
 }
 
