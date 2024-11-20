@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import { NextFunction } from 'express';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 import { AppModule } from './app.module';
 import { ValidationExceptionFactory } from './exceptions/validations.exception';
@@ -10,6 +11,8 @@ import { ValidationExceptionFactory } from './exceptions/validations.exception';
 import 'system-x64';
 
 async function bootstrap() {
+  initializeTransactionalContext();
+
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('v1');
