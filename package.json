@@ -124,6 +124,6 @@
     "setupFiles": [
       "<rootDir>/setup.test.ts"
     ],
-    "verbose": true
+    "verbose": false
   }
 }

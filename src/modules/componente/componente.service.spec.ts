@@ -18,7 +18,7 @@ describe('ComponentsService', () => {
         {
           provide: getRepositoryToken(ComponenteEntity),
           useValue: {
-            save: jest.fn(),
+            upsert: jest.fn(),
             findOne: jest.fn().mockResolvedValue(componentFakeRepository.findOne()),
             createQueryBuilder: jest.fn().mockReturnValue({
               where: jest.fn(),
@@ -49,8 +49,8 @@ describe('ComponentsService', () => {
 
       // Assert
 
-      expect(componentRepository.save).toHaveBeenCalledTimes(1);
-      expect(componentRepository.save).toHaveBeenCalledWith([]);
+      expect(componentRepository.upsert).toHaveBeenCalledTimes(1);
+      expect(componentRepository.upsert).toHaveBeenCalledWith([], { conflictPaths: ['id'] });
     });
   });
 
