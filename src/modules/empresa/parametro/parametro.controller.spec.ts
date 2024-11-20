@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { empresaParametroFakeRepository } from 'src/base-fake/empresa-paramtro';
+import { empresaParametroFakeRepository } from 'src/base-fake/empresa-parametro';
 
 import { EmpresaService } from '../empresa.service';
 import { CreateParametroDto } from './dto/create-parametro.dto';

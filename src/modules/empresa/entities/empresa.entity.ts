@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Exclude, Transform } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import { BaseEntity } from 'src/commons/base.entity';
 import { SubTributary } from 'src/commons/enum/sub-tributary';
 import { TaxRegime } from 'src/commons/enum/tax-regime';
@@ -9,9 +9,8 @@ import { UF } from 'src/commons/enum/uf.enum';
 import { FormaDePagamentoEntity } from 'src/modules/forma-de-pagamento/entities/forma-de-pagamento.entity';
 
 import { EmpresaFormaPagamentoEntity } from '../forma-de-pagamento/entities/forma-de-pagamento.entity';
-import { TerminalEntity } from '../terminal/entities/terminal.entity';
-import { EmpresaParametroEntity } from '../parametro/entities/parametro.entity';
 import { EmpresaParametroView } from '../parametro/views/parametro.view';
+import { TerminalEntity } from '../terminal/entities/terminal.entity';
 
 @Entity({ name: 'empresas' })
 export class EmpresaEntity extends BaseEntity {
