@@ -20,11 +20,6 @@ export class ProdutoEntity extends BaseEntity {
   referenciaId: number;
 
   @ApiProperty()
-  @OneToOne(() => ReferenciaEntity, (value) => value.id, { eager: true })
-  @JoinColumn({ name: 'referenciaId' })
-  referencia: ReferenciaEntity;
-
-  @ApiProperty()
   @Column()
   idExterno: string;
 
@@ -48,10 +43,13 @@ export class ProdutoEntity extends BaseEntity {
 
   @ApiProperty({ type: [String] })
   @OneToMany(() => CodigoBarrasEntity, (value) => value.produto, { eager: true })
-  @Transform(({ value }) => {
-    return value.map(({ code }) => code);
-  })
+  @Transform(({ value }) => value.map(({ code }) => code))
   codigos: CodigoBarrasEntity[];
+
+  @ApiProperty()
+  @OneToOne(() => ReferenciaEntity, (value) => value.id, { eager: true })
+  @JoinColumn({ name: 'referenciaId' })
+  referencia: ReferenciaEntity;
 
   constructor(partial?: Partial<ProdutoEntity>) {
     super();

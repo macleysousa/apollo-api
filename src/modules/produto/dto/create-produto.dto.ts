@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import { IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
 
 import { IsColor } from 'src/commons/validations/is-color.validation';

@@ -12,8 +12,8 @@ import { InjectRequestInterceptor } from './interceptors/inject-request.intercep
 import { AuthModule } from './modules/auth/auth.module';
 import { CaixaModule } from './modules/caixa/caixa.module';
 import { CategoriaModule } from './modules/categoria/categoria.module';
-import { ComponentGroupModule } from './modules/componente-grupo/componente-grupo.module';
 import { ComponentsModule } from './modules/componente/componente.module';
+import { ComponentGroupModule } from './modules/componente-grupo/componente-grupo.module';
 import { ConsignacaoModule } from './modules/consignacao/consignacao.module';
 import { CorModule } from './modules/cor/cor.module';
 import { EmpresaModule } from './modules/empresa/empresa.module';
@@ -32,12 +32,14 @@ import { RomaneioModule } from './modules/romaneio/romaneio.module';
 import { TabelaDePrecoModule } from './modules/tabela-de-preco/tabela-de-preco.module';
 import { TamanhoModule } from './modules/tamanho/tamanho.module';
 import { UsuarioModule } from './modules/usuario/usuario.module';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
     AuthModule,
     ContextModule.forRoot(),
     OrmModule.forRoot(),
+    StorageModule.forRoot(),
     UsuarioModule.forRoot(),
     ComponentsModule.forRoot(),
     ComponentGroupModule.forRoot(),
