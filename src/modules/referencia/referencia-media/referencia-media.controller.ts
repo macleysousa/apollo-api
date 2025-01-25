@@ -29,12 +29,15 @@ export class ReferenciaMediaController {
   }
 
   @Get()
-  find(@Param('referenciaId', ParseIntPipe) referenciaId: number) {
+  async find(@Param('referenciaId', ParseIntPipe) referenciaId: number): Promise<ReferenciaMediaEntity[]> {
     return this.service.find(referenciaId);
   }
 
   @Get(':id')
-  findById(@Param('referenciaId', ParseIntPipe) referenciaId: number, @Param('id', ParseIntPipe) id: number) {
+  async findById(
+    @Param('referenciaId', ParseIntPipe) referenciaId: number,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ReferenciaMediaEntity> {
     return this.service.findById(referenciaId, id);
   }
 }

@@ -56,30 +56,28 @@ describe('ReferenceController', () => {
   describe('/ (GET)', () => {
     it('should get references no filter', async () => {
       // Arrange
-      const name = undefined;
-      const externalId = undefined;
+      const filter = undefined;
 
       // Act
-      const result = await controller.find();
+      const result = await controller.find(filter);
 
       // Assert
       expect(service.find).toHaveReturnedTimes(1);
-      expect(service.find).toHaveBeenCalledWith(name, externalId);
+      expect(service.find).toHaveBeenCalledWith(filter);
 
       expect(result).toEqual(referenceFakeRepository.find());
     });
 
     it('should get references with filter', async () => {
       // Arrange
-      const name = 'test';
-      const externalId = '0001';
+      const filter = { nome: 'test', idExterno: '0001' };
 
       // Act
-      const result = await controller.find(name, externalId);
+      const result = await controller.find(filter);
 
       // Assert
       expect(service.find).toHaveReturnedTimes(1);
-      expect(service.find).toHaveBeenCalledWith(name, externalId);
+      expect(service.find).toHaveBeenCalledWith(filter);
 
       expect(result).toEqual(referenceFakeRepository.find());
     });
@@ -89,13 +87,14 @@ describe('ReferenceController', () => {
     it('should get a reference', async () => {
       // Arrange
       const id = 1;
+      const filter = undefined;
 
       // Act
-      const result = await controller.findById(id);
+      const result = await controller.findById(id, filter);
 
       // Assert
       expect(service.findById).toHaveReturnedTimes(1);
-      expect(service.findById).toHaveBeenCalledWith(id);
+      expect(service.findById).toHaveBeenCalledWith(id, undefined);
 
       expect(result).toEqual(referenceFakeRepository.findOne());
     });

@@ -121,6 +121,7 @@ describe('ReferenceService', () => {
       expect(repository.find).toHaveBeenCalledTimes(1);
       expect(repository.find).toHaveBeenCalledWith({
         where: { nome: ILike(`%${''}%`), idExterno: ILike(`%${''}%`) },
+        relations: undefined,
       });
 
       expect(result).toEqual(referenceFakeRepository.find());
@@ -128,16 +129,16 @@ describe('ReferenceService', () => {
 
     it('should find a reference with filter', async () => {
       // Arrange
-      const nome = 'reference';
-      const idExterno = '0001';
+      const filter = { nome: 'reference', idExterno: '0001' };
 
       // Act
-      const result = await service.find(nome, idExterno);
+      const result = await service.find(filter);
 
       // Assert
       expect(repository.find).toHaveBeenCalledTimes(1);
       expect(repository.find).toHaveBeenCalledWith({
-        where: { nome: ILike(`%${nome}%`), idExterno: ILike(`%${idExterno}%`) },
+        where: { nome: ILike(`%${filter.nome}%`), idExterno: ILike(`%${filter.idExterno}%`) },
+        relations: undefined,
       });
 
       expect(result).toEqual(referenceFakeRepository.find());

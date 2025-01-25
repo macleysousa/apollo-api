@@ -7,6 +7,8 @@ import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { CreateReferenciaDto } from './dto/create-referencia.dto';
 import { UpdateReferenciaDto } from './dto/update-referencia.dto';
 import { ReferenciaEntity } from './entities/referencia.entity';
+import { ReferenciaFilter } from './filters/referencia.filter';
+import { ReferenciaBaseFilter } from './filters/referencia-base.filter';
 import { ReferenciaService } from './referencia.service';
 
 @ApiTags('Referências')
@@ -24,16 +26,14 @@ export class ReferenciaController {
 
   @Get()
   @ApiResponse({ type: [ReferenciaEntity], status: 200 })
-  @ApiQuery({ name: 'nome', required: false })
-  @ApiQuery({ name: 'idExterno', required: false })
-  async find(@Query('nome') nome?: string, @Query('idExterno') idExterno?: string): Promise<ReferenciaEntity[]> {
-    return this.referenceService.find(nome, idExterno);
+  async find(@Query() filter?: ReferenciaFilter): Promise<ReferenciaEntity[]> {
+    return this.referenceService.find(filter);
   }
 
   @Get(':id')
   @ApiResponse({ type: ReferenciaEntity, status: 200 })
-  async findById(@Param('id', ParseIntPipe) id: number): Promise<ReferenciaEntity> {
-    return this.referenceService.findById(id);
+  async findById(@Param('id', ParseIntPipe) id: number, @Query() filter?: ReferenciaBaseFilter): Promise<ReferenciaEntity> {
+    return this.referenceService.findById(id, filter?.incluir);
   }
 
   @Put(':id')

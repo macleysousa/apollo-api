@@ -8,6 +8,8 @@ import { PrecoReferenciaService } from '../tabela-de-preco/referencia/referencia
 import { CreateReferenciaDto } from './dto/create-referencia.dto';
 import { UpdateReferenciaDto } from './dto/update-referencia.dto';
 import { ReferenciaEntity } from './entities/referencia.entity';
+import { ReferenciaFilter } from './filters/referencia.filter';
+import { ReferenciaInclude } from './includes/referencia.include';
 
 @Injectable()
 export class ReferenciaService {
@@ -32,14 +34,15 @@ export class ReferenciaService {
     return this.findById(reference.id);
   }
 
-  async find(name?: string, externalId?: string): Promise<ReferenciaEntity[]> {
+  async find(filter?: ReferenciaFilter): Promise<ReferenciaEntity[]> {
     return this.referenceRepository.find({
-      where: { nome: ILike(`%${name ?? ''}%`), idExterno: ILike(`%${externalId ?? ''}%`) },
+      where: { nome: ILike(`%${filter?.nome ?? ''}%`), idExterno: ILike(`%${filter?.idExterno ?? ''}%`) },
+      relations: filter?.incluir,
     });
   }
 
-  async findById(id: number): Promise<ReferenciaEntity> {
-    return this.referenceRepository.findOne({ where: { id } });
+  async findById(id: number, incluir?: ReferenciaInclude[]): Promise<ReferenciaEntity> {
+    return this.referenceRepository.findOne({ where: { id }, relations: incluir });
   }
 
   async update(id: number, updateReferenceDto: UpdateReferenciaDto): Promise<ReferenciaEntity> {
