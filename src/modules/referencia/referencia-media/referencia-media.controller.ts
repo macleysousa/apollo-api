@@ -8,7 +8,7 @@ import { UploadMediaDto } from './dto/upload-media.dto';
 import { ReferenciaMediaEntity } from './entities/referencia-media.entity';
 import { ReferenciaMediaService } from './referencia-media.service';
 
-@ApiTags('Referências')
+@ApiTags('Referências - Mídias')
 @Controller('referencias/:referenciaId/medias')
 @ApiBearerAuth()
 @ApiComponent('PRDFM007', 'Manutenção de referência - mídias')
