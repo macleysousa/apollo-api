@@ -11,7 +11,7 @@ import { ReferenciaMediaService } from './referencia-media.service';
 @ApiTags('Referências')
 @Controller('referencias/:referenciaId/medias')
 @ApiBearerAuth()
-@ApiComponent('PRDFM004', 'Manutenção de referência - mídias')
+@ApiComponent('PRDFM007', 'Manutenção de referência - mídias')
 export class ReferenciaMediaController {
   constructor(private readonly service: ReferenciaMediaService) {}
 
