@@ -9,7 +9,7 @@ import { ReferenciaMediaEntity } from './entities/referencia-media.entity';
 import { ReferenciaMediaService } from './referencia-media.service';
 
 @ApiTags('Referências - Mídias')
-@Controller('referencias/:referenciaId/medias')
+@Controller('referencias/:referenciaId/midias')
 @ApiBearerAuth()
 @ApiComponent('PRDFM007', 'Manutenção de referência - mídias')
 export class ReferenciaMediaController {
@@ -18,8 +18,8 @@ export class ReferenciaMediaController {
   @Post()
   @ApiResponse({ status: 200, type: ReferenciaMediaEntity })
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('file'))
-  @ApiParam({ type: 'file', name: 'file' })
+  @UseInterceptors(FileInterceptor('midia'))
+  @ApiParam({ type: 'file', name: 'midia' })
   async upload(
     @Param('referenciaId', ParseIntPipe) referenciaId: number,
     @UploadedFile() file: Express.Multer.File,
