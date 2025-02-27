@@ -4,7 +4,7 @@ import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
 
 import { Role } from '../usuario/enums/usuario-tipo.enum';
-import { Roles } from '../usuario/roles.decorator';
+import { Roles } from '../../decorators/roles.decorator';
 
 import { PontoDTO } from './dto/ponto.dto';
 import { PontoEntity } from './entities/ponto.entity';

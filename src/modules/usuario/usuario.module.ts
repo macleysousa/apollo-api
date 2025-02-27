@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsuarioEntity } from './entities/usuario.entity';
 import { UsuarioAcessoEntity } from './entities/usuario-acessos.entity';
 import { GroupAccessModule } from './group-access/grupo-acesso.module';
+import { PerfilController } from './perfil.controller';
 import { UsuarioTerminalModule } from './terminal/terminal.module';
 import { UsuarioController } from './usuario.controller';
 import { UsuarioService } from './usuario.service';
@@ -11,7 +12,7 @@ import { IsUsuarioConstraint } from './validations/is-usuario-unique.validation'
 
 @Module({
   imports: [TypeOrmModule.forFeature([UsuarioEntity, UsuarioAcessoEntity]), GroupAccessModule, UsuarioTerminalModule],
-  controllers: [UsuarioController],
+  controllers: [PerfilController, UsuarioController],
   providers: [UsuarioService, IsUsuarioConstraint],
   exports: [UsuarioService],
 })

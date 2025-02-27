@@ -6,7 +6,7 @@ import { ApiQueryEnum } from 'src/decorators/api-query-enum.decorator';
 
 import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { Role } from '../usuario/enums/usuario-tipo.enum';
-import { Roles } from '../usuario/roles.decorator';
+import { Roles } from '../../decorators/roles.decorator';
 
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';

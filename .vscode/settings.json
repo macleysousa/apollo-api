@@ -5,4 +5,7 @@
     "source.fixAll": "explicit"
   },
   "material-icon-theme.activeIconPack": "nest",
+  "cSpell.words": [
+    "usuarios"
+  ],
 }

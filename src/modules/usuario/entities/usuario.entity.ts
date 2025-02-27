@@ -21,16 +21,7 @@ export class UsuarioEntity extends BaseEntity {
   usuario: string;
 
   @Exclude()
-  @Column({
-    transformer: {
-      to: (value) => {
-        return encrypt(value);
-      },
-      from: (value) => {
-        return decrypt(value);
-      },
-    },
-  })
+  @Column({ transformer: { to: (value) => encrypt(value), from: (value) => decrypt(value) } })
   senha: string;
 
   @ApiProperty()
@@ -45,7 +36,7 @@ export class UsuarioEntity extends BaseEntity {
   @Column()
   tipo: Role;
 
-  @ApiProperty()
+  @ApiProperty({ type: TerminalEntity, isArray: true })
   @OneToMany(() => UsuarioTerminalEntity, (value) => value.usuario, { eager: true })
   @Transform(({ value }) => value.map((item: UsuarioTerminalEntity) => item.terminal))
   terminais: TerminalEntity[];
