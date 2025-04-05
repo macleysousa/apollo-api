@@ -1,17 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsOptional, Max, Min } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 
 import { SubTributary } from 'src/commons/enum/sub-tributary';
 import { TaxRegime } from 'src/commons/enum/tax-regime';
 import { UF } from 'src/commons/enum/uf.enum';
+import { IsBetween } from 'src/commons/validations/is-between.validation';
 import { IsCnpjValid } from 'src/commons/validations/is-cnpj.validation';
 
 export class CreateEmpresaDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @Min(1)
-  @Max(999)
-  id: number;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBetween(1, 999)
+  id?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
