@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 
@@ -26,6 +27,7 @@ import { MarcaModule } from './modules/marca/marca.module';
 import { ParametroModule } from './modules/parametro/parametro.module';
 import { PedidoModule } from './modules/pedido/pedido.module';
 import { PessoaModule } from './modules/pessoa/pessoa.module';
+import { PessoaUsuarioModule } from './modules/pessoa-usuario/pessoa-usuario.module';
 import { ProdutoModule } from './modules/produto/produto.module';
 import { ReferenciaModule } from './modules/referencia/referencia.module';
 import { RomaneioModule } from './modules/romaneio/romaneio.module';
@@ -47,6 +49,7 @@ import { StorageModule } from './storage/storage.module';
     EmpresaModule.forRoot(),
     CaixaModule.forRoot(),
     PessoaModule.forRoot(),
+    PessoaUsuarioModule.forRoot(),
     FuncionarioModule.forRoot(),
     FaturaModule.forRoot(),
     MarcaModule.forRoot(),
