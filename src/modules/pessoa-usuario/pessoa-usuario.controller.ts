@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { IsPublic } from 'src/decorators/is-public.decorator';
 
@@ -9,15 +9,14 @@ import { PessoaUsuarioService } from './pessoa-usuario.service';
 
 @ApiTags('Pessoas - Usuários')
 @Controller('pessoas-usuarios')
-// @ApiBearerAuth()
 export class PessoaUsuarioController {
   constructor(private readonly service: PessoaUsuarioService) {}
 
   @Post('registrar')
-  @ApiResponse({ status: 201 })
+  @ApiResponse({ status: 201, type: String })
   @IsPublic()
-  async registry(@Body() dto: CreatePessoaUsuarioDto) {
-    return this.service.registry(dto);
+  async registry(@Body() dto: CreatePessoaUsuarioDto): Promise<string> {
+    return this.service.register(dto);
   }
 
   @Get()

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
+import { IsDateOnly } from 'src/commons/validations/is-date-only';
 import { IsValidDocument } from 'src/commons/validations/is-document.validation';
 
 export class CreatePessoaUsuarioDto {
@@ -23,6 +24,6 @@ export class CreatePessoaUsuarioDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  // @IsDateOnly()
+  @IsDateOnly()
   dataNascimento?: Date;
 }

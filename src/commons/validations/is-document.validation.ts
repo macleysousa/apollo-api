@@ -1,5 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { registerDecorator, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
+import {
+  registerDecorator,
+  ValidationArguments,
+  ValidationOptions,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+} from 'class-validator';
 import { cnpj, cpf } from 'cpf-cnpj-validator';
 
 @Injectable()
@@ -7,17 +13,16 @@ import { cnpj, cpf } from 'cpf-cnpj-validator';
 export class IsValidDocumentConstraint implements ValidatorConstraintInterface {
   messageError: string;
 
-  validate(value: string) {
-    if (value !== value.replace(/\D/g, '')) {
-      this.messageError = 'Documento deve conter apenas números.';
-      return false;
-    }
+  validate(value: string, args: ValidationArguments): boolean {
+    const _value = value?.replace(/\D/g, '');
 
-    const isValid = cpf.isValid(value) || cnpj.isValid(value);
+    const isValid = cpf.isValid(_value) || cnpj.isValid(_value);
     if (!isValid) {
       this.messageError = 'Documento deve ser um CPF ou CNPJ válido.';
       return false;
     }
+
+    args.object[args.property] = _value;
 
     return true;
   }

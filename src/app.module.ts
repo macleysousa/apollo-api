@@ -10,6 +10,7 @@ import { EmpresaAuthGuard } from './guards/empresa-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { InjectRequestInterceptor } from './interceptors/inject-request.interceptor';
+import { KeycloakModule } from './keycloak/keycloak.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CaixaModule } from './modules/caixa/caixa.module';
 import { CategoriaModule } from './modules/categoria/categoria.module';
@@ -39,6 +40,7 @@ import { StorageModule } from './storage/storage.module';
 @Module({
   imports: [
     AuthModule,
+    KeycloakModule.forRoot(),
     ContextModule.forRoot(),
     OrmModule.forRoot(),
     StorageModule.forRoot(),
@@ -65,6 +67,7 @@ import { StorageModule } from './storage/storage.module';
     ConsignacaoModule.forRoot(),
     PedidoModule.forRoot(),
     ImportModule,
+    KeycloakModule,
   ],
   controllers: [],
   providers: [

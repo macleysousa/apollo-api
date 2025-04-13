@@ -7,7 +7,7 @@ import { PessoaUsuarioController } from './pessoa-usuario.controller';
 import { PessoaUsuarioService } from './pessoa-usuario.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PessoaUsuario]), HttpModule],
+  imports: [TypeOrmModule.forFeature([PessoaUsuario])],
   controllers: [PessoaUsuarioController],
   providers: [PessoaUsuarioService],
 })
