@@ -38,6 +38,7 @@ describe('PessoaUsuarioController', () => {
       const dto: CreatePessoaUsuarioDto = {
         documento: 'mockDocumento',
         nome: 'mockNome',
+        sobrenome: 'mockSobrenome',
         email: 'mockEmail',
         senha: 'mockSenha',
       };

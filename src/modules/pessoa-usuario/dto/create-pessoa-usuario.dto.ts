@@ -11,6 +11,10 @@ export class CreatePessoaUsuarioDto {
 
   @ApiProperty()
   @IsNotEmpty({ message: 'O campo {0} é obrigatório.' })
+  sobrenome: string;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'O campo {0} é obrigatório.' })
   email: string;
 
   @ApiProperty()

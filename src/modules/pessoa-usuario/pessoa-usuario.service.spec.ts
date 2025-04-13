@@ -87,12 +87,19 @@ describe('PessoaUsuarioService', () => {
       const dto: CreatePessoaUsuarioDto = {
         email: 'test@example.com',
         documento: '123456789',
+        nome: 'mockNome',
+        sobrenome: 'mockSobrenome',
       } as CreatePessoaUsuarioDto;
 
       const result = await service.register(dto);
 
       expect(result).toBe('Usuário cadastrado com sucesso');
-      expect(keycloakService.register).toHaveBeenCalledWith(dto);
+      expect(keycloakService.register).toHaveBeenCalledWith({
+        email: dto.email,
+        password: dto.senha,
+        firstName: dto.nome,
+        lastName: dto.sobrenome,
+      });
       expect(pessoaService.findByDocumento).toHaveBeenCalledWith(dto.documento);
       expect(repository.insert).toHaveBeenCalledWith({ id: 'user-id', pessoaId: 'pessoa-id', ...dto });
     });
