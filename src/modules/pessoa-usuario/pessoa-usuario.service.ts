@@ -67,11 +67,14 @@ export class PessoaUsuarioService {
     };
   }
 
-  async find(): Promise<PessoaUsuario[]> {
-    return this.repository.find();
+  async validateToken(token: string): Promise<PessoaUsuario> {
+    const usuarioId = await this.keycloakService.validateToken(token);
+
+    return this.repository.findOne({ where: { id: usuarioId }, cache: true });
   }
 
-  async findById(id: string): Promise<PessoaUsuario> {
-    return this.repository.findOne({ where: { id } });
+  async findPerfil(token: string): Promise<PessoaUsuario> {
+    const usuarioId = await this.keycloakService.validateToken(token);
+    return this.repository.findOne({ where: { id: usuarioId } });
   }
 }

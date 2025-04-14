@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Request } from '@nestjs/common';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { ApiPessoa } from 'src/decorators/api-pessoa.decorator';
 import { IsPublic } from 'src/decorators/is-public.decorator';
 
 import { CreatePessoaUsuarioDto } from './dto/create-pessoa-usuario.dto';
@@ -11,6 +12,8 @@ import { LoginResponse } from './responses/login.response';
 
 @ApiTags('Pessoas - Usuários')
 @Controller('pessoas-usuarios')
+@ApiBearerAuth()
+@ApiPessoa()
 export class PessoaUsuarioController {
   constructor(private readonly service: PessoaUsuarioService) {}
 
@@ -28,15 +31,9 @@ export class PessoaUsuarioController {
     return this.service.login(dto);
   }
 
-  @Get()
-  @ApiResponse({ status: 200, type: [PessoaUsuario] })
-  async find(): Promise<PessoaUsuario[]> {
-    return this.service.find();
-  }
-
-  @Get(':id')
+  @Get('perfil')
   @ApiResponse({ status: 200, type: PessoaUsuario })
-  async findById(@Param('id', ParseUUIDPipe) id: string): Promise<PessoaUsuario> {
-    return this.service.findById(id);
+  async findPerfil(@Request() request: any): Promise<PessoaUsuario> {
+    return this.service.findPerfil(request.token);
   }
 }

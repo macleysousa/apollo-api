@@ -20,6 +20,10 @@ export class PessoaUsuario extends BaseEntity {
 
   @ApiProperty()
   @Column('varchar')
+  sobrenome: string;
+
+  @ApiProperty()
+  @Column('varchar')
   email: string;
 
   @ApiProperty()

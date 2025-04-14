@@ -8,6 +8,7 @@ import { AllExceptionsFilter } from './exceptions/all-exceptions.filter';
 import { ComponentGuard } from './guards/component.guard';
 import { EmpresaAuthGuard } from './guards/empresa-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { PessoaGuard } from './guards/pessoa.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { InjectRequestInterceptor } from './interceptors/inject-request.interceptor';
 import { KeycloakModule } from './keycloak/keycloak.module';
@@ -90,6 +91,10 @@ import { StorageModule } from './storage/storage.module';
     {
       provide: APP_GUARD,
       useClass: EmpresaAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PessoaGuard,
     },
     {
       provide: APP_INTERCEPTOR,

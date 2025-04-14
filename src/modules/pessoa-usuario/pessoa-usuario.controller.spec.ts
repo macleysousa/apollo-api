@@ -17,8 +17,8 @@ describe('PessoaUsuarioController', () => {
           provide: PessoaUsuarioService,
           useValue: {
             register: jest.fn(),
-            find: jest.fn(),
-            findById: jest.fn(),
+            login: jest.fn(),
+            findPerfil: jest.fn(),
           },
         },
       ],
@@ -49,27 +49,48 @@ describe('PessoaUsuarioController', () => {
       expect(await controller.registry(dto)).toBe(result);
       expect(service.register).toHaveBeenCalledWith(dto);
     });
-  });
 
-  describe('find', () => {
-    it('should call service.find and return result', async () => {
-      const result: PessoaUsuario[] = [new PessoaUsuario({ id: 'mock-uuid' })];
-      jest.spyOn(service, 'find').mockResolvedValue(result);
+    describe('login', () => {
+      it('should call service.login with correct parameters and return result', async () => {
+        const dto = {
+          email: 'mockEmail',
+          senha: 'mockSenha',
+        };
 
-      expect(await controller.find()).toBe(result);
-      expect(service.find).toHaveBeenCalled();
+        const result = {
+          token: 'mockToken',
+          usuario: {
+            id: 'mockId',
+            nome: 'mockNome',
+            email: 'mockEmail',
+          },
+        } as any;
+        jest.spyOn(service, 'login').mockResolvedValue(result);
+
+        expect(await controller.login(dto)).toBe(result);
+        expect(service.login).toHaveBeenCalledWith(dto);
+      });
     });
-  });
 
-  describe('findById', () => {
-    it('should call service.findById with correct id and return result', async () => {
-      const id = 'mock-uuid';
-      const result: PessoaUsuario = new PessoaUsuario({ id });
+    describe('findPerfil', () => {
+      it('should call service.findPerfil with correct token and return result', async () => {
+        const mockRequest = {
+          token: 'mockToken',
+        };
 
-      jest.spyOn(service, 'findById').mockResolvedValue(result);
+        const result: PessoaUsuario = new PessoaUsuario({
+          id: 'mockId',
+          nome: 'mockNome',
+          sobrenome: 'mockSobrenome',
+          email: 'mockEmail',
+          documento: 'mockDocumento',
+        });
 
-      expect(await controller.findById(id)).toBe(result);
-      expect(service.findById).toHaveBeenCalledWith(id);
+        jest.spyOn(service, 'findPerfil').mockResolvedValue(result);
+
+        expect(await controller.findPerfil(mockRequest)).toBe(result);
+        expect(service.findPerfil).toHaveBeenCalledWith(mockRequest.token);
+      });
     });
   });
 });

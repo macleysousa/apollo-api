@@ -8,6 +8,7 @@ import { KeycloakService } from 'src/keycloak/keycloak.service';
 import { PessoaService } from '../pessoa/pessoa.service';
 
 import { CreatePessoaUsuarioDto } from './dto/create-pessoa-usuario.dto';
+import { LoginPessoaUsuarioDto } from './dto/login-pessoa-usuario.dto';
 import { PessoaUsuario } from './entities/pessoa-usuario.entity';
 import { PessoaUsuarioService } from './pessoa-usuario.service';
 
@@ -29,6 +30,8 @@ describe('PessoaUsuarioService', () => {
           provide: KeycloakService,
           useValue: {
             register: jest.fn(),
+            login: jest.fn(),
+            validateToken: jest.fn(),
           },
         },
         {
@@ -105,27 +108,78 @@ describe('PessoaUsuarioService', () => {
     });
   });
 
-  describe('find', () => {
-    it('should return all users', async () => {
-      const users = [{ id: '1' }, { id: '2' }] as PessoaUsuario[];
-      jest.spyOn(repository, 'find').mockResolvedValue(users);
+  describe('login', () => {
+    it('should throw BadRequestException if login fails', async () => {
+      jest.spyOn(keycloakService, 'login').mockResolvedValue(null);
 
-      const result = await service.find();
+      const dto: LoginPessoaUsuarioDto = {
+        email: 'test@example.com',
+        senha: 'password123',
+      } as LoginPessoaUsuarioDto;
 
-      expect(result).toEqual(users);
-      expect(repository.find).toHaveBeenCalled();
+      await expect(service.login(dto)).rejects.toThrow(BadRequestException);
+      expect(keycloakService.login).toHaveBeenCalledWith(dto.email, dto.senha);
+    });
+
+    it('should return login response if login succeeds', async () => {
+      const mockAccess = {
+        access_token: 'mockAccessToken',
+        refresh_token: 'mockRefreshToken',
+        token_type: 'Bearer',
+        expires_in: 3600,
+      } as any;
+      jest.spyOn(keycloakService, 'login').mockResolvedValue(mockAccess);
+
+      const dto: LoginPessoaUsuarioDto = {
+        email: 'test@example.com',
+        senha: 'password123',
+      } as LoginPessoaUsuarioDto;
+
+      const result = await service.login(dto);
+
+      expect(result).toEqual({
+        tokenDeAcesso: mockAccess.access_token,
+        tokenDeAtualizacao: mockAccess.refresh_token,
+        tipoDeToken: mockAccess.token_type,
+        expiracao: expect.any(Date),
+      });
+      expect(keycloakService.login).toHaveBeenCalledWith(dto.email, dto.senha);
     });
   });
 
-  describe('findById', () => {
-    it('should return a user by id', async () => {
-      const user = { id: '1' } as PessoaUsuario;
-      jest.spyOn(repository, 'findOne').mockResolvedValue(user);
+  describe('findPerfil', () => {
+    it('should return user profile if token is valid', async () => {
+      jest.spyOn(keycloakService, 'validateToken').mockResolvedValue('user-id');
+      jest.spyOn(repository, 'findOne').mockResolvedValue({ id: 'user-id', email: 'test@example.com' } as any);
 
-      const result = await service.findById('1');
+      const response = await service.findPerfil('mock-token');
 
-      expect(result).toEqual(user);
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { id: '1' } });
+      expect(response).toEqual({ id: 'user-id', email: 'test@example.com' });
+      expect(keycloakService.validateToken).toHaveBeenCalledWith('mock-token');
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { id: 'user-id' } });
+    });
+
+    it('should return null if user is not found', async () => {
+      jest.spyOn(keycloakService, 'validateToken').mockResolvedValue('user-id');
+      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+
+      const response = await service.findPerfil('mock-token');
+
+      expect(response).toBeNull();
+      expect(keycloakService.validateToken).toHaveBeenCalledWith('mock-token');
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { id: 'user-id' } });
+    });
+  });
+
+  describe('validateToken', () => {
+    it('should validate token and return user', async () => {
+      jest.spyOn(keycloakService, 'validateToken').mockResolvedValue('user-id');
+      jest.spyOn(repository, 'findOne').mockResolvedValue({ id: 'user-id' } as any);
+
+      const response = await service.validateToken('mock-token');
+      expect(response).toEqual({ id: 'user-id' });
+      expect(keycloakService.validateToken).toHaveBeenCalledWith('mock-token');
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { id: 'user-id' }, cache: true });
     });
   });
 });

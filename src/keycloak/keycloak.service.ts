@@ -84,10 +84,7 @@ export class KeycloakService {
 
     if (response.status === 201) {
       const locationHeader = response.headers['location'];
-      const userId = locationHeader?.split('/').pop();
-      if (userId) {
-        return { id: userId };
-      }
+      return locationHeader?.split('/').pop();
     }
 
     throw new BadRequestException('Failed to retrieve user ID from Keycloak response.');
@@ -114,7 +111,7 @@ export class KeycloakService {
     return data;
   }
 
-  async validateToken(token: string): Promise<any> {
+  async validateToken(token: string): Promise<string> {
     // const { publicKey } = this.keycloakConfig;
     // const formattedPublicKey = `-----BEGIN PUBLIC KEY-----\n${publicKey}\n-----END PUBLIC KEY-----`;
     // try {
@@ -139,6 +136,6 @@ export class KeycloakService {
       }
       throw new UnauthorizedException('Invalid or expired token');
     });
-    return data;
+    return data.sub;
   }
 }

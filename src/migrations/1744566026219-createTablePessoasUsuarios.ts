@@ -21,6 +21,10 @@ export class CreateTablePessoasUsuarios1744566026219 implements MigrationInterfa
             type: 'varchar',
           },
           {
+            name: 'sobrenome',
+            type: 'varchar',
+          },
+          {
             name: 'email',
             type: 'varchar',
           },

@@ -1,4 +1,3 @@
-import { HttpModule } from '@nestjs/axios';
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -10,6 +9,7 @@ import { PessoaUsuarioService } from './pessoa-usuario.service';
   imports: [TypeOrmModule.forFeature([PessoaUsuario])],
   controllers: [PessoaUsuarioController],
   providers: [PessoaUsuarioService],
+  exports: [PessoaUsuarioService],
 })
 export class PessoaUsuarioModule {
   static forRoot(): DynamicModule {
