@@ -43,7 +43,7 @@ export class AuthService {
     });
 
     const username = this.jwtService.decode(token)['usuario'];
-    const usuario = await this.usuarioService.findByUserName(username);
+    const usuario = await this.usuarioService.findByUserName(username, ['terminais']);
 
     const empresaId = this.jwtService.decode(token)['empresaId'];
     const empresa = empresaId ? await this.empresaService.findById(empresaId, ['parametros']) : undefined;

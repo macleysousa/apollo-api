@@ -10,6 +10,7 @@ import { CriarUsuarioDto } from './dto/criar-usuario.dto';
 import { UsuarioEntity } from './entities/usuario.entity';
 import { UsuarioAcessoEntity } from './entities/usuario-acessos.entity';
 import { Role } from './enums/usuario-tipo.enum';
+import { UsuarioFilterBase } from './filters/usuario.filter-base';
 import { UsuarioService } from './usuario.service';
 
 @ApiTags('Usuários')
@@ -37,8 +38,8 @@ export class UsuarioController {
 
   @Get(':id')
   @ApiResponse({ type: UsuarioEntity, status: 200 })
-  async findById(@Param('id', ParseIntPipe) id: number): Promise<UsuarioEntity> {
-    return this.userService.findById(id);
+  async findById(@Param('id', ParseIntPipe) id: number, @Query() filter: UsuarioFilterBase): Promise<UsuarioEntity> {
+    return this.userService.findById(id, filter.incluir);
   }
 
   @Get(':id/acessos')

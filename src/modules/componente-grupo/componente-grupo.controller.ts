@@ -9,7 +9,7 @@ import { CreateComponenteGrupoDto } from './dto/criar-componente-grupo.dto';
 import { ComponenteGrupoEntity } from './entities/componente-grupo.entity';
 
 @ApiTags('Componentes Grupos')
-@Controller('componentes/grupos')
+@Controller('componentes-grupos')
 @ApiBearerAuth()
 @ApiComponent('ADMFM002', 'Manutenção do grupo de acesso')
 export class ComponenteGrupoController {

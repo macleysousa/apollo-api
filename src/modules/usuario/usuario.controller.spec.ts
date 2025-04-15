@@ -105,11 +105,11 @@ describe('UserController', () => {
       const userId = 1;
 
       // Act
-      const response = await userController.findById(userId);
+      const response = await userController.findById(userId, { incluir: ['terminais'] });
 
       // Assert
       expect(userService.findById).toHaveBeenCalledTimes(1);
-      expect(userService.findById).toHaveBeenCalledWith(userId);
+      expect(userService.findById).toHaveBeenCalledWith(userId, ['terminais']);
       expect(response).toEqual(userFakeRepository.findOne());
     });
   });

@@ -3,10 +3,10 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ParseUsuarioPipe } from 'src/commons/pipes/parseUsuario.pipe';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
-import { TerminalEntity } from 'src/modules/empresa/terminal/entities/terminal.entity';
 
 import { AddUsuarioTerminalDto } from './dto/add-terminal.dto';
 import { UsuarioTerminalService } from './terminal.service';
+import { UsuarioTerminalView } from './views/terminal.view';
 
 @ApiTags('Usuários Terminais')
 @Controller('usuarios/:usuarioId/terminais')
@@ -16,26 +16,26 @@ export class UsuarioTerminalController {
   constructor(private readonly service: UsuarioTerminalService) {}
 
   @Post()
-  @ApiResponse({ status: 201, type: TerminalEntity })
+  @ApiResponse({ status: 201, type: UsuarioTerminalView })
   async add(
     @Param('usuarioId', ParseUsuarioPipe) usuarioId: number,
     @Body() addTerminalDto: AddUsuarioTerminalDto,
-  ): Promise<TerminalEntity> {
+  ): Promise<UsuarioTerminalView> {
     return this.service.add(usuarioId, addTerminalDto);
   }
 
   @Get()
-  @ApiResponse({ status: 200, type: [TerminalEntity] })
-  async find(@Param('usuarioId', ParseUsuarioPipe) usuarioId: number): Promise<TerminalEntity[]> {
+  @ApiResponse({ status: 200, type: [UsuarioTerminalView] })
+  async find(@Param('usuarioId', ParseUsuarioPipe) usuarioId: number): Promise<UsuarioTerminalView[]> {
     return this.service.find(usuarioId);
   }
 
   @Get(':empresaId')
-  @ApiResponse({ status: 200, type: [TerminalEntity] })
+  @ApiResponse({ status: 200, type: [UsuarioTerminalView] })
   async findByEmpresaId(
     @Param('usuarioId', ParseUsuarioPipe) usuarioId: number,
     @Param('empresaId') empresaId: number,
-  ): Promise<TerminalEntity[]> {
+  ): Promise<UsuarioTerminalView[]> {
     return this.service.findByEmpresaId(usuarioId, empresaId);
   }
 

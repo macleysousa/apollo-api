@@ -8,6 +8,7 @@ import { AtualizarUsuarioDto } from './dto/atualizar-usuario.dto';
 import { CriarUsuarioDto } from './dto/criar-usuario.dto';
 import { UsuarioEntity } from './entities/usuario.entity';
 import { UsuarioAcessoEntity } from './entities/usuario-acessos.entity';
+import { UsuarioRelation } from './relations/usuario.relation';
 
 @Injectable()
 export class UsuarioService {
@@ -32,12 +33,12 @@ export class UsuarioService {
     return queryBuilder.getMany();
   }
 
-  async findById(id: number): Promise<UsuarioEntity> {
-    return this.userRepository.findOne({ where: { id } });
+  async findById(id: number, relations?: UsuarioRelation[]): Promise<UsuarioEntity> {
+    return this.userRepository.findOne({ where: { id }, relations });
   }
 
-  async findByUserName(username: string): Promise<UsuarioEntity> {
-    return this.userRepository.findOne({ where: { usuario: username } });
+  async findByUserName(username: string, relations?: UsuarioRelation[]): Promise<UsuarioEntity> {
+    return this.userRepository.findOne({ where: { usuario: username }, relations });
   }
 
   async findAccesses(id: number, filter?: { empresaId?: number; componenteId?: string }): Promise<UsuarioAcessoEntity[]> {

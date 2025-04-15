@@ -3,6 +3,7 @@ import { UsuarioAcessoEntity } from 'src/modules/usuario/entities/usuario-acesso
 import { UsuarioSituacao } from 'src/modules/usuario/enums/usuario-situacao.enum';
 import { Role } from 'src/modules/usuario/enums/usuario-tipo.enum';
 import { UsuarioTerminalEntity } from 'src/modules/usuario/terminal/entities/terminal.entity';
+import { UsuarioTerminalView } from 'src/modules/usuario/terminal/views/terminal.view';
 
 import { empresaFakeRepository } from './empresa';
 
@@ -30,7 +31,7 @@ class UserFakeRepository {
     user.situacao = UsuarioSituacao.ativo;
     user.criadoEm = new Date('2022-10-15T11:13:18.000Z');
     user.atualizadoEm = new Date('2022-10-15T11:13:18.000Z');
-    user.terminais = [this.findOneTerminal().terminal];
+    user.terminais = [this.findOneTerminalView()];
     return user;
   }
 
@@ -53,9 +54,17 @@ class UserFakeRepository {
       usuarioId: 1,
       empresaId: 1,
       terminalId: 1,
-      terminal: empresaFakeRepository.findOneTerminal(),
     });
     return terminal;
+  }
+
+  findOneTerminalView(): UsuarioTerminalView {
+    return new UsuarioTerminalView({
+      usuarioId: 1,
+      empresaId: 1,
+      id: 1,
+      inativo: false,
+    });
   }
 }
 

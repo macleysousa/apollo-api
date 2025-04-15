@@ -25,7 +25,7 @@ describe('TerminalConstraint', () => {
         {
           provide: TerminalService,
           useValue: {
-            findById: jest.fn().mockResolvedValue(userFakeRepository.findOneTerminal().terminal),
+            findById: jest.fn().mockResolvedValue(userFakeRepository.findOneTerminalView()),
           },
         },
       ],
@@ -80,7 +80,7 @@ describe('TerminalConstraint', () => {
     it('should return false if usuario does not have access to terminal', async () => {
       const value = 1;
       const args = { constraints: [{ validarUsuario: true }] } as ValidationArguments;
-      const terminal = { ...userFakeRepository.findOneTerminal().terminal, id: 999 };
+      const terminal = { ...userFakeRepository.findOneTerminalView(), id: 999 };
       const usuario = { ...userFakeRepository.findOne(), terminais: [terminal] };
 
       jest.spyOn(contextService, 'usuario').mockReturnValueOnce(usuario);
