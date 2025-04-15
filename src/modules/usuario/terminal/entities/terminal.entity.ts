@@ -20,6 +20,7 @@ export class UsuarioTerminalEntity {
   @PrimaryColumn()
   terminalId: number;
 
+  @Exclude()
   @OneToOne(() => TerminalEntity, { eager: true })
   @JoinColumn({ name: 'empresaId', referencedColumnName: 'id' })
   @JoinColumn({ name: 'terminalId', referencedColumnName: 'id' })

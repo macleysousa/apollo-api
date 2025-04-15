@@ -36,7 +36,7 @@ export class UsuarioEntity extends BaseEntity {
   @Column()
   tipo: Role;
 
-  @ApiProperty({ type: TerminalEntity, isArray: true })
+  @ApiProperty({ type: () => TerminalEntity, isArray: true })
   @OneToMany(() => UsuarioTerminalEntity, (value) => value.usuario, { eager: true })
   @Transform(({ value }) => value.map((item: UsuarioTerminalEntity) => item.terminal))
   terminais: TerminalEntity[];
