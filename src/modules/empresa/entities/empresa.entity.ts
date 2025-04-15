@@ -78,7 +78,7 @@ export class EmpresaEntity extends BaseEntity {
   @Column({ type: 'date' })
   data: Date;
 
-  @ApiProperty({ type: () => TerminalEntity })
+  @ApiProperty({ type: () => TerminalEntity, isArray: true })
   @OneToMany(() => TerminalEntity, ({ empresa }) => empresa)
   terminais: TerminalEntity[];
 
