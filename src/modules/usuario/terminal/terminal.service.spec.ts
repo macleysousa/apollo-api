@@ -8,10 +8,12 @@ import { userFakeRepository } from 'src/base-fake/user';
 import { AddUsuarioTerminalDto } from './dto/add-terminal.dto';
 import { UsuarioTerminalEntity } from './entities/terminal.entity';
 import { UsuarioTerminalService } from './terminal.service';
+import { UsuarioTerminalView } from './views/terminal.view';
 
 describe('UsuarioTerminalService', () => {
   let service: UsuarioTerminalService;
   let repository: Repository<UsuarioTerminalEntity>;
+  let viewRepository: Repository<UsuarioTerminalView>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,16 +28,25 @@ describe('UsuarioTerminalService', () => {
             delete: jest.fn().mockResolvedValue(undefined),
           },
         },
+        {
+          provide: getRepositoryToken(UsuarioTerminalView),
+          useValue: {
+            find: jest.fn().mockResolvedValue([userFakeRepository.findOneTerminalView()]),
+            findOne: jest.fn().mockResolvedValue(userFakeRepository.findOneTerminalView()),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<UsuarioTerminalService>(UsuarioTerminalService);
     repository = module.get<Repository<UsuarioTerminalEntity>>(getRepositoryToken(UsuarioTerminalEntity));
+    viewRepository = module.get<Repository<UsuarioTerminalView>>(getRepositoryToken(UsuarioTerminalView));
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
+    expect(viewRepository).toBeDefined();
   });
 
   describe('add', () => {
@@ -45,7 +56,7 @@ describe('UsuarioTerminalService', () => {
       const usuarioId = 1;
 
       jest.spyOn(repository, 'upsert').mockResolvedValueOnce(undefined);
-      jest.spyOn(service, 'findByTerminalId').mockResolvedValueOnce(userFakeRepository.findOneTerminal());
+      jest.spyOn(service, 'findByTerminalId').mockResolvedValueOnce(userFakeRepository.findOneTerminalView());
 
       const result = await service.add(usuarioId, addUsuarioTerminalDto);
 
@@ -54,7 +65,7 @@ describe('UsuarioTerminalService', () => {
         { conflictPaths: ['usuarioId', 'empresaId', 'terminalId'] },
       );
       expect(service.findByTerminalId).toHaveBeenCalledWith(usuarioId, addUsuarioTerminalDto.terminalId);
-      expect(result).toEqual(userFakeRepository.findOneTerminal().terminal);
+      expect(result).toEqual(userFakeRepository.findOneTerminalView());
     });
   });
 
@@ -62,11 +73,11 @@ describe('UsuarioTerminalService', () => {
     it('should return an array of terminals for the user', async () => {
       const usuarioId = 1;
 
-      const terminais = [userFakeRepository.findOneTerminal().terminal];
+      const terminais = [userFakeRepository.findOneTerminalView()];
 
       const result = await service.find(usuarioId);
 
-      expect(repository.find).toHaveBeenCalledWith({ where: { usuarioId } });
+      expect(viewRepository.find).toHaveBeenCalledWith({ where: { usuarioId } });
       expect(result).toEqual(terminais);
     });
   });
@@ -76,11 +87,11 @@ describe('UsuarioTerminalService', () => {
       const usuarioId = 1;
       const empresaId = 1;
 
-      const terminais = [userFakeRepository.findOneTerminal().terminal];
+      const terminais = [userFakeRepository.findOneTerminalView()];
 
       const result = await service.findByEmpresaId(usuarioId, empresaId);
 
-      expect(repository.find).toHaveBeenCalledWith({ where: { usuarioId, empresaId } });
+      expect(viewRepository.find).toHaveBeenCalledWith({ where: { usuarioId, empresaId } });
       expect(result).toEqual(terminais);
     });
   });
@@ -90,11 +101,11 @@ describe('UsuarioTerminalService', () => {
       const usuarioId = 1;
       const terminalId = 1;
 
-      const usuarioTerminal = userFakeRepository.findOneTerminal();
+      const usuarioTerminal = userFakeRepository.findOneTerminalView();
 
       const result = await service.findByTerminalId(usuarioId, terminalId);
 
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { usuarioId, terminalId } });
+      expect(viewRepository.findOne).toHaveBeenCalledWith({ where: { usuarioId, id: terminalId } });
       expect(result).toEqual(usuarioTerminal);
     });
   });

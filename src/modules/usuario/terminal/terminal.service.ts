@@ -6,36 +6,36 @@ import { TerminalEntity } from 'src/modules/empresa/terminal/entities/terminal.e
 
 import { AddUsuarioTerminalDto } from './dto/add-terminal.dto';
 import { UsuarioTerminalEntity } from './entities/terminal.entity';
+import { UsuarioTerminalView } from './views/terminal.view';
 
 @Injectable()
 export class UsuarioTerminalService {
   constructor(
     @InjectRepository(UsuarioTerminalEntity)
     private repository: Repository<UsuarioTerminalEntity>,
+    @InjectRepository(UsuarioTerminalView)
+    private viewRepository: Repository<UsuarioTerminalView>,
   ) {}
 
-  async add(usuarioId: number, addUsuarioTerminalDto: AddUsuarioTerminalDto): Promise<TerminalEntity> {
+  async add(usuarioId: number, addUsuarioTerminalDto: AddUsuarioTerminalDto): Promise<UsuarioTerminalView> {
     await this.repository.upsert(
       { ...addUsuarioTerminalDto, usuarioId },
       { conflictPaths: ['usuarioId', 'empresaId', 'terminalId'] },
     );
 
-    const { terminal } = await this.findByTerminalId(usuarioId, addUsuarioTerminalDto.terminalId);
-    return terminal;
+    return this.findByTerminalId(usuarioId, addUsuarioTerminalDto.terminalId);
   }
 
-  async find(usuarioId: number): Promise<TerminalEntity[]> {
-    const terminais = await this.repository.find({ where: { usuarioId } });
-    return terminais.map(({ terminal }) => terminal);
+  async find(usuarioId: number): Promise<UsuarioTerminalView[]> {
+    return this.viewRepository.find({ where: { usuarioId } });
   }
 
-  async findByEmpresaId(usuarioId: number, empresaId: number): Promise<TerminalEntity[]> {
-    const terminais = await this.repository.find({ where: { usuarioId, empresaId } });
-    return terminais.map(({ terminal }) => terminal);
+  async findByEmpresaId(usuarioId: number, empresaId: number): Promise<UsuarioTerminalView[]> {
+    return this.viewRepository.find({ where: { usuarioId, empresaId } });
   }
 
-  async findByTerminalId(usuarioId: number, terminalId: number): Promise<UsuarioTerminalEntity> {
-    return this.repository.findOne({ where: { usuarioId, terminalId } });
+  async findByTerminalId(usuarioId: number, terminalId: number): Promise<UsuarioTerminalView> {
+    return this.viewRepository.findOne({ where: { usuarioId, id: terminalId } });
   }
 
   async delete(usuarioId: number, terminalId: number): Promise<void> {

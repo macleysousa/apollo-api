@@ -8,6 +8,7 @@ import { UsuarioService } from '../usuario.service';
 import { AddUsuarioTerminalDto } from './dto/add-terminal.dto';
 import { UsuarioTerminalController } from './terminal.controller';
 import { UsuarioTerminalService } from './terminal.service';
+import { UsuarioTerminalView } from './views/terminal.view';
 
 describe('UsuarioTerminalController', () => {
   let controller: UsuarioTerminalController;
@@ -20,9 +21,9 @@ describe('UsuarioTerminalController', () => {
         {
           provide: UsuarioTerminalService,
           useValue: {
-            add: jest.fn().mockResolvedValue(userFakeRepository.findOneTerminal().terminal),
-            find: jest.fn().mockResolvedValue([userFakeRepository.findOneTerminal().terminal]),
-            findByEmpresaId: jest.fn().mockResolvedValue([userFakeRepository.findOneTerminal().terminal]),
+            add: jest.fn().mockResolvedValue(userFakeRepository.findOneTerminalView()),
+            find: jest.fn().mockResolvedValue([userFakeRepository.findOneTerminalView()]),
+            findByEmpresaId: jest.fn().mockResolvedValue([userFakeRepository.findOneTerminalView()]),
             delete: jest.fn().mockResolvedValue(undefined),
           },
         },
@@ -51,7 +52,7 @@ describe('UsuarioTerminalController', () => {
         terminalId: 1,
       };
 
-      const terminal = { id: 1 } as TerminalEntity;
+      const terminal = { id: 1 } as UsuarioTerminalView;
 
       jest.spyOn(service, 'add').mockResolvedValueOnce(terminal);
 
@@ -64,7 +65,7 @@ describe('UsuarioTerminalController', () => {
 
   describe('find', () => {
     it('should return an array of terminals for the user', async () => {
-      const terminals = [{ id: 1 }, { id: 2 }] as TerminalEntity[];
+      const terminals = [{ id: 1 }, { id: 2 }] as UsuarioTerminalView[];
 
       jest.spyOn(service, 'find').mockResolvedValueOnce(terminals);
 
@@ -77,7 +78,7 @@ describe('UsuarioTerminalController', () => {
 
   describe('findByEmpresaId', () => {
     it('should return an array of terminals for the user and empresa', async () => {
-      const terminals = [{ id: 1 }, { id: 2 }] as TerminalEntity[];
+      const terminals = [{ id: 1 }, { id: 2 }] as UsuarioTerminalView[];
 
       jest.spyOn(service, 'findByEmpresaId').mockResolvedValueOnce(terminals);
 

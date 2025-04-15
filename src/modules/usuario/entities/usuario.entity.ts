@@ -9,6 +9,7 @@ import { TerminalEntity } from 'src/modules/empresa/terminal/entities/terminal.e
 import { UsuarioSituacao } from '../enums/usuario-situacao.enum';
 import { Role } from '../enums/usuario-tipo.enum';
 import { UsuarioTerminalEntity } from '../terminal/entities/terminal.entity';
+import { UsuarioTerminalView } from '../terminal/views/terminal.view';
 
 @Entity({ name: 'usuarios' })
 export class UsuarioEntity extends BaseEntity {
@@ -36,10 +37,9 @@ export class UsuarioEntity extends BaseEntity {
   @Column()
   tipo: Role;
 
-  @ApiProperty({ type: () => TerminalEntity, isArray: true })
-  @OneToMany(() => UsuarioTerminalEntity, (value) => value.usuario, { eager: true })
-  @Transform(({ value }) => value.map((item: UsuarioTerminalEntity) => item.terminal))
-  terminais: TerminalEntity[];
+  @ApiProperty({ type: () => UsuarioTerminalView, isArray: true })
+  @OneToMany(() => UsuarioTerminalView, (value) => value.usuario)
+  terminais: UsuarioTerminalView[];
 
   constructor(partial?: Partial<UsuarioEntity>) {
     super();

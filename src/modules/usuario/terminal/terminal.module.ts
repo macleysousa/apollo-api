@@ -4,9 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsuarioTerminalEntity } from './entities/terminal.entity';
 import { UsuarioTerminalController } from './terminal.controller';
 import { UsuarioTerminalService } from './terminal.service';
+import { UsuarioTerminalView } from './views/terminal.view';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UsuarioTerminalEntity])],
+  imports: [TypeOrmModule.forFeature([UsuarioTerminalEntity, UsuarioTerminalView])],
   controllers: [UsuarioTerminalController],
   providers: [UsuarioTerminalService],
   exports: [UsuarioTerminalService],
