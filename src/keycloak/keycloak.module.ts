@@ -1,10 +1,11 @@
 import { HttpModule } from '@nestjs/axios';
+import { CacheModule } from '@nestjs/cache-manager';
 import { DynamicModule, Module } from '@nestjs/common';
 
 import { KeycloakService } from './keycloak.service';
 
 @Module({
-  imports: [HttpModule],
+  imports: [HttpModule, CacheModule.register()],
   providers: [KeycloakService],
   exports: [KeycloakService],
 })
