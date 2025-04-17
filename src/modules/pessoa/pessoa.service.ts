@@ -6,6 +6,7 @@ import { ILike, IsNull, Not, Repository } from 'typeorm';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { PessoaEntity } from './entities/pessoa.entity';
+import { PessoaFilter } from './filters/pessoa.filter';
 
 @Injectable()
 export class PessoaService {
@@ -23,17 +24,17 @@ export class PessoaService {
     return this.findById(pessoa.id);
   }
 
-  async find(searchTerm?: string, page = 1, limit = 100): Promise<Pagination<PessoaEntity>> {
+  async find(filter: PessoaFilter): Promise<Pagination<PessoaEntity>> {
     const queryBuilder = this.repository.createQueryBuilder('p');
     queryBuilder.where({ id: Not(IsNull()) });
 
-    if (searchTerm) {
-      queryBuilder.orWhere({ id: ILike(`%${searchTerm}%`) });
-      queryBuilder.orWhere({ nome: ILike(`%${searchTerm}%`) });
-      queryBuilder.orWhere({ documento: ILike(`%${searchTerm}%`) });
+    if (filter && filter.searchTerm) {
+      queryBuilder.orWhere({ id: ILike(`%${filter.searchTerm}%`) });
+      queryBuilder.orWhere({ nome: ILike(`%${filter.searchTerm}%`) });
+      queryBuilder.orWhere({ documento: ILike(`%${filter.searchTerm}%`) });
     }
 
-    return paginate<PessoaEntity>(queryBuilder, { page, limit });
+    return paginate<PessoaEntity>(queryBuilder, { page: filter.pagina, limit: filter.itemsPorPagina });
   }
 
   async findById(id: number): Promise<PessoaEntity> {

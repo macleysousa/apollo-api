@@ -13,6 +13,7 @@ import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { LiberarEmpresaAcessoDto } from './dto/liberar-empresa-acesso.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { PessoaEntity } from './entities/pessoa.entity';
+import { PessoaFilter } from './filters/pessoa.filter';
 import { PessoaService } from './pessoa.service';
 
 @ApiTags('Pessoas')
@@ -31,15 +32,8 @@ export class PessoaController {
 
   @Get()
   @ApiPaginatedResponse(PessoaEntity)
-  @ApiQuery({ name: 'searchTerm', required: false })
-  @ApiQuery({ name: 'page', required: false, description: 'Value default: 1' })
-  @ApiQuery({ name: 'limit', required: false, description: 'Value default: 100' })
-  async find(
-    @Query('searchTerm') searchTerm: string,
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
-  ): Promise<Pagination<PessoaEntity>> {
-    return this.service.find(searchTerm, page, limit);
+  async find(@Query() filter: PessoaFilter): Promise<Pagination<PessoaEntity>> {
+    return this.service.find(filter);
   }
 
   @Get(':id')

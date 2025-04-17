@@ -109,10 +109,12 @@ describe('PessoaService', () => {
   describe('find', () => {
     it('should filter by searchTerm', async () => {
       // Arrange
-      const searchTerm = 'test';
+      const filter = {
+        searchTerm: 'John',
+      };
 
       // Act
-      const result = await service.find(searchTerm);
+      const result = await service.find(filter);
 
       // Assert
       expect(repository.createQueryBuilder).toHaveBeenCalledTimes(1);
@@ -122,9 +124,9 @@ describe('PessoaService', () => {
       expect(repository.createQueryBuilder().where).toHaveBeenCalledWith({ id: Not(IsNull()) });
 
       expect(repository.createQueryBuilder().orWhere).toHaveBeenCalledTimes(3);
-      expect(repository.createQueryBuilder().orWhere).toHaveBeenCalledWith({ id: ILike(`%${searchTerm}%`) });
-      expect(repository.createQueryBuilder().orWhere).toHaveBeenCalledWith({ nome: ILike(`%${searchTerm}%`) });
-      expect(repository.createQueryBuilder().orWhere).toHaveBeenCalledWith({ documento: ILike(`%${searchTerm}%`) });
+      expect(repository.createQueryBuilder().orWhere).toHaveBeenCalledWith({ id: ILike(`%${filter.searchTerm}%`) });
+      expect(repository.createQueryBuilder().orWhere).toHaveBeenCalledWith({ nome: ILike(`%${filter.searchTerm}%`) });
+      expect(repository.createQueryBuilder().orWhere).toHaveBeenCalledWith({ documento: ILike(`%${filter.searchTerm}%`) });
 
       expect(result).toEqual(pessoaFakeRepository.findPaginate());
     });
