@@ -2,6 +2,8 @@ import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class CreateTableTransacoesPontos1744887412990 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropTable('pontos');
+
     await queryRunner.createTable(
       new Table({
         name: 'pessoas_transacoes_pontos',
@@ -99,5 +101,60 @@ export class CreateTableTransacoesPontos1744887412990 implements MigrationInterf
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropTable('pessoas_transacoes_pontos');
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'pontos',
+        columns: [
+          {
+            name: 'id',
+            type: 'bigint',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          {
+            name: 'pessoaId',
+            type: 'int',
+            isPrimary: true,
+          },
+          {
+            name: 'empresaId',
+            type: 'int',
+            isPrimary: true,
+          },
+          {
+            name: 'dataDeValidade',
+            type: 'timestamp',
+          },
+          {
+            name: 'criadoEm',
+            type: 'timestamp',
+            default: 'now()',
+          },
+          {
+            name: 'atualizadoEm',
+            type: 'timestamp',
+            default: 'now()',
+          },
+        ],
+        foreignKeys: [
+          {
+            columnNames: ['empresaId'],
+            referencedTableName: 'empresas',
+            referencedColumnNames: ['id'],
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
+          },
+          {
+            columnNames: ['pessoaId'],
+            referencedTableName: 'pessoas',
+            referencedColumnNames: ['id'],
+            onDelete: 'CASCADE',
+            onUpdate: 'RESTRICT',
+          },
+        ],
+      }),
+    );
   }
 }
