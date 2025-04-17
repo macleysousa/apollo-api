@@ -87,7 +87,7 @@ describe('TransacaoPontoService', () => {
 
       expect(queryBuilder.where).toHaveBeenCalledWith('t.pessoaId = :pessoaId', { pessoaId });
       expect(queryBuilder.andWhere).toHaveBeenCalledWith('t.empresaId IN (:...empresaIds)', { empresaIds: [1, 2] });
-      expect(queryBuilder.andWhere).toHaveBeenCalledWith('t.tipo IN (:...tipos)', { tipos: ['Resgate', 'Crédito'] });
+      expect(queryBuilder.andWhere).toHaveBeenCalledWith('t.tipo IN (:...tipos)', { tipos: ['Débito', 'Crédito'] });
       expect(queryBuilder.orderBy).toHaveBeenCalledWith('t.dataTransacao', 'DESC');
       expect(result).toEqual([{ id: 1 }]);
     });

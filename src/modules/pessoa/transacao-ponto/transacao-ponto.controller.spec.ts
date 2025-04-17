@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { PessoaService } from '../pessoa.service';
+
 import { CancelTransacaoPontoDto } from './dto/cancel-transacao-ponto.dto';
 import { CreateTransacaoPontoDto } from './dto/create-transacao-ponto.dto';
 import { TransacaoPontoEntity } from './entities/transacao-ponto.entity';
@@ -22,6 +24,13 @@ describe('TransacaoPontoController', () => {
             find: jest.fn(),
             findById: jest.fn(),
             cancel: jest.fn(),
+          },
+        },
+        {
+          provide: PessoaService,
+          useValue: {
+            findById: jest.fn(),
+            findByDocumento: jest.fn(),
           },
         },
       ],
