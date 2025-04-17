@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 
 import { TransacaoTipo, TransacaoTipoEnum } from '../enum/transacao-tipo.enum';
 
+@Entity('pessoas_transacoes_pontos')
 export class TransacaoPontoEntity extends BaseEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn('increment')
