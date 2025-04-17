@@ -1,6 +1,6 @@
 export enum TransacaoTipoEnum {
-  Ganho = 'Ganho',
-  Resgate = 'Resgate',
+  Débito = 'Débito',
+  Crédito = 'Crédito',
 }
 
 export type TransacaoTipo = keyof typeof TransacaoTipoEnum;

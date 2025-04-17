@@ -8,6 +8,7 @@ import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 import { CancelTransacaoPontoDto } from './dto/cancel-transacao-ponto.dto';
 import { CreateTransacaoPontoDto } from './dto/create-transacao-ponto.dto';
 import { TransacaoPontoEntity } from './entities/transacao-ponto.entity';
+import { TransacaoPontoFilter } from './filters/transacao-ponto.filter';
 import { TransacaoPontoService } from './transacao-ponto.service';
 
 @ApiBearerAuth()
@@ -29,8 +30,11 @@ export class TransacaoPontoController {
 
   @Get()
   @ApiResponse({ status: 200, type: TransacaoPontoEntity, isArray: true })
-  async find(@Param('pessoaId', ParsePessoaPipe) pessoaId: number): Promise<TransacaoPontoEntity[]> {
-    return this.service.find(pessoaId);
+  async find(
+    @Param('pessoaId', ParsePessoaPipe) pessoaId: number,
+    @Body() filter: TransacaoPontoFilter,
+  ): Promise<TransacaoPontoEntity[]> {
+    return this.service.find(pessoaId, filter);
   }
 
   @Get(':id')

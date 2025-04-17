@@ -1,8 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude, Expose } from 'class-transformer';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 
+import { PessoaEntity } from '../../entities/pessoa.entity';
 import { TransacaoTipo, TransacaoTipoEnum } from '../enum/transacao-tipo.enum';
 
 @Entity('pessoas_transacoes_pontos')
@@ -48,6 +50,10 @@ export class TransacaoPontoEntity extends BaseEntity {
   validoAte: Date;
 
   @ApiProperty()
+  @Expose()
+  valida = () => !this.cancelado && this.validoAte > new Date();
+
+  @ApiProperty()
   @Column('boolean')
   cancelado: boolean;
 
@@ -58,6 +64,11 @@ export class TransacaoPontoEntity extends BaseEntity {
   @ApiProperty()
   @Column('timestamp')
   canceladoEm: Date;
+
+  @Exclude()
+  @ManyToOne(() => PessoaEntity, (pessoa) => pessoa.transacaoPontos)
+  @JoinColumn({ name: 'pessoaId', referencedColumnName: 'id' })
+  pessoa: PessoaEntity;
 
   constructor(partial?: Partial<TransacaoPontoEntity>) {
     super();
