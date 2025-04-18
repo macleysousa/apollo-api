@@ -70,15 +70,13 @@ describe('PessoaController', () => {
   describe('/ (GET)', () => {
     it('should find pessoas with searchTerm and pagination', async () => {
       // Arrange
-      const searchTerm = 'John';
-      const page = 1;
-      const limit = 10;
+      const filter = {};
       const paginationResult = pessoaFakeRepository.findPaginate();
       // Act
-      const result = await controller.find(searchTerm, page, limit);
+      const result = await controller.find(filter);
 
       // Assert
-      expect(service.find).toHaveBeenCalledWith(searchTerm, page, limit);
+      expect(service.find).toHaveBeenCalledWith(filter);
       expect(result).toEqual(paginationResult);
     });
   });
