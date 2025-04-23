@@ -92,4 +92,59 @@ describe('TransacaoPontoService', () => {
       expect(result).toEqual([{ id: 1 }]);
     });
   });
+
+  describe('findById', () => {
+    it('should return a transaction by ID', async () => {
+      const pessoaId = 1;
+      const id = 1;
+      const transaction = { id, pessoaId, empresaId: 1 };
+
+      jest.spyOn(service, 'find').mockResolvedValue([transaction as any]);
+
+      const result = await service.findById(pessoaId, id);
+
+      expect(service.find).toHaveBeenCalledWith(pessoaId, { ids: [id] });
+      expect(result).toEqual(transaction);
+    });
+
+    it('should throw BadRequestException on error', async () => {
+      const pessoaId = 1;
+      const id = 1;
+
+      jest.spyOn(service, 'find').mockRejectedValue(new Error('Find error'));
+
+      await expect(service.findById(pessoaId, id)).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('cancel', () => {
+    it('should cancel a transaction', async () => {
+      const pessoaId = 1;
+      const id = 1;
+      const dto = { motivoCancelamento: 'Duplicate transaction' };
+      const updatedTransaction = { id, pessoaId, empresaId: 1, cancelado: true, motivoCancelamento: dto.motivoCancelamento };
+
+      jest.spyOn(repository, 'update').mockResolvedValue({ affected: 1 } as any);
+      jest.spyOn(service, 'findById').mockResolvedValue(updatedTransaction as any);
+
+      const result = await service.cancel(pessoaId, id, dto);
+
+      expect(repository.update).toHaveBeenCalledWith(
+        { id, pessoaId, empresaId: 1 },
+        { cancelado: true, motivoCancelamento: dto.motivoCancelamento },
+      );
+      expect(service.findById).toHaveBeenCalledWith(pessoaId, id);
+      expect(result).toEqual(updatedTransaction);
+    });
+
+    it('should throw BadRequestException on update error', async () => {
+      const pessoaId = 1;
+      const id = 1;
+      const dto = { motivoCancelamento: 'Duplicate transaction' };
+
+      jest.spyOn(repository, 'update').mockRejectedValue(new Error('Update error'));
+
+      await expect(service.cancel(pessoaId, id, dto)).rejects.toThrow(BadRequestException);
+    });
+  });
 });

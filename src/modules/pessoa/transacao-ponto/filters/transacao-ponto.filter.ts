@@ -9,6 +9,11 @@ export class TransacaoPontoFilter {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsArray('int')
+  ids?: number[];
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsArray('int')
   empresaIds?: number[];
 
   @ApiProperty({ required: false, enum: TransacaoTipoEnum })

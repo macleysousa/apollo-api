@@ -47,12 +47,12 @@ export class TransacaoPontoController {
   }
 
   @Delete(':id')
-  @ApiResponse({ status: 204 })
+  @ApiResponse({ status: 200, type: TransacaoPontoEntity })
   async cancel(
     @Param('pessoaId', ParsePessoaPipe) pessoaId: number,
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: CancelTransacaoPontoDto,
-  ): Promise<void> {
+  ): Promise<TransacaoPontoEntity> {
     return this.service.cancel(pessoaId, id, dto);
   }
 }

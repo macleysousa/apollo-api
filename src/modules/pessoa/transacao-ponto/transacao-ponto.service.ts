@@ -34,6 +34,10 @@ export class TransacaoPontoService {
       querBuilder.andWhere('t.empresaId IN (:...empresaIds)', { empresaIds: empresaIds });
     }
 
+    if (filter?.ids) {
+      querBuilder.andWhere('t.id IN (:...ids)', { ids: filter.ids });
+    }
+
     if (filter?.tipos) {
       querBuilder.andWhere('t.tipo IN (:...tipos)', { tipos: filter.tipos });
     }
@@ -50,10 +54,23 @@ export class TransacaoPontoService {
   }
 
   async findById(pessoaId: number, id: number): Promise<TransacaoPontoEntity> {
-    return;
+    return this.find(pessoaId, { ids: [id] })
+      .then((transacoes) => transacoes.first())
+      .catch((error) => {
+        throw new BadRequestException(error?.hint || error?.detail || error?.message || 'Erro ao buscar transação de ponto');
+      });
   }
 
-  async cancel(pessoaId: number, id: number, dto: CancelTransacaoPontoDto): Promise<void> {
-    return;
+  async cancel(pessoaId: number, id: number, dto: CancelTransacaoPontoDto): Promise<TransacaoPontoEntity> {
+    await this.repository
+      .update(
+        { id, pessoaId, empresaId: this.context.empresaId() },
+        { cancelado: true, motivoCancelamento: dto.motivoCancelamento },
+      )
+      .catch((error) => {
+        throw new BadRequestException(error?.hint || error?.detail || error?.message || 'Erro ao cancelar transação de ponto');
+      });
+
+    return this.findById(pessoaId, id);
   }
 }
