@@ -9,8 +9,8 @@ export class CreateTableTransacoesPontos1744887412990 implements MigrationInterf
         name: 'pessoas_transacoes_pontos',
         columns: [
           {
-            name: 'bigint',
-            type: 'int',
+            name: 'id',
+            type: 'bigint',
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'increment',
@@ -28,24 +28,27 @@ export class CreateTableTransacoesPontos1744887412990 implements MigrationInterf
             type: 'varchar',
           },
           {
+            name: 'data',
+            type: 'timestamp',
+            default: 'now()',
+          },
+          {
             name: 'tipo',
             type: 'varchar',
           },
           {
             name: 'quantidade',
-            type: 'decimal',
+            type: 'decimal(10,2)',
           },
           {
             name: 'resgatado',
-            type: 'decimal',
-          },
-          {
-            name: 'data',
-            type: 'timestamp',
+            type: 'decimal(10,2)',
+            default: '0.00',
           },
           {
             name: 'observacao',
             type: 'varchar',
+            isNullable: true,
           },
           {
             name: 'validoAte',
@@ -97,6 +100,8 @@ export class CreateTableTransacoesPontos1744887412990 implements MigrationInterf
         ],
       }),
     );
+
+    await queryRunner.query(`ALTER TABLE pessoas_transacoes_pontos AUTO_INCREMENT = 1000;`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

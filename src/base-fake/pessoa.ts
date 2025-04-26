@@ -8,7 +8,7 @@ class PessoaFakeRepository {
       id: 1,
       nome: 'John Doe',
       documento: '123456789',
-      tipo: PessoaTipo.Fisica,
+      tipo: PessoaTipo.Física,
       empresaCadastro: 1,
       empresasAcesso: [1],
     });
