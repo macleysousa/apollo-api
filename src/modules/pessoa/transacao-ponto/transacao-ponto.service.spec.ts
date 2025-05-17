@@ -9,10 +9,12 @@ import { CreateTransacaoPontoDto } from './dto/create-transacao-ponto.dto';
 import { TransacaoPontoEntity } from './entities/transacao-ponto.entity';
 import { TransacaoPontoFilter } from './filters/transacao-ponto.filter';
 import { TransacaoPontoService } from './transacao-ponto.service';
+import { TransacaoPontoView } from './Views/transacao-ponto.view';
 
 describe('TransacaoPontoService', () => {
   let service: TransacaoPontoService;
   let repository: Repository<TransacaoPontoEntity>;
+  let viewRepository: Repository<TransacaoPontoView>;
   let contextService: ContextService;
 
   beforeEach(async () => {
@@ -21,6 +23,10 @@ describe('TransacaoPontoService', () => {
         TransacaoPontoService,
         {
           provide: getRepositoryToken(TransacaoPontoEntity),
+          useClass: Repository,
+        },
+        {
+          provide: getRepositoryToken(TransacaoPontoView),
           useClass: Repository,
         },
         {
@@ -34,37 +40,55 @@ describe('TransacaoPontoService', () => {
 
     service = module.get<TransacaoPontoService>(TransacaoPontoService);
     repository = module.get<Repository<TransacaoPontoEntity>>(getRepositoryToken(TransacaoPontoEntity));
+    viewRepository = module.get<Repository<TransacaoPontoView>>(getRepositoryToken(TransacaoPontoView));
     contextService = module.get<ContextService>(ContextService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
+    expect(viewRepository).toBeDefined();
     expect(contextService).toBeDefined();
   });
 
   describe('create', () => {
     it('should create a new transaction', async () => {
       const pessoaId = 1;
-      const dto: CreateTransacaoPontoDto = { tipo: 'Crédito', quantidade: 100 };
+      const dto: CreateTransacaoPontoDto = { quantidade: 100, validaAte: new Date() };
       const savedEntity = { id: 1, ...dto, pessoaId, empresaId: 1 };
+
+      (repository as any).manager = {
+        findOne: jest.fn().mockResolvedValue({ id: pessoaId, documento: '123456789' }),
+      };
 
       jest.spyOn(repository, 'create').mockReturnValue(savedEntity as any);
       jest.spyOn(repository, 'save').mockResolvedValue(savedEntity as any);
+      jest.spyOn(service, 'findById').mockResolvedValue(savedEntity as any);
 
       const result = await service.create(pessoaId, dto);
 
-      expect(repository.create).toHaveBeenCalledWith({ ...dto, pessoaId, empresaId: 1 });
+      expect(repository.create).toHaveBeenCalledWith({
+        ...dto,
+        pessoaDocumento: '123456789',
+        tipo: 'Crédito',
+        pessoaId,
+        empresaId: 1,
+      });
       expect(repository.save).toHaveBeenCalledWith(savedEntity);
       expect(result).toEqual(savedEntity);
     });
 
     it('should throw BadRequestException on save error', async () => {
       const pessoaId = 1;
-      const dto: CreateTransacaoPontoDto = { tipo: 'Crédito', quantidade: 100 };
+      const dto: CreateTransacaoPontoDto = { quantidade: 100, validaAte: new Date() };
+
+      (repository as any).manager = {
+        findOne: jest.fn().mockResolvedValue({ id: pessoaId, documento: '123456789' }),
+      };
 
       jest.spyOn(repository, 'create').mockReturnValue({} as any);
       jest.spyOn(repository, 'save').mockRejectedValue(new Error('Save error'));
+      jest.spyOn(service, 'findById').mockResolvedValue({} as any);
 
       await expect(service.create(pessoaId, dto)).rejects.toThrow(BadRequestException);
     });
@@ -81,14 +105,14 @@ describe('TransacaoPontoService', () => {
         getMany: jest.fn().mockResolvedValue([{ id: 1 }]),
       };
 
-      jest.spyOn(repository, 'createQueryBuilder').mockReturnValue(queryBuilder);
+      jest.spyOn(viewRepository, 'createQueryBuilder').mockReturnValue(queryBuilder);
 
       const result = await service.find(pessoaId, filter);
 
       expect(queryBuilder.where).toHaveBeenCalledWith('t.pessoaId = :pessoaId', { pessoaId });
       expect(queryBuilder.andWhere).toHaveBeenCalledWith('t.empresaId IN (:...empresaIds)', { empresaIds: [1, 2] });
       expect(queryBuilder.andWhere).toHaveBeenCalledWith('t.tipo IN (:...tipos)', { tipos: ['Débito', 'Crédito'] });
-      expect(queryBuilder.orderBy).toHaveBeenCalledWith('t.dataTransacao', 'DESC');
+      expect(queryBuilder.orderBy).toHaveBeenCalledWith('t.data', 'DESC');
       expect(result).toEqual([{ id: 1 }]);
     });
   });
@@ -131,7 +155,7 @@ describe('TransacaoPontoService', () => {
 
       expect(repository.update).toHaveBeenCalledWith(
         { id, pessoaId, empresaId: 1 },
-        { cancelado: true, motivoCancelamento: dto.motivoCancelamento },
+        { cancelada: true, motivoCancelamento: dto.motivoCancelamento },
       );
       expect(service.findById).toHaveBeenCalledWith(pessoaId, id);
       expect(result).toEqual(updatedTransaction);

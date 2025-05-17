@@ -7,6 +7,7 @@ import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 
 import { CancelTransacaoPontoDto } from './dto/cancel-transacao-ponto.dto';
 import { CreateTransacaoPontoDto } from './dto/create-transacao-ponto.dto';
+import { RedemptionTransacaoPontoDto } from './dto/redemption-transacao-ponto.dto';
 import { TransacaoPontoEntity } from './entities/transacao-ponto.entity';
 import { TransacaoPontoFilter } from './filters/transacao-ponto.filter';
 import { TransacaoPontoService } from './transacao-ponto.service';
@@ -35,6 +36,15 @@ export class TransacaoPontoController {
     @Body() filter: TransacaoPontoFilter,
   ): Promise<TransacaoPontoEntity[]> {
     return this.service.find(pessoaId, filter);
+  }
+
+  @Post('resgatar')
+  @ApiResponse({ status: 200, type: TransacaoPontoEntity })
+  async redemption(
+    @Param('pessoaId', ParsePessoaPipe) pessoaId: number,
+    @Body() dto: RedemptionTransacaoPontoDto,
+  ): Promise<void> {
+    return this.service.redemption(pessoaId, dto);
   }
 
   @Get(':id')

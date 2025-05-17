@@ -63,10 +63,9 @@ describe('PessoaService', () => {
       // Arrange
       const empresaId = 1;
       const createPessoaDto: CreatePessoaDto = {
-        id: 1,
         nome: 'John Doe',
         documento: '123456789',
-        tipo: PessoaTipo.Fisica,
+        tipo: PessoaTipo.Física,
       };
       const pessoa = pessoaFakeRepository.findOne();
 
@@ -79,7 +78,11 @@ describe('PessoaService', () => {
 
       // Assert
       expect(repository.findOne).toHaveBeenCalledWith({ where: { documento: createPessoaDto.documento } });
-      expect(repository.save).toHaveBeenCalledWith(pessoa);
+      expect(repository.save).toHaveBeenCalledWith({
+        ...createPessoaDto,
+        empresaCadastro: empresaId,
+        empresasAcesso: [empresaId],
+      });
       expect(service.findById).toHaveBeenCalledWith(pessoa.id);
       expect(result).toEqual(pessoa);
     });
@@ -88,10 +91,9 @@ describe('PessoaService', () => {
       // Arrange
       const empresaId = 1;
       const createPessoaDto: CreatePessoaDto = {
-        id: 1,
         nome: 'John Doe',
         documento: '123456789',
-        tipo: PessoaTipo.Fisica,
+        tipo: PessoaTipo.Física,
       };
       const pessoa = pessoaFakeRepository.findOne();
 

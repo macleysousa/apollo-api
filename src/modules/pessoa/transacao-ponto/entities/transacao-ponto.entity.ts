@@ -23,7 +23,7 @@ export class TransacaoPontoEntity extends BaseEntity {
 
   @ApiProperty()
   @PrimaryColumn('varchar')
-  pessoaDocumento: number;
+  pessoaDocumento: string;
 
   @ApiProperty({ enum: TransacaoTipoEnum })
   @Column('varchar')
@@ -47,15 +47,11 @@ export class TransacaoPontoEntity extends BaseEntity {
 
   @ApiProperty()
   @Column('timestamp')
-  validoAte: Date;
-
-  @ApiProperty()
-  @Expose()
-  valida = () => !this.cancelado && this.validoAte > new Date();
+  validaAte: Date;
 
   @ApiProperty()
   @Column('boolean')
-  cancelado: boolean;
+  cancelada: boolean;
 
   @ApiProperty()
   @Column('varchar')
@@ -63,7 +59,7 @@ export class TransacaoPontoEntity extends BaseEntity {
 
   @ApiProperty()
   @Column('timestamp')
-  canceladoEm: Date;
+  canceladaEm: Date;
 
   @Exclude()
   @ManyToOne(() => PessoaEntity, (pessoa) => pessoa.transacaoPontos)

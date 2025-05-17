@@ -8,6 +8,7 @@ import { TransacaoPontoEntity } from './entities/transacao-ponto.entity';
 import { TransacaoPontoFilter } from './filters/transacao-ponto.filter';
 import { TransacaoPontoController } from './transacao-ponto.controller';
 import { TransacaoPontoService } from './transacao-ponto.service';
+import { TransacaoPontoView } from './Views/transacao-ponto.view';
 
 describe('TransacaoPontoController', () => {
   let controller: TransacaoPontoController;
@@ -48,10 +49,10 @@ describe('TransacaoPontoController', () => {
     it('should call service.create with correct parameters', async () => {
       const pessoaId = 1;
       const dto: CreateTransacaoPontoDto = {
-        tipo: 'Crédito',
         quantidade: 100,
+        validaAte: new Date(),
       };
-      const result = new TransacaoPontoEntity();
+      const result = new TransacaoPontoView();
 
       jest.spyOn(service, 'create').mockResolvedValue(result);
 
@@ -66,7 +67,7 @@ describe('TransacaoPontoController', () => {
       const filter: TransacaoPontoFilter = {
         /* mock properties */
       };
-      const result = [new TransacaoPontoEntity()];
+      const result = [new TransacaoPontoView()];
 
       jest.spyOn(service, 'find').mockResolvedValue(result);
 
@@ -79,7 +80,7 @@ describe('TransacaoPontoController', () => {
     it('should call service.findById with correct parameters', async () => {
       const pessoaId = 1;
       const id = 123;
-      const result = new TransacaoPontoEntity();
+      const result = new TransacaoPontoView();
 
       jest.spyOn(service, 'findById').mockResolvedValue(result);
 

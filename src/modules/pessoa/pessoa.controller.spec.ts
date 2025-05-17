@@ -46,10 +46,9 @@ describe('PessoaController', () => {
     it('should create a new pessoa', async () => {
       // Arrange
       const createPessoaDto: CreatePessoaDto = {
-        id: 1,
         nome: 'John Doe',
         documento: '123456789',
-        tipo: PessoaTipo.Fisica,
+        tipo: PessoaTipo.Física,
       };
 
       const empresa = empresaFakeRepository.findOne();
@@ -103,10 +102,9 @@ describe('PessoaController', () => {
       // Arrange
       const id = 1;
       const updatePessoaDto: CreatePessoaDto = {
-        id: 1,
         nome: 'John Doe',
         documento: '123456789',
-        tipo: PessoaTipo.Fisica,
+        tipo: PessoaTipo.Física,
       };
 
       const pessoa = pessoaFakeRepository.findOne();

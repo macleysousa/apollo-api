@@ -1,4 +1,4 @@
 export enum PessoaTipo {
-  Fisica = 'Física',
-  Juridica = 'Jurídica',
+  Física = 'Física',
+  Jurídica = 'Jurídica',
 }

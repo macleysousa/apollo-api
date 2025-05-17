@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 
 import { AddComponentGroupItemDto } from './dto/create-component-group-item.dto';
 import { ComponenteGrupoItemEntity } from './entities/componente-grupo-item.entity';
@@ -14,6 +14,19 @@ export class ComponenteGrupoItemService {
 
   async add(grupoId: number, { componenteId }: AddComponentGroupItemDto): Promise<ComponenteGrupoItemEntity[]> {
     await this.repository.upsert({ grupoId, componenteId }, { conflictPaths: ['grupoId', 'componenteId'] });
+    return this.findByGroup(grupoId);
+  }
+
+  async addList(grupoId: number, dtos: AddComponentGroupItemDto[]): Promise<ComponenteGrupoItemEntity[]> {
+    await this.repository.upsert(
+      dtos.map(({ componenteId }) => ({ grupoId, componenteId })),
+      { conflictPaths: ['grupoId', 'componenteId'] },
+    );
+
+    if (dtos.length > 0) {
+      await this.repository.delete({ grupoId, componenteId: Not(In(dtos.map((x) => x.componenteId))) });
+    }
+
     return this.findByGroup(grupoId);
   }
 
