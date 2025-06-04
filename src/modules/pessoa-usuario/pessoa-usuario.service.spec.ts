@@ -110,6 +110,7 @@ describe('PessoaUsuarioService', () => {
 
   describe('login', () => {
     it('should throw BadRequestException if login fails', async () => {
+      jest.spyOn(repository, 'existsBy').mockResolvedValue(true);
       jest.spyOn(keycloakService, 'login').mockResolvedValue(null);
 
       const dto: LoginPessoaUsuarioDto = {
@@ -128,6 +129,8 @@ describe('PessoaUsuarioService', () => {
         token_type: 'Bearer',
         expires_in: 3600,
       } as any;
+
+      jest.spyOn(repository, 'existsBy').mockResolvedValue(true);
       jest.spyOn(keycloakService, 'login').mockResolvedValue(mockAccess);
 
       const dto: LoginPessoaUsuarioDto = {

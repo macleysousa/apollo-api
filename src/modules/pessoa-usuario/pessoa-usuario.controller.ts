@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Request } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ApiPessoa } from 'src/decorators/api-pessoa.decorator';
@@ -9,6 +9,7 @@ import { LoginPessoaUsuarioDto } from './dto/login-pessoa-usuario.dto';
 import { PessoaUsuario } from './entities/pessoa-usuario.entity';
 import { PessoaUsuarioService } from './pessoa-usuario.service';
 import { LoginResponse } from './responses/login.response';
+import { VerifyResponse } from './responses/verify.response';
 
 @ApiTags('Pessoas - Usuários')
 @Controller('pessoas-usuarios')
@@ -35,5 +36,19 @@ export class PessoaUsuarioController {
   @ApiResponse({ status: 200, type: PessoaUsuario })
   async findPerfil(@Request() request: any): Promise<PessoaUsuario> {
     return this.service.findPerfil(request.token);
+  }
+
+  @Get('verificar-documento/:documento')
+  @ApiResponse({ status: 200, type: VerifyResponse })
+  @IsPublic()
+  async verifyDocument(@Param('documento') documento: string): Promise<VerifyResponse> {
+    return this.service.verifyDocument(documento);
+  }
+
+  @Get('verificar-email/:email')
+  @ApiResponse({ status: 200, type: VerifyResponse })
+  @IsPublic()
+  async verifyEmail(@Param('email') email: string): Promise<VerifyResponse> {
+    return this.service.verifyEmail(email);
   }
 }
