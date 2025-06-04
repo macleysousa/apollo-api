@@ -1,7 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { isEmail } from 'class-validator';
 import { Repository } from 'typeorm';
 
+import { isValidDocument } from 'src/commons/validations/is-document.validation';
 import { KeycloakService } from 'src/keycloak/keycloak.service';
 
 import { PessoaService } from '../pessoa/pessoa.service';
@@ -10,6 +12,7 @@ import { CreatePessoaUsuarioDto } from './dto/create-pessoa-usuario.dto';
 import { LoginPessoaUsuarioDto } from './dto/login-pessoa-usuario.dto';
 import { PessoaUsuario } from './entities/pessoa-usuario.entity';
 import { LoginResponse } from './responses/login.response';
+import { VerifyResponse } from './responses/verify.response';
 
 @Injectable()
 export class PessoaUsuarioService {
@@ -49,10 +52,10 @@ export class PessoaUsuarioService {
   }
 
   async login(dto: LoginPessoaUsuarioDto): Promise<LoginResponse> {
-    // const usuario = await this.repository.existsBy({ email: dto.email });
-    // if (!usuario) {
-    //   throw new BadRequestException('Usuário não encontrado');
-    // }
+    const usuario = await this.repository.existsBy({ email: dto.email });
+    if (!usuario) {
+      throw new BadRequestException('Usuário não encontrado');
+    }
 
     const access = await this.keycloakService.login(dto.email, dto.senha);
     if (!access) {
@@ -76,5 +79,48 @@ export class PessoaUsuarioService {
   async findPerfil(token: string): Promise<PessoaUsuario> {
     const usuarioId = await this.keycloakService.validateToken(token);
     return this.repository.findOne({ where: { id: usuarioId } });
+  }
+
+  async verifyDocument(documento: string): Promise<VerifyResponse> {
+    if (!isValidDocument(documento)) {
+      return {
+        valido: false,
+        mensagem: 'Documento deve ser um CPF ou CNPJ válido.',
+      };
+    }
+
+    const exists = await this.repository.existsBy({ documento });
+    if (exists) {
+      return {
+        valido: false,
+        mensagem: 'Documento já cadastrado',
+      };
+    }
+
+    return {
+      valido: true,
+      mensagem: 'Documento válido e não cadastrado',
+    };
+  }
+
+  async verifyEmail(email: string): Promise<VerifyResponse> {
+    if (!isEmail(email)) {
+      return {
+        valido: false,
+        mensagem: 'E-mail inválido',
+      };
+    }
+    const exists = await this.repository.existsBy({ email });
+    if (exists) {
+      return {
+        valido: false,
+        mensagem: 'E-mail já cadastrado',
+      };
+    }
+
+    return {
+      valido: true,
+      mensagem: 'E-mail válido e não cadastrado',
+    };
   }
 }

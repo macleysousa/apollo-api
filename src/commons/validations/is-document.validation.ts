@@ -8,6 +8,11 @@ import {
 } from 'class-validator';
 import { cnpj, cpf } from 'cpf-cnpj-validator';
 
+export function isValidDocument(value: string): boolean {
+  const _value = value?.replace(/\D/g, '');
+  return cpf.isValid(_value) || cnpj.isValid(_value);
+}
+
 @Injectable()
 @ValidatorConstraint({ async: false })
 export class IsValidDocumentConstraint implements ValidatorConstraintInterface {
@@ -16,8 +21,7 @@ export class IsValidDocumentConstraint implements ValidatorConstraintInterface {
   validate(value: string, args: ValidationArguments): boolean {
     const _value = value?.replace(/\D/g, '');
 
-    const isValid = cpf.isValid(_value) || cnpj.isValid(_value);
-    if (!isValid) {
+    if (!isValidDocument(_value)) {
       this.messageError = 'Documento deve ser um CPF ou CNPJ válido.';
       return false;
     }
