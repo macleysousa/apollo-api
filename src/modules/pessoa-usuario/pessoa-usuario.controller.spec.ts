@@ -88,7 +88,7 @@ describe('PessoaUsuarioController', () => {
 
         jest.spyOn(service, 'findPerfil').mockResolvedValue(result);
 
-        expect(await controller.findPerfil(mockRequest)).toBe(result);
+        expect(await controller.findPerfil()).toBe(result);
         expect(service.findPerfil).toHaveBeenCalledWith(mockRequest.token);
       });
     });
