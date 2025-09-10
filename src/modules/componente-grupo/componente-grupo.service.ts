@@ -20,7 +20,8 @@ export class ComponenteGrupoService {
 
   async find(name?: string): Promise<ComponenteGrupoEntity[]> {
     const query = this.repository.createQueryBuilder('grupo');
-    query.leftJoinAndSelect('grupo.componentes', 'componentes');
+    query.leftJoinAndSelect('grupo.itens', 'itens');
+    query.leftJoinAndSelect('itens.componente', 'componentes');
 
     if (name) {
       query.where({ nome: ILike(`%${name}%`) });
@@ -30,7 +31,7 @@ export class ComponenteGrupoService {
   }
 
   async findById(id: number): Promise<ComponenteGrupoEntity> {
-    return this.repository.findOne({ where: { id }, relations: ['componentes.componente'] });
+    return this.repository.findOne({ where: { id }, relations: ['itens.componente'] });
   }
 
   async update(id: number, { nome: name }: UpdateComponentGroupDto): Promise<ComponenteGrupoEntity> {

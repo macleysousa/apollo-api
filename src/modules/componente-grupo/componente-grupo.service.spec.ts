@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { componentGroupFakeRepository } from 'src/base-fake/component-group';
 
@@ -100,7 +100,7 @@ describe('ComponentGroupService', () => {
 
       // Assert
       expect(repository.findOne).toHaveBeenCalledTimes(1);
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { id }, relations: ['componentes.componente'] });
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { id }, relations: ['itens.componente'] });
 
       expect(response).toEqual(componentGroupFakeRepository.findOne());
     });

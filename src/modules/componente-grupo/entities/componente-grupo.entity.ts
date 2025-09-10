@@ -20,7 +20,7 @@ export class ComponenteGrupoEntity extends BaseEntity {
   @ApiProperty({ type: () => ComponenteGrupoItemEntity, isArray: true })
   @OneToMany(() => ComponenteGrupoItemEntity, (value) => value.grupo)
   @Transform(({ value }) => value?.map((item: ComponenteGrupoItemEntity) => item.componente))
-  componentes: ComponenteEntity[];
+  itens: ComponenteEntity[];
 
   constructor(partial?: Partial<ComponenteGrupoEntity>) {
     super();
