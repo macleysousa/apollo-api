@@ -20,7 +20,7 @@ export class UsuarioGrupoEntity extends BaseEntity {
 
   @ApiProperty({ type: () => ComponenteGrupoEntity })
   @OneToOne(() => ComponenteGrupoEntity, (value) => value.id)
-  @JoinColumn({ name: 'groupId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'grupoId', referencedColumnName: 'id' })
   grupo: ComponenteGrupoEntity;
 
   @ApiProperty()

@@ -25,14 +25,14 @@ export class UsuarioGrupoService {
     return this.findByBranchIdAndGroupId(access.usuarioId, access.empresaId, access.grupoId);
   }
 
-  async find(usuarioId: number, relations = ['grupo', 'grupo.itens']): Promise<UsuarioGrupoEntity[]> {
+  async find(usuarioId: number, relations = ['grupo', 'grupo.itens.componente']): Promise<UsuarioGrupoEntity[]> {
     return this.repository.find({ where: { usuarioId }, relations });
   }
 
   async findByBranchId(
     usuarioId: number,
     empresaId: number,
-    relations = ['grupo', 'grupo.itens'],
+    relations = ['grupo', 'grupo.itens.componente'],
   ): Promise<UsuarioGrupoEntity[]> {
     return this.repository.find({ where: { usuarioId, empresaId }, relations });
   }
@@ -41,7 +41,7 @@ export class UsuarioGrupoService {
     usuarioId: number,
     empresaId: number,
     grupoId: number,
-    relations = ['grupo', 'grupo.itens'],
+    relations = ['grupo', 'grupo.itens.componente'],
   ): Promise<UsuarioGrupoEntity> {
     return this.repository.findOne({ where: { usuarioId, empresaId, grupoId }, relations });
   }
