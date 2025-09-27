@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { SwaggerEnumType } from '@nestjs/swagger/dist/types/swagger-enum.type';
 import {
-  ValidationArguments,
-  ValidationOptions,
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
   isEnum,
-  isISO8601,
   isInt,
+  isISO8601,
   isNumber,
   isNumberString,
   isString,
   isUUID,
   registerDecorator,
+  ValidationArguments,
+  ValidationOptions,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
 } from 'class-validator';
 
 @Injectable()

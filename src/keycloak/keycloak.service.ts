@@ -147,4 +147,165 @@ export class KeycloakService {
       throw new UnauthorizedException('Token invalido ou expirado');
     }
   }
+
+  async resetPassword(email: string, newPassword: string): Promise<void> {
+    const accessToken = await this.getAccessToken();
+
+    // Primeiro, buscar o usuário pelo email
+    const searchUrl = `${this.keycloakConfig.url}/admin/realms/${this.keycloakConfig.realm}/users?email=${encodeURIComponent(email)}`;
+
+    const searchResponse = await firstValueFrom(
+      this.http.get(searchUrl, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }),
+    ).catch(() => {
+      throw new BadRequestException('Failed to search user in Keycloak.');
+    });
+
+    const users = searchResponse.data;
+    if (!users || users.length === 0) {
+      throw new BadRequestException('Usuário não encontrado');
+    }
+
+    const userId = users[0].id;
+
+    // Redefinir a senha do usuário
+    const resetUrl = `${this.keycloakConfig.url}/admin/realms/${this.keycloakConfig.realm}/users/${userId}/reset-password`;
+
+    await firstValueFrom(
+      this.http.put(
+        resetUrl,
+        {
+          type: 'password',
+          value: newPassword,
+          temporary: false,
+        },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        },
+      ),
+    ).catch(() => {
+      throw new BadRequestException('Failed to reset password in Keycloak.');
+    });
+  }
+
+  async sendResetPasswordEmail(email: string): Promise<void> {
+    const accessToken = await this.getAccessToken();
+
+    // Primeiro, buscar o usuário pelo email
+    const searchUrl = `${this.keycloakConfig.url}/admin/realms/${this.keycloakConfig.realm}/users?email=${encodeURIComponent(email)}`;
+
+    const searchResponse = await firstValueFrom(
+      this.http.get(searchUrl, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }),
+    ).catch(() => {
+      throw new BadRequestException('Failed to search user in Keycloak.');
+    });
+
+    const users = searchResponse.data;
+    if (!users || users.length === 0) {
+      throw new BadRequestException('Usuário não encontrado');
+    }
+
+    const userId = users[0].id;
+
+    // Enviar email de redefinição de senha
+    const emailUrl = `${this.keycloakConfig.url}/admin/realms/${this.keycloakConfig.realm}/users/${userId}/execute-actions-email`;
+
+    await firstValueFrom(
+      this.http.put(emailUrl, ['UPDATE_PASSWORD'], {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        params: {
+          client_id: this.keycloakConfig.clientId,
+        },
+      }),
+    ).catch(() => {
+      throw new BadRequestException('Failed to send reset password email.');
+    });
+  }
+
+  async generateResetPasswordToken(email: string): Promise<string> {
+    const accessToken = await this.getAccessToken();
+
+    // Primeiro, buscar o usuário pelo email
+    const searchUrl = `${this.keycloakConfig.url}/admin/realms/${this.keycloakConfig.realm}/users?email=${encodeURIComponent(email)}`;
+
+    const searchResponse = await firstValueFrom(
+      this.http.get(searchUrl, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }),
+    ).catch(() => {
+      throw new BadRequestException('Failed to search user in Keycloak.');
+    });
+
+    const users = searchResponse.data;
+    if (!users || users.length === 0) {
+      throw new BadRequestException('Usuário não encontrado');
+    }
+
+    const userId = users[0].id;
+
+    // Gerar um código de 6 dígitos
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Armazenar o código no cache por 15 minutos (900 segundos)
+    const cacheKey = `reset_password_${resetCode}`;
+    await this.cache.set(cacheKey, { email, userId, timestamp: Date.now() }, 900000);
+
+    return resetCode;
+  }
+
+  async validateResetPasswordToken(token: string): Promise<{ email: string; userId: string } | null> {
+    const cacheKey = `reset_password_${token}`;
+    const data = await this.cache.get<{ email: string; userId: string; timestamp: number }>(cacheKey);
+
+    if (!data) {
+      return null;
+    }
+
+    // Verificar se o token não expirou (15 minutos)
+    const now = Date.now();
+    const tokenAge = now - data.timestamp;
+    if (tokenAge > 900000) {
+      // 15 minutos em millisegundos
+      await this.cache.del(cacheKey);
+      return null;
+    }
+
+    return { email: data.email, userId: data.userId };
+  }
+
+  async resetPasswordWithToken(token: string, newPassword: string): Promise<void> {
+    const tokenData = await this.validateResetPasswordToken(token);
+
+    if (!tokenData) {
+      throw new BadRequestException('Código inválido ou expirado');
+    }
+
+    const accessToken = await this.getAccessToken();
+
+    // Redefinir a senha do usuário
+    const resetUrl = `${this.keycloakConfig.url}/admin/realms/${this.keycloakConfig.realm}/users/${tokenData.userId}/reset-password`;
+
+    await firstValueFrom(
+      this.http.put(
+        resetUrl,
+        {
+          type: 'password',
+          value: newPassword,
+          temporary: false,
+        },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        },
+      ),
+    ).catch(() => {
+      throw new BadRequestException('Failed to reset password in Keycloak.');
+    });
+
+    // Invalidar o token após o uso
+    const cacheKey = `reset_password_${token}`;
+    await this.cache.del(cacheKey);
+  }
 }

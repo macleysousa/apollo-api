@@ -369,6 +369,10 @@ O projeto usa configuração personalizada do ESLint:
 3. Use `@Roles()` para controle por tipo de usuário
 4. Valide sempre os dados de entrada com DTOs
 
+## Modulo Pessoa Usuario
+1. O modulo pessoa usuario é um modulo para usuarios finais, ou seja, pessoas que não vão acessar o sistema principal.
+2. O modulo pessoa usuario utiliza autenticação via Keycloak, diferente do sistema principal que utiliza JWT auto gerenciado.
+
 ### Performance
 1. Use `relations` apropriadamente no TypeORM
 2. Implemente paginação para listas grandes
