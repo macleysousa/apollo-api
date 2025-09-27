@@ -51,6 +51,12 @@ export class PessoaUsuarioController {
     return this.service.updatePerfil(dto);
   }
 
+  @Put('perfil/alterar-senha')
+  @ApiResponse({ status: 200, type: PasswordResetResponse })
+  async changePassword(@Body() dto: ChangePasswordDto): Promise<PasswordResetResponse> {
+    return this.service.changePassword(dto);
+  }
+
   @Get('verificar-documento/:documento')
   @ApiResponse({ status: 200, type: VerifyResponse })
   @IsPublic()
@@ -72,7 +78,7 @@ export class PessoaUsuarioController {
     return this.service.forgotPassword(dto);
   }
 
-  @Post('solicitar-codigo-reset')
+  @Post('solicitar-redefinir-senha')
   @ApiResponse({ status: 201, type: ResetCodeResponse })
   @IsPublic()
   async requestResetCode(@Body() dto: RequestResetCodeDto): Promise<ResetCodeResponse> {
@@ -84,11 +90,5 @@ export class PessoaUsuarioController {
   @IsPublic()
   async resetPassword(@Body() dto: ResetPasswordWithCodeDto): Promise<PasswordResetResponse> {
     return this.service.resetPasswordWithCode(dto);
-  }
-
-  @Put('alterar-senha')
-  @ApiResponse({ status: 200, type: PasswordResetResponse })
-  async changePassword(@Body() dto: ChangePasswordDto): Promise<PasswordResetResponse> {
-    return this.service.changePassword(dto);
   }
 }
