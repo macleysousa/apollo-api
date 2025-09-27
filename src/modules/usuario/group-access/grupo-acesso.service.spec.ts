@@ -86,7 +86,7 @@ describe('GroupAccessService', () => {
     it('should find group access', async () => {
       // Arrange
       const usuarioId = 1;
-      const relations = ['grupo', 'grupo.itens'];
+      const relations = ['grupo', 'grupo.itens.componente'];
 
       // Act
       const result = await service.find(usuarioId);
@@ -104,7 +104,7 @@ describe('GroupAccessService', () => {
       // Arrange
       const usuarioId = 1;
       const empresaId = 1;
-      const relations = ['grupo', 'grupo.itens'];
+      const relations = ['grupo', 'grupo.itens.componente'];
 
       // Act
       const result = await service.findByBranchId(usuarioId, empresaId);
@@ -123,7 +123,7 @@ describe('GroupAccessService', () => {
       const usuarioId = 1;
       const empresaId = 1;
       const grupoId = 1;
-      const relations = ['grupo', 'grupo.itens'];
+      const relations = ['grupo', 'grupo.itens.componente'];
 
       // Act
       const result = await service.findByBranchIdAndGroupId(usuarioId, empresaId, grupoId);

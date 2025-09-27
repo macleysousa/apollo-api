@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { componentGroupFakeRepository } from 'src/base-fake/component-group';
 
@@ -20,6 +20,11 @@ describe('ComponentGroupService', () => {
         {
           provide: getRepositoryToken(ComponenteGrupoEntity),
           useValue: {
+            createQueryBuilder: jest.fn().mockReturnValue({
+              leftJoinAndSelect: jest.fn().mockReturnThis(),
+              where: jest.fn().mockReturnThis(),
+              getMany: jest.fn().mockResolvedValue(componentGroupFakeRepository.find()),
+            }),
             save: jest.fn().mockResolvedValue(componentGroupFakeRepository.findOne()),
             find: jest.fn().mockReturnValue(componentGroupFakeRepository.find()),
             findOne: jest.fn().mockReturnValue(componentGroupFakeRepository.findOne()),
@@ -63,22 +68,23 @@ describe('ComponentGroupService', () => {
       const response = await service.find(nome);
 
       // Assert
-      expect(repository.find).toHaveBeenCalledTimes(1);
-      expect(repository.find).toHaveBeenCalledWith({ where: { nome: ILike(`%${nome ?? ''}%`) }, relations: ['itens'] });
+      expect(repository.createQueryBuilder).toHaveBeenCalledTimes(1);
+      expect(repository.createQueryBuilder).toHaveBeenCalledWith('grupo');
+
+      expect(response).toBeDefined();
 
       expect(response).toEqual(componentGroupFakeRepository.find());
     });
 
     it('should return a list groups with success not pass filter', async () => {
       // Arrange
-      const nome = undefined;
 
       // Act
       const response = await service.find();
 
       // Assert
-      expect(repository.find).toHaveBeenCalledTimes(1);
-      expect(repository.find).toHaveBeenCalledWith({ where: { nome: ILike(`%${nome ?? ''}%`) }, relations: ['itens'] });
+      expect(repository.createQueryBuilder).toHaveBeenCalledTimes(1);
+      expect(repository.createQueryBuilder).toHaveBeenCalledWith('grupo');
 
       expect(response).toEqual(componentGroupFakeRepository.find());
     });
@@ -94,7 +100,7 @@ describe('ComponentGroupService', () => {
 
       // Assert
       expect(repository.findOne).toHaveBeenCalledTimes(1);
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { id }, relations: ['itens'] });
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { id }, relations: ['itens.componente'] });
 
       expect(response).toEqual(componentGroupFakeRepository.findOne());
     });

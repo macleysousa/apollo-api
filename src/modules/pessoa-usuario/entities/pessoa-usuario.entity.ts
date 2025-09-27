@@ -35,6 +35,10 @@ export class PessoaUsuario extends BaseEntity {
   dataNascimento: Date;
 
   @ApiProperty()
+  @Column('varchar')
+  telefone?: string;
+
+  @ApiProperty()
   @Column('varchar', { transformer: { to: (value) => getR2Url(value), from: (value) => value } })
   imagemPerfil: string;
 

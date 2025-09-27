@@ -4,12 +4,14 @@ import { isEmail } from 'class-validator';
 import { Repository } from 'typeorm';
 
 import { isValidDocument } from 'src/commons/validations/is-document.validation';
+import { ContextService } from 'src/context/context.service';
 import { KeycloakService } from 'src/keycloak/keycloak.service';
 
 import { PessoaService } from '../pessoa/pessoa.service';
 
 import { CreatePessoaUsuarioDto } from './dto/create-pessoa-usuario.dto';
 import { LoginPessoaUsuarioDto } from './dto/login-pessoa-usuario.dto';
+import { UpdatePessoaUsuarioDto } from './dto/update-pessoa-usuario.dto';
 import { PessoaUsuario } from './entities/pessoa-usuario.entity';
 import { LoginResponse } from './responses/login.response';
 import { VerifyResponse } from './responses/verify.response';
@@ -21,6 +23,7 @@ export class PessoaUsuarioService {
     private readonly repository: Repository<PessoaUsuario>,
     private readonly keycloakService: KeycloakService,
     private readonly pessoaService: PessoaService,
+    private readonly context: ContextService,
   ) {}
 
   async register(dto: CreatePessoaUsuarioDto): Promise<string> {
@@ -76,9 +79,16 @@ export class PessoaUsuarioService {
     return this.repository.findOne({ where: { id: usuarioId }, cache: true });
   }
 
-  async findPerfil(token: string): Promise<PessoaUsuario> {
-    const usuarioId = await this.keycloakService.validateToken(token);
-    return this.repository.findOne({ where: { id: usuarioId } });
+  async findPerfil(): Promise<PessoaUsuario> {
+    const pessoaId = this.context.pessoaId();
+    return this.repository.findOne({ where: { id: pessoaId } });
+  }
+
+  async updatePerfil(dto: UpdatePessoaUsuarioDto): Promise<PessoaUsuario> {
+    const pessoaId = this.context.pessoaId();
+    await this.repository.update({ id: pessoaId }, dto);
+
+    return this.repository.findOne({ where: { id: pessoaId } });
   }
 
   async verifyDocument(documento: string): Promise<VerifyResponse> {

@@ -74,10 +74,6 @@ describe('PessoaUsuarioController', () => {
 
     describe('findPerfil', () => {
       it('should call service.findPerfil with correct token and return result', async () => {
-        const mockRequest = {
-          token: 'mockToken',
-        };
-
         const result: PessoaUsuario = new PessoaUsuario({
           id: 'mockId',
           nome: 'mockNome',
@@ -88,8 +84,8 @@ describe('PessoaUsuarioController', () => {
 
         jest.spyOn(service, 'findPerfil').mockResolvedValue(result);
 
-        expect(await controller.findPerfil(mockRequest)).toBe(result);
-        expect(service.findPerfil).toHaveBeenCalledWith(mockRequest.token);
+        expect(await controller.findPerfil()).toBe(result);
+        expect(service.findPerfil).toHaveBeenCalledWith();
       });
     });
   });

@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { ContextService } from 'src/context/context.service';
 import { KeycloakService } from 'src/keycloak/keycloak.service';
 
 import { PessoaService } from '../pessoa/pessoa.service';
@@ -38,6 +39,12 @@ describe('PessoaUsuarioService', () => {
           provide: PessoaService,
           useValue: {
             findByDocumento: jest.fn(),
+          },
+        },
+        {
+          provide: ContextService,
+          useValue: {
+            pessoaId: jest.fn().mockReturnValue('pessoa-id'),
           },
         },
       ],
@@ -152,25 +159,21 @@ describe('PessoaUsuarioService', () => {
 
   describe('findPerfil', () => {
     it('should return user profile if token is valid', async () => {
-      jest.spyOn(keycloakService, 'validateToken').mockResolvedValue('user-id');
-      jest.spyOn(repository, 'findOne').mockResolvedValue({ id: 'user-id', email: 'test@example.com' } as any);
+      jest.spyOn(repository, 'findOne').mockResolvedValue({ id: 'pessoa-id', email: 'test@example.com' } as any);
 
-      const response = await service.findPerfil('mock-token');
+      const response = await service.findPerfil();
 
-      expect(response).toEqual({ id: 'user-id', email: 'test@example.com' });
-      expect(keycloakService.validateToken).toHaveBeenCalledWith('mock-token');
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { id: 'user-id' } });
+      expect(response).toEqual({ id: 'pessoa-id', email: 'test@example.com' });
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { id: 'pessoa-id' } });
     });
 
     it('should return null if user is not found', async () => {
-      jest.spyOn(keycloakService, 'validateToken').mockResolvedValue('user-id');
       jest.spyOn(repository, 'findOne').mockResolvedValue(null);
 
-      const response = await service.findPerfil('mock-token');
+      const response = await service.findPerfil();
 
       expect(response).toBeNull();
-      expect(keycloakService.validateToken).toHaveBeenCalledWith('mock-token');
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { id: 'user-id' } });
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { id: 'pessoa-id' } });
     });
   });
 

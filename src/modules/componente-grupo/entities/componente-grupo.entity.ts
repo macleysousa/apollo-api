@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
+import { ComponenteEntity } from 'src/modules/componente/entities/componente.entity';
 
 import { ComponenteGrupoItemEntity } from '../item/entities/componente-grupo-item.entity';
 
@@ -17,7 +19,8 @@ export class ComponenteGrupoEntity extends BaseEntity {
 
   @ApiProperty({ type: () => ComponenteGrupoItemEntity, isArray: true })
   @OneToMany(() => ComponenteGrupoItemEntity, (value) => value.grupo)
-  itens: ComponenteGrupoItemEntity[];
+  @Transform(({ value }) => value?.map((item: ComponenteGrupoItemEntity) => item.componente))
+  itens: ComponenteEntity[];
 
   constructor(partial?: Partial<ComponenteGrupoEntity>) {
     super();
