@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { IsOptional } from 'class-validator';
 
 import { BaseFilter } from 'src/commons/base.filter';
@@ -20,5 +21,11 @@ export class PessoaFilter extends BaseFilter {
 
   @ApiProperty({ required: false })
   @IsOptional()
+  @Transform(({ value }) => value.replace(/\D/g, ''))
   document?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Transform(({ value }) => value === 'true')
+  bloqueado?: boolean;
 }

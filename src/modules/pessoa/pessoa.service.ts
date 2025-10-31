@@ -34,6 +34,22 @@ export class PessoaService {
       queryBuilder.orWhere({ documento: ILike(`%${filter.searchTerm}%`) });
     }
 
+    if (filter && filter.empresaIds?.length > 0) {
+      queryBuilder.andWhere(`p.empresasAcesso IN (:...empresaIds)`, { empresaIds: filter.empresaIds });
+    }
+
+    if (filter && filter.name) {
+      queryBuilder.andWhere('p.nome ILIKE :name', { name: `%${filter.name}%` });
+    }
+
+    if (filter && filter.document) {
+      queryBuilder.andWhere('p.documento ILIKE :document', { document: `%${filter.document}%` });
+    }
+
+    if (filter && filter.bloqueado !== undefined) {
+      queryBuilder.andWhere('p.bloqueado = :bloqueado', { bloqueado: filter.bloqueado });
+    }
+
     return paginate<PessoaEntity>(queryBuilder, { page: filter.pagina, limit: filter.itemsPorPagina });
   }
 
