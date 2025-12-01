@@ -29,7 +29,7 @@ export class PessoaService {
     queryBuilder.where({ id: Not(IsNull()) });
 
     if (filter && filter.searchTerm) {
-      queryBuilder.andWhere('(p.id p.nome LIKE :searchTerm OR p.documento LIKE :searchTerm)', {
+      queryBuilder.andWhere('(p.id :searchTerm OR p.nome LIKE :searchTerm OR p.documento LIKE :searchTerm)', {
         searchTerm: `%${filter.searchTerm}%`,
       });
     }
