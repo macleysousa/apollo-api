@@ -29,9 +29,25 @@ export class PessoaService {
     queryBuilder.where({ id: Not(IsNull()) });
 
     if (filter && filter.searchTerm) {
-      queryBuilder.orWhere({ id: ILike(`%${filter.searchTerm}%`) });
-      queryBuilder.orWhere({ nome: ILike(`%${filter.searchTerm}%`) });
-      queryBuilder.orWhere({ documento: ILike(`%${filter.searchTerm}%`) });
+      queryBuilder.andWhere('(p.id p.nome LIKE :searchTerm OR p.documento LIKE :searchTerm)', {
+        searchTerm: `%${filter.searchTerm}%`,
+      });
+    }
+
+    if (filter && filter.empresaIds?.length > 0) {
+      queryBuilder.andWhere(`p.empresasAcesso IN (:...empresaIds)`, { empresaIds: filter.empresaIds });
+    }
+
+    if (filter && filter.name) {
+      queryBuilder.andWhere('p.nome LIKE :name', { name: `%${filter.name}%` });
+    }
+
+    if (filter && filter.document) {
+      queryBuilder.andWhere('p.documento LIKE :document', { document: `%${filter.document}%` });
+    }
+
+    if (filter && filter.bloqueado !== undefined) {
+      queryBuilder.andWhere('p.bloqueado = :bloqueado', { bloqueado: filter.bloqueado });
     }
 
     return paginate<PessoaEntity>(queryBuilder, { page: filter.pagina, limit: filter.itemsPorPagina });

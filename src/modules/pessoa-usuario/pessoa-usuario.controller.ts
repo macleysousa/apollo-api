@@ -4,12 +4,18 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiPessoa } from 'src/decorators/api-pessoa.decorator';
 import { IsPublic } from 'src/decorators/is-public.decorator';
 
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreatePessoaUsuarioDto } from './dto/create-pessoa-usuario.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LoginPessoaUsuarioDto } from './dto/login-pessoa-usuario.dto';
+import { RequestResetCodeDto } from './dto/request-reset-code.dto';
+import { ResetPasswordWithCodeDto } from './dto/reset-password-with-code.dto';
 import { UpdatePessoaUsuarioDto } from './dto/update-pessoa-usuario.dto';
 import { PessoaUsuario } from './entities/pessoa-usuario.entity';
 import { PessoaUsuarioService } from './pessoa-usuario.service';
 import { LoginResponse } from './responses/login.response';
+import { PasswordResetResponse } from './responses/password-reset.response';
+import { ResetCodeResponse } from './responses/reset-code.response';
 import { VerifyResponse } from './responses/verify.response';
 
 @ApiTags('Pessoas - Usuários')
@@ -45,6 +51,12 @@ export class PessoaUsuarioController {
     return this.service.updatePerfil(dto);
   }
 
+  @Put('perfil/alterar-senha')
+  @ApiResponse({ status: 200, type: PasswordResetResponse })
+  async changePassword(@Body() dto: ChangePasswordDto): Promise<PasswordResetResponse> {
+    return this.service.changePassword(dto);
+  }
+
   @Get('verificar-documento/:documento')
   @ApiResponse({ status: 200, type: VerifyResponse })
   @IsPublic()
@@ -57,5 +69,26 @@ export class PessoaUsuarioController {
   @IsPublic()
   async verifyEmail(@Param('email') email: string): Promise<VerifyResponse> {
     return this.service.verifyEmail(email);
+  }
+
+  @Post('esqueci-senha')
+  @ApiResponse({ status: 201, type: PasswordResetResponse })
+  @IsPublic()
+  async forgotPassword(@Body() dto: ForgotPasswordDto): Promise<PasswordResetResponse> {
+    return this.service.forgotPassword(dto);
+  }
+
+  @Post('solicitar-redefinir-senha')
+  @ApiResponse({ status: 201, type: ResetCodeResponse })
+  @IsPublic()
+  async requestResetCode(@Body() dto: RequestResetCodeDto): Promise<ResetCodeResponse> {
+    return this.service.requestResetCode(dto);
+  }
+
+  @Post('redefinir-senha')
+  @ApiResponse({ status: 201, type: PasswordResetResponse })
+  @IsPublic()
+  async resetPassword(@Body() dto: ResetPasswordWithCodeDto): Promise<PasswordResetResponse> {
+    return this.service.resetPasswordWithCode(dto);
   }
 }

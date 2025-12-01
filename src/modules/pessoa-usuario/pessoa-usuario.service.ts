@@ -9,11 +9,17 @@ import { KeycloakService } from 'src/keycloak/keycloak.service';
 
 import { PessoaService } from '../pessoa/pessoa.service';
 
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreatePessoaUsuarioDto } from './dto/create-pessoa-usuario.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LoginPessoaUsuarioDto } from './dto/login-pessoa-usuario.dto';
+import { RequestResetCodeDto } from './dto/request-reset-code.dto';
+import { ResetPasswordWithCodeDto } from './dto/reset-password-with-code.dto';
 import { UpdatePessoaUsuarioDto } from './dto/update-pessoa-usuario.dto';
 import { PessoaUsuario } from './entities/pessoa-usuario.entity';
 import { LoginResponse } from './responses/login.response';
+import { PasswordResetResponse } from './responses/password-reset.response';
+import { ResetCodeResponse } from './responses/reset-code.response';
 import { VerifyResponse } from './responses/verify.response';
 
 @Injectable()
@@ -132,5 +138,112 @@ export class PessoaUsuarioService {
       valido: true,
       mensagem: 'E-mail válido e não cadastrado',
     };
+  }
+
+  async forgotPassword(dto: ForgotPasswordDto): Promise<PasswordResetResponse> {
+    const usuario = await this.repository.existsBy({ email: dto.email });
+    if (!usuario) {
+      return {
+        sucesso: false,
+        mensagem: 'E-mail não encontrado',
+      };
+    }
+
+    try {
+      await this.keycloakService.sendResetPasswordEmail(dto.email);
+      return {
+        sucesso: true,
+        mensagem: 'E-mail de redefinição de senha enviado com sucesso',
+      };
+    } catch (error) {
+      return {
+        sucesso: false,
+        mensagem: 'Erro ao enviar e-mail de redefinição de senha',
+      };
+    }
+  }
+
+  async requestResetCode(dto: RequestResetCodeDto): Promise<ResetCodeResponse> {
+    const usuario = await this.repository.existsBy({ email: dto.email });
+    if (!usuario) {
+      return {
+        sucesso: false,
+        mensagem: 'E-mail não encontrado',
+      };
+    }
+
+    try {
+      const codigo = await this.keycloakService.generateResetPasswordToken(dto.email);
+
+      // Em produção, o código seria enviado por e-mail/SMS
+      // Por enquanto, retornamos o código para facilitar testes
+      const isProduction = process.env.NODE_ENV === 'production';
+
+      return {
+        sucesso: true,
+        mensagem: isProduction ? 'Código de redefinição enviado para seu e-mail' : 'Código de redefinição gerado com sucesso',
+        codigo: isProduction ? undefined : codigo,
+      };
+    } catch (error) {
+      return {
+        sucesso: false,
+        mensagem: 'Erro ao gerar código de redefinição',
+      };
+    }
+  }
+
+  async resetPasswordWithCode(dto: ResetPasswordWithCodeDto): Promise<PasswordResetResponse> {
+    try {
+      await this.keycloakService.resetPasswordWithToken(dto.codigo, dto.novaSenha);
+      return {
+        sucesso: true,
+        mensagem: 'Senha redefinida com sucesso',
+      };
+    } catch (error) {
+      return {
+        sucesso: false,
+        mensagem: 'Código inválido ou expirado',
+      };
+    }
+  }
+
+  async changePassword(dto: ChangePasswordDto): Promise<PasswordResetResponse> {
+    const pessoaUsuario = await this.findPerfil();
+    if (!pessoaUsuario) {
+      return {
+        sucesso: false,
+        mensagem: 'Usuário não encontrado',
+      };
+    }
+
+    try {
+      // Primeiro valida a senha atual fazendo login
+      const loginResult = await this.keycloakService.login(pessoaUsuario.email, dto.senhaAtual);
+      if (!loginResult) {
+        return {
+          sucesso: false,
+          mensagem: 'Senha atual incorreta',
+        };
+      }
+    } catch (error) {
+      return {
+        sucesso: false,
+        mensagem: 'Senha atual incorreta',
+      };
+    }
+
+    try {
+      // Se a senha atual está correta, redefine para a nova senha
+      await this.keycloakService.resetPassword(pessoaUsuario.email, dto.novaSenha);
+      return {
+        sucesso: true,
+        mensagem: 'Senha alterada com sucesso',
+      };
+    } catch (error) {
+      return {
+        sucesso: false,
+        mensagem: 'Erro ao alterar senha',
+      };
+    }
   }
 }
