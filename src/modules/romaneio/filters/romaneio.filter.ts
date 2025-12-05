@@ -6,12 +6,14 @@ import { OperacaoRomaneio } from '../enum/operacao-romaneio.enum';
 import { SituacaoRomaneio } from '../enum/situacao-romaneio.enum';
 import { RomaneioIncludeEnum } from '../includes/romaneio.include';
 
-export class RomaneioFilter {
+import { RomaneioFilterBase } from './romaneio.filter-base';
+
+export class RomaneioFilter extends RomaneioFilterBase {
   @ApiProperty({ type: Date, format: 'date', required: false })
   @IsOptional()
   dataInicial?: Date;
 
-  @ApiProperty({ type: Number, format: 'date', required: false })
+  @ApiProperty({ type: Date, format: 'date', required: false })
   @IsOptional()
   dataFinal?: Date;
 
@@ -43,9 +45,4 @@ export class RomaneioFilter {
   @IsOptional()
   @IsEnum(SituacaoRomaneio, { each: true })
   situacoes?: (keyof typeof SituacaoRomaneio)[];
-
-  @ApiProperty({ enum: RomaneioIncludeEnum, isArray: true, required: false })
-  @IsOptional()
-  @IsEnum(RomaneioIncludeEnum, { each: true })
-  incluir?: (keyof typeof RomaneioIncludeEnum)[];
 }

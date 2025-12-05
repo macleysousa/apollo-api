@@ -5,6 +5,7 @@ import { ILike, Repository } from 'typeorm';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
 import { EmpresaEntity } from './entities/empresa.entity';
+import { EmpresaFilter } from './filters/empresa-filter';
 import { EmpresaInclude } from './includes/empresa.include';
 
 @Injectable()
@@ -23,14 +24,26 @@ export class EmpresaService {
     return this.findById(branch.id);
   }
 
-  async find(filter?: string, relations?: EmpresaInclude[]): Promise<EmpresaEntity[]> {
-    return this.repository.find({
-      where: {
-        cnpj: ILike(`%${filter ?? ''}%`),
-        nome: ILike(`%${filter ?? ''}%`),
-      },
-      relations,
-    });
+  async find(filter?: EmpresaFilter): Promise<EmpresaEntity[]> {
+    const queryBuilder = this.repository.createQueryBuilder('e');
+
+    if (filter?.searchTerm) {
+      queryBuilder.where('e.cnpj ILIKE :searchTerm OR e.nome ILIKE :searchTerm', {
+        searchTerm: `%${filter.searchTerm}%`,
+      });
+    }
+
+    if (filter?.ids && filter.ids.length > 0) {
+      queryBuilder.andWhere('e.id IN (:...ids)', { ids: filter.ids });
+    }
+
+    if (filter?.incluir && filter.incluir.length > 0) {
+      filter.incluir.forEach((relation) => {
+        queryBuilder.leftJoinAndSelect(`e.${relation}`, relation);
+      });
+    }
+
+    return queryBuilder.getMany();
   }
 
   async findById(id: number, relations?: EmpresaInclude[]): Promise<EmpresaEntity> {

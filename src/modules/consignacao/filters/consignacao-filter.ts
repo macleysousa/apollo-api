@@ -7,7 +7,9 @@ import { IsPessoa } from 'src/commons/validations/is-pessoa.validation';
 
 import { SituacaoConsignacao, SituacaoConsignacaoEnum } from '../enum/situacao-consignacao.enum';
 
-export class ConsignacaoFilter {
+import { ConsignacaoFilterBase } from './consignacao-filter-base';
+
+export class ConsignacaoFilter extends ConsignacaoFilterBase {
   @ApiProperty()
   @IsOptional()
   @IsEmpresa({ each: true })
