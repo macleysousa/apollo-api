@@ -2,8 +2,6 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@
 import { Query } from '@nestjs/common/decorators';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ApiQueryEnum } from 'src/decorators/api-query-enum.decorator';
-
 import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { Roles } from '../../decorators/roles.decorator';
 import { Role } from '../usuario/enums/usuario-tipo.enum';
@@ -12,6 +10,8 @@ import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
 import { EmpresaService } from './empresa.service';
 import { EmpresaEntity } from './entities/empresa.entity';
+import { EmpresaFilter } from './filters/empresa-filter';
+import { EmpresaFilterBase } from './filters/empresa-filter-base';
 import { EmpresaInclude, EmpresaIncludeEnum } from './includes/empresa.include';
 
 @ApiTags('Empresas')
@@ -30,17 +30,14 @@ export class EmpresaController {
 
   @Get()
   @ApiResponse({ type: [EmpresaEntity], status: 200 })
-  @ApiQuery({ name: 'filter', required: false, description: 'filter by cnpj or name' })
-  @ApiQueryEnum({ name: 'incluir', required: false, enum: EmpresaIncludeEnum, isArray: true })
-  async find(@Query('filter') filter: string, @Query('incluir') incluir: EmpresaInclude[]): Promise<EmpresaEntity[]> {
-    return this.service.find(filter, incluir);
+  async find(@Query() filter: EmpresaFilter): Promise<EmpresaEntity[]> {
+    return this.service.find(filter);
   }
 
   @Get(':id')
   @ApiResponse({ type: EmpresaEntity, status: 200 })
-  @ApiQueryEnum({ name: 'incluir', required: false, enum: EmpresaIncludeEnum, isArray: true })
-  async findById(@Param('id', ParseIntPipe) id: number, @Query('incluir') incluir: EmpresaInclude[]): Promise<EmpresaEntity> {
-    return this.service.findById(id, incluir);
+  async findById(@Param('id', ParseIntPipe) id: number, @Query() filter: EmpresaFilterBase): Promise<EmpresaEntity> {
+    return this.service.findById(id, filter.incluir);
   }
 
   @Put(':id')

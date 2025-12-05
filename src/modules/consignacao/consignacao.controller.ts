@@ -1,10 +1,8 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ParseArrayPipe } from 'src/commons/pipes/parseArrayPipe.pipe';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
-import { ApiQueryEnum } from 'src/decorators/api-query-enum.decorator';
 import { CurrentBranch } from 'src/decorators/current-auth.decorator';
 
 import { EmpresaEntity } from '../empresa/entities/empresa.entity';
@@ -14,7 +12,7 @@ import { CancelConsinacaoDto } from './dto/cancelar-consignacao.dto';
 import { OpenConsignacaoDto } from './dto/open-consignacao.dto';
 import { UpdateConsignacaoDto } from './dto/update-consignacao.dto';
 import { ConsignacaoFilter } from './filters/consignacao-filter';
-import { ConsignacaoIncluir, ConsignacaoIncluirEnum } from './includes/consignacao.includ';
+import { ConsignacaoFilterBase } from './filters/consignacao-filter-base';
 import { ConsignacaoView } from './views/consignacao.view';
 
 @ApiBearerAuth()
@@ -44,13 +42,12 @@ export class ConsignacaoController {
   @ApiResponse({ status: 200, type: ConsignacaoView })
   @ApiOperation({ summary: 'CONFC002 - Consultar consignação' })
   @ApiComponent('CONFC002', 'Consultar consignação')
-  @ApiQueryEnum({ name: 'incluir', required: false, enum: ConsignacaoIncluirEnum, isArray: true })
   async findById(
     @CurrentBranch() empresa: EmpresaEntity,
     @Param('id') id: number,
-    @Query('incluir', new ParseArrayPipe({ enum: ConsignacaoIncluirEnum })) includes: ConsignacaoIncluir[],
+    @Query() filter: ConsignacaoFilterBase,
   ): Promise<ConsignacaoView> {
-    return this.service.findById(empresa.id, id, includes);
+    return this.service.findById(empresa.id, id, filter?.incluir);
   }
 
   @Put(':id/atualizar')

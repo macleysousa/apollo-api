@@ -1,11 +1,11 @@
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { filter } from 'rxjs';
 
 import { ParseRomaneioEmAndamentoPipe } from 'src/commons/pipes/parseRomaneio.pipe';
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
-import { ApiQueryEnum } from 'src/decorators/api-query-enum.decorator';
 import { CurrentBranch } from 'src/decorators/current-auth.decorator';
 
 import { ApiComponent } from '../../decorators/api-componente.decorator';
@@ -15,6 +15,7 @@ import { CreateRomaneioDto } from './dto/create-romaneio.dto';
 import { OperacaoRomaneioDto } from './dto/observacao-romaneio.dto';
 import { UpdateRomaneioDto } from './dto/update-romaneio.dto';
 import { RomaneioFilter } from './filters/romaneio.filter';
+import { RomaneioFilterBase } from './filters/romaneio.filter-base';
 import { RomaneioIncludeEnum } from './includes/romaneio.include';
 import { RomaneioService } from './romaneio.service';
 import { RomaneioView } from './views/romaneio.view';
@@ -47,13 +48,12 @@ export class RomaneioController {
 
   @Get(':id')
   @ApiResponse({ status: 200, type: RomaneioView })
-  @ApiQueryEnum({ name: 'incluir', required: false, enum: RomaneioIncludeEnum, isArray: true })
   async findOne(
     @CurrentBranch() empresa: EmpresaEntity,
     @Param('id', ParseIntPipe) id: number,
-    @Query('incluir', new DefaultValuePipe([])) relations: RomaneioIncludeEnum[],
+    @Query() filter: RomaneioFilterBase,
   ): Promise<RomaneioView> {
-    return this.service.findById(empresa.id, id, relations);
+    return this.service.findById(empresa.id, id, filter.incluir);
   }
 
   @Put(':id')

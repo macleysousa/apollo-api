@@ -8,7 +8,7 @@ import { CancelConsinacaoDto } from './dto/cancelar-consignacao.dto';
 import { OpenConsignacaoDto } from './dto/open-consignacao.dto';
 import { UpdateConsignacaoDto } from './dto/update-consignacao.dto';
 import { ConsignacaoFilter } from './filters/consignacao-filter';
-import { ConsignacaoIncluir } from './includes/consignacao.includ';
+import { ConsignacaoIncluir } from './includes/consignacao.include';
 import { ConsignacaoView } from './views/consignacao.view';
 
 describe('ConsignacaoController', () => {
