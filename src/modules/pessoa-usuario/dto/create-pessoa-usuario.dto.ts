@@ -7,6 +7,10 @@ import { IsValidDocument } from 'src/commons/validations/is-document.validation'
 export class CreatePessoaUsuarioDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'O campo {0} é obrigatório.' })
+  empresaId: number;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'O campo {0} é obrigatório.' })
   nome: string;
 
   @ApiProperty()

@@ -20,7 +20,9 @@ export class PessoaService {
     if (pessoaByDocumento) {
       throw new BadRequestException(`Pessoa com documento ${createPessoaDto.documento} já cadastrada`);
     }
+
     const pessoa = await this.repository.save({ ...createPessoaDto, empresaCadastro: empresaId, empresasAcesso: [empresaId] });
+
     return this.findById(pessoa.id);
   }
 

@@ -8,9 +8,19 @@ import {
 } from 'class-validator';
 import { cnpj, cpf } from 'cpf-cnpj-validator';
 
+export function isCNPJ(value: string): boolean {
+  const _value = value?.replace(/\D/g, '');
+  return cnpj.isValid(_value);
+}
+
+export function isCPF(value: string): boolean {
+  const _value = value?.replace(/\D/g, '');
+  return cpf.isValid(_value);
+}
+
 export function isValidDocument(value: string): boolean {
   const _value = value?.replace(/\D/g, '');
-  return cpf.isValid(_value) || cnpj.isValid(_value);
+  return isCPF(_value) || isCNPJ(_value);
 }
 
 @Injectable()

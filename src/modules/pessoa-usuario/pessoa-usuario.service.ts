@@ -3,10 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { isEmail } from 'class-validator';
 import { Repository } from 'typeorm';
 
-import { isValidDocument } from 'src/commons/validations/is-document.validation';
+import { isCNPJ, isValidDocument } from 'src/commons/validations/is-document.validation';
 import { ContextService } from 'src/context/context.service';
 import { KeycloakService } from 'src/keycloak/keycloak.service';
 
+import { ContatoTipo } from '../pessoa/enum/contato-tipo.enum';
+import { PessoaTipo } from '../pessoa/enum/pessoa-tipo.enum';
 import { PessoaService } from '../pessoa/pessoa.service';
 
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -32,7 +34,7 @@ export class PessoaUsuarioService {
     private readonly context: ContextService,
   ) {}
 
-  async register(dto: CreatePessoaUsuarioDto): Promise<string> {
+  async register({ empresaId, ...dto }: CreatePessoaUsuarioDto): Promise<string> {
     const [emailExists, documentoExists] = await Promise.all([
       this.repository.existsBy({ email: dto.email }),
       this.repository.existsBy({ documento: dto.documento }),
@@ -53,7 +55,20 @@ export class PessoaUsuarioService {
       lastName: dto.sobrenome,
     });
 
-    const pessoa = await this.pessoaService.findByDocumento(dto.documento);
+    let pessoa = await this.pessoaService.findByDocumento(dto.documento);
+
+    if (!pessoa) {
+      pessoa = await this.pessoaService.create(empresaId, {
+        nome: `${dto.nome} ${dto.sobrenome}`,
+        documento: dto.documento,
+        email: dto.email,
+        tipo: isCNPJ(dto.documento) ? PessoaTipo.Jurídica : PessoaTipo.Física,
+        tipoContato: ContatoTipo.WhatsApp,
+        contato: dto.telefone,
+        nascimento: dto.dataNascimento,
+        cliente: true,
+      });
+    }
 
     await this.repository.insert({ id: usuarioId, pessoaId: pessoa?.id, ...dto });
 
