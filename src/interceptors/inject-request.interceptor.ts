@@ -10,8 +10,6 @@ export class InjectRequestInterceptor implements NestInterceptor {
 
     Logger.log(`${request.method} ${request.url}`, 'Router');
 
-    request.body[REQUEST_CONTEXT] = { usuario: request.usuario, params: request.params };
-
     return next.handle();
   }
 }
