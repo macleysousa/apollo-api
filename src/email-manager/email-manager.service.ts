@@ -1,6 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { Transporter } from 'nodemailer';
+
+import { ConfigSmtpService } from 'src/modules/sistema/config-smtp/config-smtp.service';
 
 export interface SendEmailOptions {
   to: string | string[];
@@ -20,16 +22,24 @@ export interface SendEmailOptions {
 @Injectable()
 export class EmailManagerService {
   private readonly logger = new Logger(EmailManagerService.name);
-  private transporter: Transporter;
 
-  constructor() {
-    this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '465'),
-      secure: parseInt(process.env.SMTP_PORT || '465') === 465,
+  constructor(private readonly configSmtpService: ConfigSmtpService) {}
+
+  async transporter(): Promise<Transporter> {
+    const config = await this.configSmtpService.find();
+    if (!config) {
+      throw new BadRequestException('Configuração SMTP não encontrada', {
+        description: 'Por favor, entre em contato com o administrador do sistema para configurar o SMTP.',
+      });
+    }
+
+    return nodemailer.createTransport({
+      host: config.servidor,
+      port: config.porta,
+      secure: config.porta === 465,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: config.usuario,
+        pass: config.senha,
       },
     });
   }
@@ -49,7 +59,9 @@ export class EmailManagerService {
         attachments: options.attachments,
       };
 
-      const info = await this.transporter.sendMail(mailOptions);
+      const transporter = await this.transporter();
+
+      const info = await transporter.sendMail(mailOptions);
       this.logger.log(`Email enviado com sucesso: ${info.messageId}`);
     } catch (error) {
       this.logger.error(`Erro ao enviar email: ${error.message}`, error.stack);
@@ -59,7 +71,9 @@ export class EmailManagerService {
 
   async verifyConnection(): Promise<boolean> {
     try {
-      await this.transporter.verify();
+      const transporter = await this.transporter();
+
+      await transporter.verify();
       this.logger.log('Conexão SMTP verificada com sucesso');
       return true;
     } catch (error) {

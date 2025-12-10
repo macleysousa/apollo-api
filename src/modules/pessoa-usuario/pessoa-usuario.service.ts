@@ -11,6 +11,7 @@ import { KeycloakService } from 'src/keycloak/keycloak.service';
 import { ContatoTipo } from '../pessoa/enum/contato-tipo.enum';
 import { PessoaTipo } from '../pessoa/enum/pessoa-tipo.enum';
 import { PessoaService } from '../pessoa/pessoa.service';
+import { ConfigSmtpService } from '../sistema/config-smtp/config-smtp.service';
 
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreatePessoaUsuarioDto } from './dto/create-pessoa-usuario.dto';
@@ -33,6 +34,7 @@ export class PessoaUsuarioService {
     private readonly keycloakService: KeycloakService,
     private readonly pessoaService: PessoaService,
     private readonly context: ContextService,
+    private readonly configSmtpService: ConfigSmtpService,
     private readonly emailManagerService: EmailManagerService,
   ) {}
 
@@ -189,115 +191,37 @@ export class PessoaUsuarioService {
       };
     }
 
-    try {
-      const codigo = await this.keycloakService.generateResetPasswordToken(dto.email);
+    const codigo = await this.keycloakService.generateResetPasswordToken(dto.email).catch(() => {
+      throw new BadRequestException('Erro ao gerar código de redefinição', {
+        description: 'Não foi possível gerar o código de redefinição de senha neste momento.',
+      });
+    });
 
-      const payload: SendEmailOptions = {
-        to: dto.email,
-        subject: '[APOLLO PDV] Código de Redefinição de Senha',
-        html: `
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Redefinição de Senha</title>
-</head>
-
-<body style="margin:0; padding:0; background-color:#f4f4f4; font-family:Arial, Helvetica, sans-serif;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
-    <tr>
-      <td align="center" style="padding:40px 0;">
-
-        <!-- Container -->
-        <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="border-collapse:collapse; background-color:#ffffff;">
-
-          <!-- Header -->
-          <tr>
-            <td align="center" style="padding:40px 30px; background-color:#667eea;">
-              <h1 style="margin:0; color:#ffffff; font-size:28px; font-weight:bold;">
-                APOLLO PDV
-              </h1>
-            </td>
-          </tr>
-
-          <!-- Content -->
-          <tr>
-            <td style="padding:40px 30px; color:#333333;">
-              <h2 style="margin:0 0 20px 0; font-size:24px;">
-                Redefinição de Senha
-              </h2>
-
-              <p style="margin:0 0 20px 0; color:#666666; font-size:16px; line-height:1.5;">
-                Você solicitou a redefinição de senha da sua conta. Use o código abaixo para criar uma nova senha:
-              </p>
-
-              <!-- Code box -->
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:30px 0; border-collapse:collapse;">
-                <tr>
-                  <td align="center" style="padding:20px; background-color:#f8f9fa; border:2px dashed #667eea;">
-                    <span style="font-size:32px; font-weight:bold; color:#667eea; letter-spacing:8px; font-family:'Courier New', Courier, monospace;">
-                      ${codigo}
-                    </span>
-                  </td>
-                </tr>
-              </table>
-
-              <p style="margin:20px 0; color:#666666; font-size:14px; line-height:1.5;">
-                <strong>Este código é válido por 15 minutos.</strong>
-              </p>
-
-              <p style="margin:20px 0; color:#666666; font-size:14px; line-height:1.5;">
-                Se você não solicitou esta redefinição, ignore este e-mail. Sua senha permanecerá inalterada.
-              </p>
-            </td>
-          </tr>
-
-          <!-- Security -->
-          <tr>
-            <td style="padding:30px; background-color:#fff3cd; border-top:3px solid #ffc107;">
-              <p style="margin:0; color:#856404; font-size:14px; line-height:1.5;">
-                <strong>Dica de Segurança:</strong><br>
-                Nunca compartilhe este código com ninguém. Nossa equipe nunca solicitará este código por telefone, e-mail ou mensagem.
-              </p>
-            </td>
-          </tr>
-
-          <!-- Footer -->
-          <tr>
-            <td align="center" style="padding:30px; background-color:#f8f9fa; border-top:1px solid #e9ecef;">
-              <p style="margin:0 0 10px 0; color:#999999; font-size:12px;">
-                © ${new Date().getFullYear()} APOLLO PDV. Todos os direitos reservados.
-              </p>
-              <p style="margin:0; color:#999999; font-size:12px;">
-                Este é um e-mail automático, por favor não responda.
-              </p>
-            </td>
-          </tr>
-
-        </table>
-        <!-- /Container -->
-
-      </td>
-    </tr>
-  </table>
-</body>
-</html>
-        `,
-      };
-
-      await this.emailManagerService.sendEmail(payload);
-
-      return {
-        sucesso: true,
-        mensagem: 'Código de redefinição de senha enviado com sucesso',
-      };
-    } catch (error) {
-      return {
-        sucesso: false,
-        mensagem: 'Erro ao gerar código de redefinição',
-      };
+    const config = await this.configSmtpService.find();
+    if (!config || !config.redefinirSenhaTemplate) {
+      throw new BadRequestException('Configuração SMTP ou template de redefinição de senha não encontrado', {
+        description: 'Por favor, entre em contato com o administrador do sistema para configurar o SMTP e o template de e-mail.',
+      });
     }
+
+    const payload: SendEmailOptions = {
+      to: dto.email,
+      subject: config.redefinirSenhaTemplate.assunto,
+      html: config.redefinirSenhaTemplate.corpo
+        .replace('{{codigo}}', codigo)
+        .replace('{{ano}}', new Date().getFullYear().toString()),
+    };
+
+    await this.emailManagerService.sendEmail(payload).catch(() => {
+      throw new BadRequestException('Erro ao enviar e-mail de redefinição de senha', {
+        description: 'Não foi possível enviar o e-mail de redefinição de senha neste momento.',
+      });
+    });
+
+    return {
+      sucesso: true,
+      mensagem: 'Código de redefinição de senha enviado com sucesso',
+    };
   }
 
   async resetPasswordWithCode(dto: ResetPasswordWithCodeDto): Promise<PasswordResetResponse> {

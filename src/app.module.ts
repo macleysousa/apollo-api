@@ -1,4 +1,3 @@
-import { HttpModule } from '@nestjs/axios';
 import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 
@@ -34,6 +33,7 @@ import { PessoaUsuarioModule } from './modules/pessoa-usuario/pessoa-usuario.mod
 import { ProdutoModule } from './modules/produto/produto.module';
 import { ReferenciaModule } from './modules/referencia/referencia.module';
 import { RomaneioModule } from './modules/romaneio/romaneio.module';
+import { SistemaModule } from './modules/sistema/sistema.module';
 import { TabelaDePrecoModule } from './modules/tabela-de-preco/tabela-de-preco.module';
 import { TamanhoModule } from './modules/tamanho/tamanho.module';
 import { UsuarioModule } from './modules/usuario/usuario.module';
@@ -44,6 +44,7 @@ import { StorageModule } from './storage/storage.module';
     AuthModule,
     KeycloakModule.forRoot(),
     ContextModule.forRoot(),
+    SistemaModule.forRoot(),
     EmailManagerModule.forRoot(),
     OrmModule.forRoot(),
     StorageModule.forRoot(),
