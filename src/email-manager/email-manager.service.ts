@@ -46,7 +46,8 @@ export class EmailManagerService {
 
   async sendEmail(options: SendEmailOptions): Promise<void> {
     try {
-      const from = options.from || process.env.SMTP_USER;
+      const transporter = await this.transporter();
+      const from = (transporter.options as any).auth?.user;
 
       const mailOptions = {
         from,
@@ -58,8 +59,6 @@ export class EmailManagerService {
         bcc: options.bcc ? (Array.isArray(options.bcc) ? options.bcc.join(', ') : options.bcc) : undefined,
         attachments: options.attachments,
       };
-
-      const transporter = await this.transporter();
 
       const info = await transporter.sendMail(mailOptions);
       this.logger.log(`Email enviado com sucesso: ${info.messageId}`);
