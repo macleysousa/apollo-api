@@ -105,8 +105,12 @@ export class KeycloakService {
           password: password,
         }),
       ),
-    ).catch(() => {
-      throw new BadRequestException('Failed to log in to Keycloak.');
+    ).catch((error) => {
+      console.log(error?.response?.data);
+      throw new BadRequestException('Failed to log in to Keycloak.', {
+        cause: error?.response ?? error,
+        description: 'Não foi possível autenticar neste momento.',
+      });
     });
 
     return data;

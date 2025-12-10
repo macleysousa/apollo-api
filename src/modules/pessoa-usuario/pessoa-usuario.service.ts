@@ -87,7 +87,9 @@ export class PessoaUsuarioService {
 
     const access = await this.keycloakService.login(dto.email, dto.senha);
     if (!access) {
-      throw new BadRequestException('Falha ao gerar token');
+      throw new BadRequestException('Falha ao gerar token', {
+        description: 'Não foi possível gerar o token de acesso neste momento.',
+      });
     }
 
     return {
