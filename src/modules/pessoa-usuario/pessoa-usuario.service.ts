@@ -244,7 +244,7 @@ export class PessoaUsuarioService {
               </table>
 
               <p style="margin:20px 0; color:#666666; font-size:14px; line-height:1.5;">
-                <strong>Este código é válido por 10 minutos.</strong>
+                <strong>Este código é válido por 15 minutos.</strong>
               </p>
 
               <p style="margin:20px 0; color:#666666; font-size:14px; line-height:1.5;">
