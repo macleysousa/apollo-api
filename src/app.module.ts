@@ -4,6 +4,7 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 
 import { OrmModule } from './config/orm.module';
 import { ContextModule } from './context/context.module';
+import { EmailManagerModule } from './email-manager/email-manager.module';
 import { AllExceptionsFilter } from './exceptions/all-exceptions.filter';
 import { ComponentGuard } from './guards/component.guard';
 import { EmpresaAuthGuard } from './guards/empresa-auth.guard';
@@ -43,6 +44,7 @@ import { StorageModule } from './storage/storage.module';
     AuthModule,
     KeycloakModule.forRoot(),
     ContextModule.forRoot(),
+    EmailManagerModule.forRoot(),
     OrmModule.forRoot(),
     StorageModule.forRoot(),
     UsuarioModule.forRoot(),
@@ -69,6 +71,7 @@ import { StorageModule } from './storage/storage.module';
     PedidoModule.forRoot(),
     ImportModule,
     KeycloakModule,
+    EmailManagerModule,
   ],
   controllers: [],
   providers: [

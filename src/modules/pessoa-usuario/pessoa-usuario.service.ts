@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 
 import { isCNPJ, isValidDocument } from 'src/commons/validations/is-document.validation';
 import { ContextService } from 'src/context/context.service';
+import { EmailManagerService, SendEmailOptions } from 'src/email-manager/email-manager.service';
 import { KeycloakService } from 'src/keycloak/keycloak.service';
 
 import { ContatoTipo } from '../pessoa/enum/contato-tipo.enum';
@@ -32,6 +33,7 @@ export class PessoaUsuarioService {
     private readonly keycloakService: KeycloakService,
     private readonly pessoaService: PessoaService,
     private readonly context: ContextService,
+    private readonly emailManagerService: EmailManagerService,
   ) {}
 
   async register({ empresaId, ...dto }: CreatePessoaUsuarioDto): Promise<string> {
@@ -190,14 +192,93 @@ export class PessoaUsuarioService {
     try {
       const codigo = await this.keycloakService.generateResetPasswordToken(dto.email);
 
-      // Em produção, o código seria enviado por e-mail/SMS
-      // Por enquanto, retornamos o código para facilitar testes
-      const isProduction = process.env.NODE_ENV === 'production';
+      const payload: SendEmailOptions = {
+        to: dto.email,
+        subject: '[APOLLO PDV] Código de Redefinição de Senha',
+        html: `
+      <!DOCTYPE html>
+      <html lang="pt-BR">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Redefinição de Senha</title>
+      </head>
+      <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+          <tr>
+            <td align="center" style="padding: 40px 0;">
+              <table role="presentation" style="width: 600px; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <!-- Header -->
+                <tr>
+                  <td style="padding: 40px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); text-align: center;">
+                    <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">APOLLO PDV</h1>
+                  </td>
+                </tr>
+
+                <!-- Content -->
+                <tr>
+                  <td style="padding: 40px 30px;">
+                    <h2 style="margin: 0 0 20px 0; color: #333333; font-size: 24px;">Redefinição de Senha</h2>
+                    <p style="margin: 0 0 20px 0; color: #666666; font-size: 16px; line-height: 1.5;">
+                      Você solicitou a redefinição de senha da sua conta. Use o código abaixo para criar uma nova senha:
+                    </p>
+
+                    <!-- Code Box -->
+                    <table role="presentation" style="width: 100%; border-collapse: collapse; margin: 30px 0;">
+                      <tr>
+                        <td align="center" style="padding: 20px; background-color: #f8f9fa; border-radius: 8px; border: 2px dashed #667eea;">
+                          <span style="font-size: 32px; font-weight: bold; color: #667eea; letter-spacing: 8px; font-family: 'Courier New', monospace;">
+                            ${codigo}
+                          </span>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <p style="margin: 20px 0; color: #666666; font-size: 14px; line-height: 1.5;">
+                      <strong>⏱️ Este código é válido por 10 minutos.</strong>
+                    </p>
+
+                    <p style="margin: 20px 0; color: #666666; font-size: 14px; line-height: 1.5;">
+                      Se você não solicitou esta redefinição, ignore este e-mail. Sua senha permanecerá inalterada.
+                    </p>
+                  </td>
+                </tr>
+
+                <!-- Security Notice -->
+                <tr>
+                  <td style="padding: 30px; background-color: #fff3cd; border-top: 3px solid #ffc107;">
+                    <p style="margin: 0; color: #856404; font-size: 14px; line-height: 1.5;">
+                      <strong>🔒 Dica de Segurança:</strong><br>
+                      Nunca compartilhe este código com ninguém. Nossa equipe nunca solicitará este código por telefone, e-mail ou mensagem.
+                    </p>
+                  </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                  <td style="padding: 30px; text-align: center; background-color: #f8f9fa; border-top: 1px solid #e9ecef;">
+                    <p style="margin: 0 0 10px 0; color: #999999; font-size: 12px;">
+                      © ${new Date().getFullYear()} APOLLO PDV. Todos os direitos reservados.
+                    </p>
+                    <p style="margin: 0; color: #999999; font-size: 12px;">
+                      Este é um e-mail automático, por favor não responda.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+    `,
+      };
+
+      await this.emailManagerService.sendEmail(payload);
 
       return {
         sucesso: true,
-        mensagem: isProduction ? 'Código de redefinição enviado para seu e-mail' : 'Código de redefinição gerado com sucesso',
-        codigo: isProduction ? undefined : codigo,
+        mensagem: 'Código de redefinição de senha enviado com sucesso',
       };
     } catch (error) {
       return {

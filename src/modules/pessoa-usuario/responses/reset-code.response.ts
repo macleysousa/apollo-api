@@ -1,12 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ResetCodeResponse {
-    @ApiProperty({ description: 'Status da operação' })
-    sucesso: boolean;
+  @ApiProperty({ description: 'Status da operação' })
+  sucesso: boolean;
 
-    @ApiProperty({ description: 'Mensagem de retorno' })
-    mensagem: string;
-
-    @ApiProperty({ description: 'Código de redefinição (apenas para desenvolvimento)', required: false })
-    codigo?: string;
+  @ApiProperty({ description: 'Mensagem de retorno' })
+  mensagem: string;
 }
