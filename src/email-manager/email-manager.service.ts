@@ -36,11 +36,19 @@ export class EmailManagerService {
     return nodemailer.createTransport({
       host: config.servidor,
       port: config.porta,
-      secure: config.porta === 465,
+      secure: config.porta === 465, // true para 465, false para outras portas
       auth: {
         user: config.usuario,
         pass: config.senha,
       },
+      // Adicione estas opções para HostGator:
+      tls: {
+        rejectUnauthorized: false, // Aceita certificados auto-assinados
+        ciphers: 'SSLv3', // Pode ser necessário para alguns servidores
+      },
+      requireTLS: config.porta === 587, // Força TLS na porta 587
+      logger: true, // Ativa logs detalhados
+      debug: true, // Ativa debug para diagnóstico
     });
   }
 
