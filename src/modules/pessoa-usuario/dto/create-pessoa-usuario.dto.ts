@@ -3,6 +3,7 @@ import { IsNotEmpty, IsOptional, Matches } from 'class-validator';
 
 import { IsDateOnly } from 'src/commons/validations/is-date-only';
 import { IsValidDocument } from 'src/commons/validations/is-document.validation';
+import { IsPhoneNumber } from 'src/commons/validations/is-phone-number.validation';
 
 export class CreatePessoaUsuarioDto {
   @ApiProperty()
@@ -37,6 +38,6 @@ export class CreatePessoaUsuarioDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @Matches(/^\+?[1-9]\d{1,14}$/, { message: 'O telefone deve estar no formato +[código do país][número] (ex: +5588999999999)' })
+  @IsPhoneNumber({ message: 'O número de telefone informado não é válido.' })
   telefone?: string;
 }

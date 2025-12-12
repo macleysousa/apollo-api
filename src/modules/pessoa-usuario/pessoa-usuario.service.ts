@@ -82,7 +82,9 @@ export class PessoaUsuarioService {
   async login(dto: LoginPessoaUsuarioDto): Promise<LoginResponse> {
     const usuario = await this.repository.existsBy({ email: dto.email });
     if (!usuario) {
-      throw new BadRequestException('Usuário não encontrado');
+      throw new BadRequestException('Usuário não encontrado', {
+        description: 'Verifique o e-mail informado e tente novamente.',
+      });
     }
 
     const access = await this.keycloakService.login(dto.email, dto.senha);
