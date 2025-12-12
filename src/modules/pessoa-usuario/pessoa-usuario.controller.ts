@@ -16,6 +16,7 @@ import { PessoaUsuarioService } from './pessoa-usuario.service';
 import { LoginResponse } from './responses/login.response';
 import { PasswordResetResponse } from './responses/password-reset.response';
 import { ResetCodeResponse } from './responses/reset-code.response';
+import { SaldoPontoResponse } from './responses/saldo-ponto.response';
 import { VerifyResponse } from './responses/verify.response';
 
 @ApiTags('Pessoas - Usuários')
@@ -90,5 +91,11 @@ export class PessoaUsuarioController {
   @IsPublic()
   async resetPassword(@Body() dto: ResetPasswordWithCodeDto): Promise<PasswordResetResponse> {
     return this.service.resetPasswordWithCode(dto);
+  }
+
+  @Get('saldo-pontos')
+  @ApiResponse({ status: 200, type: SaldoPontoResponse })
+  async getSaldoPontos(): Promise<SaldoPontoResponse> {
+    return this.service.getSaldoPontos();
   }
 }

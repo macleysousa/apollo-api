@@ -11,6 +11,7 @@ import { KeycloakService } from 'src/keycloak/keycloak.service';
 import { ContatoTipo } from '../pessoa/enum/contato-tipo.enum';
 import { PessoaTipo } from '../pessoa/enum/pessoa-tipo.enum';
 import { PessoaService } from '../pessoa/pessoa.service';
+import { TransacaoPontoView } from '../pessoa/transacao-ponto/Views/transacao-ponto.view';
 import { ConfigSmtpService } from '../sistema/config-smtp/config-smtp.service';
 
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -24,6 +25,7 @@ import { PessoaUsuario } from './entities/pessoa-usuario.entity';
 import { LoginResponse } from './responses/login.response';
 import { PasswordResetResponse } from './responses/password-reset.response';
 import { ResetCodeResponse } from './responses/reset-code.response';
+import { SaldoPontoResponse } from './responses/saldo-ponto.response';
 import { VerifyResponse } from './responses/verify.response';
 
 @Injectable()
@@ -281,5 +283,31 @@ export class PessoaUsuarioService {
         mensagem: 'Erro ao alterar senha',
       };
     }
+  }
+
+  async getSaldoPontos(): Promise<SaldoPontoResponse> {
+    const perfil = await this.findPerfil();
+
+    if (!perfil) {
+      throw new BadRequestException('Pessoa não encontrada para o usuário autenticado');
+    }
+
+    const pessoaId = perfil.pessoaId;
+
+    // Chama a função do banco de dados para obter o saldo de pontos
+    const result = await this.repository.query(`SELECT fn_pessoa_saldo_pontos(?) AS saldo`, [pessoaId]);
+
+    const manager = this.repository.manager;
+
+    const historico = await manager.getRepository(TransacaoPontoView).find({
+      where: { pessoaId: Number(pessoaId) },
+      order: { criadoEm: 'DESC' },
+      take: 500, // Limita para os 500 registros mais recentes
+    });
+
+    return {
+      saldoPontos: Number(result[0]?.saldo ?? 0),
+      historico: historico,
+    };
   }
 }
