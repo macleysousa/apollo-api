@@ -148,7 +148,9 @@ export class KeycloakService {
       jwt.verify(token, cert, { algorithms: ['RS256'] });
       return decodedHeader.payload['sub'] as string;
     } catch (error) {
-      throw new UnauthorizedException('Token invalido ou expirado');
+      throw new UnauthorizedException('Token invalido ou expirado', {
+        description: 'Autenticação falhou. Por favor, faça login novamente.',
+      });
     }
   }
 
