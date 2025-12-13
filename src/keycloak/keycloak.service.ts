@@ -142,9 +142,9 @@ export class KeycloakService {
   }
 
   async validateToken(token: string): Promise<string> {
-    const decodedHeader = jwt.decode(token, { complete: true });
-    const cert = await this.findCertByKind(decodedHeader.header.kid);
     try {
+      const decodedHeader = jwt.decode(token, { complete: true });
+      const cert = await this.findCertByKind(decodedHeader.header.kid);
       jwt.verify(token, cert, { algorithms: ['RS256'] });
       return decodedHeader.payload['sub'] as string;
     } catch (error) {
