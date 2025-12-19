@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThan, Repository } from 'typeorm';
+import { Transactional } from 'typeorm-transactional';
 
 import { ContextService } from 'src/context/context.service';
 
@@ -91,6 +92,7 @@ export class TransacaoPontoService {
     return this.findById(pessoaId, id);
   }
 
+  @Transactional()
   async redemption(pessoaId: number, dto: RedemptionTransacaoPontoDto): Promise<void> {
     // Verifica pessoa tem saldo suficiente
     const saldo = await this.repository
@@ -107,7 +109,7 @@ export class TransacaoPontoService {
 
     // Calcular quantidade de pontos a serem resgatados por transação
     var quantidadeRestante = dto.quantidade;
-    const resgates: { transacaoId: number; quantidade: number }[] = [];
+    const resgates: Partial<TransacaoPontoEntity>[] = [];
 
     // FIFO: mais antigo primeiro
     for (const transacao of transacoes.orderBy((x) => x.id, 'asc')) {
@@ -120,13 +122,33 @@ export class TransacaoPontoService {
       const pontosParaResgatar = Math.min(saldo, quantidadeRestante);
 
       resgates.push({
+        empresaId: this.context.empresaId(),
+        pessoaId: pessoaId,
+        tipo: 'Débito',
+        pessoaDocumento: transacao.pessoaDocumento,
         transacaoId: transacao.id,
         quantidade: pontosParaResgatar,
+        observacao: dto.observacao ?? `Resgate de pontos referente à transação #${transacao.id}`,
       });
 
       quantidadeRestante -= pontosParaResgatar;
     }
 
-    console.log(resgates);
+    // Registrar resgates
+    for (const resgate of resgates) {
+      await this.repository.save(resgate).catch((error) => {
+        throw new BadRequestException(error?.hint || error?.detail || error?.message || 'Erro ao registrar resgate de pontos');
+      });
+
+      const transacao = transacoes.find((t) => t.id === resgate.transacaoId);
+
+      await this.repository
+        .update({ id: transacao.id }, { resgatado: transacao.resgatado + resgate.quantidade })
+        .catch((error) => {
+          throw new BadRequestException(
+            error?.hint || error?.detail || error?.message || 'Erro ao atualizar validade da transação de ponto',
+          );
+        });
+    }
   }
 }

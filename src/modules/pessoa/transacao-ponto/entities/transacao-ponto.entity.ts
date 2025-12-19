@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
@@ -36,6 +36,10 @@ export class TransacaoPontoEntity extends BaseEntity {
   @ApiProperty()
   @Column('decimal')
   resgatado: number;
+
+  @ApiProperty({ description: 'ID da transação que originou os pontos resgatados, apenas para transações do tipo Débito' })
+  @Column('int')
+  transacaoId: number;
 
   @ApiProperty()
   @Column('timestamp')
