@@ -51,12 +51,12 @@ export class CreateTableTransacoesPontos1744887412990 implements MigrationInterf
             isNullable: true,
           },
           {
-            name: 'validoAte',
+            name: 'validaAte',
             type: 'timestamp',
             isNullable: true,
           },
           {
-            name: 'cancelado',
+            name: 'cancelada',
             type: 'boolean',
             default: false,
           },
@@ -66,7 +66,7 @@ export class CreateTableTransacoesPontos1744887412990 implements MigrationInterf
             isNullable: true,
           },
           {
-            name: 'canceladoEm',
+            name: 'canceladaEm',
             type: 'timestamp',
             isNullable: true,
           },
