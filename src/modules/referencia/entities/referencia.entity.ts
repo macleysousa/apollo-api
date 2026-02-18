@@ -25,23 +25,13 @@ export class ReferenciaEntity extends BaseEntity {
   @Column()
   unidadeMedida: UnidadeMedida;
 
-  @Exclude()
+  @ApiProperty()
   @Column()
   categoriaId: number;
 
   @ApiProperty()
-  @OneToOne(() => CategoriaEntity, (value) => value.id, { eager: true })
-  @JoinColumn({ name: 'categoriaId' })
-  categoria: CategoriaEntity;
-
-  @Exclude()
   @Column()
   subCategoriaId: number;
-
-  @ApiProperty()
-  @OneToOne(() => SubCategoriaEntity, (value) => value.id, { eager: true })
-  @JoinColumn({ name: 'subCategoriaId' })
-  subCategoria: SubCategoriaEntity;
 
   @ApiProperty()
   @Column()
@@ -58,6 +48,16 @@ export class ReferenciaEntity extends BaseEntity {
   @ApiProperty()
   @Column()
   cuidados: string;
+
+  @ApiProperty()
+  @OneToOne(() => CategoriaEntity, (value) => value.id, { eager: true })
+  @JoinColumn({ name: 'categoriaId' })
+  categoria: CategoriaEntity;
+
+  @ApiProperty()
+  @OneToOne(() => SubCategoriaEntity, (value) => value.id, { eager: true })
+  @JoinColumn({ name: 'subCategoriaId' })
+  subCategoria: SubCategoriaEntity;
 
   constructor(partial?: Partial<ReferenciaEntity>) {
     super();

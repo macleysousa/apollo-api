@@ -9,7 +9,7 @@ import { CreateReferenciaDto } from './dto/create-referencia.dto';
 import { UpdateReferenciaDto } from './dto/update-referencia.dto';
 import { ReferenciaEntity } from './entities/referencia.entity';
 import { ReferenciaFilter } from './filters/referencia.filter';
-import { ReferenciaInclude } from './includes/referencia.include';
+import { ReferenciaInclude, ReferenciaIncludeEnum } from './includes/referencia.include';
 
 @Injectable()
 export class ReferenciaService {
@@ -35,10 +35,33 @@ export class ReferenciaService {
   }
 
   async find(filter?: ReferenciaFilter): Promise<ReferenciaEntity[]> {
-    return this.referenceRepository.find({
-      where: { nome: ILike(`%${filter?.nome ?? ''}%`), idExterno: ILike(`%${filter?.idExterno ?? ''}%`) },
-      relations: filter?.incluir,
-    });
+    const queryBuilder = this.referenceRepository.createQueryBuilder('r');
+    queryBuilder.where('r.id IS NOT NULL');
+
+    if (filter?.nome) {
+      queryBuilder.andWhere('r.nome ILIKE :nome', { nome: `%${filter.nome}%` });
+    }
+
+    if (filter?.idExterno) {
+      queryBuilder.andWhere('r.idExterno ILIKE :idExterno', { idExterno: `%${filter.idExterno}%` });
+    }
+
+    if (filter?.incluir?.length > 0) {
+      filter.incluir = filter.incluir.includes('tudo') ? Object.values(ReferenciaIncludeEnum) : filter.incluir;
+
+      filter.incluir.forEach((include) => {
+        switch (include) {
+          case 'categoria':
+            queryBuilder.leftJoinAndSelect('r.categoria', 'categoria');
+            break;
+          case 'subCategoria':
+            queryBuilder.leftJoinAndSelect('r.subCategoria', 'subCategoria');
+            break;
+        }
+      });
+    }
+
+    return queryBuilder.getMany();
   }
 
   async findById(id: number, incluir?: ReferenciaInclude[]): Promise<ReferenciaEntity> {

@@ -1,7 +1,7 @@
 export enum ReferenciaIncludeEnum {
-  terminais = 'terminais',
-  formasDePagamento = 'formasDePagamento',
-  parametros = 'parametros',
+  tudo = 'tudo',
+  categoria = 'categoria',
+  subCategoria = 'subCategoria',
 }
 
 export type ReferenciaInclude = keyof typeof ReferenciaIncludeEnum;
