@@ -39,11 +39,11 @@ export class ReferenciaService {
     queryBuilder.where('r.id IS NOT NULL');
 
     if (filter?.nome) {
-      queryBuilder.andWhere('r.nome ILIKE :nome', { nome: `%${filter.nome}%` });
+      queryBuilder.andWhere('LOWER(r.nome) LIKE :nome', { nome: `%${filter.nome?.toLowerCase()}%` });
     }
 
     if (filter?.idExterno) {
-      queryBuilder.andWhere('r.idExterno ILIKE :idExterno', { idExterno: `%${filter.idExterno}%` });
+      queryBuilder.andWhere('LOWER(r.idExterno) LIKE :idExterno', { idExterno: `%${filter.idExterno?.toLowerCase()}%` });
     }
 
     if (filter?.incluir?.length > 0) {
