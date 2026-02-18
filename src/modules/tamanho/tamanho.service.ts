@@ -69,15 +69,24 @@ export class TamanhoService {
   }
 
   async update(id: number, updateSizeDto: UpdateTamanhoDto): Promise<TamanhoEntity> {
-    const sizeById = await this.findById(id);
-    if (!sizeById) {
-      throw new BadRequestException(`Tamanho com id ${id} não encontrado`);
+    const size = await this.findById(id);
+    if (!size) {
+      throw new BadRequestException(`Tamanho com id ${id} não encontrado`, {
+        description: 'O id do tamanho informado não corresponde a nenhum tamanho cadastrado',
+      });
+    } else if (updateSizeDto?.nome) {
+      const sizeByName = await this.findByName(updateSizeDto.nome);
+      if (sizeByName && sizeByName.id != id) {
+        throw new BadRequestException(`Tamanho com nome ${updateSizeDto.nome} já existe`, {
+          description: 'O nome do tamanho já existe e pertence a um tamanho diferente do informado no payload',
+        });
+      }
     }
 
-    const sizeByName = await this.findByName(updateSizeDto.nome);
-    if (sizeByName && sizeByName.id != id) {
-      throw new BadRequestException(`Tamanho com nome ${updateSizeDto.nome} já existe`);
-    }
+    Object.assign(size, updateSizeDto);
+
+    await this.repository.save(size);
+
     return this.findById(id);
   }
 
