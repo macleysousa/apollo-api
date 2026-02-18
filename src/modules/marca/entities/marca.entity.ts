@@ -10,11 +10,11 @@ export class MarcaEntity extends BaseEntity {
   id: number;
 
   @ApiProperty()
-  @Column()
+  @Column('varchar', { length: 255, unique: true })
   nome: string;
 
   @ApiProperty()
-  @Column()
+  @Column({ default: false })
   inativa: boolean;
 
   constructor(partial?: Partial<MarcaEntity>) {

@@ -23,7 +23,7 @@ export class createTableBrands1674135078364 implements MigrationInterface {
           {
             name: 'inativa',
             type: 'boolean',
-            default: true,
+            default: false,
           },
           {
             name: 'criadoEm',

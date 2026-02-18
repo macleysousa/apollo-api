@@ -23,14 +23,22 @@ export class TamanhoService {
   }
 
   async create(createSizeDto: CreateTamanhoDto): Promise<TamanhoEntity> {
-    const sizeById = await this.findById(createSizeDto.id);
-    if (sizeById && sizeById.nome != createSizeDto.nome) {
-      throw new BadRequestException(`Size with this id ${createSizeDto.id} already exists`);
+    if (createSizeDto.id) {
+      const sizeById = await this.findById(createSizeDto.id);
+      if (sizeById && sizeById.nome != createSizeDto.nome) {
+        throw new BadRequestException(`Size with this id ${createSizeDto.id} already exists`, {
+          description: 'O id do tamanho já existe e pertence a um tamanho diferente do informado no payload',
+        });
+      }
     }
 
-    const sizeByName = await this.findByName(createSizeDto.nome);
-    if (sizeByName && sizeByName.id != createSizeDto.id) {
-      throw new BadRequestException(`Size with this name ${createSizeDto.nome} already exists`);
+    if (createSizeDto.nome) {
+      const sizeByName = await this.findByName(createSizeDto.nome);
+      if (sizeByName && sizeByName.id != createSizeDto.id) {
+        throw new BadRequestException(`Size with this name ${createSizeDto.nome} already exists`, {
+          description: 'O nome do tamanho já existe e pertence a um tamanho diferente do informado no payload',
+        });
+      }
     }
 
     const size = await this.repository.save(createSizeDto);
@@ -70,13 +78,20 @@ export class TamanhoService {
     if (sizeByName && sizeByName.id != id) {
       throw new BadRequestException(`Tamanho com nome ${updateSizeDto.nome} já existe`);
     }
-
-    await this.repository.update(id, updateSizeDto);
-
     return this.findById(id);
   }
 
   async remove(id: number): Promise<void> {
-    await this.repository.delete({ id });
+    await this.repository.delete({ id }).catch((error) => {
+      if (error.code === '23503') {
+        throw new BadRequestException(`Tamanho com id ${id} não pode ser removido pois está sendo utilizado por outro registro`, {
+          description: 'Não é possível excluir o tamanho, pois ele está sendo utilizado',
+        });
+      }
+
+      throw new BadRequestException(error.message, {
+        description: 'Não foi possível excluir o tamanho devido a um erro inesperado',
+      });
+    });
   }
 }
