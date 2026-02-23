@@ -81,7 +81,9 @@ export class KeycloakService {
     const response = await firstValueFrom(
       this.http.post(`${this.keycloakConfig.url}/admin/realms/${this.keycloakConfig.realm}/users`, body, config),
     ).catch((error) => {
-      throw new BadRequestException('Failed to create user in Keycloak.');
+      throw new BadRequestException('Failed to create user in Keycloak.', {
+        description: error?.response?.data?.error || 'An error occurred while creating the user.',
+      });
     });
 
     if (response.status === 201) {
