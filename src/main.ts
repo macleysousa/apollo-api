@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import { NextFunction } from 'express';
+import * as qs from 'qs';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 
 import { AppModule } from './app.module';
@@ -15,6 +16,10 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
+  // Enable Express to parse queries with [] (e.g., ?ids[]=1&ids[]=2)
+  const server = app.getHttpAdapter().getInstance();
+  server.set('query parser', (str: string) => qs.parse(str));
+
   app.setGlobalPrefix('v1');
 
   app.useGlobalPipes(
@@ -24,6 +29,14 @@ async function bootstrap() {
       exceptionFactory: ValidationExceptionFactory,
     }),
   );
+
+  // Redirect '/' to '/docs'
+  app.use((req: any, res: any, next: any) => {
+    if (req.path === '/') {
+      return res.redirect('/docs');
+    }
+    next();
+  });
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
