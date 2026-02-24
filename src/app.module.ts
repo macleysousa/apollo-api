@@ -13,6 +13,7 @@ import { RolesGuard } from './guards/roles.guard';
 import { InjectRequestInterceptor } from './interceptors/inject-request.interceptor';
 import { KeycloakModule } from './keycloak/keycloak.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { BalancoModule } from './modules/balanco/balanco.module';
 import { CaixaModule } from './modules/caixa/caixa.module';
 import { CategoriaModule } from './modules/categoria/categoria.module';
 import { ComponentsModule } from './modules/componente/componente.module';
@@ -53,6 +54,7 @@ import { StorageModule } from './storage/storage.module';
     ComponentGroupModule.forRoot(),
     ParametroModule.forRoot(),
     EmpresaModule.forRoot(),
+    BalancoModule.forRoot(),
     CaixaModule.forRoot(),
     PessoaModule.forRoot(),
     PessoaUsuarioModule.forRoot(),
