@@ -1,11 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 
 import { UF } from 'src/commons/enum/uf.enum';
 
 import { EnderecoTipo } from '../enum/endereco-tipo.enum';
 
 export class CreatePessoaEnderecoDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsBoolean()
+  principal: boolean;
+
   @ApiProperty({ enum: EnderecoTipo })
   @IsNotEmpty()
   @IsEnum(EnderecoTipo)

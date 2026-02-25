@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, Relation } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 import { UF } from 'src/commons/enum/uf.enum';
@@ -11,8 +11,16 @@ import { EnderecoTipo } from '../enum/endereco-tipo.enum';
 @Entity({ name: 'pessoas_enderecos' })
 export class PessoaEnderecoEntity extends BaseEntity {
   @ApiProperty()
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ApiProperty()
+  @Column()
   pessoaId: number;
+
+  @ApiProperty()
+  @Column()
+  principal: boolean;
 
   @ApiProperty({ enum: EnderecoTipo })
   @Column()

@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ParsePessoaPipe } from 'src/commons/pipes/parsePessoa.pipe';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
@@ -19,28 +19,47 @@ export class PessoaEnderecoController {
   constructor(private readonly service: PessoaEnderecoService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Criar novo endereço para a pessoa' })
+  @ApiResponse({ type: PessoaEnderecoEntity, status: 201 })
   async create(
-    @Param('pessoaId', ParsePessoaPipe) id: number,
+    @Param('pessoaId', ParsePessoaPipe) pessoaId: number,
     @Body() createPessoaEnderecoDto: CreatePessoaEnderecoDto,
   ): Promise<PessoaEnderecoEntity> {
-    return this.service.create(id, createPessoaEnderecoDto);
+    return this.service.create(pessoaId, createPessoaEnderecoDto);
   }
 
   @Get()
-  findOne(@Param('pessoaId', ParsePessoaPipe) id: number) {
-    return this.service.findById(id);
+  @ApiOperation({ summary: 'Listar todos os endereços da pessoa' })
+  @ApiResponse({ type: [PessoaEnderecoEntity], status: 200 })
+  async findAll(@Param('pessoaId', ParsePessoaPipe) pessoaId: number): Promise<PessoaEnderecoEntity[]> {
+    return this.service.findAll(pessoaId);
   }
 
-  @Put()
+  @Get(':id')
+  @ApiOperation({ summary: 'Buscar endereço específico' })
+  @ApiParam({ name: 'id', description: 'ID do endereço' })
+  @ApiResponse({ type: PessoaEnderecoEntity, status: 200 })
+  async findOne(@Param('pessoaId', ParsePessoaPipe) pessoaId: number, @Param('id') id: number): Promise<PessoaEnderecoEntity> {
+    return this.service.findById(pessoaId, id);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Atualizar endereço específico' })
+  @ApiParam({ name: 'id', description: 'ID do endereço' })
+  @ApiResponse({ type: PessoaEnderecoEntity, status: 200 })
   async update(
-    @Param('pessoaId') id: number,
+    @Param('pessoaId', ParsePessoaPipe) pessoaId: number,
+    @Param('id') id: number,
     @Body() updatePessoaEnderecoDto: UpdatePessoaEnderecoDto,
   ): Promise<PessoaEnderecoEntity> {
-    return this.service.update(id, updatePessoaEnderecoDto);
+    return this.service.update(pessoaId, id, updatePessoaEnderecoDto);
   }
 
-  @Delete()
-  async delete(@Param('pessoaId') id: number): Promise<void> {
-    return this.service.delete(id);
+  @Delete(':id')
+  @ApiOperation({ summary: 'Deletar endereço específico' })
+  @ApiParam({ name: 'id', description: 'ID do endereço' })
+  @ApiResponse({ status: 204 })
+  async delete(@Param('pessoaId', ParsePessoaPipe) pessoaId: number, @Param('id') id: number): Promise<void> {
+    return this.service.delete(pessoaId, id);
   }
 }
