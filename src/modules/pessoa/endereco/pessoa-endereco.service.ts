@@ -31,7 +31,9 @@ export class PessoaEnderecoService {
     const pessoaEndereco = await this.repository.findOne({ where: { id, pessoaId } });
 
     if (!pessoaEndereco) {
-      throw new BadRequestException(`Endereço com id ${id} não encontrado`);
+      throw new BadRequestException(`Endereço com id ${id} não encontrado`, {
+        description: `Não foi possível encontrar o endereço com id ${id} para a pessoa com id ${pessoaId}. Verifique se os IDs estão corretos e tente novamente.`,
+      });
     }
 
     return pessoaEndereco;
@@ -41,7 +43,9 @@ export class PessoaEnderecoService {
     const pessoaEndereco = await this.repository.findOne({ where: { id, pessoaId } });
 
     if (!pessoaEndereco) {
-      throw new BadRequestException(`Endereço com id ${id} não encontrado`);
+      throw new BadRequestException(`Endereço com id ${id} não encontrado`, {
+        description: `Não foi possível encontrar o endereço com id ${id} para a pessoa com id ${pessoaId}. Verifique se os IDs estão corretos e tente novamente.`,
+      });
     }
 
     // Se o endereço está sendo marcado como principal, desmarcar todos os outros
@@ -55,13 +59,17 @@ export class PessoaEnderecoService {
   }
 
   async delete(pessoaId: number, id: number): Promise<void> {
+    const pessoaEndereco = await this.repository.findOne({ where: { id, pessoaId } });
+
+    if (!pessoaEndereco) {
+      throw new BadRequestException(`Endereço com id ${id} não encontrado`, {
+        description: `Não foi possível encontrar o endereço com id ${id} para a pessoa com id ${pessoaId}. Verifique se os IDs estão corretos e tente novamente.`,
+      });
+    }
+
     await this.repository.delete({ id, pessoaId });
   }
 
-  /**
-   * Desmarca todos os endereços principais de uma pessoa
-   * @param pessoaId ID da pessoa
-   */
   private async desmarcarEnderecoPrincipal(pessoaId: number): Promise<void> {
     await this.repository.update({ pessoaId }, { principal: false });
   }
