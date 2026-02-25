@@ -1,31 +1,38 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsOptional } from 'class-validator';
 
 import { BaseFilter } from 'src/commons/base.filter';
 import { IsArray } from 'src/commons/validations/is-array.validation';
 
+import { PessoaInclude, PessoaIncludeEnum } from '../includes/pessoa.include';
+
 export class PessoaFilter extends BaseFilter {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   @IsOptional()
   searchTerm?: string;
 
-  @ApiProperty({ required: false, isArray: true })
+  @ApiPropertyOptional({ isArray: true })
   @IsOptional()
   @IsArray('int')
   empresaIds?: number[];
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   @IsOptional()
   name?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   @IsOptional()
   @Transform(({ value }) => value.replace(/\D/g, ''))
   document?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   @IsOptional()
   @Transform(({ value }) => value === 'true')
   bloqueado?: boolean;
+
+  @ApiPropertyOptional({ enum: PessoaIncludeEnum, isArray: true })
+  @IsOptional()
+  @IsArray('enum', { enum: PessoaIncludeEnum })
+  incluir?: PessoaInclude[];
 }

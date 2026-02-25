@@ -19,20 +19,27 @@ import {
 @ValidatorConstraint({ async: true })
 export class IsArrayConstraint implements ValidatorConstraintInterface {
   async validate(_value: unknown, args: ValidationArguments): Promise<boolean> {
-    args.object[args.property] = Array.isArray(_value) ? _value : [_value];
-    const value = args.object[args.property];
+    if (_value === null) return false;
+
+    args.object[args.property] = Array.isArray(_value) ? _value : _value.toString().split(',');
+    const value = args.object[args.property] ?? [];
 
     if (!Array.isArray(value)) return false;
 
-    const [type] = args.constraints;
+    const [type, _, minLength] = args.constraints;
+
+    if (minLength != undefined && minLength > value.length) return false;
+
     const enumOptions = (args.constraints?.slice(1) as [SwaggerEnumType]).find((x) => x);
 
     switch (type) {
       case 'number':
         const isNumberArray = (value as number[]).every((item) => isNumberString(item) || isNumber(item));
+        if (isNumberArray) args.object[args.property] = (value as number[]).map((item) => Number(item));
         return isNumberArray;
       case 'int':
         const isIntArray = (value as number[]).every((item) => isInt(Number(item)));
+        if (isIntArray) args.object[args.property] = (value as number[]).map((item) => Number(item));
         return isIntArray;
       case 'string':
         const isStringArray = (value as string[]).every((item) => isString(item));
@@ -52,7 +59,7 @@ export class IsArrayConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage(args?: ValidationArguments): string {
-    const [type] = args.constraints;
+    const [type, _, minLength] = args.constraints;
     const enumOptions = (args.constraints?.slice(1) as [SwaggerEnumType]).find((x) => x);
     if (type === 'number') {
       return 'each value in $property must be a number';
@@ -68,6 +75,8 @@ export class IsArrayConstraint implements ValidatorConstraintInterface {
       return 'each value in $property must be a valid uuid';
     } else if (type === 'iso-date') {
       return 'each value in $property must be a valid ISO date string yyyy-MM-dd';
+    } else if (minLength != undefined && minLength > args.object[args.property].length) {
+      return `The array must have at least ${minLength} items`;
     } else {
       return 'The value must be an array';
     }
@@ -76,9 +85,10 @@ export class IsArrayConstraint implements ValidatorConstraintInterface {
 
 interface IsArrayOptions extends ValidationOptions {
   enum?: SwaggerEnumType;
+  minLength?: number;
 }
 
-type ArrayTypes = 'number' | 'int' | 'string' | 'enum' | 'uuid' | 'iso-date';
+type ArrayTypes = 'number' | 'int' | 'string' | 'enum' | 'uuid' | 'iso-date' | 'object';
 
 export const IsArray = (type?: ArrayTypes, validationOptions?: IsArrayOptions) => {
   return (object: object, propertyName: string) => {
@@ -86,7 +96,7 @@ export const IsArray = (type?: ArrayTypes, validationOptions?: IsArrayOptions) =
       target: object.constructor,
       propertyName,
       options: validationOptions,
-      constraints: [type, validationOptions?.enum],
+      constraints: [type, validationOptions?.enum, validationOptions?.minLength],
       validator: IsArrayConstraint,
     });
   };

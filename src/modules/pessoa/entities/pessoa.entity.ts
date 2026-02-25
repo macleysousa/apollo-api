@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 
+import { PessoaEnderecoEntity } from '../endereco/entities/pessoa-endereco.entity';
 import { ContatoTipo } from '../enum/contato-tipo.enum';
 import { PessoaTipo } from '../enum/pessoa-tipo.enum';
 import { TransacaoPontoEntity } from '../transacao-ponto/entities/transacao-ponto.entity';
@@ -75,9 +76,13 @@ export class PessoaEntity extends BaseEntity {
   @Transform(({ value }) => value.map(Number))
   empresasAcesso: number[];
 
+  @ApiProperty({ type: () => PessoaEnderecoEntity, isArray: true })
+  @OneToMany(() => PessoaEnderecoEntity, (endereco) => endereco.pessoa, { cascade: true })
+  enderecos: Relation<PessoaEnderecoEntity[]>;
+
   @ApiProperty({ type: () => TransacaoPontoEntity, isArray: true })
   @OneToMany(() => TransacaoPontoEntity, (value) => value.pessoa)
-  transacaoPontos: TransacaoPontoEntity[];
+  transacaoPontos: Relation<TransacaoPontoEntity[]>;
 
   constructor(partial?: Partial<PessoaEntity>) {
     super();

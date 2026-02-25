@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, Relation } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 import { UF } from 'src/commons/enum/uf.enum';
 
+import { PessoaEntity } from '../../entities/pessoa.entity';
 import { EnderecoTipo } from '../enum/endereco-tipo.enum';
 
 @Entity({ name: 'pessoas_enderecos' })
@@ -47,6 +49,11 @@ export class PessoaEnderecoEntity extends BaseEntity {
   @ApiProperty()
   @Column({ nullable: true })
   pais: string;
+
+  @Exclude()
+  @ManyToOne(() => PessoaEntity, (pessoa) => pessoa.enderecos, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'pessoaId' })
+  pessoa: Relation<PessoaEntity>;
 
   constructor(partial?: Partial<PessoaEnderecoEntity>) {
     super();

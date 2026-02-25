@@ -7,6 +7,7 @@ import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { PessoaEntity } from './entities/pessoa.entity';
 import { PessoaFilter } from './filters/pessoa.filter';
+import { PessoaIncludeEnum } from './includes/pessoa.include';
 
 @Injectable()
 export class PessoaService {
@@ -50,6 +51,18 @@ export class PessoaService {
 
     if (filter && filter.bloqueado !== undefined) {
       queryBuilder.andWhere('p.bloqueado = :bloqueado', { bloqueado: filter.bloqueado });
+    }
+
+    if (filter && filter.incluir?.length > 0) {
+      filter.incluir = filter.incluir.includes('tudo') ? Object.values(PessoaIncludeEnum) : filter.incluir;
+
+      filter.incluir.forEach((include) => {
+        switch (include) {
+          case 'enderecos':
+            queryBuilder.leftJoinAndSelect('p.enderecos', 'enderecos');
+            break;
+        }
+      });
     }
 
     return paginate<PessoaEntity>(queryBuilder, { page: filter.pagina, limit: filter.itemsPorPagina });
