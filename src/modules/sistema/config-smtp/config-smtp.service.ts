@@ -115,15 +115,10 @@ export class ConfigSmtpService {
       ...config,
       ...dto,
       redefinirSenhaTemplate: {
-        assunto: config?.redefinirSenhaTemplate?.assunto || dto.redefinirSenhaTemplate?.assunto || assunto,
-        corpo: config?.redefinirSenhaTemplate?.corpo || dto.redefinirSenhaTemplate?.corpo || corpo,
+        assunto: dto.redefinirSenhaTemplate?.assunto || config?.redefinirSenhaTemplate?.assunto || assunto,
+        corpo: dto.redefinirSenhaTemplate?.corpo || config?.redefinirSenhaTemplate?.corpo || corpo,
       },
     });
-
-    entity.redefinirSenhaTemplate = {
-      assunto,
-      corpo,
-    };
 
     return this.repository.save(entity);
   }
