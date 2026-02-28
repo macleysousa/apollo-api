@@ -46,7 +46,7 @@ export class TransacaoPontoService {
     const querBuilder = this.viewRepository.createQueryBuilder('t');
     querBuilder.where('t.pessoaId = :pessoaId', { pessoaId });
 
-    const empresaIds = [this.context.empresaId(), ...(filter?.empresaIds || [])];
+    const empresaIds = [...(filter?.empresaIds || [])];
 
     if (empresaIds) {
       querBuilder.andWhere('t.empresaId IN (:...empresaIds)', { empresaIds: empresaIds });
@@ -105,7 +105,9 @@ export class TransacaoPontoService {
       );
 
     // Obter transações validas
-    var transacoes = await this.viewRepository.find({ where: { pessoaId, tipo: 'Crédito', valida: true, saldo: MoreThan(0) } });
+    var transacoes = await this.viewRepository.find({
+      where: { empresaId: dto?.empresaId || undefined, pessoaId, tipo: 'Crédito', valida: true, saldo: MoreThan(0) },
+    });
 
     // Calcular quantidade de pontos a serem resgatados por transação
     var quantidadeRestante = dto.quantidade;
