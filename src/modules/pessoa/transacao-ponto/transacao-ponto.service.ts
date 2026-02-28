@@ -48,15 +48,15 @@ export class TransacaoPontoService {
 
     const empresaIds = [...(filter?.empresaIds || [])];
 
-    if (empresaIds) {
+    if (empresaIds?.length > 0) {
       querBuilder.andWhere('t.empresaId IN (:...empresaIds)', { empresaIds: empresaIds });
     }
 
-    if (filter?.ids) {
+    if (filter?.ids?.length > 0) {
       querBuilder.andWhere('t.id IN (:...ids)', { ids: filter.ids });
     }
 
-    if (filter?.tipos) {
+    if (filter?.tipos?.length > 0) {
       querBuilder.andWhere('t.tipo IN (:...tipos)', { tipos: filter.tipos });
     }
 
@@ -95,9 +95,12 @@ export class TransacaoPontoService {
   @Transactional()
   async redemption(pessoaId: number, dto: RedemptionTransacaoPontoDto): Promise<void> {
     // Verifica pessoa tem saldo suficiente
-    const saldo = await this.repository
-      .query('SELECT fn_pessoa_saldo_pontos(?) as soldo', [pessoaId])
-      .then((result) => Number(result[0].soldo ?? '0'));
+    const saldo = await this.viewRepository
+      .find({
+        where: { pessoaId, empresaId: dto?.empresaId || undefined, tipo: 'Crédito', valida: true },
+        select: { id: true, empresaId: true, pessoaId: true, tipo: true, valida: true, saldo: true },
+      })
+      .then((transacoes) => transacoes.reduce((acc, t) => acc + (t?.saldo || 0), 0));
 
     if (saldo < dto.quantidade)
       throw new BadRequestException(
