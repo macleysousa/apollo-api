@@ -148,7 +148,7 @@ export class TransacaoPontoService {
       const transacao = transacoes.find((t) => t.id === resgate.transacaoId);
 
       await this.repository
-        .update({ id: transacao.id }, { resgatado: transacao.resgatado + resgate.quantidade })
+        .update({ id: transacao.id }, { resgatado: Number(transacao.resgatado) + Number(resgate.quantidade) })
         .catch((error) => {
           throw new BadRequestException(
             error?.hint || error?.detail || error?.message || 'Erro ao atualizar validade da transação de ponto',
