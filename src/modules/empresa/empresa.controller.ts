@@ -1,8 +1,9 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { Query } from '@nestjs/common/decorators';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SetMetadata } from '@nestjs/common';
 
-import { ApiComponent } from '../../decorators/api-componente.decorator';
+import { ApiComponent, COMPONENT_KEY } from '../../decorators/api-componente.decorator';
 import { Roles } from '../../decorators/roles.decorator';
 import { Role } from '../usuario/enums/usuario-tipo.enum';
 
@@ -30,12 +31,14 @@ export class EmpresaController {
 
   @Get()
   @ApiResponse({ type: [EmpresaEntity], status: 200 })
+  @SetMetadata(COMPONENT_KEY, null)
   async find(@Query() filter: EmpresaFilter): Promise<EmpresaEntity[]> {
     return this.service.find(filter);
   }
 
   @Get(':id')
   @ApiResponse({ type: EmpresaEntity, status: 200 })
+  @SetMetadata(COMPONENT_KEY, null)
   async findById(@Param('id', ParseIntPipe) id: number, @Query() filter: EmpresaFilterBase): Promise<EmpresaEntity> {
     return this.service.findById(id, filter.incluir);
   }

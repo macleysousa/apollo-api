@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import * as crypto from 'crypto';
 import * as jwt from 'jsonwebtoken';
@@ -16,7 +16,7 @@ export class KeycloakService {
     clientSecret: string;
     realm: string;
     url: string;
-  };
+  } | null;
 
   constructor(
     private readonly http: HttpService,
@@ -30,19 +30,30 @@ export class KeycloakService {
     };
 
     if (!keycloak.clientId || !keycloak.clientSecret || !keycloak.realm || !keycloak.url) {
-      throw new Error('Keycloak variables KEYCLOAK_* have not been set properly');
+      this.keycloakConfig = null;
+      return;
     }
 
     this.keycloakConfig = keycloak;
   }
 
+  private getKeycloakConfig() {
+    if (!this.keycloakConfig) {
+      throw new InternalServerErrorException('Keycloak nao configurado. Defina as variaveis KEYCLOAK_* no ambiente.');
+    }
+
+    return this.keycloakConfig;
+  }
+
   async getAccessToken(): Promise<string> {
+    const keycloakConfig = this.getKeycloakConfig();
+
     const { data } = await firstValueFrom(
       this.http.post(
-        `${this.keycloakConfig.url}/realms/${this.keycloakConfig.realm}/protocol/openid-connect/token`,
+        `${keycloakConfig.url}/realms/${keycloakConfig.realm}/protocol/openid-connect/token`,
         new URLSearchParams({
-          client_id: this.keycloakConfig.clientId,
-          client_secret: this.keycloakConfig.clientSecret,
+          client_id: keycloakConfig.clientId,
+          client_secret: keycloakConfig.clientSecret,
           grant_type: 'client_credentials',
         }),
       ),
@@ -54,6 +65,7 @@ export class KeycloakService {
   }
 
   async register(dto: RegisterDto): Promise<any> {
+    const keycloakConfig = this.getKeycloakConfig();
     const accessToken = await this.getAccessToken();
 
     const body = {
@@ -79,7 +91,7 @@ export class KeycloakService {
     };
 
     const response = await firstValueFrom(
-      this.http.post(`${this.keycloakConfig.url}/admin/realms/${this.keycloakConfig.realm}/users`, body, config),
+      this.http.post(`${keycloakConfig.url}/admin/realms/${keycloakConfig.realm}/users`, body, config),
     ).catch((error) => {
       throw new BadRequestException('Failed to create user in Keycloak.', {
         description: error?.response?.data?.error || 'An error occurred while creating the user.',
@@ -95,12 +107,14 @@ export class KeycloakService {
   }
 
   async login(email: string, password: string): Promise<LoginResponse> {
+    const keycloakConfig = this.getKeycloakConfig();
+
     const { data } = await firstValueFrom(
       this.http.post(
-        `${this.keycloakConfig.url}/realms/${this.keycloakConfig.realm}/protocol/openid-connect/token`,
+        `${keycloakConfig.url}/realms/${keycloakConfig.realm}/protocol/openid-connect/token`,
         new URLSearchParams({
-          client_id: this.keycloakConfig.clientId,
-          client_secret: this.keycloakConfig.clientSecret,
+          client_id: keycloakConfig.clientId,
+          client_secret: keycloakConfig.clientSecret,
           grant_type: 'password',
           scope: 'openid profile email',
           username: email,
@@ -119,11 +133,12 @@ export class KeycloakService {
   }
 
   async findCertByKind(kind: string): Promise<string> {
+    const keycloakConfig = this.getKeycloakConfig();
     const value = await this.cache.get<string>(kind);
 
     if (value) return value;
 
-    const url = `${this.keycloakConfig.url}/realms/${this.keycloakConfig.realm}/protocol/openid-connect/certs`;
+    const url = `${keycloakConfig.url}/realms/${keycloakConfig.realm}/protocol/openid-connect/certs`;
 
     const response = await firstValueFrom(this.http.get(url)).catch((error) => {
       throw new BadRequestException('Failed to retrieve Keycloak certs.');
@@ -157,10 +172,11 @@ export class KeycloakService {
   }
 
   async resetPassword(email: string, newPassword: string): Promise<void> {
+    const keycloakConfig = this.getKeycloakConfig();
     const accessToken = await this.getAccessToken();
 
     // Primeiro, buscar o usuário pelo email
-    const searchUrl = `${this.keycloakConfig.url}/admin/realms/${this.keycloakConfig.realm}/users?email=${encodeURIComponent(email)}`;
+    const searchUrl = `${keycloakConfig.url}/admin/realms/${keycloakConfig.realm}/users?email=${encodeURIComponent(email)}`;
 
     const searchResponse = await firstValueFrom(
       this.http.get(searchUrl, {
@@ -178,7 +194,7 @@ export class KeycloakService {
     const userId = users[0].id;
 
     // Redefinir a senha do usuário
-    const resetUrl = `${this.keycloakConfig.url}/admin/realms/${this.keycloakConfig.realm}/users/${userId}/reset-password`;
+    const resetUrl = `${keycloakConfig.url}/admin/realms/${keycloakConfig.realm}/users/${userId}/reset-password`;
 
     await firstValueFrom(
       this.http.put(
@@ -198,10 +214,11 @@ export class KeycloakService {
   }
 
   async sendResetPasswordEmail(email: string): Promise<void> {
+    const keycloakConfig = this.getKeycloakConfig();
     const accessToken = await this.getAccessToken();
 
     // Primeiro, buscar o usuário pelo email
-    const searchUrl = `${this.keycloakConfig.url}/admin/realms/${this.keycloakConfig.realm}/users?email=${encodeURIComponent(email)}`;
+    const searchUrl = `${keycloakConfig.url}/admin/realms/${keycloakConfig.realm}/users?email=${encodeURIComponent(email)}`;
 
     const searchResponse = await firstValueFrom(
       this.http.get(searchUrl, {
@@ -219,13 +236,13 @@ export class KeycloakService {
     const userId = users[0].id;
 
     // Enviar email de redefinição de senha
-    const emailUrl = `${this.keycloakConfig.url}/admin/realms/${this.keycloakConfig.realm}/users/${userId}/execute-actions-email`;
+    const emailUrl = `${keycloakConfig.url}/admin/realms/${keycloakConfig.realm}/users/${userId}/execute-actions-email`;
 
     await firstValueFrom(
       this.http.put(emailUrl, ['UPDATE_PASSWORD'], {
         headers: { Authorization: `Bearer ${accessToken}` },
         params: {
-          client_id: this.keycloakConfig.clientId,
+          client_id: keycloakConfig.clientId,
         },
       }),
     ).catch(() => {
@@ -234,10 +251,11 @@ export class KeycloakService {
   }
 
   async generateResetPasswordToken(email: string): Promise<string> {
+    const keycloakConfig = this.getKeycloakConfig();
     const accessToken = await this.getAccessToken();
 
     // Primeiro, buscar o usuário pelo email
-    const searchUrl = `${this.keycloakConfig.url}/admin/realms/${this.keycloakConfig.realm}/users?email=${encodeURIComponent(email)}`;
+    const searchUrl = `${keycloakConfig.url}/admin/realms/${keycloakConfig.realm}/users?email=${encodeURIComponent(email)}`;
 
     const searchResponse = await firstValueFrom(
       this.http.get(searchUrl, {
@@ -285,6 +303,7 @@ export class KeycloakService {
   }
 
   async resetPasswordWithToken(token: string, newPassword: string): Promise<void> {
+    const keycloakConfig = this.getKeycloakConfig();
     const tokenData = await this.validateResetPasswordToken(token);
 
     if (!tokenData) {
@@ -294,7 +313,7 @@ export class KeycloakService {
     const accessToken = await this.getAccessToken();
 
     // Redefinir a senha do usuário
-    const resetUrl = `${this.keycloakConfig.url}/admin/realms/${this.keycloakConfig.realm}/users/${tokenData.userId}/reset-password`;
+    const resetUrl = `${keycloakConfig.url}/admin/realms/${keycloakConfig.realm}/users/${tokenData.userId}/reset-password`;
 
     await firstValueFrom(
       this.http.put(
