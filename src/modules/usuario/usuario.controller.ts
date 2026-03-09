@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query, SetMetadata, UnauthorizedException } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CurrentUser } from 'src/decorators/current-auth.decorator';
 
-import { ApiComponent } from '../../decorators/api-componente.decorator';
+import { ApiComponent, COMPONENT_KEY } from '../../decorators/api-componente.decorator';
 
 import { AtualizarUsuarioDto } from './dto/atualizar-usuario.dto';
 import { CriarUsuarioDto } from './dto/criar-usuario.dto';
@@ -46,6 +46,7 @@ export class UsuarioController {
   @ApiResponse({ type: UsuarioAcessoEntity, isArray: true, status: 200 })
   @ApiQuery({ name: 'empresaId', required: false })
   @ApiQuery({ name: 'componente', required: false })
+  @SetMetadata(COMPONENT_KEY, null)
   async findAccesses(
     @Param('id', ParseIntPipe) id: number,
     @Query('empresaId') empresaId?: string,
