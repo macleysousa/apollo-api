@@ -1,23 +1,23 @@
 import { PutObjectCommandInput, S3 as S3Client } from '@aws-sdk/client-s3';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { basename, extname } from 'path';
-import { v7 } from 'uuid';
 
 import { StorageType } from './enum/storage.enum';
 
-const { CLOUDFLARE_R2_ENDPOINT, CLOUDFLARE_R2_ACCESS_KEY_ID, CLOUDFLARE_R2_SECRET_ACCESS_KEY, CLOUDFLARE_R2_PUBLIC_KEY } =
-  process.env;
-if (!CLOUDFLARE_R2_ENDPOINT || !CLOUDFLARE_R2_ACCESS_KEY_ID || !CLOUDFLARE_R2_SECRET_ACCESS_KEY || !CLOUDFLARE_R2_PUBLIC_KEY) {
-  throw new Error('Cloudflare R2 credentials not found');
-}
-
 @Injectable()
 export class StorageService {
-  private r2Client: S3Client;
-  private r2Bucket: string;
+  private r2Client: S3Client | null = null;
+  private r2Bucket: string | null = null;
 
   constructor() {
-    this.r2Bucket = process.env.CLOUDFLARE_R2_BUCKET;
+    const { CLOUDFLARE_R2_ENDPOINT, CLOUDFLARE_R2_ACCESS_KEY_ID, CLOUDFLARE_R2_SECRET_ACCESS_KEY, CLOUDFLARE_R2_BUCKET } = process.env;
+
+    if (!CLOUDFLARE_R2_ENDPOINT || !CLOUDFLARE_R2_ACCESS_KEY_ID || !CLOUDFLARE_R2_SECRET_ACCESS_KEY || !CLOUDFLARE_R2_BUCKET) {
+      return;
+    }
+
+    this.r2Bucket = CLOUDFLARE_R2_BUCKET;
     this.r2Client = new S3Client({
       region: 'auto',
       endpoint: CLOUDFLARE_R2_ENDPOINT,
@@ -28,7 +28,15 @@ export class StorageService {
     });
   }
 
+  private ensureR2Configured() {
+    if (!this.r2Client || !this.r2Bucket) {
+      throw new BadRequestException('Cloudflare R2 nao configurado');
+    }
+  }
+
   private async r2Upload(file: Buffer, bucket: any, name: string, mimetype: string): Promise<string> {
+    this.ensureR2Configured();
+
     const params: PutObjectCommandInput = {
       Bucket: bucket,
       Key: name,
@@ -38,7 +46,7 @@ export class StorageService {
       ContentDisposition: 'inline',
     };
 
-    await this.r2Client.putObject(params).catch((error) => {
+    await this.r2Client!.putObject(params).catch((error) => {
       throw new BadRequestException(error.message);
     });
 
@@ -46,6 +54,8 @@ export class StorageService {
   }
 
   async upload(type: StorageType, file: Express.Multer.File) {
+    this.ensureR2Configured();
+
     if (!file) {
       throw new BadRequestException('file not present in request');
     }
@@ -57,7 +67,7 @@ export class StorageService {
     }
 
     const { originalname } = file;
-    const prefix = v7();
+    const prefix = randomUUID();
     const extension = extname(originalname);
     const nameWithoutExtension = basename(originalname, extension);
     const sanitizedName = nameWithoutExtension.replace(/[^a-zA-Z0-9\s]+/g, '-').replace(/\s+/g, '');
@@ -73,9 +83,11 @@ export class StorageService {
   }
 
   async exists(objectKey: string): Promise<boolean> {
+    this.ensureR2Configured();
+
     try {
-      await this.r2Client.headObject({
-        Bucket: this.r2Bucket,
+      await this.r2Client!.headObject({
+        Bucket: this.r2Bucket!,
         Key: objectKey,
       });
       return true;
