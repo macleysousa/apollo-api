@@ -13,6 +13,10 @@ import {
     WebhookEvent,
 } from './contracts/payment-gateway.interface';
 import { CreatePagamentoAvulsoDto } from './dto/create-pagamento-avulso.dto';
+import {
+    CreatePagamentoAvulsoResponseDto,
+    GatewayPagamentoAvulsoResponseDto,
+} from './dto/create-pagamento-avulso.response.dto';
 import { CancelarPagamentoAvulsoDto } from './dto/update-pagamento-status.dto';
 import { PagamentoAvulsoEntity } from './entities/pagamento-avulso.entity';
 import { PagamentoAvulsoStatus } from './enum/pagamento-avulso-status.enum';
@@ -54,7 +58,7 @@ export class PagamentoAvulsoService {
         return pagamento;
     }
 
-    async create(dto: CreatePagamentoAvulsoDto): Promise<PagamentoAvulsoEntity> {
+    async create(dto: CreatePagamentoAvulsoDto): Promise<CreatePagamentoAvulsoResponseDto> {
         const empresaId = this.contextService.empresaId();
         const usuarioId = this.contextService.usuarioId();
         const idempotencyKey = dto.idempotencyKey ?? randomUUID();
@@ -62,8 +66,31 @@ export class PagamentoAvulsoService {
 
         const existente = await this.repository.findOne({ where: { empresaId, idempotencyKey } });
         if (existente) {
-            return existente;
+            return {
+                pagamento: existente,
+                gateway: this.buildGatewayResponse({
+                    provider: existente.provider,
+                    externalId: existente.externalId,
+                    status: existente.status,
+                    checkoutUrl: this.extractGatewayFields(existente.respostaGateway).checkoutUrl,
+                    qrCode: this.extractGatewayFields(existente.respostaGateway).pixCopiaECola,
+                    raw: existente.respostaGateway,
+                } as CreateChargeOutput),
+            };
         }
+
+        const input: CreateChargeInput = {
+            amount: dto.amount,
+            description: dto.description,
+            externalReference,
+            customer: dto.customer,
+            metadata: {
+                ...(dto.metadata ?? {}),
+                idempotencyKey,
+            },
+        };
+
+        const charge = await this.pagamentoIntegracaoService.createCharge(dto.provider, input);
 
         const pagamento = await this.repository.save(
             this.repository.create({
@@ -83,21 +110,12 @@ export class PagamentoAvulsoService {
             }),
         );
 
-        const input: CreateChargeInput = {
-            amount: dto.amount,
-            description: dto.description,
-            externalReference,
-            customer: dto.customer,
-            metadata: {
-                ...(dto.metadata ?? {}),
-                idempotencyKey,
-                pagamentoAvulsoId: pagamento.id,
-            },
+        const persisted = await this.updateFromCharge(pagamento, charge, input);
+
+        return {
+            pagamento: persisted,
+            gateway: this.buildGatewayResponse(charge),
         };
-
-        const charge = await this.pagamentoIntegracaoService.createCharge(dto.provider, input);
-
-        return this.updateFromCharge(pagamento, charge, input);
     }
 
     async syncStatus(id: number): Promise<PagamentoAvulsoEntity> {
@@ -198,5 +216,36 @@ export class PagamentoAvulsoService {
         }
 
         return this.repository.save(pagamento);
+    }
+
+    private buildGatewayResponse(charge: CreateChargeOutput): GatewayPagamentoAvulsoResponseDto {
+        const extra = this.extractGatewayFields(charge.raw);
+
+        return {
+            provider: charge.provider,
+            externalId: charge.externalId,
+            status: charge.status,
+            checkoutUrl: charge.checkoutUrl ?? extra.checkoutUrl,
+            pixCopiaECola: charge.qrCode ?? extra.pixCopiaECola,
+            qrCodeImage: extra.qrCodeImage,
+            txid: extra.txid,
+            raw: charge.raw,
+        };
+    }
+
+    private extractGatewayFields(raw: unknown): {
+        pixCopiaECola?: string;
+        qrCodeImage?: string;
+        checkoutUrl?: string;
+        txid?: string;
+    } {
+        const charge = (raw as any)?.charge ?? raw;
+
+        return {
+            pixCopiaECola: charge?.brCode,
+            qrCodeImage: charge?.qrCodeImage,
+            checkoutUrl: charge?.paymentLinkUrl,
+            txid: charge?.transactionID ?? charge?.txid,
+        };
     }
 }

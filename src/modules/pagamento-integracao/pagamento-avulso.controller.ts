@@ -16,6 +16,7 @@ import { IsPublic } from '../../decorators/is-public.decorator';
 
 import { PaymentProvider } from './contracts/payment-gateway.interface';
 import { CreatePagamentoAvulsoDto } from './dto/create-pagamento-avulso.dto';
+import { CreatePagamentoAvulsoResponseDto } from './dto/create-pagamento-avulso.response.dto';
 import { CancelarPagamentoAvulsoDto } from './dto/update-pagamento-status.dto';
 import { PagamentoAvulsoEntity } from './entities/pagamento-avulso.entity';
 import { PagamentoAvulsoStatus } from './enum/pagamento-avulso-status.enum';
@@ -65,7 +66,7 @@ export class PagamentoAvulsoController {
     @Post()
     @ApiOperation({ summary: 'Cria um pagamento avulso e inicia cobranca no gateway' })
     @ApiBody({ type: CreatePagamentoAvulsoDto })
-    @ApiCreatedResponse({ type: PagamentoAvulsoEntity })
+    @ApiCreatedResponse({ type: CreatePagamentoAvulsoResponseDto })
     async create(@Body() dto: CreatePagamentoAvulsoDto) {
         return this.pagamentoAvulsoService.create(dto);
     }

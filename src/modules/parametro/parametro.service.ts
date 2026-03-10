@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 
+import { EmpresaEntity } from '../empresa/entities/empresa.entity';
+import { EmpresaParametroEntity } from '../empresa/parametro/entities/parametro.entity';
+
 import { ParametroEntity } from './entities/parametro.entity';
 import { Parametro } from './enum/parametros';
 
@@ -10,6 +13,10 @@ export class ParametroService {
   constructor(
     @InjectRepository(ParametroEntity)
     private repository: Repository<ParametroEntity>,
+    @InjectRepository(EmpresaEntity)
+    private empresaRepository: Repository<EmpresaEntity>,
+    @InjectRepository(EmpresaParametroEntity)
+    private empresaParametroRepository: Repository<EmpresaParametroEntity>,
   ) {}
 
   async popular(): Promise<void> {
@@ -22,8 +29,40 @@ export class ParametroService {
       { id: 'OBS_PADRAO_CONSIGNACAO', descricao: 'Observação padrão para consignação', valorPadrao: '' },
       { id: 'DEVOLVER_SEM_ROMANEIO', descricao: 'Devolver sem romaneio', valorPadrao: 'N' },
       { id: 'FATURAR_PEDIDO_SEM_CONFERENCIA', descricao: 'Faturar pedido sem conferência', valorPadrao: 'N' },
+      { id: 'INTEGRACAO_OPEN_PIX_HABILITADA', descricao: 'Habilitar integração com OpenPix', valorPadrao: 'N' },
+      { id: 'INTEGRACAO_OPEN_PIX_APP_ID', descricao: 'Client ID para integração com OpenPix', valorPadrao: '' },
     ];
-    await this.repository.save(parametros);
+
+    // Populate base parameters only when missing.
+    for (const parametro of parametros) {
+      const parametroExistente = await this.repository.findOne({ where: { id: parametro.id as Parametro } });
+
+      if (!parametroExistente) {
+        await this.repository.insert(parametro);
+      }
+    }
+
+    // Populate company parameters one by one; skip if already present.
+    const empresas = await this.empresaRepository.find({ select: ['id'] });
+
+    for (const empresa of empresas) {
+      for (const parametro of parametros) {
+        const existenteNaEmpresa = await this.empresaParametroRepository.findOne({
+          where: {
+            empresaId: empresa.id,
+            parametroId: parametro.id as Parametro,
+          },
+        });
+
+        if (!existenteNaEmpresa) {
+          await this.empresaParametroRepository.insert({
+            empresaId: empresa.id,
+            parametroId: parametro.id as Parametro,
+            valor: parametro.valorPadrao,
+          });
+        }
+      }
+    }
   }
 
   async find(id?: Parametro, descricao?: string): Promise<ParametroEntity[]> {

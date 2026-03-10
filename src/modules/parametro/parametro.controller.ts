@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { ApiComponent } from '../../decorators/api-componente.decorator';
@@ -16,7 +16,8 @@ export class ParametroController {
 
   @Get()
   @ApiQuery({ name: 'descricao', required: false })
-  async find(@Body('id') id?: string, @Body('descricao') descricao?: string): Promise<ParametroEntity[]> {
+  @ApiQuery({ name: 'id', required: false })
+  async find(@Query('id') id?: string, @Query('descricao') descricao?: string): Promise<ParametroEntity[]> {
     return this.service.find(id as Parametro, descricao);
   }
 }
