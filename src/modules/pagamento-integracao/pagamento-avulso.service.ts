@@ -61,8 +61,8 @@ export class PagamentoAvulsoService {
     async create(dto: CreatePagamentoAvulsoDto): Promise<CreatePagamentoAvulsoResponseDto> {
         const empresaId = this.contextService.empresaId();
         const usuarioId = this.contextService.usuarioId();
-        const idempotencyKey = dto.idempotencyKey ?? randomUUID();
-        const externalReference = dto.externalReference ?? idempotencyKey;
+        const idempotencyKey = dto.idempotencyKey?.trim() || randomUUID();
+        const externalReference = dto.externalReference?.trim() || idempotencyKey;
 
         const existente = await this.repository.findOne({ where: { empresaId, idempotencyKey } });
         if (existente) {
@@ -156,9 +156,20 @@ export class PagamentoAvulsoService {
         headers: Record<string, string | string[]>,
     ): Promise<WebhookEvent> {
         const event = await this.pagamentoIntegracaoService.parseWebhook(provider, payload, headers);
+        const idempotencyKey = this.extractIdempotencyKeyFromWebhook(provider, payload, event.externalId);
 
-        if (event.externalId && event.externalId !== 'unknown') {
-            const pagamento = await this.repository.findOne({ where: { provider, externalId: event.externalId } });
+        if (idempotencyKey) {
+            const pagamentoByIdempotencyKey = await this.repository.findOne({
+                where: { provider, idempotencyKey },
+            });
+
+            const pagamento =
+                pagamentoByIdempotencyKey ??
+                (event.externalId && event.externalId !== 'unknown'
+                    ? await this.repository.findOne({
+                        where: { provider, externalId: event.externalId },
+                    })
+                    : null);
 
             if (pagamento && event.status) {
                 pagamento.status = event.status as PagamentoAvulsoStatus;
@@ -177,6 +188,31 @@ export class PagamentoAvulsoService {
         }
 
         return event;
+    }
+
+    private extractIdempotencyKeyFromWebhook(
+        provider: PaymentProvider,
+        payload: unknown,
+        fallbackExternalId?: string,
+    ): string | undefined {
+        const data = payload as any;
+        const charge = data?.charge ?? data?.invoice ?? data;
+
+        if (provider === 'infinitypay') {
+            return (charge?.order_nsu ?? fallbackExternalId)?.toString();
+        }
+
+        if (provider === 'openpix') {
+            return (
+                charge?.correlationID ??
+                charge?.correlationId ??
+                charge?.metadata?.idempotencyKey ??
+                data?.metadata?.idempotencyKey ??
+                fallbackExternalId
+            )?.toString();
+        }
+
+        return fallbackExternalId?.toString();
     }
 
     private async updateFromCharge(

@@ -36,20 +36,22 @@ export class OpenpixPaymentGateway extends BasePaymentGateway {
     }
 
     async createCharge(input: CreateChargeInput): Promise<CreateChargeOutput> {
+        const correlationID = this.resolveIdempotencyKey(input);
+
         await this.writeFileLog('createCharge.start', {
-            correlationID: input.externalReference,
+            correlationID,
             amount: input.amount,
             customerEmail: input.customer?.email,
         });
 
         this.logger.log(
-            `[createCharge] Iniciando cobranca OpenPix correlationID=${input.externalReference} amount=${input.amount}`,
+            `[createCharge] Iniciando cobranca OpenPix correlationID=${correlationID} amount=${input.amount}`,
         );
 
         try {
             const { appId, url } = await this.getConfig();
             await this.writeFileLog('createCharge.config', {
-                correlationID: input.externalReference,
+                correlationID,
                 baseUrl: url,
                 appIdConfigured: !!appId,
             });
@@ -57,7 +59,7 @@ export class OpenpixPaymentGateway extends BasePaymentGateway {
             const woovi = createClient({ appId, baseUrl: url });
 
             const result = await woovi.charge.create({
-                correlationID: input.externalReference,
+                correlationID,
                 value: input.amount,
                 comment: input.description,
                 customer: {
@@ -74,7 +76,7 @@ export class OpenpixPaymentGateway extends BasePaymentGateway {
                 `[createCharge] Cobranca criada identifier=${charge?.identifier ?? 'N/A'} status=${charge?.status ?? 'N/A'}`,
             );
             await this.writeFileLog('createCharge.success', {
-                correlationID: input.externalReference,
+                correlationID,
                 identifier: charge?.identifier,
                 status: charge?.status,
                 brCode: charge?.brCode,
@@ -83,7 +85,7 @@ export class OpenpixPaymentGateway extends BasePaymentGateway {
 
             return {
                 provider: this.provider(),
-                externalId: charge?.identifier ?? charge?.correlationID ?? input.externalReference,
+                externalId: charge?.identifier ?? charge?.correlationID ?? correlationID,
                 status: this.mapStatus(charge?.status),
                 qrCode: charge?.brCode ?? charge?.qrCodeImage,
                 checkoutUrl: charge?.paymentLinkUrl,
@@ -91,10 +93,10 @@ export class OpenpixPaymentGateway extends BasePaymentGateway {
             };
         } catch (error) {
             this.logger.error(
-                `[createCharge] Falha na criacao da cobranca correlationID=${input.externalReference}: ${error?.message ?? error}`,
+                `[createCharge] Falha na criacao da cobranca correlationID=${correlationID}: ${error?.message ?? error}`,
             );
             await this.writeFileLog('createCharge.error', {
-                correlationID: input.externalReference,
+                correlationID,
                 message: error?.message,
                 stack: error?.stack,
                 data: error?.response?.data,
@@ -258,6 +260,10 @@ export class OpenpixPaymentGateway extends BasePaymentGateway {
         if (['FAILED', 'ERROR'].includes(value)) return 'failed';
 
         return 'pending';
+    }
+
+    private resolveIdempotencyKey(input: CreateChargeInput): string {
+        return String(input.metadata?.idempotencyKey ?? input.externalReference);
     }
 
     private async writeFileLog(event: string, payload: unknown): Promise<void> {

@@ -98,7 +98,7 @@ export class PagamentoAvulsoController {
 
     @Get('gateway/:provider/:externalId')
     @ApiOperation({ summary: 'Consulta status direto no gateway' })
-    @ApiParam({ name: 'provider', enum: ['noop', 'openpix'] })
+    @ApiParam({ name: 'provider', enum: ['noop', 'openpix', 'infinitypay'] })
     @ApiParam({ name: 'externalId', type: String })
     @ApiOkResponse({ description: 'Status retornado pelo gateway' })
     async getChargeStatus(@Param('provider') provider: PaymentProvider, @Param('externalId') externalId: string) {
@@ -108,7 +108,7 @@ export class PagamentoAvulsoController {
     @Post('webhook/:provider')
     @IsPublic()
     @ApiOperation({ summary: 'Recebe webhook de atualizacao de status do gateway' })
-    @ApiParam({ name: 'provider', enum: ['noop', 'openpix'] })
+    @ApiParam({ name: 'provider', enum: ['noop', 'openpix', 'infinitypay'] })
     @ApiResponse({ status: 200 })
     async webhook(
         @Param('provider') provider: PaymentProvider,

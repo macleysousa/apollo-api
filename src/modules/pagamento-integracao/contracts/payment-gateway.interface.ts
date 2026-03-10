@@ -1,4 +1,4 @@
-export type PaymentProvider = 'noop' | 'openpix';
+export type PaymentProvider = 'noop' | 'openpix' | 'infinitypay';
 
 export type CreateChargeInput = {
     amount: number;

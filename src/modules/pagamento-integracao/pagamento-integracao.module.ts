@@ -3,6 +3,7 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { PaymentGateway } from './contracts/payment-gateway.interface';
+import { InfinityPayPaymentGateway } from './gateways/infinitypay-payment.gateway';
 import { NoopPaymentGateway } from './gateways/noop-payment.gateway';
 import { OpenpixPaymentGateway } from './gateways/openpix-payment.gateway';
 import { PagamentoAvulsoController } from './pagamento-avulso.controller';
@@ -18,10 +19,15 @@ import { PagamentoIntegracaoService } from './pagamento-integracao.service';
     providers: [
         NoopPaymentGateway,
         OpenpixPaymentGateway,
+        InfinityPayPaymentGateway,
         {
             provide: PAYMENT_GATEWAYS,
-            useFactory: (noopGateway: NoopPaymentGateway, openpixGateway: OpenpixPaymentGateway): PaymentGateway[] => [noopGateway, openpixGateway],
-            inject: [NoopPaymentGateway, OpenpixPaymentGateway],
+            useFactory: (
+                noopGateway: NoopPaymentGateway,
+                openpixGateway: OpenpixPaymentGateway,
+                infinityPayGateway: InfinityPayPaymentGateway,
+            ): PaymentGateway[] => [noopGateway, openpixGateway, infinityPayGateway],
+            inject: [NoopPaymentGateway, OpenpixPaymentGateway, InfinityPayPaymentGateway],
         },
         PaymentGatewayRegistry,
         PagamentoIntegracaoService,

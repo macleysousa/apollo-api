@@ -31,6 +31,10 @@ export class ParametroService {
       { id: 'FATURAR_PEDIDO_SEM_CONFERENCIA', descricao: 'Faturar pedido sem conferência', valorPadrao: 'N' },
       { id: 'INTEGRACAO_OPEN_PIX_HABILITADA', descricao: 'Habilitar integração com OpenPix', valorPadrao: 'N' },
       { id: 'INTEGRACAO_OPEN_PIX_APP_ID', descricao: 'Client ID para integração com OpenPix', valorPadrao: '' },
+      { id: 'INTEGRACAO_INFINITY_PAY_HABILITADA', descricao: 'Habilitar integração com Infinity Pay', valorPadrao: 'N' },
+      { id: 'INTEGRACAO_INFINITY_PAY_API_HANDLE', descricao: 'Handle: sua InfiniteTag (a identificação que aparece no canto superior esquerdo do App InfinitePay). Use sem o símbolo $ do início.', valorPadrao: '' },
+      { id: 'INTEGRACAO_INFINITY_PAY_URL_REDIRECT', descricao: 'URL de redirecionamento no final do processo de pagamento', valorPadrao: '' },
+      { id: 'INTEGRACAO_INFINITY_PAY_URL_WEBHOOK', descricao: 'URL de webhook para integração com Infinity Pay', valorPadrao: '' },
     ];
 
     // Populate base parameters only when missing.

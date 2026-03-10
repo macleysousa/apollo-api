@@ -27,9 +27,9 @@ class PagamentoAvulsoCustomerDto {
 }
 
 export class CreatePagamentoAvulsoDto {
-    @ApiProperty({ enum: ['noop', 'openpix'] })
+    @ApiProperty({ enum: ['noop', 'openpix', 'infinitypay'] })
     @IsNotEmpty()
-    @IsIn(['noop', 'openpix'])
+    @IsIn(['noop', 'openpix', 'infinitypay'])
     provider: PaymentProvider;
 
     @ApiProperty({ description: 'Valor em centavos' })
