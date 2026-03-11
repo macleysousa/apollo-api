@@ -2,13 +2,15 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ParametroConstraint } from 'src/commons/validations/is-parametro.validation';
+import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
+import { EmpresaParametroEntity } from 'src/modules/empresa/parametro/entities/parametro.entity';
 
 import { ParametroEntity } from './entities/parametro.entity';
 import { ParametroController } from './parametro.controller';
 import { ParametroService } from './parametro.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ParametroEntity])],
+  imports: [TypeOrmModule.forFeature([ParametroEntity, EmpresaEntity, EmpresaParametroEntity])],
   controllers: [ParametroController],
   providers: [ParametroService, ParametroConstraint],
   exports: [ParametroService],

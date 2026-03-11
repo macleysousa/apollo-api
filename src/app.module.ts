@@ -28,6 +28,7 @@ import { FuncionarioModule } from './modules/funcionario/funcionario.module';
 import { ImportModule } from './modules/import/import.module';
 import { MarcaModule } from './modules/marca/marca.module';
 import { ParametroModule } from './modules/parametro/parametro.module';
+import { PagamentoIntegracaoModule } from './modules/pagamento-integracao/pagamento-integracao.module';
 import { PedidoModule } from './modules/pedido/pedido.module';
 import { PessoaModule } from './modules/pessoa/pessoa.module';
 import { PessoaUsuarioModule } from './modules/pessoa-usuario/pessoa-usuario.module';
@@ -69,6 +70,7 @@ import { StorageModule } from './storage/storage.module';
     TabelaDePrecoModule.forRoot(),
     EstoqueModule.forRoot(),
     FormaDePagamentoModule.forRoot(),
+    PagamentoIntegracaoModule.forRoot(),
     RomaneioModule.forRoot(),
     ConsignacaoModule.forRoot(),
     PedidoModule.forRoot(),

@@ -24,7 +24,9 @@ export class EmpresaParametroService {
   }
 
   async find(empresaId: number): Promise<EmpresaParametroView[]> {
-    return this.view.find({ where: { empresaId } });
+    const items = await this.view.find({ where: { empresaId } });
+    const uniqueByParametro = new Map(items.map((item) => [item.parametroId, item]));
+    return [...uniqueByParametro.values()];
   }
 
   async findByParametroId(empresaId: number, parametroId: Parametro): Promise<EmpresaParametroView> {
@@ -36,7 +38,14 @@ export class EmpresaParametroService {
     parametroId: Parametro,
     updateParametroDto: UpdateEmpresaParametroDto,
   ): Promise<EmpresaParametroView> {
-    await this.repository.upsert({ ...updateParametroDto, empresaId }, { conflictPaths: ['empresaId', 'parametroId'] });
+    await this.repository.upsert(
+      {
+        ...updateParametroDto,
+        empresaId,
+        parametroId,
+      },
+      { conflictPaths: ['empresaId', 'parametroId'] },
+    );
     return this.findByParametroId(empresaId, parametroId);
   }
 }
