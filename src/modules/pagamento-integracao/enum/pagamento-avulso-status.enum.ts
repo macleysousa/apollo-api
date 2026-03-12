@@ -3,4 +3,5 @@ export enum PagamentoAvulsoStatus {
     paid = 'paid',
     cancelled = 'cancelled',
     failed = 'failed',
+    gatewayError = 'gatewayError',
 }

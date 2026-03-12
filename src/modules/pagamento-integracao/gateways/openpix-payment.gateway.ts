@@ -263,7 +263,7 @@ export class OpenpixPaymentGateway extends BasePaymentGateway {
     }
 
     private resolveIdempotencyKey(input: CreateChargeInput): string {
-        return String(input.metadata?.idempotencyKey ?? input.externalReference);
+        return String(input.metadata?.pagamentoAvulsoId ?? input.externalReference);
     }
 
     private async writeFileLog(event: string, payload: unknown): Promise<void> {

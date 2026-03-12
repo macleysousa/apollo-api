@@ -79,19 +79,6 @@ export class PagamentoAvulsoService {
             };
         }
 
-        const input: CreateChargeInput = {
-            amount: dto.amount,
-            description: dto.description,
-            externalReference,
-            customer: dto.customer,
-            metadata: {
-                ...(dto.metadata ?? {}),
-                idempotencyKey,
-            },
-        };
-
-        const charge = await this.pagamentoIntegracaoService.createCharge(dto.provider, input);
-
         const pagamento = await this.repository.save(
             this.repository.create({
                 empresaId,
@@ -110,12 +97,69 @@ export class PagamentoAvulsoService {
             }),
         );
 
-        const persisted = await this.updateFromCharge(pagamento, charge, input);
+        const input = this.buildCreateChargeInput(pagamento);
 
-        return {
-            pagamento: persisted,
-            gateway: this.buildGatewayResponse(charge),
-        };
+        try {
+            const charge = await this.pagamentoIntegracaoService.createCharge(dto.provider, input);
+            const persisted = await this.updateFromCharge(pagamento, charge, input);
+
+            return {
+                pagamento: persisted,
+                gateway: this.buildGatewayResponse(charge),
+            };
+        } catch (error) {
+            const persisted = await this.markGatewayError(pagamento, input, error);
+
+            return {
+                pagamento: persisted,
+                gateway: {
+                    provider: persisted.provider,
+                    externalId: persisted.externalId,
+                    status: PagamentoAvulsoStatus.gatewayError,
+                    raw: persisted.respostaGateway,
+                },
+            };
+        }
+    }
+
+    async retryCharge(id: number): Promise<CreatePagamentoAvulsoResponseDto> {
+        const pagamento = await this.findById(id);
+
+        if (pagamento.status !== PagamentoAvulsoStatus.gatewayError) {
+            return {
+                pagamento,
+                gateway: this.buildGatewayResponse({
+                    provider: pagamento.provider,
+                    externalId: pagamento.externalId,
+                    status: pagamento.status as CreateChargeOutput['status'],
+                    raw: pagamento.respostaGateway,
+                }),
+            };
+        }
+
+        const input = this.buildCreateChargeInput(pagamento);
+
+        try {
+            const charge = await this.pagamentoIntegracaoService.createCharge(pagamento.provider, input);
+            const persisted = await this.updateFromCharge(pagamento, charge, input);
+
+            return {
+                pagamento: persisted,
+                gateway: this.buildGatewayResponse(charge),
+            };
+        } catch (error) {
+            const persisted = await this.markGatewayError(pagamento, input, error);
+
+            return {
+                pagamento: persisted,
+                gateway: {
+                    provider: persisted.provider,
+                    externalId: persisted.externalId,
+                    status: PagamentoAvulsoStatus.gatewayError,
+                    raw: persisted.respostaGateway,
+                },
+            };
+        }
     }
 
     async syncStatus(id: number): Promise<PagamentoAvulsoEntity> {
@@ -156,41 +200,48 @@ export class PagamentoAvulsoService {
         headers: Record<string, string | string[]>,
     ): Promise<WebhookEvent> {
         const event = await this.pagamentoIntegracaoService.parseWebhook(provider, payload, headers);
-        const idempotencyKey = this.extractIdempotencyKeyFromWebhook(provider, payload, event.externalId);
+        const gatewayReference = this.extractGatewayReferenceFromWebhook(provider, payload, event.externalId);
 
-        if (idempotencyKey) {
-            const pagamentoByIdempotencyKey = await this.repository.findOne({
-                where: { provider, idempotencyKey },
-            });
+        const pagamentoById = gatewayReference && /^\d+$/.test(gatewayReference)
+            ? await this.repository.findOne({
+                where: { id: Number(gatewayReference), provider },
+            })
+            : null;
 
-            const pagamento =
-                pagamentoByIdempotencyKey ??
-                (event.externalId && event.externalId !== 'unknown'
-                    ? await this.repository.findOne({
-                        where: { provider, externalId: event.externalId },
-                    })
-                    : null);
+        const pagamentoByIdempotencyKey = gatewayReference
+            ? await this.repository.findOne({
+                where: { provider, idempotencyKey: gatewayReference },
+            })
+            : null;
 
-            if (pagamento && event.status) {
-                pagamento.status = event.status as PagamentoAvulsoStatus;
-                pagamento.respostaGateway = payload;
+        const pagamento =
+            pagamentoById ??
+            pagamentoByIdempotencyKey ??
+            (event.externalId && event.externalId !== 'unknown'
+                ? await this.repository.findOne({
+                    where: { provider, externalId: event.externalId },
+                })
+                : null);
 
-                if (event.status === PagamentoAvulsoStatus.paid && !pagamento.pagoEm) {
-                    pagamento.pagoEm = new Date();
-                }
+        if (pagamento && event.status) {
+            pagamento.status = event.status as PagamentoAvulsoStatus;
+            pagamento.respostaGateway = payload;
 
-                if (event.status === PagamentoAvulsoStatus.cancelled && !pagamento.canceladoEm) {
-                    pagamento.canceladoEm = new Date();
-                }
-
-                await this.repository.save(pagamento);
+            if (event.status === PagamentoAvulsoStatus.paid && !pagamento.pagoEm) {
+                pagamento.pagoEm = new Date();
             }
+
+            if (event.status === PagamentoAvulsoStatus.cancelled && !pagamento.canceladoEm) {
+                pagamento.canceladoEm = new Date();
+            }
+
+            await this.repository.save(pagamento);
         }
 
         return event;
     }
 
-    private extractIdempotencyKeyFromWebhook(
+    private extractGatewayReferenceFromWebhook(
         provider: PaymentProvider,
         payload: unknown,
         fallbackExternalId?: string,
@@ -236,6 +287,18 @@ export class PagamentoAvulsoService {
         return this.repository.save(pagamento);
     }
 
+    private async markGatewayError(
+        pagamento: PagamentoAvulsoEntity,
+        requestPayload: CreateChargeInput,
+        error: unknown,
+    ): Promise<PagamentoAvulsoEntity> {
+        pagamento.status = PagamentoAvulsoStatus.gatewayError;
+        pagamento.requisicaoGateway = requestPayload;
+        pagamento.respostaGateway = this.normalizeGatewayError(error);
+
+        return this.repository.save(pagamento);
+    }
+
     private async updateFromStatus(
         pagamento: PagamentoAvulsoEntity,
         status: ChargeStatusOutput,
@@ -266,6 +329,35 @@ export class PagamentoAvulsoService {
             qrCodeImage: extra.qrCodeImage,
             txid: extra.txid,
             raw: charge.raw,
+        };
+    }
+
+    private buildCreateChargeInput(pagamento: PagamentoAvulsoEntity): CreateChargeInput {
+        return {
+            amount: pagamento.amount,
+            description: pagamento.description,
+            externalReference: String(pagamento.id),
+            customer: {
+                nome: pagamento.customerNome,
+                documento: pagamento.customerDocumento,
+                email: pagamento.customerEmail,
+                telefone: pagamento.customerTelefone,
+            },
+            metadata: {
+                ...(pagamento.metadata ?? {}),
+                pagamentoAvulsoId: pagamento.id,
+            },
+        };
+    }
+
+    private normalizeGatewayError(error: unknown): Record<string, unknown> {
+        const value = error as any;
+
+        return {
+            message: value?.message ?? 'Falha na integracao de pagamento.',
+            name: value?.name,
+            statusCode: value?.status ?? value?.response?.status,
+            description: value?.response?.data ?? value?.description,
         };
     }
 

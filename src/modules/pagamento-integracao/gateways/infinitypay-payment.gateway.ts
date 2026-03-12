@@ -1,5 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { appendFile } from 'fs/promises';
+import { join } from 'path';
 import { firstValueFrom } from 'rxjs';
 
 import { ContextService } from 'src/context/context.service';
@@ -17,6 +19,8 @@ import {
 
 @Injectable()
 export class InfinityPayPaymentGateway extends BasePaymentGateway {
+    private readonly infinityPayLogPath = join(process.cwd(), 'log_infinitypay.txt');
+
     constructor(
         private readonly http: HttpService,
         private readonly contextService: ContextService,
@@ -30,12 +34,12 @@ export class InfinityPayPaymentGateway extends BasePaymentGateway {
 
     async createCharge(input: CreateChargeInput): Promise<CreateChargeOutput> {
         const config = await this.getConfig();
-        const orderNsu = this.resolveIdempotencyKey(input);
+        const orderNsu = this.resolveOrderNsu(input);
 
         const body = {
             handle: config.handle,
             redirect_url: config.redirectUrl,
-            webhook_url: config.webhookUrl,
+            webhook_url: 'https://apollo-api-stg.coralcloud.app/v1/pagamentos-avulsos/webhook/infinitypay', // config.webhookUrl,
             order_nsu: orderNsu,
             customer: {
                 name: input.customer?.nome,
@@ -53,6 +57,10 @@ export class InfinityPayPaymentGateway extends BasePaymentGateway {
         };
 
         try {
+            await this.logInfinityPayRequest('POST', `${config.baseUrl}/invoices/public/checkout/links`, body, {
+                'Content-Type': 'application/json',
+            });
+
             const { data } = await firstValueFrom(
                 this.http.post(`${config.baseUrl}/invoices/public/checkout/links`, body, {
                     headers: { 'Content-Type': 'application/json' },
@@ -78,14 +86,15 @@ export class InfinityPayPaymentGateway extends BasePaymentGateway {
 
     async getCharge(externalId: string): Promise<ChargeStatusOutput> {
         const config = await this.getConfig();
+        const body = {
+            handle: config.handle,
+            order_nsu: externalId,
+        };
 
         try {
-            const { data } = await firstValueFrom(
-                this.http.post(`${config.baseUrl}/invoices/public/checkout/payment_check`, {
-                    handle: config.handle,
-                    order_nsu: externalId,
-                }),
-            );
+            await this.logInfinityPayRequest('POST', `${config.baseUrl}/invoices/public/checkout/payment_check`, body);
+
+            const { data } = await firstValueFrom(this.http.post(`${config.baseUrl}/invoices/public/checkout/payment_check`, body));
             const charge = data;
             const status = this.resolveStatus(charge);
 
@@ -105,8 +114,11 @@ export class InfinityPayPaymentGateway extends BasePaymentGateway {
 
     async cancelCharge(externalId: string): Promise<void> {
         const config = await this.getConfig();
+        const url = `${config.baseUrl}/invoices/${externalId}`;
 
-        await firstValueFrom(this.http.delete(`${config.baseUrl}/invoices/${externalId}`)).catch((error) => {
+        await this.logInfinityPayRequest('DELETE', url);
+
+        await firstValueFrom(this.http.delete(url)).catch((error) => {
             throw new BadRequestException('Falha ao cancelar cobranca no InfinityPay.', {
                 description: (error as any)?.response?.data ?? this.normalizeError(error).message,
             });
@@ -120,7 +132,7 @@ export class InfinityPayPaymentGateway extends BasePaymentGateway {
         return {
             provider: this.provider(),
             event: payload?.event ?? 'infinitypay.webhook',
-            externalId: String(charge?.order_nsu ?? charge?.invoice_slug ?? charge?.id ?? charge?.invoice_id ?? 'unknown'),
+            externalId: String(charge?.order_nsu),
             status,
             payload,
         };
@@ -164,8 +176,25 @@ export class InfinityPayPaymentGateway extends BasePaymentGateway {
         return parametro?.valor?.trim() || undefined;
     }
 
-    private resolveIdempotencyKey(input: CreateChargeInput): string {
-        return String(input.metadata?.idempotencyKey ?? input.externalReference);
+    private resolveOrderNsu(input: CreateChargeInput): string {
+        return String(input.metadata?.pagamentoAvulsoId ?? input.externalReference);
+    }
+
+    private async logInfinityPayRequest(
+        method: 'POST' | 'DELETE',
+        url: string,
+        payload?: Record<string, any>,
+        headers?: Record<string, string>,
+    ): Promise<void> {
+        const logLine = JSON.stringify({
+            timestamp: new Date().toISOString(),
+            method,
+            url,
+            headers,
+            payload,
+        });
+
+        await appendFile(this.infinityPayLogPath, `${logLine}\n`).catch(() => undefined);
     }
 
 

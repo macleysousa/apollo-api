@@ -71,6 +71,14 @@ export class PagamentoAvulsoController {
         return this.pagamentoAvulsoService.create(dto);
     }
 
+    @Post(':id/retry-cobranca')
+    @ApiOperation({ summary: 'Tenta novamente criar cobranca no gateway para pagamento com erro de integracao' })
+    @ApiParam({ name: 'id', type: Number })
+    @ApiOkResponse({ type: CreatePagamentoAvulsoResponseDto })
+    async retryCharge(@Param('id', ParseIntPipe) id: number) {
+        return this.pagamentoAvulsoService.retryCharge(id);
+    }
+
     @Patch(':id/sincronizar')
     @ApiOperation({ summary: 'Sincroniza status do pagamento com gateway' })
     @ApiParam({ name: 'id', type: Number })

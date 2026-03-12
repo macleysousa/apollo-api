@@ -22,7 +22,7 @@ export class PagamentoAvulsoEntity extends BaseEntity {
     @Column('int')
     usuarioId: number;
 
-    @ApiProperty({ enum: ['noop', 'openpix'] })
+    @ApiProperty({ enum: ['noop', 'openpix', 'infinitypay'] })
     @Column('varchar')
     provider: PaymentProvider;
 
