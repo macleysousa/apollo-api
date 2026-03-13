@@ -16,9 +16,8 @@ import { IsPublic } from '../../decorators/is-public.decorator';
 
 import { PaymentProvider } from './contracts/payment-gateway.interface';
 import { CreatePagamentoAvulsoDto } from './dto/create-pagamento-avulso.dto';
-import { CreatePagamentoAvulsoResponseDto } from './dto/create-pagamento-avulso.response.dto';
+import { CreatePagamentoAvulsoResponseDto, PagamentoAvulsoResponseDto } from './dto/create-pagamento-avulso.response.dto';
 import { CancelarPagamentoAvulsoDto } from './dto/update-pagamento-status.dto';
-import { PagamentoAvulsoEntity } from './entities/pagamento-avulso.entity';
 import { PagamentoAvulsoStatus } from './enum/pagamento-avulso-status.enum';
 import { PagamentoAvulsoService } from './pagamento-avulso.service';
 import { PagamentoIntegracaoService } from './pagamento-integracao.service';
@@ -43,24 +42,24 @@ export class PagamentoAvulsoController {
     @Get()
     @ApiOperation({ summary: 'Lista historico de pagamentos avulsos' })
     @ApiQuery({ name: 'status', required: false, enum: PagamentoAvulsoStatus })
-    @ApiOkResponse({ type: [PagamentoAvulsoEntity] })
+    @ApiOkResponse({ type: [PagamentoAvulsoResponseDto] })
     async list(@Query('status') status?: PagamentoAvulsoStatus) {
-        return this.pagamentoAvulsoService.list(status);
+        return this.pagamentoAvulsoService.toResponseList(await this.pagamentoAvulsoService.list(status));
     }
 
     @Get('pendentes')
     @ApiOperation({ summary: 'Lista pagamentos avulsos pendentes' })
-    @ApiOkResponse({ type: [PagamentoAvulsoEntity] })
+    @ApiOkResponse({ type: [PagamentoAvulsoResponseDto] })
     async listPendentes() {
-        return this.pagamentoAvulsoService.listPendentes();
+        return this.pagamentoAvulsoService.toResponseList(await this.pagamentoAvulsoService.listPendentes());
     }
 
     @Get(':id')
     @ApiOperation({ summary: 'Busca pagamento avulso por ID' })
     @ApiParam({ name: 'id', type: Number })
-    @ApiOkResponse({ type: PagamentoAvulsoEntity })
+    @ApiOkResponse({ type: PagamentoAvulsoResponseDto })
     async findById(@Param('id', ParseIntPipe) id: number) {
-        return this.pagamentoAvulsoService.findById(id);
+        return this.pagamentoAvulsoService.toResponse(await this.pagamentoAvulsoService.findById(id));
     }
 
     @Post()
@@ -82,26 +81,26 @@ export class PagamentoAvulsoController {
     @Patch(':id/sincronizar')
     @ApiOperation({ summary: 'Sincroniza status do pagamento com gateway' })
     @ApiParam({ name: 'id', type: Number })
-    @ApiOkResponse({ type: PagamentoAvulsoEntity })
+    @ApiOkResponse({ type: PagamentoAvulsoResponseDto })
     async syncStatus(@Param('id', ParseIntPipe) id: number) {
-        return this.pagamentoAvulsoService.syncStatus(id);
+        return this.pagamentoAvulsoService.toResponse(await this.pagamentoAvulsoService.syncStatus(id));
     }
 
     @Patch(':id/cancelar')
     @ApiOperation({ summary: 'Cancela pagamento avulso' })
     @ApiParam({ name: 'id', type: Number })
     @ApiBody({ type: CancelarPagamentoAvulsoDto })
-    @ApiOkResponse({ type: PagamentoAvulsoEntity })
+    @ApiOkResponse({ type: PagamentoAvulsoResponseDto })
     async cancel(@Param('id', ParseIntPipe) id: number, @Body() dto: CancelarPagamentoAvulsoDto) {
-        return this.pagamentoAvulsoService.cancelById(id, dto);
+        return this.pagamentoAvulsoService.toResponse(await this.pagamentoAvulsoService.cancelById(id, dto));
     }
 
     @Patch(':id/marcar-pago')
     @ApiOperation({ summary: 'Marca pagamento avulso como pago manualmente' })
     @ApiParam({ name: 'id', type: Number })
-    @ApiOkResponse({ type: PagamentoAvulsoEntity })
+    @ApiOkResponse({ type: PagamentoAvulsoResponseDto })
     async markAsPaid(@Param('id', ParseIntPipe) id: number) {
-        return this.pagamentoAvulsoService.markAsPaid(id);
+        return this.pagamentoAvulsoService.toResponse(await this.pagamentoAvulsoService.markAsPaid(id));
     }
 
     @Get('gateway/:provider/:externalId')

@@ -2,6 +2,25 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { PagamentoAvulsoEntity } from '../entities/pagamento-avulso.entity';
 
+export class PagamentoAvulsoCustomerResponseDto {
+    @ApiPropertyOptional()
+    nome?: string;
+
+    @ApiPropertyOptional()
+    documento?: string;
+
+    @ApiPropertyOptional()
+    email?: string;
+
+    @ApiPropertyOptional()
+    telefone?: string;
+}
+
+export class PagamentoAvulsoResponseDto extends PagamentoAvulsoEntity {
+    @ApiPropertyOptional({ type: PagamentoAvulsoCustomerResponseDto })
+    customer?: PagamentoAvulsoCustomerResponseDto;
+}
+
 export class GatewayPagamentoAvulsoResponseDto {
     @ApiProperty()
     provider: string;
@@ -29,8 +48,8 @@ export class GatewayPagamentoAvulsoResponseDto {
 }
 
 export class CreatePagamentoAvulsoResponseDto {
-    @ApiProperty({ type: PagamentoAvulsoEntity })
-    pagamento: PagamentoAvulsoEntity;
+    @ApiProperty({ type: PagamentoAvulsoResponseDto })
+    pagamento: PagamentoAvulsoResponseDto;
 
     @ApiProperty({ type: GatewayPagamentoAvulsoResponseDto })
     gateway: GatewayPagamentoAvulsoResponseDto;

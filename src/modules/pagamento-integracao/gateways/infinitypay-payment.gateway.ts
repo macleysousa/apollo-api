@@ -113,16 +113,7 @@ export class InfinityPayPaymentGateway extends BasePaymentGateway {
     }
 
     async cancelCharge(externalId: string): Promise<void> {
-        const config = await this.getConfig();
-        const url = `${config.baseUrl}/invoices/${externalId}`;
 
-        await this.logInfinityPayRequest('DELETE', url);
-
-        await firstValueFrom(this.http.delete(url)).catch((error) => {
-            throw new BadRequestException('Falha ao cancelar cobranca no InfinityPay.', {
-                description: (error as any)?.response?.data ?? this.normalizeError(error).message,
-            });
-        });
     }
 
     async parseWebhook(payload: any, _headers: Record<string, string | string[]>): Promise<WebhookEvent> {

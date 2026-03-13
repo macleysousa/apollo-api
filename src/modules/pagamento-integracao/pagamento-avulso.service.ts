@@ -16,6 +16,7 @@ import { CreatePagamentoAvulsoDto } from './dto/create-pagamento-avulso.dto';
 import {
     CreatePagamentoAvulsoResponseDto,
     GatewayPagamentoAvulsoResponseDto,
+    PagamentoAvulsoResponseDto,
 } from './dto/create-pagamento-avulso.response.dto';
 import { CancelarPagamentoAvulsoDto } from './dto/update-pagamento-status.dto';
 import { PagamentoAvulsoEntity } from './entities/pagamento-avulso.entity';
@@ -67,7 +68,7 @@ export class PagamentoAvulsoService {
         const existente = await this.repository.findOne({ where: { empresaId, idempotencyKey } });
         if (existente) {
             return {
-                pagamento: existente,
+                pagamento: this.toResponse(existente),
                 gateway: this.buildGatewayResponse({
                     provider: existente.provider,
                     externalId: existente.externalId,
@@ -104,14 +105,14 @@ export class PagamentoAvulsoService {
             const persisted = await this.updateFromCharge(pagamento, charge, input);
 
             return {
-                pagamento: persisted,
+                pagamento: this.toResponse(persisted),
                 gateway: this.buildGatewayResponse(charge),
             };
         } catch (error) {
             const persisted = await this.markGatewayError(pagamento, input, error);
 
             return {
-                pagamento: persisted,
+                pagamento: this.toResponse(persisted),
                 gateway: {
                     provider: persisted.provider,
                     externalId: persisted.externalId,
@@ -127,7 +128,7 @@ export class PagamentoAvulsoService {
 
         if (pagamento.status !== PagamentoAvulsoStatus.gatewayError) {
             return {
-                pagamento,
+                pagamento: this.toResponse(pagamento),
                 gateway: this.buildGatewayResponse({
                     provider: pagamento.provider,
                     externalId: pagamento.externalId,
@@ -144,14 +145,14 @@ export class PagamentoAvulsoService {
             const persisted = await this.updateFromCharge(pagamento, charge, input);
 
             return {
-                pagamento: persisted,
+                pagamento: this.toResponse(persisted),
                 gateway: this.buildGatewayResponse(charge),
             };
         } catch (error) {
             const persisted = await this.markGatewayError(pagamento, input, error);
 
             return {
-                pagamento: persisted,
+                pagamento: this.toResponse(persisted),
                 gateway: {
                     provider: persisted.provider,
                     externalId: persisted.externalId,
@@ -359,6 +360,22 @@ export class PagamentoAvulsoService {
             statusCode: value?.status ?? value?.response?.status,
             description: value?.response?.data ?? value?.description,
         };
+    }
+
+    toResponse(pagamento: PagamentoAvulsoEntity): PagamentoAvulsoResponseDto {
+        return {
+            ...pagamento,
+            customer: {
+                nome: pagamento.customerNome,
+                documento: pagamento.customerDocumento,
+                email: pagamento.customerEmail,
+                telefone: pagamento.customerTelefone,
+            },
+        };
+    }
+
+    toResponseList(pagamentos: PagamentoAvulsoEntity[]): PagamentoAvulsoResponseDto[] {
+        return pagamentos.map((pagamento) => this.toResponse(pagamento));
     }
 
     private extractGatewayFields(raw: unknown): {
