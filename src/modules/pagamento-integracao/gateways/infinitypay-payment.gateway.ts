@@ -78,6 +78,11 @@ export class InfinityPayPaymentGateway extends BasePaymentGateway {
                 raw: data,
             };
         } catch (error) {
+            await this.logInfinityPayRequest('POST', `${config.baseUrl}/invoices/public/checkout/links/error`, {
+                order_nsu: orderNsu,
+                error: (error as any)?.response?.data ?? this.normalizeError(error).message,
+            });
+
             throw new BadRequestException('Falha ao criar cobranca no InfinityPay.', {
                 description: (error as any)?.response?.data ?? this.normalizeError(error).message,
             });
@@ -123,7 +128,7 @@ export class InfinityPayPaymentGateway extends BasePaymentGateway {
         return {
             provider: this.provider(),
             event: payload?.event ?? 'infinitypay.webhook',
-            externalId: String(charge?.order_nsu),
+            externalId: String(charge?.order_nsu ?? charge?.invoice_slug ?? charge?.id ?? charge?.invoice_id ?? 'unknown'),
             status,
             payload,
         };
@@ -168,7 +173,14 @@ export class InfinityPayPaymentGateway extends BasePaymentGateway {
     }
 
     private resolveOrderNsu(input: CreateChargeInput): string {
-        return String(input.metadata?.pagamentoAvulsoId ?? input.externalReference);
+        const rawOrderNsu = input.metadata?.pagamentoAvulsoId ?? input.externalReference;
+        const orderNsu = String(rawOrderNsu ?? '').trim();
+
+        if (!orderNsu || orderNsu.toLowerCase() === 'undefined' || orderNsu.toLowerCase() === 'null') {
+            throw new BadRequestException('Nao foi possivel definir order_nsu para enviar ao InfinityPay.');
+        }
+
+        return orderNsu;
     }
 
     private async logInfinityPayRequest(
@@ -190,14 +202,42 @@ export class InfinityPayPaymentGateway extends BasePaymentGateway {
 
 
     private resolveStatus(charge: any): 'pending' | 'paid' | 'cancelled' | 'failed' {
+        const rawStatus = String(charge?.status ?? charge?.payment_status ?? '').toUpperCase();
+        const amount = this.parseNumericValue(charge?.amount);
+        const paidAmount = this.parseNumericValue(charge?.paid_amount ?? charge?.paidAmount);
+        const hasTransaction = Boolean(charge?.transaction_nsu ?? charge?.transaction_id ?? charge?.transactionId);
 
-        const amount = Number(charge?.amount ?? 0);
-        const paidAmount = Number(charge?.paid_amount ?? 0);
+        if (['CANCELLED', 'CANCELED', 'VOIDED', 'REFUNDED'].includes(rawStatus)) {
+            return 'cancelled';
+        }
 
-        if ((charge?.success === true || paidAmount > 0) && amount > 0 && paidAmount >= amount) {
+        if (['FAILED', 'ERROR', 'DENIED'].includes(rawStatus)) {
+            return 'failed';
+        }
+
+        if (['PAID', 'COMPLETED', 'APPROVED', 'AUTHORIZED'].includes(rawStatus)) {
+            return 'paid';
+        }
+
+        if ((charge?.success === true || paidAmount > 0 || hasTransaction) && (amount <= 0 || paidAmount >= amount || hasTransaction)) {
             return 'paid';
         }
 
         return 'pending';
+    }
+
+    private parseNumericValue(value: unknown): number {
+        if (typeof value === 'number') {
+            return Number.isFinite(value) ? value : 0;
+        }
+
+        if (typeof value === 'string') {
+            const normalized = value.replace(',', '.').replace(/[^0-9.-]/g, '');
+            const parsed = Number(normalized);
+
+            return Number.isFinite(parsed) ? parsed : 0;
+        }
+
+        return 0;
     }
 }

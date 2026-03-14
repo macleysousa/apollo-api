@@ -4,6 +4,7 @@ import { randomUUID } from 'crypto';
 import { Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
+import { ParametroEnum } from 'src/modules/parametro/enum/parametros';
 
 import {
     ChargeStatusOutput,
@@ -32,25 +33,26 @@ export class PagamentoAvulsoService {
         private readonly pagamentoIntegracaoService: PagamentoIntegracaoService,
     ) {}
 
-    async list(status?: PagamentoAvulsoStatus): Promise<PagamentoAvulsoEntity[]> {
+    async list(status?: PagamentoAvulsoStatus, apagado = false): Promise<PagamentoAvulsoEntity[]> {
         const empresaId = this.contextService.empresaId();
 
         return this.repository.find({
             where: {
                 empresaId,
+                apagado,
                 ...(status ? { status } : {}),
             },
             order: { id: 'DESC' },
         });
     }
 
-    async listPendentes(): Promise<PagamentoAvulsoEntity[]> {
-        return this.list(PagamentoAvulsoStatus.pending);
+    async listPendentes(apagado = false): Promise<PagamentoAvulsoEntity[]> {
+        return this.list(PagamentoAvulsoStatus.pending, apagado);
     }
 
-    async findById(id: number): Promise<PagamentoAvulsoEntity> {
+    async findById(id: number, apagado = false): Promise<PagamentoAvulsoEntity> {
         const empresaId = this.contextService.empresaId();
-        const pagamento = await this.repository.findOne({ where: { id, empresaId } });
+        const pagamento = await this.repository.findOne({ where: { id, empresaId, apagado } });
 
         if (!pagamento) {
             throw new NotFoundException(`Pagamento avulso ${id} nao encontrado.`);
@@ -195,6 +197,44 @@ export class PagamentoAvulsoService {
         return this.repository.save(pagamento);
     }
 
+    async findReceiptUrlById(id: number): Promise<{ urlComprovante: string }> {
+        const pagamento = await this.repository.findOne({
+            where: {
+                id,
+                apagado: false,
+            },
+        });
+
+        if (!pagamento?.urlComprovante) {
+            throw new NotFoundException(`Comprovante para pagamento avulso ${id} nao encontrado.`);
+        }
+
+        return { urlComprovante: pagamento.urlComprovante };
+    }
+
+    async findPaymentUrlById(id: number): Promise<{ urlDePagamento: string }> {
+        const pagamento = await this.repository.findOne({
+            where: {
+                id,
+                apagado: false,
+            },
+        });
+
+        if (!pagamento?.urlDePagamento) {
+            throw new NotFoundException(`URL de pagamento para pagamento avulso ${id} nao encontrada.`);
+        }
+
+        return { urlDePagamento: pagamento.urlDePagamento };
+    }
+
+    async deleteById(id: number): Promise<PagamentoAvulsoEntity> {
+        const pagamento = await this.findById(id);
+        pagamento.apagado = true;
+        pagamento.apagadoEm = new Date();
+
+        return this.repository.save(pagamento);
+    }
+
     async handleWebhook(
         provider: PaymentProvider,
         payload: unknown,
@@ -218,6 +258,11 @@ export class PagamentoAvulsoService {
         const pagamento =
             pagamentoById ??
             pagamentoByIdempotencyKey ??
+            (gatewayReference
+                ? await this.repository.findOne({
+                    where: { provider, externalReference: gatewayReference },
+                })
+                : null) ??
             (event.externalId && event.externalId !== 'unknown'
                 ? await this.repository.findOne({
                     where: { provider, externalId: event.externalId },
@@ -225,8 +270,11 @@ export class PagamentoAvulsoService {
                 : null);
 
         if (pagamento && event.status) {
+            const extra = this.extractGatewayFields(payload);
+
             pagamento.status = event.status as PagamentoAvulsoStatus;
             pagamento.respostaGateway = payload;
+            pagamento.urlComprovante = extra.urlComprovante ?? pagamento.urlComprovante;
 
             if (event.status === PagamentoAvulsoStatus.paid && !pagamento.pagoEm) {
                 pagamento.pagoEm = new Date();
@@ -272,10 +320,15 @@ export class PagamentoAvulsoService {
         charge: CreateChargeOutput,
         requestPayload: CreateChargeInput,
     ): Promise<PagamentoAvulsoEntity> {
+        const extra = this.extractGatewayFields(charge.raw);
+
         pagamento.externalId = charge.externalId;
         pagamento.status = charge.status as PagamentoAvulsoStatus;
         pagamento.requisicaoGateway = requestPayload;
         pagamento.respostaGateway = charge.raw;
+        pagamento.qrCodePix = extra.qrCodeImage ?? charge.qrCode;
+        pagamento.chavePixCopiaECola = charge.qrCode ?? extra.pixCopiaECola;
+        pagamento.urlDePagamento = charge.checkoutUrl ?? extra.checkoutUrl;
 
         if (charge.status === PagamentoAvulsoStatus.paid && !pagamento.pagoEm) {
             pagamento.pagoEm = new Date();
@@ -304,8 +357,14 @@ export class PagamentoAvulsoService {
         pagamento: PagamentoAvulsoEntity,
         status: ChargeStatusOutput,
     ): Promise<PagamentoAvulsoEntity> {
+        const extra = this.extractGatewayFields(status.raw);
+
         pagamento.status = status.status as PagamentoAvulsoStatus;
         pagamento.respostaGateway = status.raw;
+        pagamento.qrCodePix = extra.qrCodeImage ?? pagamento.qrCodePix;
+        pagamento.chavePixCopiaECola = extra.pixCopiaECola ?? pagamento.chavePixCopiaECola;
+        pagamento.urlDePagamento = extra.checkoutUrl ?? pagamento.urlDePagamento;
+        pagamento.urlComprovante = extra.urlComprovante ?? pagamento.urlComprovante;
 
         if (status.status === PagamentoAvulsoStatus.paid) {
             pagamento.pagoEm = status.paidAt ?? pagamento.pagoEm ?? new Date();
@@ -363,14 +422,18 @@ export class PagamentoAvulsoService {
     }
 
     toResponse(pagamento: PagamentoAvulsoEntity): PagamentoAvulsoResponseDto {
+        const { customerNome, customerDocumento, customerEmail, customerTelefone, ...pagamentoSemCustomerRaiz } = pagamento;
+        const urlPagamentoAvulsoSiteEmpresa = this.buildEmpresaSitePagamentoAvulsoUrl(pagamento.id);
+
         return {
-            ...pagamento,
+            ...pagamentoSemCustomerRaiz,
             customer: {
-                nome: pagamento.customerNome,
-                documento: pagamento.customerDocumento,
-                email: pagamento.customerEmail,
-                telefone: pagamento.customerTelefone,
+                nome: customerNome,
+                documento: customerDocumento,
+                email: customerEmail,
+                telefone: customerTelefone,
             },
+            urlPagamentoAvulsoSiteEmpresa,
         };
     }
 
@@ -383,6 +446,7 @@ export class PagamentoAvulsoService {
         qrCodeImage?: string;
         checkoutUrl?: string;
         txid?: string;
+        urlComprovante?: string;
     } {
         const charge = (raw as any)?.charge ?? raw;
 
@@ -391,6 +455,26 @@ export class PagamentoAvulsoService {
             qrCodeImage: charge?.qrCodeImage,
             checkoutUrl: charge?.paymentLinkUrl,
             txid: charge?.transactionID ?? charge?.txid,
+            urlComprovante:
+                charge?.paymentReceiptUrl ??
+                charge?.receiptUrl ??
+                charge?.receipt_url ??
+                charge?.comprovanteUrl ??
+                charge?.urlComprovante,
         };
+    }
+
+    private buildEmpresaSitePagamentoAvulsoUrl(pagamentoId: number): string | undefined {
+        const parametros = this.contextService.parametros() ?? [];
+        const urlSite = parametros.find((parametro) => parametro.parametroId === ParametroEnum.URL_SITE_EMPRESA)?.valor?.trim();
+
+        if (!urlSite) {
+            return undefined;
+        }
+
+        const baseUrl = urlSite.replace(/\/+$/, '');
+        const separator = baseUrl.includes('?') ? '&' : '?';
+
+        return `${baseUrl}/pagamentoAvulso${separator}order_nsu=${pagamentoId}`;
     }
 }

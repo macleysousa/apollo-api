@@ -79,6 +79,30 @@ export class PagamentoAvulsoEntity extends BaseEntity {
     respostaGateway?: unknown;
 
     @ApiPropertyOptional()
+    @Column('text', { nullable: true })
+    qrCodePix?: string;
+
+    @ApiPropertyOptional()
+    @Column('text', { nullable: true })
+    chavePixCopiaECola?: string;
+
+    @ApiPropertyOptional()
+    @Column('varchar', { length: 500, nullable: true })
+    urlDePagamento?: string;
+
+    @ApiPropertyOptional()
+    @Column('varchar', { length: 500, nullable: true })
+    urlComprovante?: string;
+
+    @ApiProperty({ default: false })
+    @Column('boolean', { default: false })
+    apagado: boolean;
+
+    @ApiPropertyOptional()
+    @Column('datetime', { nullable: true })
+    apagadoEm?: Date;
+
+    @ApiPropertyOptional()
     @Column('datetime', { nullable: true })
     pagoEm?: Date;
 

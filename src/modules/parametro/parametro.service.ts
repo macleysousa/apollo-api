@@ -35,6 +35,7 @@ export class ParametroService {
       { id: 'INTEGRACAO_INFINITY_PAY_API_HANDLE', descricao: 'Handle: sua InfiniteTag (a identificação que aparece no canto superior esquerdo do App InfinitePay). Use sem o símbolo $ do início.', valorPadrao: '' },
       { id: 'INTEGRACAO_INFINITY_PAY_URL_REDIRECT', descricao: 'URL de redirecionamento no final do processo de pagamento', valorPadrao: '' },
       { id: 'INTEGRACAO_INFINITY_PAY_URL_WEBHOOK', descricao: 'URL de webhook para integração com Infinity Pay', valorPadrao: '' },
+      { id: 'URL_SITE_EMPRESA', descricao: 'URL do site da empresa', valorPadrao: '' },
     ];
 
     // Populate base parameters only when missing.
