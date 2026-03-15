@@ -1,0 +1,77 @@
+@baseUrl = http://localhost:5000/v1
+@token = SEU_BEARER_TOKEN
+
+### Lista gateways disponiveis
+GET {{baseUrl}}/pagamentos-avulsos/providers
+Authorization: Bearer {{token}}
+
+### Cria pagamento avulso (OpenPix)
+POST {{baseUrl}}/pagamentos-avulsos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "provider": "openpix",
+  "amount": 1500,
+  "description": "Pagamento avulso de teste",
+  "idempotencyKey": "11111111-1111-1111-1111-111111111111",
+  "customer": {
+    "nome": "Bob",
+    "email": "bob@openpix.com.br",
+    "documento": "47173708052",
+    "telefone": "5511940468888"
+  },
+  "metadata": {
+    "origem": "teste-local",
+    "pedido": "PED-123"
+  }
+}
+
+### Lista historico de pagamentos avulsos
+GET {{baseUrl}}/pagamentos-avulsos
+Authorization: Bearer {{token}}
+
+### Lista pendentes (independente de gateway)
+GET {{baseUrl}}/pagamentos-avulsos/pendentes
+Authorization: Bearer {{token}}
+
+### Lista por status
+GET {{baseUrl}}/pagamentos-avulsos?status=pending
+Authorization: Bearer {{token}}
+
+### Busca pagamento por id
+GET {{baseUrl}}/pagamentos-avulsos/1
+Authorization: Bearer {{token}}
+
+### Sincroniza status com gateway
+PATCH {{baseUrl}}/pagamentos-avulsos/1/sincronizar
+Authorization: Bearer {{token}}
+
+### Cancela pagamento
+PATCH {{baseUrl}}/pagamentos-avulsos/1/cancelar
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "motivo": "Cancelado pelo operador"
+}
+
+### Marca como pago manualmente
+PATCH {{baseUrl}}/pagamentos-avulsos/1/marcar-pago
+Authorization: Bearer {{token}}
+
+### Consulta status direto no gateway
+GET {{baseUrl}}/pagamentos-avulsos/gateway/openpix/SEU_EXTERNAL_ID
+Authorization: Bearer {{token}}
+
+### Webhook OpenPix (publico)
+POST {{baseUrl}}/pagamentos-avulsos/webhook/openpix
+Content-Type: application/json
+
+{
+  "event": "OPENPIX:CHARGE_COMPLETED",
+  "charge": {
+    "identifier": "SEU_EXTERNAL_ID",
+    "status": "COMPLETED"
+  }
+}

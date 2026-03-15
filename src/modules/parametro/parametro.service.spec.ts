@@ -2,12 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 
+import { EmpresaEntity } from '../empresa/entities/empresa.entity';
+import { EmpresaParametroEntity } from '../empresa/parametro/entities/parametro.entity';
 import { ParametroEntity } from './entities/parametro.entity';
 import { ParametroService } from './parametro.service';
 
 describe('ParametroService', () => {
   let service: ParametroService;
   let repository: Repository<ParametroEntity>;
+  let empresaRepository: Repository<EmpresaEntity>;
+  let empresaParametroRepository: Repository<EmpresaParametroEntity>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -16,9 +20,22 @@ describe('ParametroService', () => {
         {
           provide: getRepositoryToken(ParametroEntity),
           useValue: {
-            save: jest.fn(),
+            insert: jest.fn(),
             find: jest.fn(),
             findOne: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(EmpresaEntity),
+          useValue: {
+            find: jest.fn().mockResolvedValue([]),
+          },
+        },
+        {
+          provide: getRepositoryToken(EmpresaParametroEntity),
+          useValue: {
+            findOne: jest.fn(),
+            insert: jest.fn(),
           },
         },
       ],
@@ -26,18 +43,24 @@ describe('ParametroService', () => {
 
     service = module.get<ParametroService>(ParametroService);
     repository = module.get<Repository<ParametroEntity>>(getRepositoryToken(ParametroEntity));
+    empresaRepository = module.get<Repository<EmpresaEntity>>(getRepositoryToken(EmpresaEntity));
+    empresaParametroRepository = module.get<Repository<EmpresaParametroEntity>>(getRepositoryToken(EmpresaParametroEntity));
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
+    expect(empresaRepository).toBeDefined();
+    expect(empresaParametroRepository).toBeDefined();
   });
 
   describe('popular', () => {
-    it('should call repository.save called times 1', async () => {
+    it('should insert only missing base parameters', async () => {
+      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+
       await service.popular();
 
-      expect(repository.save).toHaveBeenCalledTimes(1);
+      expect(repository.insert).toHaveBeenCalled();
     });
   });
 
