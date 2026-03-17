@@ -30,14 +30,16 @@ export class ProdutoController {
   @Get()
   @ApiPaginatedResponse(ProdutoEntity)
   @ApiQuery({ name: 'searchTerm', required: false })
+  @ApiQuery({ name: 'referencia', required: false })
   @ApiQuery({ name: 'page', required: false, description: 'Value default: 1' })
   @ApiQuery({ name: 'limit', required: false, description: 'Value default: 100' })
   async find(
     @Query('searchTerm') searchTerm: string,
+    @Query('referencia') referencia: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
   ): Promise<Pagination<ProdutoEntity>> {
-    return this.service.find(searchTerm, page, limit);
+    return this.service.find(searchTerm, referencia, page, limit);
   }
 
   @Get(':id')

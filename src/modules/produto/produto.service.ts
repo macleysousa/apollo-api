@@ -128,9 +128,9 @@ export class ProdutoService {
     });
   }
 
-  async find(searchTerm?: string, page = 1, limit = 100): Promise<Pagination<ProdutoEntity>> {
+  async find(searchTerm?: string, referencia?: string, page = 1, limit = 100): Promise<Pagination<ProdutoEntity>> {
     const queryBuilder = this.repository.createQueryBuilder('c');
-    queryBuilder.where({ id: Not(IsNull()) });
+    queryBuilder.where({ id: Not(IsNull()), referenciaId: referencia ? ILike(`%${referencia}%`) : Not(IsNull()) });
 
     queryBuilder.leftJoinAndSelect('c.cor', 'cor');
     queryBuilder.leftJoinAndSelect('c.tamanho', 'tamanho');
