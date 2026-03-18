@@ -36,10 +36,14 @@ export class ProdutoController {
   async find(
     @Query('searchTerm') searchTerm: string,
     @Query('referencia') referencia: string,
+    @Query('tamanhoId') tamanhoId: number,
+    @Query('corId') corId: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
   ): Promise<Pagination<ProdutoEntity>> {
-    return this.service.find(searchTerm, referencia, page, limit);
+    return this.service.find({
+      searchTerm: searchTerm, referenciaId: referencia, tamanhoId: tamanhoId, corId: corId, page: page, limit: limit
+    });
   }
 
   @Get(':id')
