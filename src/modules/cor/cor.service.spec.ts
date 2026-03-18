@@ -57,7 +57,14 @@ describe('ColorService', () => {
   describe('create', () => {
     it('should create a color', async () => {
       //Arrange
-      const color: CreateCorDto = { id: 1, nome: 'RED', inativa: true };
+      const color: CreateCorDto = {
+        id: 1,
+        nome: 'RED',
+        inativa: true,
+        hex: '#FF0000',
+        nomeInternacional: 'Red',
+        tags: ['quente', 'primaria'],
+      };
 
       // Act
       const result = await service.create(color);
@@ -71,7 +78,7 @@ describe('ColorService', () => {
   });
 
   describe('find', () => {
-    it('should return a color list not use filter', async () => {
+    it('should return a color list without tags when carregarTags is not provided', async () => {
       // Arrange
 
       // Act
@@ -84,7 +91,7 @@ describe('ColorService', () => {
         cache: true,
       });
 
-      expect(result).toEqual(colorFakeRepository.find());
+      expect(result).toEqual(colorFakeRepository.find().map((color) => ({ ...color, tags: undefined })));
     });
 
     it('should return a color list use filter', async () => {
@@ -101,17 +108,43 @@ describe('ColorService', () => {
         cache: filter.cache,
       });
 
+      expect(result).toEqual(colorFakeRepository.find().map((color) => ({ ...color, tags: undefined })));
+    });
+
+    it('should return a color list with tags when carregarTags is true', async () => {
+      // Arrange
+      const filter: CorFilter = { carregarTags: true };
+
+      // Act
+      const result = await service.find(filter);
+
+      // Assert
+      expect(repository.find).toHaveBeenCalledTimes(1);
       expect(result).toEqual(colorFakeRepository.find());
     });
   });
 
   describe('findById', () => {
-    it('should return a color', async () => {
+    it('should return a color without tags by default', async () => {
       // Arrange
       const id = 1;
 
       // Act
       const result = await service.findById(id);
+
+      // Assert
+      expect(repository.findOne).toHaveBeenCalledTimes(1);
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { id } });
+
+      expect(result).toEqual({ ...colorFakeRepository.findOne(), tags: undefined });
+    });
+
+    it('should return a color with tags when carregarTags is true', async () => {
+      // Arrange
+      const id = 1;
+
+      // Act
+      const result = await service.findById(id, true);
 
       // Assert
       expect(repository.findOne).toHaveBeenCalledTimes(1);

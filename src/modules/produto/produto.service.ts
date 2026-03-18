@@ -130,7 +130,7 @@ export class ProdutoService {
 
   async find(searchTerm?: string, referencia?: string, page = 1, limit = 100): Promise<Pagination<ProdutoEntity>> {
     const queryBuilder = this.repository.createQueryBuilder('c');
-    queryBuilder.where({ id: Not(IsNull()), referenciaId: referencia ? ILike(`%${referencia}%`) : Not(IsNull()) });
+    queryBuilder.where({ id: Not(IsNull()) });
 
     queryBuilder.leftJoinAndSelect('c.cor', 'cor');
     queryBuilder.leftJoinAndSelect('c.tamanho', 'tamanho');
@@ -142,10 +142,12 @@ export class ProdutoService {
       queryBuilder.orWhere({ nome: ILike(`%${searchTerm}%`) });
       queryBuilder.orWhere({ idExterno: ILike(`%${searchTerm}%`) });
       queryBuilder.orWhere({ referenciaId: ILike(`%${searchTerm}%`) });
+
       queryBuilder.orWhere('referencia.idExterno LIKE :idExterno', { idExterno: `%${searchTerm}%` });
       queryBuilder.orWhere('codigo.code LIKE :codigo', { codigo: `%${searchTerm}%` });
     }
-
+    if (referencia)
+      queryBuilder.orWhere({ referenciaId: referencia });
     return paginate<ProdutoEntity>(queryBuilder, { page, limit });
   }
 

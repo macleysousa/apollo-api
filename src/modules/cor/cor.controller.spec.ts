@@ -40,7 +40,14 @@ describe('ColorController', () => {
   describe('/ (POST)', () => {
     it('should create a new color', async () => {
       //Arrange
-      const color: CreateCorDto = { id: 1, nome: 'RED', inativa: true };
+      const color: CreateCorDto = {
+        id: 1,
+        nome: 'RED',
+        inativa: true,
+        hex: '#FF0000',
+        nomeInternacional: 'Red',
+        tags: ['quente', 'primaria'],
+      };
 
       // Act
       const result = await controller.create(color);
@@ -71,13 +78,14 @@ describe('ColorController', () => {
   describe('/{:id} (GET)', () => {
     it('should return a color', async () => {
       const id = 1;
+      const carregarTags = 'true';
 
       // Act
-      const result = await controller.findById(id);
+      const result = await controller.findById(id, carregarTags);
 
       // Assert
       expect(service.findById).toHaveBeenCalledTimes(1);
-      expect(service.findById).toHaveBeenCalledWith(id);
+      expect(service.findById).toHaveBeenCalledWith(id, carregarTags);
 
       expect(result).toEqual(colorFakeRepository.findOne());
     });

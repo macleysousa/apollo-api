@@ -13,4 +13,8 @@ export class CorFilter {
   @ApiProperty({ required: false })
   @IsOptional()
   cache?: boolean;
+
+  @ApiProperty({ required: false, description: 'Quando true, retorna as tags da cor' })
+  @IsOptional()
+  carregarTags?: boolean | string;
 }
