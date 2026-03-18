@@ -39,7 +39,7 @@ export class InfinityPayPaymentGateway extends BasePaymentGateway {
         const body = {
             handle: config.handle,
             redirect_url: config.redirectUrl,
-            webhook_url: 'https://apollo-api-stg.coralcloud.app/v1/pagamentos-avulsos/webhook/infinitypay', // config.webhookUrl,
+            webhook_url: config.webhookUrl,
             order_nsu: orderNsu,
             customer: {
                 name: input.customer?.nome,
