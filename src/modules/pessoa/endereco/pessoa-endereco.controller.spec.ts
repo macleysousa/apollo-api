@@ -50,7 +50,7 @@ describe('PessoaEnderecoController', () => {
   describe('create', () => {
     it('should create a new PessoaEnderecoEntity and return it', async () => {
       const pessoaId = 1;
-      const createPessoaEnderecoDto: CreatePessoaEnderecoDto = { tipoEndereco: EnderecoTipo.Comercial };
+      const createPessoaEnderecoDto: CreatePessoaEnderecoDto = { tipoEndereco: EnderecoTipo.Comercial, principal: true };
       const pessoaEndereco = new PessoaEnderecoEntity();
       jest.spyOn(service, 'create').mockResolvedValueOnce(pessoaEndereco);
 
@@ -64,12 +64,13 @@ describe('PessoaEnderecoController', () => {
   describe('findOne', () => {
     it('should find and return a PessoaEnderecoEntity by pessoaId', async () => {
       const pessoaId = 1;
+      const id = 1;
       const pessoaEndereco = new PessoaEnderecoEntity();
       jest.spyOn(service, 'findById').mockResolvedValueOnce(pessoaEndereco);
 
-      const result = await controller.findOne(pessoaId);
+      const result = await controller.findOne(pessoaId, id);
 
-      expect(service.findById).toHaveBeenCalledWith(pessoaId);
+      expect(service.findById).toHaveBeenCalledWith(pessoaId, id);
       expect(result).toEqual(pessoaEndereco);
     });
   });
@@ -77,13 +78,14 @@ describe('PessoaEnderecoController', () => {
   describe('update', () => {
     it('should update and return a PessoaEnderecoEntity by pessoaId', async () => {
       const pessoaId = 1;
+      const id = 1;
       const updatePessoaEnderecoDto: UpdatePessoaEnderecoDto = { tipoEndereco: EnderecoTipo.Comercial };
       const pessoaEndereco = new PessoaEnderecoEntity();
       jest.spyOn(service, 'update').mockResolvedValueOnce(pessoaEndereco);
 
-      const result = await controller.update(pessoaId, updatePessoaEnderecoDto);
+      const result = await controller.update(pessoaId, id, updatePessoaEnderecoDto);
 
-      expect(service.update).toHaveBeenCalledWith(pessoaId, updatePessoaEnderecoDto);
+      expect(service.update).toHaveBeenCalledWith(pessoaId, id, updatePessoaEnderecoDto);
       expect(result).toEqual(pessoaEndereco);
     });
   });
@@ -91,12 +93,15 @@ describe('PessoaEnderecoController', () => {
   describe('delete', () => {
     it('should delete a PessoaEnderecoEntity by pessoaId', async () => {
       const pessoaId = 1;
+      const id = 1;
       jest.spyOn(service, 'delete').mockResolvedValueOnce(undefined);
 
-      const result = await controller.delete(pessoaId);
+      const result = await controller.delete(pessoaId, id);
 
-      expect(service.delete).toHaveBeenCalledWith(pessoaId);
+      expect(service.delete).toHaveBeenCalledWith(pessoaId, id);
       expect(result).toBeUndefined();
     });
   });
 });
+
+

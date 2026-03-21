@@ -31,6 +31,13 @@ describe('ReferenceService', () => {
             find: jest.fn().mockResolvedValue(referenceFakeRepository.find()),
             update: jest.fn().mockResolvedValue(referenceFakeRepository.findOne()),
             delete: jest.fn(),
+            createQueryBuilder: jest.fn().mockReturnValue({
+              where: jest.fn().mockReturnThis(),
+              andWhere: jest.fn().mockReturnThis(),
+              leftJoinAndSelect: jest.fn().mockReturnThis(),
+              orderBy: jest.fn().mockReturnThis(),
+              getMany: jest.fn().mockResolvedValue(referenceFakeRepository.find()),
+            }),
           },
         },
         {
@@ -118,11 +125,8 @@ describe('ReferenceService', () => {
       const result = await service.find();
 
       // Assert
-      expect(repository.find).toHaveBeenCalledTimes(1);
-      expect(repository.find).toHaveBeenCalledWith({
-        where: { nome: ILike(`%${''}%`), idExterno: ILike(`%${''}%`) },
-        relations: undefined,
-      });
+      expect(repository.createQueryBuilder).toHaveBeenCalledTimes(1);
+      expect(repository.createQueryBuilder).toHaveBeenCalledWith('r');
 
       expect(result).toEqual(referenceFakeRepository.find());
     });
@@ -135,11 +139,8 @@ describe('ReferenceService', () => {
       const result = await service.find(filter);
 
       // Assert
-      expect(repository.find).toHaveBeenCalledTimes(1);
-      expect(repository.find).toHaveBeenCalledWith({
-        where: { nome: ILike(`%${filter.nome}%`), idExterno: ILike(`%${filter.idExterno}%`) },
-        relations: undefined,
-      });
+      expect(repository.createQueryBuilder).toHaveBeenCalledTimes(1);
+      expect(repository.createQueryBuilder).toHaveBeenCalledWith('r');
 
       expect(result).toEqual(referenceFakeRepository.find());
     });
@@ -204,3 +205,5 @@ describe('ReferenceService', () => {
     });
   });
 });
+
+

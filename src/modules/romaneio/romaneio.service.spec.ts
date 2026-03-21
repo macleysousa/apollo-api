@@ -118,7 +118,7 @@ describe('RomaneioService', () => {
         operacao: OperacaoRomaneio.consignacao_saida,
       };
 
-      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Consignação não informada');
+      await expect(service.create(createRomaneioDto)).rejects.toThrow('Consignação não informada');
     });
 
     it('should return BadRequestException if consignacao_devolucao and consignacaoId is undefined', async () => {
@@ -129,7 +129,7 @@ describe('RomaneioService', () => {
         operacao: OperacaoRomaneio.consignacao_devolucao,
       };
 
-      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Consignação não informada');
+      await expect(service.create(createRomaneioDto)).rejects.toThrow('Consignação não informada');
     });
 
     it('should return BadRequestException if consignacao_acerto and consignacaoId is undefined', async () => {
@@ -140,7 +140,7 @@ describe('RomaneioService', () => {
         operacao: OperacaoRomaneio.consignacao_acerto,
       };
 
-      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Consignação não informada');
+      await expect(service.create(createRomaneioDto)).rejects.toThrow('Consignação não informada');
     });
 
     it('should return BadRequestException if consignacao_devolucao and romaneiosConsignacao is undefined', async () => {
@@ -152,7 +152,7 @@ describe('RomaneioService', () => {
         operacao: OperacaoRomaneio.consignacao_devolucao,
       };
 
-      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneios de consignação saída não informados');
+      await expect(service.create(createRomaneioDto)).rejects.toThrow('Romaneios de consignação saída não informados');
     });
 
     it('should return BadRequestException if consignacao_devolucao and romaneiosConsignacao is undefined', async () => {
@@ -164,7 +164,7 @@ describe('RomaneioService', () => {
         operacao: OperacaoRomaneio.consignacao_acerto,
       };
 
-      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneios de consignação saída não informados');
+      await expect(service.create(createRomaneioDto)).rejects.toThrow('Romaneios de consignação saída não informados');
     });
 
     it('should return BadRequestException if compra_devolucao and romaneiosDevolucao is undefined', async () => {
@@ -175,7 +175,7 @@ describe('RomaneioService', () => {
         operacao: OperacaoRomaneio.compra_devolucao,
       };
 
-      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneios de devolução não informados');
+      await expect(service.create(createRomaneioDto)).rejects.toThrow('Romaneios de devolução não informados');
     });
 
     it('should return BadRequestException if venda_devolucao and romaneiosDevolucao is undefined', async () => {
@@ -186,7 +186,7 @@ describe('RomaneioService', () => {
         operacao: OperacaoRomaneio.venda_devolucao,
       };
 
-      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneios de devolução não informados');
+      await expect(service.create(createRomaneioDto)).rejects.toThrow('Romaneios de devolução não informados');
     });
 
     it('should return BadRequestException if transferencia_devolucao and romaneiosDevolucao is undefined', async () => {
@@ -197,7 +197,7 @@ describe('RomaneioService', () => {
         operacao: OperacaoRomaneio.transferencia_devolucao,
       };
 
-      await expect(service.create(createRomaneioDto)).rejects.toThrowError('Romaneios de devolução não informados');
+      await expect(service.create(createRomaneioDto)).rejects.toThrow('Romaneios de devolução não informados');
     });
 
     it('should create a romaneio compra', async () => {
@@ -635,7 +635,7 @@ describe('RomaneioService', () => {
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
 
-      await expect(service.update(empresaId, id, dto)).rejects.toThrowError(
+      await expect(service.update(empresaId, id, dto)).rejects.toThrow(
         `Romaneio "${id}" não pode ser alterado pois já possui itens`,
       );
       expect(service.findById).toHaveBeenCalledWith(empresaId, id, ['itens']);
@@ -960,7 +960,7 @@ describe('RomaneioService', () => {
       jest.spyOn(service, 'findById').mockResolvedValueOnce(romaneio);
       jest.spyOn(pedidoService, 'findById').mockResolvedValueOnce(pedido);
 
-      await expect(service.cancelar(empresaId, id, motivo)).rejects.toThrowError(
+      await expect(service.cancelar(empresaId, id, motivo)).rejects.toThrow(
         'Não é possível cancelar um romaneio de transferência que já foi recebido no destino',
       );
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
@@ -1020,7 +1020,7 @@ describe('RomaneioService', () => {
       );
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(result).toEqual(romaneioFakeRepository.findOneView());
-      expect(repository.query).toBeCalledWith(`CALL romaneio_cancelar_itens_devolvidos(${id})`);
+      expect(repository.query).toHaveBeenCalledWith(`CALL romaneio_cancelar_itens_devolvidos(${id})`);
     });
 
     it('should cancel a romaneio if operacao is consignacao_saida', async () => {
@@ -1070,3 +1070,5 @@ describe('RomaneioService', () => {
     });
   });
 });
+
+

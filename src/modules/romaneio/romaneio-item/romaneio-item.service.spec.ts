@@ -200,7 +200,7 @@ describe('RomaneioItemService', () => {
       jest.spyOn(precoService, 'findByReferenciaId').mockResolvedValue(precoReferencia);
       jest.spyOn(service, 'findByConsignacaoIds').mockResolvedValue([{ quantidade: 4, devolvido: 0 }] as any);
 
-      await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrowError(
+      await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrow(
         `Saldo em consignação insuficiente para o produto "${produtoId}"`,
       );
     });
@@ -229,7 +229,7 @@ describe('RomaneioItemService', () => {
       jest.spyOn(precoService, 'findByReferenciaId').mockResolvedValue(precoReferencia);
       jest.spyOn(service, 'findByConsignacaoIds').mockResolvedValue(undefined);
 
-      await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrowError(
+      await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrow(
         `Saldo em consignação insuficiente para o produto "${produtoId}"`,
       );
     });
@@ -394,7 +394,7 @@ describe('RomaneioItemService', () => {
       jest.spyOn(view, 'findOne').mockResolvedValueOnce({ quantidade: 10 } as any);
       jest.spyOn(service, 'findByRomaneioIds').mockResolvedValue(romaneiosDevolucao);
 
-      await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrowError(
+      await expect(service.add(romaneioId, { produtoId, quantidade })).rejects.toThrow(
         `Saldo de devolução do produto "${produtoId}" insuficiente para realizar a operação`,
       );
     });
@@ -740,3 +740,5 @@ describe('RomaneioItemService', () => {
     });
   });
 });
+
+

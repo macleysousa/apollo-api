@@ -30,3 +30,5 @@ describe('RecebimentoDto', () => {
     expect(dto.observacao).toEqual(data.observacao);
   });
 });
+
+
