@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -16,7 +16,7 @@ export class ReferenciaMediaController {
   constructor(private readonly service: ReferenciaMediaService) {}
 
   @Post()
-  @ApiResponse({ status: 200, type: ReferenciaMediaEntity })
+  @ApiResponse({ status: 201, type: ReferenciaMediaEntity })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('midia'))
   @ApiParam({ type: 'file', name: 'midia' })
@@ -29,15 +29,23 @@ export class ReferenciaMediaController {
   }
 
   @Get()
+  @ApiResponse({ status: 200, type: [ReferenciaMediaEntity] })
   async find(@Param('referenciaId', ParseIntPipe) referenciaId: number): Promise<ReferenciaMediaEntity[]> {
     return this.service.find(referenciaId);
   }
 
   @Get(':id')
+  @ApiResponse({ status: 200, type: ReferenciaMediaEntity })
   async findById(
     @Param('referenciaId', ParseIntPipe) referenciaId: number,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ReferenciaMediaEntity> {
     return this.service.findById(referenciaId, id);
+  }
+
+  @Delete(':id')
+  @ApiResponse({ status: 204 })
+  async delete(@Param('referenciaId', ParseIntPipe) referenciaId: number, @Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.service.delete(referenciaId, id);
   }
 }

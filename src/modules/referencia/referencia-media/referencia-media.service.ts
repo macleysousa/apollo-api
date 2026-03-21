@@ -12,11 +12,11 @@ export class ReferenciaMediaService {
   constructor(
     @InjectRepository(ReferenciaMediaEntity)
     private readonly repository: Repository<ReferenciaMediaEntity>,
-    private readonly storageService: StorageService,
+    private readonly storage: StorageService,
   ) {}
 
   async upload(referenciaId: number, file: Express.Multer.File, dto: UploadMediaDto): Promise<ReferenciaMediaEntity> {
-    const path = await this.storageService.upload('referencias', file);
+    const path = await this.storage.upload('referencias', file);
 
     const media = this.repository.create({
       referenciaId,
@@ -35,5 +35,13 @@ export class ReferenciaMediaService {
 
   async findById(referenciaId: number, id: number): Promise<ReferenciaMediaEntity> {
     return this.repository.findOne({ where: { id, referenciaId } });
+  }
+
+  async delete(referenciaId: number, id: number): Promise<void> {
+    const media = await this.findById(referenciaId, id);
+    if (media) {
+      await this.storage.delete(media.url);
+      await this.repository.delete(id);
+    }
   }
 }
