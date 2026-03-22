@@ -87,7 +87,7 @@ describe('PedidoItemService', () => {
 
       jest.spyOn(pedidoService, 'findById').mockResolvedValueOnce(undefined);
 
-      await expect(service.add(pedidoId, addPedidoItemDto)).rejects.toThrowError('Pedido não encontrado');
+      await expect(service.add(pedidoId, addPedidoItemDto)).rejects.toThrow('Pedido não encontrado');
 
       expect(pedidoService.findById).toHaveBeenCalledWith(pedidoId);
     });
@@ -99,7 +99,7 @@ describe('PedidoItemService', () => {
 
       jest.spyOn(pedidoService, 'findById').mockResolvedValueOnce(pedido);
 
-      await expect(service.add(pedidoId, addPedidoItemDto)).rejects.toThrowError('Pedido não está em andamento');
+      await expect(service.add(pedidoId, addPedidoItemDto)).rejects.toThrow('Pedido não está em andamento');
 
       expect(pedidoService.findById).toHaveBeenCalledWith(pedidoId);
     });
@@ -265,7 +265,7 @@ describe('PedidoItemService', () => {
 
       jest.spyOn(service, 'findByPedidoId').mockResolvedValueOnce(itens);
 
-      await expect(service.conferirItens(pedidoId, conferirPedidoItemDto)).rejects.toThrowError(
+      await expect(service.conferirItens(pedidoId, conferirPedidoItemDto)).rejects.toThrow(
         'Um ou mais itens não foi encontrado no pedido',
       );
       expect(service.findByPedidoId).toHaveBeenCalledWith(pedidoId);
@@ -288,3 +288,5 @@ describe('PedidoItemService', () => {
     });
   });
 });
+
+

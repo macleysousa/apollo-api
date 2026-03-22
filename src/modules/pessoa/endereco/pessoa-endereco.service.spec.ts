@@ -44,7 +44,7 @@ describe('PessoaEnderecoService', () => {
     it('should create a new PessoaEnderecoEntity and return it', async () => {
       // Arrange
       const pessoaId = 1;
-      const createPessoaEnderecoDto: CreatePessoaEnderecoDto = { tipoEndereco: EnderecoTipo.Comercial };
+      const createPessoaEnderecoDto: CreatePessoaEnderecoDto = { tipoEndereco: EnderecoTipo.Comercial, principal: true };
       const pessoaEndereco = pessoaEnderecoFakeRepository.findOne();
       pessoaEndereco.pessoaId = pessoaId;
 
@@ -56,7 +56,7 @@ describe('PessoaEnderecoService', () => {
 
       // Assert
       expect(repository.save).toHaveBeenCalledWith({ ...createPessoaEnderecoDto, pessoaId });
-      expect(service.findById).toHaveBeenCalledWith(pessoaEndereco.pessoaId);
+      expect(service.findById).toHaveBeenCalledWith(pessoaId, pessoaEndereco.id);
       expect(result).toEqual(pessoaEndereco);
     });
   });
@@ -65,26 +65,28 @@ describe('PessoaEnderecoService', () => {
     it('should find and return a PessoaEnderecoEntity by pessoaId', async () => {
       // Arrange
       const pessoaId = 1;
+      const id = 1;
       const pessoaEndereco = pessoaEnderecoFakeRepository.findOne();
 
       jest.spyOn(repository, 'findOne').mockResolvedValueOnce(pessoaEndereco);
 
       // Act
-      const result = await service.findById(pessoaId);
+      const result = await service.findById(pessoaId, id);
 
       // Assert
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { pessoaId } });
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { pessoaId, id } });
       expect(result).toEqual(pessoaEndereco);
     });
 
     it('should throw a BadRequestException if no PessoaEnderecoEntity is found', async () => {
       // Arrange
       const pessoaId = 1;
+      const id = 1;
       jest.spyOn(repository, 'findOne').mockResolvedValueOnce(null);
 
       // Act & Assert
-      await expect(service.findById(pessoaId)).rejects.toThrowError(BadRequestException);
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { pessoaId } });
+      await expect(service.findById(pessoaId, id)).rejects.toThrow(BadRequestException);
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { pessoaId, id } });
     });
   });
 
@@ -92,11 +94,12 @@ describe('PessoaEnderecoService', () => {
     it('should update and return a PessoaEnderecoEntity by pessoaId', async () => {
       // Arrange
       const pessoaId = 1;
+      const id = 1;
       const updatePessoaEnderecoDto: UpdatePessoaEnderecoDto = { tipoEndereco: EnderecoTipo.Comercial };
       const pessoaEndereco = pessoaEnderecoFakeRepository.findOne();
 
       // Act
-      const result = await service.update(pessoaId, updatePessoaEnderecoDto);
+      const result = await service.update(pessoaId, id, updatePessoaEnderecoDto);
 
       // Assert
       expect(repository.findOne).toHaveBeenCalledWith({ where: { pessoaId } });
@@ -108,12 +111,13 @@ describe('PessoaEnderecoService', () => {
     it('should throw a BadRequestException if no PessoaEnderecoEntity is found', async () => {
       // Arrange
       const pessoaId = 1;
+      const id = 1;
       const updatePessoaEnderecoDto: UpdatePessoaEnderecoDto = { tipoEndereco: EnderecoTipo.Comercial };
       jest.spyOn(repository, 'findOne').mockResolvedValueOnce(null);
 
       // Act & Assert
-      await expect(service.update(pessoaId, updatePessoaEnderecoDto)).rejects.toThrowError(BadRequestException);
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { pessoaId } });
+      await expect(service.update(pessoaId, id, updatePessoaEnderecoDto)).rejects.toThrow(BadRequestException);
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { pessoaId, id } });
       expect(repository.update).not.toHaveBeenCalled();
     });
   });
@@ -122,13 +126,16 @@ describe('PessoaEnderecoService', () => {
     it('should delete a PessoaEnderecoEntity by pessoaId', async () => {
       // Arrange
       const pessoaId = 1;
+      const id = 1;
       jest.spyOn(repository, 'delete').mockResolvedValueOnce(undefined);
 
       // Act
-      await service.delete(pessoaId);
+      await service.delete(pessoaId, id);
 
       // Assert
       expect(repository.delete).toHaveBeenCalledWith({ pessoaId });
     });
   });
 });
+
+

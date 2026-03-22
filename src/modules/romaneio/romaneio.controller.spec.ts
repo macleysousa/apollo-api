@@ -87,8 +87,9 @@ describe('RomaneioController', () => {
       const empresa = { id: 1 } as any;
       const id = 1;
       const romaneioView = romaneioFakeRepository.findOneView();
+      const filter = { incluir: ['itens'] } as any;
 
-      const result = await controller.findOne(empresa, id, ['itens'] as any);
+      const result = await controller.findOne(empresa, id, filter);
 
       expect(service.findById).toHaveBeenCalledWith(empresa.id, id, ['itens']);
       expect(result).toEqual(romaneioView);
@@ -123,3 +124,5 @@ describe('RomaneioController', () => {
     });
   });
 });
+
+

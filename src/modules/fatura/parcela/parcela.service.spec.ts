@@ -119,7 +119,7 @@ describe('FaturaParcelaService', () => {
 
       jest.spyOn(faturaService, 'findById').mockResolvedValueOnce(undefined);
 
-      await expect(service.add(faturaId, dto)).rejects.toThrowError('Fatura não encontrada.');
+      await expect(service.add(faturaId, dto)).rejects.toThrow('Fatura não encontrada.');
     });
 
     it('should throw BadRequestException if fatura is not in "normal" situation', async () => {
@@ -127,7 +127,7 @@ describe('FaturaParcelaService', () => {
 
       jest.spyOn(faturaService, 'findById').mockResolvedValueOnce({ situacao: FaturaSituacao.Cancelada } as any);
 
-      await expect(service.add(faturaId, dto)).rejects.toThrowError(`Fatura ${faturaId} não está com situação "normal".`);
+      await expect(service.add(faturaId, dto)).rejects.toThrow(`Fatura ${faturaId} não está com situação "normal".`);
     });
 
     it('should throw BadRequestException if parcela already exists and is not in "normal" situation', async () => {
@@ -137,7 +137,7 @@ describe('FaturaParcelaService', () => {
       jest.spyOn(service, 'findByFaturaId').mockResolvedValueOnce([]);
       jest.spyOn(service, 'findByParcela').mockResolvedValueOnce({ situacao: ParcelaSituacao.Encerrada } as any);
 
-      await expect(service.add(faturaId, dto)).rejects.toThrowError('Parcela não está com situação "normal".');
+      await expect(service.add(faturaId, dto)).rejects.toThrow('Parcela não está com situação "normal".');
     });
 
     it('should throw BadRequestException if sum of parcelas value is greater than fatura value', async () => {
@@ -161,7 +161,7 @@ describe('FaturaParcelaService', () => {
 
       jest.spyOn(repository, 'upsert').mockRejectedValueOnce(new Error());
 
-      await expect(service.add(faturaId, dto)).rejects.toThrowError('Não foi possível adicionar/alterar a parcela.');
+      await expect(service.add(faturaId, dto)).rejects.toThrow('Não foi possível adicionar/alterar a parcela.');
       expect(repository.upsert).toHaveBeenCalledWith(
         { ...dto, empresaId, faturaId, vencimento: expect.any(Date), operadorId: usuario.id },
         { conflictPaths: ['empresaId', 'faturaId', 'parcela'] },
@@ -233,13 +233,13 @@ describe('FaturaParcelaService', () => {
     it('should throw NotFoundException if parcela is not found', async () => {
       jest.spyOn(service, 'findByParcela').mockResolvedValueOnce(undefined);
 
-      await expect(service.remove(empresaId, faturaId, parcela)).rejects.toThrowError('Parcela não encontrada.');
+      await expect(service.remove(empresaId, faturaId, parcela)).rejects.toThrow('Parcela não encontrada.');
     });
 
     it('should throw BadRequestException if fatura is not in "normal" situation', async () => {
       jest.spyOn(service, 'findByParcela').mockResolvedValueOnce({ situacao: FaturaSituacao.Cancelada } as any);
 
-      await expect(service.remove(empresaId, faturaId, parcela)).rejects.toThrowError('Parcela não está com situação "normal".');
+      await expect(service.remove(empresaId, faturaId, parcela)).rejects.toThrow('Parcela não está com situação "normal".');
     });
 
     it('should throw BadRequestException if parcela is not in "normal" situation', async () => {
@@ -293,7 +293,7 @@ describe('FaturaParcelaService', () => {
 
       jest.spyOn(service, 'findByParcela').mockResolvedValueOnce(undefined);
 
-      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrowError('Parcela não encontrada.');
+      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrow('Parcela não encontrada.');
 
       expect(repository.update).not.toHaveBeenCalled();
     });
@@ -306,7 +306,7 @@ describe('FaturaParcelaService', () => {
 
       jest.spyOn(service, 'findByParcela').mockResolvedValueOnce({ situacao: FaturaSituacao.Cancelada } as any);
 
-      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrowError(
+      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrow(
         'Parcela não está com situação "normal".',
       );
 
@@ -324,9 +324,11 @@ describe('FaturaParcelaService', () => {
       jest.spyOn(service, 'findByParcela').mockResolvedValueOnce(parcelaEntity);
       jest.spyOn(repository, 'update').mockRejectedValueOnce(new Error());
 
-      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrowError(
+      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrow(
         'Não foi possível receber a parcela.',
       );
     });
   });
 });
+
+

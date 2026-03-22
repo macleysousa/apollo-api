@@ -22,3 +22,5 @@ describe('CreateProdutoDto', () => {
     expect(produtoDto.codigoBarras[1]).toBeInstanceOf(CreateCodigoBarrasDto);
   });
 });
+
+

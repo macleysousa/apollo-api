@@ -36,16 +36,11 @@ export class InfinityPayPaymentGateway extends BasePaymentGateway {
         const config = await this.getConfig();
         const orderNsu = this.resolveOrderNsu(input);
 
-        const body = {
+        var body = {
             handle: config.handle,
             redirect_url: config.redirectUrl,
             webhook_url: config.webhookUrl,
             order_nsu: orderNsu,
-            customer: {
-                name: input.customer?.nome,
-                email: input.customer?.email,
-                phone_number: input.customer?.telefone,
-            },
             items: [
                 {
                     quantity: 1,
@@ -55,6 +50,17 @@ export class InfinityPayPaymentGateway extends BasePaymentGateway {
             ],
             metadata: input.metadata,
         };
+        const customer = {
+            name: input.customer?.nome?.trim(),
+            email: input.customer?.email?.trim(),
+            phone_number: input.customer?.telefone?.trim(),
+        };
+
+        const hasCustomerData = Object.values(customer).some((value) => !!value);
+
+        if (hasCustomerData) {
+            body['customer'] = customer;
+        }
 
         try {
             await this.logInfinityPayRequest('POST', `${config.baseUrl}/invoices/public/checkout/links`, body, {
