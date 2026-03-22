@@ -24,6 +24,7 @@ export class ReferenciaMediaService {
       url: path,
       isDefault: dto.isDefault ?? false,
       isPublic: dto.isPublic ?? false,
+      description: dto.description,
     });
 
     return this.findById(referenciaId, media.id);

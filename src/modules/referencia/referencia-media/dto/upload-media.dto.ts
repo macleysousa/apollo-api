@@ -16,4 +16,10 @@ export class UploadMediaDto {
   @ApiProperty({ required: false })
   @IsOptional()
   isPublic?: boolean;
+
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  description?: string;
+
 }
