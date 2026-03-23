@@ -1,7 +1,8 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiConsumes, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { MediaType } from 'src/commons/enum/media-type';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
 
 import { UploadMediaDto } from './dto/upload-media.dto';
@@ -16,10 +17,24 @@ export class ReferenciaMediaController {
   constructor(private readonly service: ReferenciaMediaService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Upload de mídia da referência' })
+  @ApiParam({ name: 'referenciaId', type: Number })
   @ApiResponse({ status: 200, type: ReferenciaMediaEntity })
   @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['midia', 'type'],
+      properties: {
+        midia: { type: 'string', format: 'binary' },
+        type: { type: 'string', enum: Object.values(MediaType) },
+        isDefault: { type: 'boolean' },
+        isPublic: { type: 'boolean' },
+        description: { type: 'string' },
+      },
+    },
+  })
   @UseInterceptors(FileInterceptor('midia'))
-  @ApiParam({ type: 'file', name: 'midia' })
   async upload(
     @Param('referenciaId', ParseIntPipe) referenciaId: number,
     @UploadedFile() file: Express.Multer.File,
@@ -29,11 +44,18 @@ export class ReferenciaMediaController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Lista mídias da referência' })
+  @ApiParam({ name: 'referenciaId', type: Number })
+  @ApiResponse({ status: 200, type: [ReferenciaMediaEntity] })
   async find(@Param('referenciaId', ParseIntPipe) referenciaId: number): Promise<ReferenciaMediaEntity[]> {
     return this.service.find(referenciaId);
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Busca mídia por ID da referência' })
+  @ApiParam({ name: 'referenciaId', type: Number })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 200, type: ReferenciaMediaEntity })
   async findById(
     @Param('referenciaId', ParseIntPipe) referenciaId: number,
     @Param('id', ParseIntPipe) id: number,
