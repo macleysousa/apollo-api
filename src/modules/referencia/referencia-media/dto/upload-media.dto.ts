@@ -17,9 +17,7 @@ export class UploadMediaDto {
   @IsOptional()
   isPublic?: boolean;
 
-
   @ApiProperty({ required: false })
   @IsOptional()
   description?: string;
-
 }

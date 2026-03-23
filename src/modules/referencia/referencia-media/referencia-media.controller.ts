@@ -24,9 +24,9 @@ export class ReferenciaMediaController {
   @ApiBody({
     schema: {
       type: 'object',
-      required: ['midia', 'type'],
+      required: ['file', 'type'],
       properties: {
-        midia: { type: 'string', format: 'binary' },
+        file: { type: 'string', format: 'binary' },
         type: { type: 'string', enum: Object.values(MediaType) },
         isDefault: { type: 'boolean' },
         isPublic: { type: 'boolean' },
@@ -34,7 +34,7 @@ export class ReferenciaMediaController {
       },
     },
   })
-  @UseInterceptors(FileInterceptor('midia'))
+  @UseInterceptors(FileInterceptor('file'))
   async upload(
     @Param('referenciaId', ParseIntPipe) referenciaId: number,
     @UploadedFile() file: Express.Multer.File,
