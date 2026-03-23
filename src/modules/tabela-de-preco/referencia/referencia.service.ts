@@ -33,7 +33,14 @@ export class PrecoReferenciaService {
   async upsert(dto: ImportPrecoDto[]): Promise<PrecoReferenciaView[]> {
     const operadorId = this.contextService.operadorId();
 
-    const precos = dto.map((x) => ({ ...x, operadorId }));
+    const precos = await Promise.all(
+      dto.map(async (x) => {
+        const tabela = await this.tabelaService.findById(x.tabelaDePrecoId);
+        const valorComTerminador = tabela?.terminador == null ? x.valor : Math.floor(x.valor) + (tabela.terminador % 1);
+
+        return { ...x, valor: valorComTerminador, operadorId };
+      }),
+    );
 
     await this.repository.upsert(precos, { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] });
 
@@ -45,9 +52,10 @@ export class PrecoReferenciaService {
   async add(tabelaDePrecoId: number, { referenciaId, valor }: AddPrecoReferenciaDto): Promise<PrecoReferenciaView> {
     const operadorId = this.contextService.usuario().id;
     const { terminador } = await this.tabelaService.findById(tabelaDePrecoId);
+    const valorComTerminador = terminador == null ? valor : Math.floor(valor) + (terminador % 1);
 
     await this.repository.upsert(
-      { tabelaDePrecoId, referenciaId, valor: Math.floor(valor) + (terminador % 1), operadorId },
+      { tabelaDePrecoId, referenciaId, valor: valorComTerminador, operadorId },
       { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] },
     );
 
