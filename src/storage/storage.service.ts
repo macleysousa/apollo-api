@@ -42,12 +42,12 @@ export class StorageService {
       Bucket: bucket,
       Key: name,
       Body: file,
-      ACL: 'public-read',
       ContentType: mimetype,
       ContentDisposition: 'inline',
     };
 
     await this.r2Client!.putObject(params).catch((error) => {
+      console.error('Error uploading to R2:', error);
       throw new BadRequestException(error.message);
     });
 
