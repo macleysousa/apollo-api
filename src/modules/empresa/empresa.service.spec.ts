@@ -78,11 +78,10 @@ describe('BranchService', () => {
 
     it('should find branches with filter', async () => {
       // Arrange
-      const filter = 'filter';
-      const relations = ['parametros'] as any;
+      const filter: EmpresaFilter = { searchTerm: 'test', incluir: ['parametros'] };
 
       // Act
-      const result = await service.find(filter, relations);
+      const result = await service.find(filter);
 
       // Assert
       expect(repository.find).toHaveBeenCalledTimes(1);
@@ -146,3 +145,5 @@ describe('BranchService', () => {
     });
   });
 });
+
+

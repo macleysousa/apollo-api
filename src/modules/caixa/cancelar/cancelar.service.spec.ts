@@ -104,7 +104,7 @@ describe('CancelarService', () => {
 
       jest.spyOn(caixaExtratoService, 'findByLiquidacao').mockResolvedValue(null);
 
-      await expect(service.adiantamento(caixaId, dto)).rejects.toThrowError(`A liquidação ${liquidacao} não foi encontrada`);
+      await expect(service.adiantamento(caixaId, dto)).rejects.toThrow(`A liquidação ${liquidacao} não foi encontrada`);
     });
 
     it('should throw BadRequestException if liquidacao is not an adiantamento', async () => {
@@ -113,7 +113,7 @@ describe('CancelarService', () => {
 
       jest.spyOn(caixaExtratoService, 'findByLiquidacao').mockResolvedValue(liquidacaoMock);
 
-      await expect(service.adiantamento(caixaId, dto)).rejects.toThrowError(`A liquidação ${liquidacao} não é um adiantamento`);
+      await expect(service.adiantamento(caixaId, dto)).rejects.toThrow(`A liquidação ${liquidacao} não é um adiantamento`);
     });
 
     it('should throw BadRequestException if liquidacao is already cancelled', async () => {
@@ -122,7 +122,7 @@ describe('CancelarService', () => {
 
       jest.spyOn(caixaExtratoService, 'findByLiquidacao').mockResolvedValue(liquidacaoMock);
 
-      await expect(service.adiantamento(caixaId, dto)).rejects.toThrowError(`A liquidação ${liquidacao} já foi cancelada`);
+      await expect(service.adiantamento(caixaId, dto)).rejects.toThrow(`A liquidação ${liquidacao} já foi cancelada`);
     });
 
     it('should throw BadRequestException if saldo adiantamento is insufficient', async () => {
@@ -132,9 +132,7 @@ describe('CancelarService', () => {
       jest.spyOn(caixaExtratoService, 'findByLiquidacao').mockResolvedValue(liquidacaoMock);
       jest.spyOn(pessoaExtratoService, 'findSaldoAdiantamento').mockResolvedValue(50);
 
-      await expect(service.adiantamento(caixaId, dto)).rejects.toThrowError(
-        `Saldo em adiantamento insuficiente para realizar o cancelamento`,
-      );
+      await expect(service.adiantamento(caixaId, dto)).rejects.toThrow(`Saldo em adiantamento insuficiente para realizar o cancelamento`);
     });
 
     it('should cancel liquidacao if all validations pass', async () => {
@@ -250,3 +248,5 @@ describe('CancelarService', () => {
     });
   });
 });
+
+

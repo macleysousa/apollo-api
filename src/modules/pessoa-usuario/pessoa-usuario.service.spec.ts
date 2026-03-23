@@ -4,9 +4,11 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
+import { EmailManagerService } from 'src/email-manager/email-manager.service';
 import { KeycloakService } from 'src/keycloak/keycloak.service';
 
 import { PessoaService } from '../pessoa/pessoa.service';
+import { ConfigSmtpService } from '../sistema/config-smtp/config-smtp.service';
 
 import { CreatePessoaUsuarioDto } from './dto/create-pessoa-usuario.dto';
 import { LoginPessoaUsuarioDto } from './dto/login-pessoa-usuario.dto';
@@ -18,6 +20,8 @@ describe('PessoaUsuarioService', () => {
   let repository: Repository<PessoaUsuario>;
   let keycloakService: KeycloakService;
   let pessoaService: PessoaService;
+  let emailManagerService: EmailManagerService;
+  let configSmtpService: ConfigSmtpService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -45,6 +49,18 @@ describe('PessoaUsuarioService', () => {
           provide: ContextService,
           useValue: {
             pessoaId: jest.fn().mockReturnValue('pessoa-id'),
+          },
+        },
+        {
+          provide: EmailManagerService,
+          useValue: {
+            sendEmail: jest.fn(),
+          },
+        },
+        {
+          provide: ConfigSmtpService,
+          useValue: {
+            findOne: jest.fn(),
           },
         },
       ],
@@ -189,3 +205,5 @@ describe('PessoaUsuarioService', () => {
     });
   });
 });
+
+

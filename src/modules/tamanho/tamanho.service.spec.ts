@@ -27,7 +27,7 @@ describe('SizeService', () => {
             findOne: jest.fn().mockResolvedValue(sizeFakeRepository.findOne()),
             save: jest.fn().mockResolvedValue(sizeFakeRepository.findOne()),
             update: jest.fn(),
-            delete: jest.fn(),
+            delete: jest.fn().mockResolvedValue({ affected: 1 }),
           },
         },
       ],
@@ -188,8 +188,8 @@ describe('SizeService', () => {
       const result = await service.update(id, size);
 
       // Assert
-      expect(repository.update).toHaveBeenCalledTimes(1);
-      expect(repository.update).toHaveBeenCalledWith(id, size);
+      expect(repository.findOne).toHaveBeenCalledTimes(3);
+      expect(repository.save).toHaveBeenCalledTimes(1);
 
       expect(result).toEqual(sizeFakeRepository.findOne());
     });
@@ -232,3 +232,5 @@ describe('SizeService', () => {
     });
   });
 });
+
+

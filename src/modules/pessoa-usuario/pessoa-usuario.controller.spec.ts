@@ -36,6 +36,7 @@ describe('PessoaUsuarioController', () => {
   describe('registry', () => {
     it('should call service.register with correct parameters and return result', async () => {
       const dto: CreatePessoaUsuarioDto = {
+        empresaId: 1,
         documento: 'mockDocumento',
         nome: 'mockNome',
         sobrenome: 'mockSobrenome',
@@ -90,3 +91,5 @@ describe('PessoaUsuarioController', () => {
     });
   });
 });
+
+

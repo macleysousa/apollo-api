@@ -95,7 +95,7 @@ describe('ConsignacaoService', () => {
 
       jest.spyOn(service, 'find').mockResolvedValueOnce(pessoaConsignacao);
 
-      await expect(service.open(dto)).rejects.toThrowError('Já existe uma consignação aberta para esta pessoa');
+      await expect(service.open(dto)).rejects.toThrow('Já existe uma consignação aberta para esta pessoa');
       expect(service.find).toHaveBeenCalledWith({ empresaIds: [1], pessoaIds: [1], situacoes: ['em_andamento'] });
     });
 
@@ -241,7 +241,7 @@ describe('ConsignacaoService', () => {
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
 
-      await expect(service.update(1, 1, dto)).rejects.toThrowError('Consignação não está com situação "aberta"');
+      await expect(service.update(1, 1, dto)).rejects.toThrow('Consignação não está com situação "aberta"');
       expect(service.findById).toHaveBeenCalledWith(1, 1);
     });
   });
@@ -318,7 +318,7 @@ describe('ConsignacaoService', () => {
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
 
-      await expect(service.close(1, 1)).rejects.toThrowError('Consignação não está com situação "aberta"');
+      await expect(service.close(1, 1)).rejects.toThrow('Consignação não está com situação "aberta"');
       expect(service.findById).toHaveBeenCalledWith(1, 1);
     });
 
@@ -335,7 +335,7 @@ describe('ConsignacaoService', () => {
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
 
-      await expect(service.close(1, 1)).rejects.toThrowError('Consignação possui itens pendentes');
+      await expect(service.close(1, 1)).rejects.toThrow('Consignação possui itens pendentes');
       expect(service.findById).toHaveBeenCalledWith(1, 1);
     });
 
@@ -373,7 +373,7 @@ describe('ConsignacaoService', () => {
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
 
-      await expect(service.cancel(1, 1, dto)).rejects.toThrowError('Consignação não está com situação "aberta"');
+      await expect(service.cancel(1, 1, dto)).rejects.toThrow('Consignação não está com situação "aberta"');
       expect(service.findById).toHaveBeenCalledWith(1, 1);
     });
 
@@ -392,7 +392,7 @@ describe('ConsignacaoService', () => {
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
 
-      await expect(service.cancel(1, 1, dto)).rejects.toThrowError('Consignação possui itens pendentes');
+      await expect(service.cancel(1, 1, dto)).rejects.toThrow('Consignação possui itens pendentes');
       expect(service.findById).toHaveBeenCalledWith(1, 1);
     });
 
@@ -412,7 +412,7 @@ describe('ConsignacaoService', () => {
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(consignacao);
 
-      await expect(service.cancel(1, 1, dto)).rejects.toThrowError('Consignação já possui itens acertados');
+      await expect(service.cancel(1, 1, dto)).rejects.toThrow('Consignação já possui itens acertados');
       expect(service.findById).toHaveBeenCalledWith(1, 1);
     });
 
@@ -440,3 +440,5 @@ describe('ConsignacaoService', () => {
     });
   });
 });
+
+

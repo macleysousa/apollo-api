@@ -276,7 +276,7 @@ describe('FaturaService', () => {
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(undefined);
 
-      await expect(service.update(empresaId, id, updateFaturaDto)).rejects.toThrowError('Fatura não encontrada');
+      await expect(service.update(empresaId, id, updateFaturaDto)).rejects.toThrow('Fatura não encontrada');
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
     });
 
@@ -334,7 +334,7 @@ describe('FaturaService', () => {
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(undefined);
 
-      await expect(service.cancelar(empresaId, id)).rejects.toThrowError('Fatura não encontrada');
+      await expect(service.cancelar(empresaId, id)).rejects.toThrow('Fatura não encontrada');
       expect(service.findById).toHaveBeenCalledWith(empresaId, id);
       expect(repository.update).not.toHaveBeenCalledWith({ empresaId, id, operadorId }, { situacao: FaturaSituacao.Cancelada });
     });
@@ -354,3 +354,5 @@ describe('FaturaService', () => {
     });
   });
 });
+
+

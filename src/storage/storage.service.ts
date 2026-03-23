@@ -11,7 +11,8 @@ export class StorageService {
   private r2Bucket: string | null = null;
 
   constructor() {
-    const { CLOUDFLARE_R2_ENDPOINT, CLOUDFLARE_R2_ACCESS_KEY_ID, CLOUDFLARE_R2_SECRET_ACCESS_KEY, CLOUDFLARE_R2_BUCKET } = process.env;
+    const { CLOUDFLARE_R2_ENDPOINT, CLOUDFLARE_R2_ACCESS_KEY_ID, CLOUDFLARE_R2_SECRET_ACCESS_KEY, CLOUDFLARE_R2_BUCKET } =
+      process.env;
 
     if (!CLOUDFLARE_R2_ENDPOINT || !CLOUDFLARE_R2_ACCESS_KEY_ID || !CLOUDFLARE_R2_SECRET_ACCESS_KEY || !CLOUDFLARE_R2_BUCKET) {
       return;
@@ -80,6 +81,11 @@ export class StorageService {
     );
 
     return objectKey;
+  }
+
+  async delete(objectKey: string): Promise<void> {
+    this.ensureR2Configured();
+    await this.r2Client!.deleteObject({ Bucket: this.r2Bucket!, Key: objectKey });
   }
 
   async exists(objectKey: string): Promise<boolean> {

@@ -63,7 +63,7 @@ describe('ReceberController', () => {
 
       const result = await controller.adiantamento(caixaId, adiantamentoDto);
 
-      expect(service.adiantamento).toBeCalledWith(caixaId, adiantamentoDto);
+      expect(service.adiantamento).toHaveBeenCalledWith(caixaId, adiantamentoDto);
 
       expect(result).toEqual(extrato);
     });
@@ -78,7 +78,7 @@ describe('ReceberController', () => {
 
       const result = await controller.fatura(caixaId, faturaDto);
 
-      expect(service.fatura).toBeCalledWith(caixaId, faturaDto);
+      expect(service.fatura).toHaveBeenCalledWith(caixaId, faturaDto);
 
       expect(result).toEqual({ situacao: FaturaSituacao.Encerrada });
     });
@@ -93,9 +93,11 @@ describe('ReceberController', () => {
 
       const result = await controller.romaneio(caixaId, romaneioDto);
 
-      expect(service.romaneio).toBeCalledWith(caixaId, romaneioDto);
+      expect(service.romaneio).toHaveBeenCalledWith(caixaId, romaneioDto);
 
       expect(result).toEqual({ situacao: SituacaoRomaneio.encerrado });
     });
   });
 });
+
+

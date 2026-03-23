@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -61,5 +61,11 @@ export class ReferenciaMediaController {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ReferenciaMediaEntity> {
     return this.service.findById(referenciaId, id);
+  }
+
+  @Delete(':id')
+  @ApiResponse({ status: 204 })
+  async delete(@Param('referenciaId', ParseIntPipe) referenciaId: number, @Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.service.delete(referenciaId, id);
   }
 }

@@ -33,12 +33,13 @@ describe('PessoaService', () => {
             update: jest.fn().mockResolvedValue(undefined),
             createQueryBuilder: jest.fn().mockReturnValue({
               where: jest.fn().mockReturnThis(),
+              andWhere: jest.fn().mockReturnThis(),
               leftJoinAndSelect: jest.fn().mockReturnThis(),
               orWhere: jest.fn().mockReturnThis(),
               limit: jest.fn().mockReturnThis(),
               offset: jest.fn().mockReturnThis(),
               cache: jest.fn().mockReturnThis(),
-              getMany: jest.fn().mockReturnThis(),
+              getMany: jest.fn().mockResolvedValue(pessoaFakeRepository.find()),
               clone: jest.fn().mockReturnThis(),
               skip: jest.fn().mockReturnThis(),
               take: jest.fn().mockReturnThis(),
@@ -214,7 +215,7 @@ describe('PessoaService', () => {
       const id = 1;
       jest.spyOn(service, 'findById').mockResolvedValueOnce(null);
 
-      await expect(service.block(id)).rejects.toThrowError(BadRequestException);
+      await expect(service.block(id)).rejects.toThrow(BadRequestException);
       expect(service.findById).toHaveBeenCalledWith(id);
     });
   });
@@ -237,7 +238,7 @@ describe('PessoaService', () => {
       const id = 1;
       jest.spyOn(service, 'findById').mockResolvedValueOnce(null);
 
-      await expect(service.unblock(id)).rejects.toThrowError(BadRequestException);
+      await expect(service.unblock(id)).rejects.toThrow(BadRequestException);
       expect(service.findById).toHaveBeenCalledWith(id);
     });
   });
@@ -282,9 +283,11 @@ describe('PessoaService', () => {
       const empresaId = 3;
       jest.spyOn(service, 'findById').mockResolvedValueOnce(undefined);
 
-      await expect(service.liberarAcesso(id, empresaId)).rejects.toThrowError(BadRequestException);
+      await expect(service.liberarAcesso(id, empresaId)).rejects.toThrow(BadRequestException);
       expect(service.findById).toHaveBeenCalledWith(id);
       expect(repository.save).not.toHaveBeenCalled();
     });
   });
 });
+
+

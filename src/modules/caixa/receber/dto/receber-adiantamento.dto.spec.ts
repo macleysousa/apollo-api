@@ -45,3 +45,5 @@ describe('ReceberAdiantamentoDto', () => {
     expect(dto).toBeInstanceOf(ReceberAdiantamentoDto);
   });
 });
+
+

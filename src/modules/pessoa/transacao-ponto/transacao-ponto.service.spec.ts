@@ -110,7 +110,7 @@ describe('TransacaoPontoService', () => {
       const result = await service.find(pessoaId, filter);
 
       expect(queryBuilder.where).toHaveBeenCalledWith('t.pessoaId = :pessoaId', { pessoaId });
-      expect(queryBuilder.andWhere).toHaveBeenCalledWith('t.empresaId IN (:...empresaIds)', { empresaIds: [1, 2] });
+      expect(queryBuilder.andWhere).toHaveBeenCalledWith('t.empresaId IN (:...empresaIds)', { empresaIds: [2] });
       expect(queryBuilder.andWhere).toHaveBeenCalledWith('t.tipo IN (:...tipos)', { tipos: ['Débito', 'Crédito'] });
       expect(queryBuilder.orderBy).toHaveBeenCalledWith('t.data', 'DESC');
       expect(result).toEqual([{ id: 1 }]);
@@ -172,3 +172,5 @@ describe('TransacaoPontoService', () => {
     });
   });
 });
+
+

@@ -121,7 +121,9 @@ describe('TerminalService', () => {
 
       jest.spyOn(repository, 'delete').mockRejectedValueOnce(new Error());
 
-      await expect(service.delete(empresaId, id)).rejects.toThrowError('Não foi possível excluir o terminal');
+      await expect(service.delete(empresaId, id)).rejects.toThrow('Não foi possível excluir o terminal');
     });
   });
 });
+
+

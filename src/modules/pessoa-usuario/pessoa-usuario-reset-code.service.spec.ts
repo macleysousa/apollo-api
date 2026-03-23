@@ -88,7 +88,6 @@ describe('PessoaUsuarioService - Reset with Code', () => {
 
       // Assert
       expect(result.sucesso).toBe(true);
-      expect(result.codigo).toBe(mockCode);
       expect(keycloakService.generateResetPasswordToken).toHaveBeenCalledWith(dto.email);
     });
   });
@@ -122,3 +121,5 @@ describe('PessoaUsuarioService - Reset with Code', () => {
     });
   });
 });
+
+

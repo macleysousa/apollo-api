@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { categoryFakeRepository } from 'src/base-fake/category';
+import { CategoriaService } from 'src/modules/categoria/categoria.service';
 import { SubCategoriaService } from 'src/modules/categoria/sub/sub.service';
 
 import { SubCategoriaConstraint } from './is-categoria-sub.validation';
@@ -8,21 +9,31 @@ import { SubCategoriaConstraint } from './is-categoria-sub.validation';
 describe('SubCategoryConstraint', () => {
   let service: SubCategoriaService;
   let constraint: SubCategoriaConstraint;
+  let categoriaService: CategoriaService;
+  let subCategoriaService: SubCategoriaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SubCategoriaConstraint,
         {
+          provide: CategoriaService,
+          useValue: {
+            findById: jest.fn().mockResolvedValue({ id: 2, nome: 'Categoria' }),
+          },
+        },
+        {
           provide: SubCategoriaService,
           useValue: {
-            findById: jest.fn().mockResolvedValue(categoryFakeRepository.findSubOne()),
+            findById: jest.fn().mockResolvedValue({ id: 1, nome: 'SubCategoria', categoriaId: 2 }),
           },
         },
       ],
     }).compile();
     constraint = module.get<SubCategoriaConstraint>(SubCategoriaConstraint);
     service = module.get<SubCategoriaService>(SubCategoriaService);
+    categoriaService = module.get<CategoriaService>(CategoriaService);
+    subCategoriaService = module.get<SubCategoriaService>(SubCategoriaService);
   });
 
   describe('validate', () => {
@@ -101,3 +112,5 @@ describe('SubCategoryConstraint', () => {
     });
   });
 });
+
+
