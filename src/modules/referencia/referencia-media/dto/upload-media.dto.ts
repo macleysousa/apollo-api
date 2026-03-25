@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 import { MediaType } from 'src/commons/enum/media-type';
 
@@ -47,4 +47,14 @@ export class UploadMediaDto {
   @ApiProperty({ required: false })
   @IsOptional()
   description?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  cor?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  tamanho?: string;
 }

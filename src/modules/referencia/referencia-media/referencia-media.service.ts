@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { StorageService } from 'src/storage/storage.service';
 
 import { UploadMediaDto } from './dto/upload-media.dto';
+import { UpdateMediaDto } from './dto/update-media.dto';
 import { ReferenciaMediaEntity } from './entities/referencia-media.entity';
 import { ReferenciaService } from '../referencia.service';
 
@@ -40,6 +41,17 @@ export class ReferenciaMediaService {
     return Boolean(value);
   }
 
+  private async clearOtherDefaults(referenciaId: number, mediaId: number): Promise<void> {
+    await this.repository
+      .createQueryBuilder()
+      .update(ReferenciaMediaEntity)
+      .set({ isDefault: false })
+      .where('referenciaId = :referenciaId', { referenciaId })
+      .andWhere('id <> :mediaId', { mediaId })
+      .andWhere('isDefault = :isDefault', { isDefault: true })
+      .execute();
+  }
+
   async upload(referenciaId: number, file: Express.Multer.File, dto: UploadMediaDto): Promise<ReferenciaMediaEntity> {
     const path = await this.storage.upload('referencias', file);
 
@@ -58,8 +70,14 @@ export class ReferenciaMediaService {
           isDefault: this.normalizeBoolean(dto.isDefault, false),
           isPublic: this.normalizeBoolean(dto.isPublic, false),
           description: dto.description,
+          cor: dto.cor,
+          tamanho: dto.tamanho,
         }),
       );
+
+      if (media.isDefault) {
+        await this.clearOtherDefaults(referenciaId, media.id);
+      }
     } catch (error) {
       await this.storage.delete(path).catch(() => undefined);
       throw error;
@@ -74,6 +92,33 @@ export class ReferenciaMediaService {
 
   async findById(referenciaId: number, id: number): Promise<ReferenciaMediaEntity> {
     return this.repository.findOne({ where: { id, referenciaId } });
+  }
+
+  async update(referenciaId: number, id: number, dto: UpdateMediaDto): Promise<ReferenciaMediaEntity> {
+    const media = await this.findById(referenciaId, id);
+
+    if (!media) {
+      throw new BadRequestException('Mídia não encontrada');
+    }
+
+    const isDefault = dto.isDefault === undefined ? media.isDefault : this.normalizeBoolean(dto.isDefault, false);
+    const isPublic = dto.isPublic === undefined ? media.isPublic : this.normalizeBoolean(dto.isPublic, false);
+
+    await this.repository.save({
+      ...media,
+      type: dto.type ?? media.type,
+      isDefault,
+      isPublic,
+      description: dto.description ?? media.description,
+      cor: dto.cor ?? media.cor,
+      tamanho: dto.tamanho ?? media.tamanho,
+    });
+
+    if (isDefault) {
+      await this.clearOtherDefaults(referenciaId, id);
+    }
+
+    return this.findById(referenciaId, id);
   }
 
   async delete(referenciaId: number, id: number): Promise<void> {

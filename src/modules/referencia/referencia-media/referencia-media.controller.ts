@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -6,6 +6,7 @@ import { MediaType } from 'src/commons/enum/media-type';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
 
 import { UploadMediaDto } from './dto/upload-media.dto';
+import { UpdateMediaDto } from './dto/update-media.dto';
 import { ReferenciaMediaEntity } from './entities/referencia-media.entity';
 import { ReferenciaMediaService } from './referencia-media.service';
 
@@ -31,6 +32,8 @@ export class ReferenciaMediaController {
         isDefault: { type: 'boolean' },
         isPublic: { type: 'boolean' },
         description: { type: 'string' },
+        cor: { type: 'string' },
+        tamanho: { type: 'string' },
       },
     },
   })
@@ -49,6 +52,19 @@ export class ReferenciaMediaController {
   @ApiResponse({ status: 200, type: [ReferenciaMediaEntity] })
   async find(@Param('referenciaId', ParseIntPipe) referenciaId: number): Promise<ReferenciaMediaEntity[]> {
     return this.service.find(referenciaId);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Atualiza dados da mídia da referência' })
+  @ApiParam({ name: 'referenciaId', type: Number })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 200, type: ReferenciaMediaEntity })
+  async update(
+    @Param('referenciaId', ParseIntPipe) referenciaId: number,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateMediaDto,
+  ): Promise<ReferenciaMediaEntity> {
+    return this.service.update(referenciaId, id, dto);
   }
 
   @Get(':id')
