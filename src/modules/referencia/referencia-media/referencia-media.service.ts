@@ -41,7 +41,7 @@ export class ReferenciaMediaService {
   }
 
   async upload(referenciaId: number, file: Express.Multer.File, dto: UploadMediaDto): Promise<ReferenciaMediaEntity> {
-    ///  const path = await this.storage.upload('referencias', file);
+    const path = await this.storage.upload('referencias', file);
 
     let media: ReferenciaMediaEntity;
 
@@ -54,14 +54,14 @@ export class ReferenciaMediaService {
         this.repository.create({
           referenciaId,
           type: dto.type,
-          url: 'teste',
+          url: path,
           isDefault: this.normalizeBoolean(dto.isDefault, false),
           isPublic: this.normalizeBoolean(dto.isPublic, false),
           description: dto.description,
         }),
       );
     } catch (error) {
-      // await this.storage.delete(path).catch(() => undefined);
+      await this.storage.delete(path).catch(() => undefined);
       throw error;
     }
 
