@@ -1,20 +1,29 @@
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
 
 import { TabelaDePrecoService } from '../tabela-de-preco.service';
+import { ReferenciaEntity } from '../../referencia/entities/referencia.entity';
 
 import { AddPrecoReferenciaDto } from './dto/add-referencia.dto';
 import { ImportPrecoDto } from './dto/import-precos.dto';
+import { UpdatePrecoReferenciaDto } from './dto/update-referencia.dto';
 import { PrecoReferencia } from './entities/referencia.entity';
 import { PrecoReferenciaView } from './views/referencia.view';
 
 interface FindOptions {
   referenciaIds?: number[];
   referenciaIdExternos?: string[];
+  page?: number;
+  limit?: number;
+}
+
+interface FindNaoAssociadasOptions {
+  nome?: string;
+  idExterno?: string;
   page?: number;
   limit?: number;
 }
@@ -26,6 +35,8 @@ export class PrecoReferenciaService {
     private readonly repository: Repository<PrecoReferencia>,
     @InjectRepository(PrecoReferenciaView)
     private readonly view: Repository<PrecoReferenciaView>,
+    @InjectRepository(ReferenciaEntity)
+    private readonly referenciaRepository: Repository<ReferenciaEntity>,
     private readonly tabelaService: TabelaDePrecoService,
     private readonly contextService: ContextService,
   ) {}
@@ -81,5 +92,62 @@ export class PrecoReferenciaService {
 
   async findByReferenciaId(tabelaDePrecoId: number, referenciaId: number): Promise<PrecoReferenciaView> {
     return this.view.findOne({ where: { tabelaDePrecoId, referenciaId } });
+  }
+
+  async update(
+    tabelaDePrecoId: number,
+    referenciaId: number,
+    { valor }: UpdatePrecoReferenciaDto,
+  ): Promise<PrecoReferenciaView> {
+    const preco = await this.findByReferenciaId(tabelaDePrecoId, referenciaId);
+    if (!preco) {
+      throw new BadRequestException('Preço da referência não encontrado nesta tabela');
+    }
+
+    const operadorId = this.contextService.usuario().id;
+    const { terminador } = await this.tabelaService.findById(tabelaDePrecoId);
+    const valorComTerminador = terminador == null ? valor : Math.floor(valor) + (terminador % 1);
+
+    await this.repository.save({
+      tabelaDePrecoId,
+      referenciaId,
+      valor: valorComTerminador,
+      operadorId,
+    });
+
+    return this.findByReferenciaId(tabelaDePrecoId, referenciaId);
+  }
+
+  async remove(tabelaDePrecoId: number, referenciaId: number): Promise<void> {
+    await this.repository.delete({ tabelaDePrecoId, referenciaId });
+  }
+
+  async findNaoAssociadas(
+    tabelaDePrecoId: number,
+    { nome, idExterno, page, limit }: FindNaoAssociadasOptions,
+  ): Promise<Pagination<ReferenciaEntity>> {
+    const queryBuilder = this.referenciaRepository.createQueryBuilder('r');
+
+    queryBuilder.where(
+      `NOT EXISTS (
+        SELECT 1
+        FROM tabelas_de_precos_referencias tpr
+        WHERE tpr.tabelaDePrecoId = :tabelaDePrecoId
+          AND tpr.referenciaId = r.id
+      )`,
+      { tabelaDePrecoId },
+    );
+
+    if (nome) {
+      queryBuilder.andWhere('LOWER(r.nome) LIKE :nome', { nome: `%${nome.toLowerCase()}%` });
+    }
+
+    if (idExterno) {
+      queryBuilder.andWhere('LOWER(r.idExterno) LIKE :idExterno', { idExterno: `%${idExterno.toLowerCase()}%` });
+    }
+
+    queryBuilder.orderBy('r.nome', 'ASC');
+
+    return paginate<ReferenciaEntity>(queryBuilder, { page: page ?? 1, limit: limit ?? 100 });
   }
 }

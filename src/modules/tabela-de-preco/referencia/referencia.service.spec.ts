@@ -4,6 +4,7 @@ import { In, Repository } from 'typeorm';
 
 import { tableaDePrecoFakeRepository } from 'src/base-fake/tabela-de-preco';
 import { ContextService } from 'src/context/context.service';
+import { ReferenciaEntity } from 'src/modules/referencia/entities/referencia.entity';
 
 import { TabelaDePrecoService } from '../tabela-de-preco.service';
 
@@ -20,6 +21,7 @@ describe('PrecoReferenciaService', () => {
   let service: PrecoReferenciaService;
   let repository: Repository<PrecoReferencia>;
   let view: Repository<PrecoReferenciaView>;
+  let referenciaRepository: Repository<ReferenciaEntity>;
   let tabelaService: TabelaDePrecoService;
   let contextService: ContextService;
 
@@ -51,6 +53,16 @@ describe('PrecoReferenciaService', () => {
           },
         },
         {
+          provide: getRepositoryToken(ReferenciaEntity),
+          useValue: {
+            createQueryBuilder: jest.fn().mockReturnValue({
+              where: jest.fn().mockReturnThis(),
+              andWhere: jest.fn().mockReturnThis(),
+              orderBy: jest.fn().mockReturnThis(),
+            }),
+          },
+        },
+        {
           provide: TabelaDePrecoService,
           useValue: {
             findById: jest.fn().mockResolvedValue({ terminador: 0.9 }),
@@ -69,6 +81,7 @@ describe('PrecoReferenciaService', () => {
     service = module.get<PrecoReferenciaService>(PrecoReferenciaService);
     repository = module.get<Repository<PrecoReferencia>>(getRepositoryToken(PrecoReferencia));
     view = module.get<Repository<PrecoReferenciaView>>(getRepositoryToken(PrecoReferenciaView));
+    referenciaRepository = module.get<Repository<ReferenciaEntity>>(getRepositoryToken(ReferenciaEntity));
     tabelaService = module.get<TabelaDePrecoService>(TabelaDePrecoService);
     contextService = module.get<ContextService>(ContextService);
   });
@@ -77,6 +90,7 @@ describe('PrecoReferenciaService', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
     expect(view).toBeDefined();
+    expect(referenciaRepository).toBeDefined();
     expect(tabelaService).toBeDefined();
     expect(contextService).toBeDefined();
   });
