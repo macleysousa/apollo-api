@@ -32,15 +32,30 @@ export class ParametroService {
       { id: 'INTEGRACAO_OPEN_PIX_HABILITADA', descricao: 'Habilitar integração com OpenPix', valorPadrao: 'N' },
       { id: 'INTEGRACAO_OPEN_PIX_APP_ID', descricao: 'Client ID para integração com OpenPix', valorPadrao: '' },
       { id: 'INTEGRACAO_INFINITY_PAY_HABILITADA', descricao: 'Habilitar integração com Infinity Pay', valorPadrao: 'N' },
-      { id: 'INTEGRACAO_INFINITY_PAY_API_HANDLE', descricao: 'Handle: sua InfiniteTag (a identificação que aparece no canto superior esquerdo do App InfinitePay). Use sem o símbolo $ do início.', valorPadrao: '' },
-      { id: 'INTEGRACAO_INFINITY_PAY_URL_REDIRECT', descricao: 'URL de redirecionamento no final do processo de pagamento', valorPadrao: '' },
-      { id: 'INTEGRACAO_INFINITY_PAY_URL_WEBHOOK', descricao: 'URL de webhook para integração com Infinity Pay', valorPadrao: '' },
+      {
+        id: 'INTEGRACAO_INFINITY_PAY_API_HANDLE',
+        descricao:
+          'Handle: sua InfiniteTag (a identificação que aparece no canto superior esquerdo do App InfinitePay). Use sem o símbolo $ do início.',
+        valorPadrao: '',
+      },
+      {
+        id: 'INTEGRACAO_INFINITY_PAY_URL_REDIRECT',
+        descricao: 'URL de redirecionamento no final do processo de pagamento',
+        valorPadrao: '',
+      },
+      {
+        id: 'INTEGRACAO_INFINITY_PAY_URL_WEBHOOK',
+        descricao: 'URL de webhook para integração com Infinity Pay',
+        valorPadrao: '',
+      },
       { id: 'URL_SITE_EMPRESA', descricao: 'URL do site da empresa', valorPadrao: '' },
     ];
 
+    const dbParametros = await this.repository.find({ select: ['id', 'descricao'] });
+
     // Populate base parameters only when missing.
     for (const parametro of parametros) {
-      const parametroExistente = await this.repository.findOne({ where: { id: parametro.id as Parametro } });
+      const parametroExistente = dbParametros.find((p) => p.id === parametro.id);
 
       if (!parametroExistente) {
         await this.repository.insert(parametro);
@@ -49,15 +64,13 @@ export class ParametroService {
 
     // Populate company parameters one by one; skip if already present.
     const empresas = await this.empresaRepository.find({ select: ['id'] });
+    const dbEmpresaParametros = await this.empresaParametroRepository.find({ select: ['empresaId', 'parametroId'] });
 
     for (const empresa of empresas) {
       for (const parametro of parametros) {
-        const existenteNaEmpresa = await this.empresaParametroRepository.findOne({
-          where: {
-            empresaId: empresa.id,
-            parametroId: parametro.id as Parametro,
-          },
-        });
+        const existenteNaEmpresa = dbEmpresaParametros.find(
+          (ep) => ep.empresaId === empresa.id && ep.parametroId === parametro.id,
+        );
 
         if (!existenteNaEmpresa) {
           await this.empresaParametroRepository.insert({
