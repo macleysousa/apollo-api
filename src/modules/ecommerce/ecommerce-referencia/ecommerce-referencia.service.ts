@@ -57,7 +57,7 @@ export class EcommerceReferenciaService {
     }
 
     const page = filters.page || 1;
-    const limit = filters.limit || 25;
+    const limit = filters.limit || 100;
 
     return queryBuilder.paginate({ page, limit });
   }

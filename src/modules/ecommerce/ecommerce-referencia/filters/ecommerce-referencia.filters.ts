@@ -38,7 +38,7 @@ export class EcommerceReferenciaFilters {
   @IsOptional()
   page?: number;
 
-  @ApiPropertyOptional({ description: 'Número de itens por página', default: 25 })
+  @ApiPropertyOptional({ description: 'Número de itens por página', default: 100 })
   @IsOptional()
   limit?: number;
 }
