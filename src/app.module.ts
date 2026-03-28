@@ -21,6 +21,7 @@ import { ComponentsModule } from './modules/componente/componente.module';
 import { ComponentGroupModule } from './modules/componente-grupo/componente-grupo.module';
 import { ConsignacaoModule } from './modules/consignacao/consignacao.module';
 import { CorModule } from './modules/cor/cor.module';
+import { EcommerceModule } from './modules/ecommerce/ecommerce.module';
 import { EmpresaModule } from './modules/empresa/empresa.module';
 import { EstoqueModule } from './modules/estoque/estoque.module';
 import { FaturaModule } from './modules/fatura/fatura.module';
@@ -41,7 +42,6 @@ import { TabelaDePrecoModule } from './modules/tabela-de-preco/tabela-de-preco.m
 import { TamanhoModule } from './modules/tamanho/tamanho.module';
 import { UsuarioModule } from './modules/usuario/usuario.module';
 import { StorageModule } from './storage/storage.module';
-import { EcommerceModule } from './modules/ecommerce/ecommerce.module';
 
 @Module({
   imports: [
