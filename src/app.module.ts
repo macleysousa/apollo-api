@@ -1,12 +1,13 @@
 import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 
-import { OrmModule } from './config/orm.module';
+import { OrmModule } from './configs/orm.module';
 import { ContextModule } from './context/context.module';
 import { EmailManagerModule } from './email-manager/email-manager.module';
 import { AllExceptionsFilter } from './exceptions/all-exceptions.filter';
 import { ComponentGuard } from './guards/component.guard';
 import { EmpresaAuthGuard } from './guards/empresa-auth.guard';
+import { IpThrottlerGuard } from './guards/ip-throttler.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { PessoaGuard } from './guards/pessoa.guard';
 import { RolesGuard } from './guards/roles.guard';
@@ -27,8 +28,8 @@ import { FormaDePagamentoModule } from './modules/forma-de-pagamento/forma-de-pa
 import { FuncionarioModule } from './modules/funcionario/funcionario.module';
 import { ImportModule } from './modules/import/import.module';
 import { MarcaModule } from './modules/marca/marca.module';
-import { ParametroModule } from './modules/parametro/parametro.module';
 import { PagamentoIntegracaoModule } from './modules/pagamento-integracao/pagamento-integracao.module';
+import { ParametroModule } from './modules/parametro/parametro.module';
 import { PedidoModule } from './modules/pedido/pedido.module';
 import { PessoaModule } from './modules/pessoa/pessoa.module';
 import { PessoaUsuarioModule } from './modules/pessoa-usuario/pessoa-usuario.module';
@@ -80,6 +81,10 @@ import { StorageModule } from './storage/storage.module';
   ],
   controllers: [],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: IpThrottlerGuard,
+    },
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
