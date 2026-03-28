@@ -42,12 +42,12 @@ export class StorageService {
       Bucket: bucket,
       Key: name,
       Body: file,
-      ACL: 'public-read',
       ContentType: mimetype,
       ContentDisposition: 'inline',
     };
 
     await this.r2Client!.putObject(params).catch((error) => {
+      console.error('Error uploading to R2:', error);
       throw new BadRequestException(error.message);
     });
 
@@ -62,9 +62,13 @@ export class StorageService {
     }
 
     if (!['image', 'video', 'audio', 'application'].includes(file?.mimetype?.split('/')[0])) {
-      throw new BadRequestException('invalid type (accepted types are image, video, audio, pdf)');
+      throw new BadRequestException(
+        'invalid type (accepted types are image, video, audio, pdf), file mimetype: ' + file?.mimetype,
+      );
     } else if (['application'].includes(file?.mimetype?.split('/')[0]) && !['pdf'].includes(file?.mimetype?.split('/')[1])) {
-      throw new BadRequestException('invalid type (accepted types are image, video, audio, pdf)');
+      throw new BadRequestException(
+        'invalid type (accepted types are image, video, audio, pdf), file mimetype: ' + file?.mimetype,
+      );
     }
 
     const { originalname } = file;

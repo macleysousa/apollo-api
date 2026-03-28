@@ -106,5 +106,3 @@ describe('TabelaDePrecoController', () => {
     });
   });
 });
-
-

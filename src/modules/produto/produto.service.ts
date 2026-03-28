@@ -128,7 +128,7 @@ export class ProdutoService {
     });
   }
 
-  async find(searchTerm?: string, page = 1, limit = 100): Promise<Pagination<ProdutoEntity>> {
+  async find(find: ProdutoFind): Promise<Pagination<ProdutoEntity>> {
     const queryBuilder = this.repository.createQueryBuilder('c');
     queryBuilder.where({ id: Not(IsNull()) });
 
@@ -137,16 +137,26 @@ export class ProdutoService {
     queryBuilder.leftJoinAndSelect('c.referencia', 'referencia');
     queryBuilder.leftJoinAndSelect('c.codigos', 'codigo');
 
-    if (searchTerm) {
-      queryBuilder.orWhere({ id: ILike(`%${searchTerm}%`) });
-      queryBuilder.orWhere({ nome: ILike(`%${searchTerm}%`) });
-      queryBuilder.orWhere({ idExterno: ILike(`%${searchTerm}%`) });
-      queryBuilder.orWhere({ referenciaId: ILike(`%${searchTerm}%`) });
-      queryBuilder.orWhere('referencia.idExterno LIKE :idExterno', { idExterno: `%${searchTerm}%` });
-      queryBuilder.orWhere('codigo.code LIKE :codigo', { codigo: `%${searchTerm}%` });
+    if (find.searchTerm) {
+      queryBuilder.orWhere({ id: ILike(`%${find.searchTerm}%`) });
+      queryBuilder.orWhere({ nome: ILike(`%${find.searchTerm}%`) });
+      queryBuilder.orWhere({ idExterno: ILike(`%${find.searchTerm}%`) });
+      queryBuilder.orWhere({ referenciaId: ILike(`%${find.searchTerm}%`) });
+
+      queryBuilder.orWhere('referencia.idExterno LIKE :idExterno', { idExterno: `%${find.searchTerm}%` });
+      queryBuilder.orWhere('codigo.code LIKE :codigo', { codigo: `%${find.searchTerm}%` });
     }
 
-    return paginate<ProdutoEntity>(queryBuilder, { page, limit });
+    if (find.referenciaId) {
+      queryBuilder.andWhere({ referenciaId: find.referenciaId });
+    }
+    if (find.corId) {
+      queryBuilder.andWhere({ corId: find.corId });
+    }
+    if (find.tamanhoId) {
+      queryBuilder.andWhere({ tamanhoId: find.tamanhoId });
+    }
+    return paginate<ProdutoEntity>(queryBuilder, { page: find.page, limit: find.limit });
   }
 
   async findById(id: number): Promise<ProdutoEntity> {
@@ -171,4 +181,14 @@ export class ProdutoService {
       throw new BadRequestException(`Unable to delete product with id ${id}`);
     });
   }
+}
+
+class ProdutoFind {
+  referenciaId?: string;
+  idExterno?: string;
+  corId?: number;
+  tamanhoId?: number;
+  searchTerm?: string;
+  page?: number = 1;
+  limit?: number = 100;
 }

@@ -13,6 +13,22 @@ export class CorEntity extends BaseEntity {
   @Column()
   nome: string;
 
+  @ApiProperty({ required: false })
+  @Column({ nullable: true, length: 9 })
+  hex?: string;
+
+  @ApiProperty({ required: false })
+  @Column({ nullable: true })
+  nomeInternacional?: string;
+
+  @ApiProperty({ required: false })
+  @Column({ nullable: true })
+  base?: string;
+
+  @ApiProperty({ required: false, type: [String] })
+  @Column('simple-array', { nullable: true })
+  tags?: string[];
+
   @ApiProperty()
   @Column()
   inativa: boolean;

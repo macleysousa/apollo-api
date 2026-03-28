@@ -1,6 +1,6 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 
-import ormConfig from './src/config/orm.config';
+import ormConfig from './src/configs/orm.config';
 
 const dataSource = new DataSource({
   ...(ormConfig as DataSourceOptions),

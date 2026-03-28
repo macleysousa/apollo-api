@@ -4,6 +4,7 @@ import { In, Repository } from 'typeorm';
 
 import { tableaDePrecoFakeRepository } from 'src/base-fake/tabela-de-preco';
 import { ContextService } from 'src/context/context.service';
+import { ReferenciaEntity } from 'src/modules/referencia/entities/referencia.entity';
 
 import { TabelaDePrecoService } from '../tabela-de-preco.service';
 
@@ -20,6 +21,7 @@ describe('PrecoReferenciaService', () => {
   let service: PrecoReferenciaService;
   let repository: Repository<PrecoReferencia>;
   let view: Repository<PrecoReferenciaView>;
+  let referenciaRepository: Repository<ReferenciaEntity>;
   let tabelaService: TabelaDePrecoService;
   let contextService: ContextService;
 
@@ -51,6 +53,16 @@ describe('PrecoReferenciaService', () => {
           },
         },
         {
+          provide: getRepositoryToken(ReferenciaEntity),
+          useValue: {
+            createQueryBuilder: jest.fn().mockReturnValue({
+              where: jest.fn().mockReturnThis(),
+              andWhere: jest.fn().mockReturnThis(),
+              orderBy: jest.fn().mockReturnThis(),
+            }),
+          },
+        },
+        {
           provide: TabelaDePrecoService,
           useValue: {
             findById: jest.fn().mockResolvedValue({ terminador: 0.9 }),
@@ -69,6 +81,7 @@ describe('PrecoReferenciaService', () => {
     service = module.get<PrecoReferenciaService>(PrecoReferenciaService);
     repository = module.get<Repository<PrecoReferencia>>(getRepositoryToken(PrecoReferencia));
     view = module.get<Repository<PrecoReferenciaView>>(getRepositoryToken(PrecoReferenciaView));
+    referenciaRepository = module.get<Repository<ReferenciaEntity>>(getRepositoryToken(ReferenciaEntity));
     tabelaService = module.get<TabelaDePrecoService>(TabelaDePrecoService);
     contextService = module.get<ContextService>(ContextService);
   });
@@ -77,23 +90,45 @@ describe('PrecoReferenciaService', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
     expect(view).toBeDefined();
+    expect(referenciaRepository).toBeDefined();
     expect(tabelaService).toBeDefined();
     expect(contextService).toBeDefined();
   });
 
   describe('upsert', () => {
-    it('should upsert the precos and return the corresponding PrecoReferenciaView entities', async () => {
+    it('should upsert applying terminador from tabela de preco', async () => {
       const dto: ImportPrecoDto[] = [{ tabelaDePrecoId: 1, referenciaId: 2, valor: 10.0 }];
       const operadorId = 1;
-      const precos = dto.map((x) => ({ ...x, operadorId }));
+      const precos = dto.map((x) => ({ ...x, valor: Math.floor(x.valor) + 0.9, operadorId }));
       const expected = [{ tabelaDePrecoId: 1, referenciaId: 2, valor: 10.0 }] as PrecoReferenciaView[];
 
       jest.spyOn(contextService, 'operadorId').mockReturnValue(operadorId);
+      jest.spyOn(tabelaService, 'findById').mockResolvedValue({ terminador: 0.9 } as any);
       jest.spyOn(repository, 'upsert').mockResolvedValue(undefined);
       jest.spyOn(view, 'find').mockResolvedValue(expected);
 
       const result = await service.upsert(dto);
 
+      expect(tabelaService.findById).toHaveBeenCalledWith(1);
+      expect(repository.upsert).toHaveBeenCalledWith(precos, { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] });
+      expect(view.find).toHaveBeenCalledWith({ where: { tabelaDePrecoId: In([1]), referenciaId: In([2]) } });
+      expect(result).toEqual(expected);
+    });
+
+    it('should upsert without applying terminador when tabela has no terminador', async () => {
+      const dto: ImportPrecoDto[] = [{ tabelaDePrecoId: 1, referenciaId: 2, valor: 10.25 }];
+      const operadorId = 1;
+      const precos = dto.map((x) => ({ ...x, operadorId }));
+      const expected = [{ tabelaDePrecoId: 1, referenciaId: 2, valor: 10.25 }] as PrecoReferenciaView[];
+
+      jest.spyOn(contextService, 'operadorId').mockReturnValue(operadorId);
+      jest.spyOn(tabelaService, 'findById').mockResolvedValue({ terminador: undefined } as any);
+      jest.spyOn(repository, 'upsert').mockResolvedValue(undefined);
+      jest.spyOn(view, 'find').mockResolvedValue(expected);
+
+      const result = await service.upsert(dto);
+
+      expect(tabelaService.findById).toHaveBeenCalledWith(1);
       expect(repository.upsert).toHaveBeenCalledWith(precos, { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] });
       expect(view.find).toHaveBeenCalledWith({ where: { tabelaDePrecoId: In([1]), referenciaId: In([2]) } });
       expect(result).toEqual(expected);
@@ -116,6 +151,26 @@ describe('PrecoReferenciaService', () => {
       expect(result).toBe(precoReferenciaView);
       expect(repository.upsert).toHaveBeenCalledWith(
         { tabelaDePrecoId, referenciaId, valor: Math.floor(valor) + terminador, operadorId },
+        { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] },
+      );
+      expect(service.findByReferenciaId).toHaveBeenCalledWith(tabelaDePrecoId, referenciaId);
+    });
+
+    it('should add preco referencia without applying terminador when it is not set', async () => {
+      const tabelaDePrecoId = 1;
+      const referenciaId = 1;
+      const valor = 3.7;
+      const operadorId = 1;
+      const precoReferenciaView = tableaDePrecoFakeRepository.findOneView();
+
+      jest.spyOn(tabelaService, 'findById').mockResolvedValue({ terminador: undefined } as any);
+      jest.spyOn(service, 'findByReferenciaId').mockResolvedValue(precoReferenciaView);
+
+      const result = await service.add(tabelaDePrecoId, { referenciaId, valor });
+
+      expect(result).toBe(precoReferenciaView);
+      expect(repository.upsert).toHaveBeenCalledWith(
+        { tabelaDePrecoId, referenciaId, valor, operadorId },
         { conflictPaths: ['tabelaDePrecoId', 'referenciaId'] },
       );
       expect(service.findByReferenciaId).toHaveBeenCalledWith(tabelaDePrecoId, referenciaId);
@@ -199,5 +254,3 @@ describe('PrecoReferenciaService', () => {
     });
   });
 });
-
-

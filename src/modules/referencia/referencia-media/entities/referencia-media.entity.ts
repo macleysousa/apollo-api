@@ -27,6 +27,14 @@ export class ReferenciaMediaEntity extends BaseEntity {
   @Column('text')
   description: string;
 
+  @ApiProperty({ required: false })
+  @Column('varchar', { nullable: true })
+  cor?: string;
+
+  @ApiProperty({ required: false })
+  @Column('varchar', { nullable: true })
+  tamanho?: string;
+
   @ApiProperty()
   @Column('boolean')
   isDefault: boolean;

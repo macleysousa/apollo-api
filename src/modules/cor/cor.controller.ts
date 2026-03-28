@@ -30,8 +30,8 @@ export class CorController {
 
   @Get(':id')
   @ApiResponse({ type: CorEntity, status: 200 })
-  async findById(@Param('id', ParseIntPipe) id: number): Promise<CorEntity> {
-    return this.service.findById(id);
+  async findById(@Param('id', ParseIntPipe) id: number, @Query('carregarTags') carregarTags?: string): Promise<CorEntity> {
+    return this.service.findById(id, carregarTags);
   }
 
   @Put(':id')

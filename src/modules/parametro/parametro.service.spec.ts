@@ -4,6 +4,7 @@ import { ILike, Repository } from 'typeorm';
 
 import { EmpresaEntity } from '../empresa/entities/empresa.entity';
 import { EmpresaParametroEntity } from '../empresa/parametro/entities/parametro.entity';
+
 import { ParametroEntity } from './entities/parametro.entity';
 import { ParametroService } from './parametro.service';
 
@@ -98,5 +99,3 @@ describe('ParametroService', () => {
     });
   });
 });
-
-

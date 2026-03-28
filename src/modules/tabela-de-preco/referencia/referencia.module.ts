@@ -1,13 +1,15 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { ReferenciaEntity } from 'src/modules/referencia/entities/referencia.entity';
+
 import { PrecoReferencia } from './entities/referencia.entity';
 import { PrecoReferenciaController } from './referencia.controller';
 import { PrecoReferenciaService } from './referencia.service';
 import { PrecoReferenciaView } from './views/referencia.view';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PrecoReferencia, PrecoReferenciaView])],
+  imports: [TypeOrmModule.forFeature([PrecoReferencia, PrecoReferenciaView, ReferenciaEntity])],
   controllers: [PrecoReferenciaController],
   providers: [PrecoReferenciaService],
   exports: [PrecoReferenciaService],

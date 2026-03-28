@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiConsumes, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { MediaType } from 'src/commons/enum/media-type';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
 
+import { UpdateMediaDto } from './dto/update-media.dto';
 import { UploadMediaDto } from './dto/upload-media.dto';
 import { ReferenciaMediaEntity } from './entities/referencia-media.entity';
 import { ReferenciaMediaService } from './referencia-media.service';
@@ -16,10 +18,26 @@ export class ReferenciaMediaController {
   constructor(private readonly service: ReferenciaMediaService) {}
 
   @Post()
-  @ApiResponse({ status: 201, type: ReferenciaMediaEntity })
+  @ApiOperation({ summary: 'Upload de mídia da referência' })
+  @ApiParam({ name: 'referenciaId', type: Number })
+  @ApiResponse({ status: 200, type: ReferenciaMediaEntity })
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('midia'))
-  @ApiParam({ type: 'file', name: 'midia' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['file', 'type'],
+      properties: {
+        file: { type: 'string', format: 'binary' },
+        type: { type: 'string', enum: Object.values(MediaType) },
+        isDefault: { type: 'boolean' },
+        isPublic: { type: 'boolean' },
+        description: { type: 'string' },
+        cor: { type: 'string' },
+        tamanho: { type: 'string' },
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor('file'))
   async upload(
     @Param('referenciaId', ParseIntPipe) referenciaId: number,
     @UploadedFile() file: Express.Multer.File,
@@ -29,12 +47,30 @@ export class ReferenciaMediaController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Lista mídias da referência' })
+  @ApiParam({ name: 'referenciaId', type: Number })
   @ApiResponse({ status: 200, type: [ReferenciaMediaEntity] })
   async find(@Param('referenciaId', ParseIntPipe) referenciaId: number): Promise<ReferenciaMediaEntity[]> {
     return this.service.find(referenciaId);
   }
 
+  @Put(':id')
+  @ApiOperation({ summary: 'Atualiza dados da mídia da referência' })
+  @ApiParam({ name: 'referenciaId', type: Number })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 200, type: ReferenciaMediaEntity })
+  async update(
+    @Param('referenciaId', ParseIntPipe) referenciaId: number,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateMediaDto,
+  ): Promise<ReferenciaMediaEntity> {
+    return this.service.update(referenciaId, id, dto);
+  }
+
   @Get(':id')
+  @ApiOperation({ summary: 'Busca mídia por ID da referência' })
+  @ApiParam({ name: 'referenciaId', type: Number })
+  @ApiParam({ name: 'id', type: Number })
   @ApiResponse({ status: 200, type: ReferenciaMediaEntity })
   async findById(
     @Param('referenciaId', ParseIntPipe) referenciaId: number,

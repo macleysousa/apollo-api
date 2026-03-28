@@ -1,7 +1,6 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, SetMetadata } from '@nestjs/common';
 import { Query } from '@nestjs/common/decorators';
-import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { SetMetadata } from '@nestjs/common';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ApiComponent, COMPONENT_KEY } from '../../decorators/api-componente.decorator';
 import { Roles } from '../../decorators/roles.decorator';
@@ -13,7 +12,6 @@ import { EmpresaService } from './empresa.service';
 import { EmpresaEntity } from './entities/empresa.entity';
 import { EmpresaFilter } from './filters/empresa-filter';
 import { EmpresaFilterBase } from './filters/empresa-filter-base';
-import { EmpresaInclude, EmpresaIncludeEnum } from './includes/empresa.include';
 
 @ApiTags('Empresas')
 @Controller('empresas')

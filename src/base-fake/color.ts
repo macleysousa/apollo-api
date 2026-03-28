@@ -5,6 +5,9 @@ class ColorFakeRepository {
     const color = new CorEntity({
       id: 1,
       nome: 'black',
+      hex: '#000000',
+      nomeInternacional: 'Black',
+      tags: ['basica', 'escura'],
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
     });
@@ -16,6 +19,9 @@ class ColorFakeRepository {
     const color = new CorEntity({
       id: 1,
       nome: 'black',
+      hex: '#000000',
+      nomeInternacional: 'Black',
+      tags: ['basica', 'escura'],
       criadoEm: new Date('2022-10-15T11:13:18.000Z'),
       atualizadoEm: new Date('2022-10-15T11:13:18.000Z'),
     });

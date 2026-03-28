@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, In, Repository } from 'typeorm';
 
+import { BASE_CORES_INICIAL } from './data/base-cores-inicial.data';
 import { CreateCorDto } from './dto/create-cor.dto';
 import { UpdateCorDto } from './dto/update-cor.dto';
 import { CorEntity } from './entities/cor.entity';
@@ -22,22 +23,59 @@ export class CorService {
     return this.findByNames(dto.map((c) => c.nome));
   }
 
+  async popularBaseInicialSeHabilitada(): Promise<void> {
+    if (!this.parseBooleanFilter(process.env.BASE_DE_CORES_INICIAL)) {
+      return;
+    }
+
+    const nomes = BASE_CORES_INICIAL.map((cor) => cor.nome);
+    const coresExistentes = await this.findByNames(nomes);
+
+    if (coresExistentes.length > 0) {
+      return;
+    }
+
+    const faltantes = BASE_CORES_INICIAL.filter((cor) => !coresExistentes.some((existente) => existente.nome === cor.nome));
+
+    if (!faltantes.length) {
+      return;
+    }
+
+    await this.repository.save(faltantes);
+  }
+
   async create(createColorDto: CreateCorDto): Promise<CorEntity> {
     return this.repository.save(createColorDto);
   }
 
   async find(filter?: CorFilter): Promise<CorEntity[]> {
-    return this.repository.find({
+    const colors = await this.repository.find({
       where: {
         nome: filter?.nome ? ILike(`%${filter.nome}%`) : undefined,
         inativa: filter?.inativa == undefined ? undefined : filter.inativa,
       },
       cache: filter?.cache ?? true,
     });
+
+    if (this.parseBooleanFilter(filter?.carregarTags)) {
+      return colors;
+    }
+
+    return colors.map((color) => new CorEntity({ ...color, tags: undefined }));
   }
 
-  async findById(id: number): Promise<CorEntity> {
-    return this.repository.findOne({ where: { id } });
+  async findById(id: number, carregarTags?: boolean | string): Promise<CorEntity> {
+    const color = await this.repository.findOne({ where: { id } });
+
+    if (!color) {
+      return color;
+    }
+
+    if (this.parseBooleanFilter(carregarTags)) {
+      return color;
+    }
+
+    return new CorEntity({ ...color, tags: undefined });
   }
 
   async findByName(name: string): Promise<CorEntity> {
@@ -56,5 +94,17 @@ export class CorService {
 
   async remove(id: number): Promise<void> {
     await this.repository.delete({ id });
+  }
+
+  private parseBooleanFilter(value?: boolean | string): boolean {
+    if (typeof value === 'boolean') {
+      return value;
+    }
+
+    if (!value) {
+      return false;
+    }
+
+    return ['1', 'true', 't', 'yes', 'y', 'sim', 's'].includes(value.toLowerCase());
   }
 }

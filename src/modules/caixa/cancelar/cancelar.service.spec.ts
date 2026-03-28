@@ -132,7 +132,9 @@ describe('CancelarService', () => {
       jest.spyOn(caixaExtratoService, 'findByLiquidacao').mockResolvedValue(liquidacaoMock);
       jest.spyOn(pessoaExtratoService, 'findSaldoAdiantamento').mockResolvedValue(50);
 
-      await expect(service.adiantamento(caixaId, dto)).rejects.toThrow(`Saldo em adiantamento insuficiente para realizar o cancelamento`);
+      await expect(service.adiantamento(caixaId, dto)).rejects.toThrow(
+        `Saldo em adiantamento insuficiente para realizar o cancelamento`,
+      );
     });
 
     it('should cancel liquidacao if all validations pass', async () => {
@@ -248,5 +250,3 @@ describe('CancelarService', () => {
     });
   });
 });
-
-

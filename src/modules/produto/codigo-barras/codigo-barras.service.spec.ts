@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -18,6 +19,7 @@ describe('BarcodeService', () => {
           provide: getRepositoryToken(CodigoBarrasEntity),
           useValue: {
             find: jest.fn(),
+            findOne: jest.fn(),
             upsert: jest.fn(),
             delete: jest.fn(),
           },
@@ -53,16 +55,54 @@ describe('BarcodeService', () => {
       // Arrange
       const produtoId = 1;
       const create: CreateCodigoBarrasDto = { tipo: 'EAN13', codigo: '123' };
+      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
 
       // Act
       await service.create(produtoId, create);
 
       // Assert
+      expect(repository.findOne).toHaveBeenCalledTimes(1);
       expect(repository.upsert).toHaveBeenCalledTimes(1);
       expect(repository.upsert).toHaveBeenCalledWith(
         { produtoId, codigo: create.codigo },
         { conflictPaths: ['produtoId', 'codigo'] },
       );
+    });
+
+    it('should throw when barcode is linked to another product', async () => {
+      // Arrange
+      const produtoId = 1;
+      const create: CreateCodigoBarrasDto = { tipo: 'EAN13', codigo: '123' };
+      jest.spyOn(repository, 'findOne').mockResolvedValue({
+        produto: {
+          id: 2,
+          idExterno: 'PRD-2',
+          referencia: {
+            id: 10,
+            idExterno: 'REF-10',
+            nome: 'Referencia Teste',
+          },
+        },
+      } as unknown as CodigoBarrasEntity);
+
+      // Act / Assert
+      await expect(service.create(produtoId, create)).rejects.toMatchObject(
+        new BadRequestException({
+          codigo: 'CODIGO_BARRAS_JA_CADASTRADO',
+          mensagem: `O código de barras ${create.codigo} já está vinculado a outro produto`,
+          codigoBarras: create.codigo,
+          produto: {
+            id: 2,
+            idExterno: 'PRD-2',
+            referencia: {
+              id: 10,
+              idExterno: 'REF-10',
+              nome: 'Referencia Teste',
+            },
+          },
+        }),
+      );
+      expect(repository.upsert).not.toHaveBeenCalled();
     });
   });
 
@@ -81,5 +121,3 @@ describe('BarcodeService', () => {
     });
   });
 });
-
-

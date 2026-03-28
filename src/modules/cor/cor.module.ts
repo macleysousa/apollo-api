@@ -1,4 +1,4 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Module, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ColorConstraint } from 'src/commons/validations/is-color.validation';
@@ -13,11 +13,17 @@ import { CorEntity } from './entities/cor.entity';
   providers: [CorService, ColorConstraint],
   exports: [CorService],
 })
-export class CorModule {
+export class CorModule implements OnModuleInit {
+  constructor(private readonly corService: CorService) {}
+
   static forRoot(): DynamicModule {
     return {
       global: true,
       module: this,
     };
+  }
+
+  async onModuleInit(): Promise<void> {
+    await this.corService.popularBaseInicialSeHabilitada();
   }
 }

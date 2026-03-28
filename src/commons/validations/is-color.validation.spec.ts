@@ -65,5 +65,3 @@ describe('Color validation', () => {
     });
   });
 });
-
-
