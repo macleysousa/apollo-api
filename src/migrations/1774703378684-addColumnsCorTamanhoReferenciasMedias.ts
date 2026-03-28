@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
 
-export class AddColumnsCorTamanhoReferenciasMedias1775000000000 implements MigrationInterface {
+export class AddColumnsCorTamanhoReferenciasMedias1774703378684 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.addColumns('referencias_medias', [
       new TableColumn({

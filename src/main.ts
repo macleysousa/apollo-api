@@ -6,6 +6,8 @@ import { NextFunction } from 'express';
 import * as qs from 'qs';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 
+import './extensions';
+
 import { AppModule } from './app.module';
 import { ValidationExceptionFactory } from './exceptions/validations.exception';
 

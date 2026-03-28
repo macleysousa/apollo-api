@@ -38,6 +38,12 @@ export const ApiPaginatedResponse = <TModel extends Type<any>>(model: TModel) =>
           { $ref: getSchemaPath(PaginatedDTO) },
           {
             properties: {
+              total_items: { type: 'integer', example: 100 },
+              item_count: { type: 'integer', example: 10 },
+              items_per_page: { type: 'integer', example: 10 },
+              total_pages: { type: 'integer', example: 10 },
+              current_page: { type: 'integer', example: 1 },
+              has_next_page: { type: 'boolean', example: true },
               items: {
                 type: 'array',
                 items: { $ref: getSchemaPath(model) },
