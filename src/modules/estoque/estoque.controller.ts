@@ -1,8 +1,7 @@
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { Controller, DefaultValuePipe, Get, ParseIntPipe, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-import { ParseBetweenPipe } from 'src/commons/pipes/parseBetween.pipe';
 import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
 
 import { ApiComponent } from '../../decorators/api-componente.decorator';
