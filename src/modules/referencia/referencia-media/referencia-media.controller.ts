@@ -5,8 +5,8 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiRespons
 import { MediaType } from 'src/commons/enum/media-type';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
 
-import { UploadMediaDto } from './dto/upload-media.dto';
 import { UpdateMediaDto } from './dto/update-media.dto';
+import { UploadMediaDto } from './dto/upload-media.dto';
 import { ReferenciaMediaEntity } from './entities/referencia-media.entity';
 import { ReferenciaMediaService } from './referencia-media.service';
 

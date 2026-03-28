@@ -66,5 +66,3 @@ describe('Validation username', () => {
     });
   });
 });
-
-

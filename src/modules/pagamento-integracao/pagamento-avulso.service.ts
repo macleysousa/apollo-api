@@ -246,14 +246,14 @@ export class PagamentoAvulsoService {
     const pagamentoById =
       gatewayReference && /^\d+$/.test(gatewayReference)
         ? await this.repository.findOne({
-          where: { id: Number(gatewayReference), provider },
-        })
+            where: { id: Number(gatewayReference), provider },
+          })
         : null;
 
     const pagamentoByIdempotencyKey = gatewayReference
       ? await this.repository.findOne({
-        where: { provider, idempotencyKey: gatewayReference },
-      })
+          where: { provider, idempotencyKey: gatewayReference },
+        })
       : null;
 
     const pagamento =
@@ -261,13 +261,13 @@ export class PagamentoAvulsoService {
       pagamentoByIdempotencyKey ??
       (gatewayReference
         ? await this.repository.findOne({
-          where: { provider, externalReference: gatewayReference },
-        })
+            where: { provider, externalReference: gatewayReference },
+          })
         : null) ??
       (event.externalId && event.externalId !== 'unknown'
         ? await this.repository.findOne({
-          where: { provider, externalId: event.externalId },
-        })
+            where: { provider, externalId: event.externalId },
+          })
         : null);
 
     if (pagamento && event.status) {

@@ -4,10 +4,11 @@ import { Repository } from 'typeorm';
 
 import { StorageService } from 'src/storage/storage.service';
 
-import { UploadMediaDto } from './dto/upload-media.dto';
-import { UpdateMediaDto } from './dto/update-media.dto';
-import { ReferenciaMediaEntity } from './entities/referencia-media.entity';
 import { ReferenciaService } from '../referencia.service';
+
+import { UpdateMediaDto } from './dto/update-media.dto';
+import { UploadMediaDto } from './dto/upload-media.dto';
+import { ReferenciaMediaEntity } from './entities/referencia-media.entity';
 
 @Injectable()
 export class ReferenciaMediaService {

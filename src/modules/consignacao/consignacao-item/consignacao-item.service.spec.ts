@@ -123,5 +123,3 @@ describe('ConsignacaoItemService', () => {
     });
   });
 });
-
-

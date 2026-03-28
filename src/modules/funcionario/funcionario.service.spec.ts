@@ -204,5 +204,3 @@ describe('FuncionarioService', () => {
     });
   });
 });
-
-

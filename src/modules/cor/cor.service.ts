@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, In, Repository } from 'typeorm';
 
+import { BASE_CORES_INICIAL } from './data/base-cores-inicial.data';
 import { CreateCorDto } from './dto/create-cor.dto';
 import { UpdateCorDto } from './dto/update-cor.dto';
-import { BASE_CORES_INICIAL } from './data/base-cores-inicial.data';
 import { CorEntity } from './entities/cor.entity';
 import { CorFilter } from './filters/cor.filter';
 

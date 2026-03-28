@@ -75,5 +75,3 @@ describe('crypto', () => {
     expect(response).toEqual(null);
   });
 });
-
-

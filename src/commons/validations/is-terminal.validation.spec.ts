@@ -104,5 +104,3 @@ describe('TerminalConstraint', () => {
     });
   });
 });
-
-

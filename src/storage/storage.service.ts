@@ -62,9 +62,13 @@ export class StorageService {
     }
 
     if (!['image', 'video', 'audio', 'application'].includes(file?.mimetype?.split('/')[0])) {
-      throw new BadRequestException('invalid type (accepted types are image, video, audio, pdf), file mimetype: ' + file?.mimetype);
+      throw new BadRequestException(
+        'invalid type (accepted types are image, video, audio, pdf), file mimetype: ' + file?.mimetype,
+      );
     } else if (['application'].includes(file?.mimetype?.split('/')[0]) && !['pdf'].includes(file?.mimetype?.split('/')[1])) {
-      throw new BadRequestException('invalid type (accepted types are image, video, audio, pdf), file mimetype: ' + file?.mimetype);
+      throw new BadRequestException(
+        'invalid type (accepted types are image, video, audio, pdf), file mimetype: ' + file?.mimetype,
+      );
     }
 
     const { originalname } = file;

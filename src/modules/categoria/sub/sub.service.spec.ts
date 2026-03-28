@@ -241,5 +241,3 @@ describe('SubService', () => {
     });
   });
 });
-
-

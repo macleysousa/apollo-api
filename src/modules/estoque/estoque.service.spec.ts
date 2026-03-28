@@ -140,5 +140,3 @@ describe('EstoqueService', () => {
     });
   });
 });
-
-

@@ -134,5 +134,3 @@ describe('UsuarioTerminalService', () => {
     });
   });
 });
-
-

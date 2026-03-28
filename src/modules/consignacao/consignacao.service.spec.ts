@@ -440,5 +440,3 @@ describe('ConsignacaoService', () => {
     });
   });
 });
-
-

@@ -35,5 +35,3 @@ describe('ReceberRomaneioDto', () => {
     expect(dto).toBeInstanceOf(ReceberRomaneioDto);
   });
 });
-
-

@@ -5,8 +5,8 @@ import { In, Repository } from 'typeorm';
 
 import { ContextService } from 'src/context/context.service';
 
-import { TabelaDePrecoService } from '../tabela-de-preco.service';
 import { ReferenciaEntity } from '../../referencia/entities/referencia.entity';
+import { TabelaDePrecoService } from '../tabela-de-preco.service';
 
 import { AddPrecoReferenciaDto } from './dto/add-referencia.dto';
 import { ImportPrecoDto } from './dto/import-precos.dto';
@@ -94,11 +94,7 @@ export class PrecoReferenciaService {
     return this.view.findOne({ where: { tabelaDePrecoId, referenciaId } });
   }
 
-  async update(
-    tabelaDePrecoId: number,
-    referenciaId: number,
-    { valor }: UpdatePrecoReferenciaDto,
-  ): Promise<PrecoReferenciaView> {
+  async update(tabelaDePrecoId: number, referenciaId: number, { valor }: UpdatePrecoReferenciaDto): Promise<PrecoReferenciaView> {
     const preco = await this.findByReferenciaId(tabelaDePrecoId, referenciaId);
     if (!preco) {
       throw new BadRequestException('Preço da referência não encontrado nesta tabela');

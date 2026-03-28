@@ -29,5 +29,3 @@ describe('CreateReferenciaDto', () => {
     expect(result.precos).toHaveLength(2);
   });
 });
-
-

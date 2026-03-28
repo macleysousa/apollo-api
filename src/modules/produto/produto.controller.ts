@@ -42,7 +42,12 @@ export class ProdutoController {
     @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
   ): Promise<Pagination<ProdutoEntity>> {
     return this.service.find({
-      searchTerm: searchTerm, referenciaId: referencia, tamanhoId: tamanhoId, corId: corId, page: page, limit: limit
+      searchTerm: searchTerm,
+      referenciaId: referencia,
+      tamanhoId: tamanhoId,
+      corId: corId,
+      page: page,
+      limit: limit,
     });
   }
 
