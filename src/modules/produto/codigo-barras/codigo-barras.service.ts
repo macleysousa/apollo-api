@@ -1,16 +1,63 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Not, Repository } from 'typeorm';
 
+import { EstoqueView } from 'src/modules/estoque/views/estoque.view';
+
+import { ProdutoEntity } from '../entities/produto.entity';
+
 import { CreateCodigoBarrasDto } from './dto/create-codigo-barras.dto';
 import { CodigoBarrasEntity } from './entities/codigo-barras.entity';
+
+export interface CodigoBarrasResumo {
+  codigo: string;
+  produtoId: number;
+}
+
+export interface ProdutoComEstoqueAtual {
+  produto: ProdutoEntity;
+  estoqueAtual: number;
+}
 
 @Injectable()
 export class CodigoBarrasService {
   constructor(
     @InjectRepository(CodigoBarrasEntity)
     private repository: Repository<CodigoBarrasEntity>,
+    @InjectRepository(EstoqueView)
+    private estoqueViewRepository: Repository<EstoqueView>,
   ) {}
+
+  async findCodigos(tipo?: 'EAN13' | 'RFID'): Promise<CodigoBarrasResumo[]> {
+    if (tipo && !['EAN13', 'RFID'].includes(tipo)) {
+      throw new BadRequestException('Tipo de código de barras inválido. Valores aceitos: EAN13, RFID');
+    }
+
+    const where = tipo ? { tipo } : {};
+    const codigos = await this.repository.find({ where, select: { codigo: true, produtoId: true } });
+
+    return codigos.map(({ codigo, produtoId }) => ({ codigo, produtoId }));
+  }
+
+  async findProdutoByCodigo(codigo: string, empresaId: number): Promise<ProdutoComEstoqueAtual> {
+    const codigoBarras = await this.repository.findOne({
+      where: { codigo },
+      relations: { produto: true },
+    });
+
+    if (!codigoBarras?.produto) {
+      throw new NotFoundException(`Código de barras ${codigo} não encontrado`);
+    }
+
+    const estoque = await this.estoqueViewRepository.findOne({
+      where: { empresaId, produtoId: codigoBarras.produto.id },
+    });
+
+    return {
+      produto: codigoBarras.produto,
+      estoqueAtual: estoque?.saldo ?? 0,
+    };
+  }
 
   async upsert(dto: CreateCodigoBarrasDto[]): Promise<CreateCodigoBarrasDto[]> {
     await this.repository.upsert(dto, { conflictPaths: ['produtoId', 'codigo'] });
