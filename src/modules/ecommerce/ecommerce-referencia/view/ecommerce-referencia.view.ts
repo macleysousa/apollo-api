@@ -4,11 +4,15 @@ import { Column, PrimaryColumn, ViewColumn, ViewEntity } from 'typeorm';
 import { BaseEntity } from 'src/commons/base.entity';
 import { UnidadeMedida } from 'src/commons/enum/unidade-medida.enum';
 
-@ViewEntity({ name: 'view_ecommerce_referencias' })
+@ViewEntity({ name: 'view_ecommerces_referencias' })
 export class EcommerceReferenciaView extends BaseEntity {
   @ApiProperty()
   @PrimaryColumn('bigint', { transformer: { to: (value) => value, from: (value) => parseInt(value) } })
   id: number;
+
+  @ApiProperty()
+  @Column('int')
+  ecommerceId: number;
 
   @ApiProperty()
   @Column('int')

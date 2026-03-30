@@ -1,9 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
+import { ApiPaginatedResponse } from 'src/decorators/api-paginated-response.decorator';
+import { IsPublic } from 'src/decorators/is-public.decorator';
 
 import { EcommerceService } from './ecommerce.service';
+import { EcommerceReferenciaView } from './ecommerce-referencia/view/ecommerce-referencia.view';
 
 @ApiTags('E-commerce')
 @Controller('e-commerce')
@@ -11,4 +14,11 @@ import { EcommerceService } from './ecommerce.service';
 @ApiComponent('ECOFM001', 'Manutenção de e-commerce')
 export class EcommerceController {
   constructor(private readonly service: EcommerceService) {}
+
+  @Get('publico/:id/referencias')
+  @ApiPaginatedResponse(EcommerceReferenciaView)
+  @IsPublic()
+  async findReferenciasPublic(@Param('id', ParseIntPipe) id: number): Promise<any> {
+    return this.service.findReferenciasPublic(id);
+  }
 }

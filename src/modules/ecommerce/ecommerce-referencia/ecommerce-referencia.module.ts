@@ -10,5 +10,6 @@ import { EcommerceReferenciaView } from './view/ecommerce-referencia.view';
   imports: [TypeOrmModule.forFeature([EcommerceReferenciaEntity, EcommerceReferenciaView])],
   controllers: [EcommerceReferenciaController],
   providers: [EcommerceReferenciaService],
+  exports: [EcommerceReferenciaService],
 })
 export class EcommerceReferenciaModule {}
