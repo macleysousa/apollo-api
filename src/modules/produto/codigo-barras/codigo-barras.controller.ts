@@ -47,7 +47,7 @@ export class CodigoBarrasController {
     return this.service.findCodigos(page, limit, tipo);
   }
 
-  @Get('codigo-barras/:codigo/produto')
+  @Get('codigo-barras/:codigo')
   @ApiEmpresaAuth()
   async findProdutoByCodigo(@Param('codigo') codigo: string): Promise<EstoqueView> {
     return this.service.findProdutoByCodigo(codigo, this.contextService.empresaId());
