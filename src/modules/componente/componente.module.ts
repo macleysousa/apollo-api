@@ -13,7 +13,7 @@ import { IsComponentValidConstraint } from './validations/is-component.validatio
 })
 export class ComponentsModule {
   constructor(private componentService: ComponenteService) {
-    this.componentService.popular();
+    // this.componentService.popular();
   }
 
   static forRoot(): DynamicModule {

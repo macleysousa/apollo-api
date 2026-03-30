@@ -129,5 +129,3 @@ describe('IsCaixa', () => {
     expect(result.length).toBeGreaterThan(0);
   });
 });
-
-

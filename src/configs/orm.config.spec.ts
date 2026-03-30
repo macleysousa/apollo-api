@@ -48,5 +48,3 @@ describe('orm configuration', () => {
     expect(orm).not.toEqual(null);
   });
 });
-
-

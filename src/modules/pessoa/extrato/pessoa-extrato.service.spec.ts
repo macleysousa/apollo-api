@@ -232,5 +232,3 @@ describe('PessoaExtratoService', () => {
     });
   });
 });
-
-

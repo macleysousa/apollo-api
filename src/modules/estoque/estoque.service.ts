@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, IsNull, Not, Repository } from 'typeorm';
 
 import { EstoqueEntity } from './entities/estoque.entity';
+import { EstoqueFilter } from './filters/estoque.filters';
 import { EstoqueView } from './views/estoque.view';
 
 interface filter {
@@ -24,7 +25,7 @@ export class EstoqueService {
     private view: Repository<EstoqueView>,
   ) {}
 
-  async find(filter?: filter, page = 1, limit = 100): Promise<Pagination<EstoqueView>> {
+  async find(filter: EstoqueFilter): Promise<Pagination<EstoqueView>> {
     const queryBuilder = this.view.createQueryBuilder('e');
     queryBuilder.where({ empresaId: Not(IsNull()) });
 
@@ -55,6 +56,21 @@ export class EstoqueService {
     if (filter?.tamanhoIds && filter.tamanhoIds.length > 0) {
       queryBuilder.andWhere({ tamanhoId: In(filter.tamanhoIds) });
     }
+
+    if (filter?.ultimaAtualizacaoInicio) {
+      queryBuilder.andWhere('e.atualizadoEm >= :ultimaAtualizacaoInicio', {
+        ultimaAtualizacaoInicio: filter.ultimaAtualizacaoInicio,
+      });
+    }
+
+    if (filter?.ultimaAtualizacaoFim) {
+      queryBuilder.andWhere('e.atualizadoEm <= :ultimaAtualizacaoFim', {
+        ultimaAtualizacaoFim: filter.ultimaAtualizacaoFim,
+      });
+    }
+
+    const page = filter?.page || 1;
+    const limit = filter?.limit || 100;
 
     return paginate<EstoqueView>(queryBuilder, { page, limit });
   }

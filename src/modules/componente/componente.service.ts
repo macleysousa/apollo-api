@@ -14,7 +14,10 @@ export class ComponenteService {
   ) {}
 
   async popular(): Promise<void> {
-    this.componentRepository.upsert(components, { conflictPaths: ['id'] });
+    const quantity = await this.componentRepository.count();
+    if (quantity !== components.length) {
+      this.componentRepository.upsert(components, { conflictPaths: ['id'] });
+    }
   }
 
   async find(filter?: string, blocked?: boolean): Promise<ComponenteEntity[]> {

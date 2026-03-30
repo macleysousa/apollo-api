@@ -1,5 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { ReferenciaEntity } from 'src/modules/referencia/entities/referencia.entity';
 
 import { PrecoReferencia } from './entities/referencia.entity';

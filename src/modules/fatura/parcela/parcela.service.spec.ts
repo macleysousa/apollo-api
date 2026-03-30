@@ -324,11 +324,7 @@ describe('FaturaParcelaService', () => {
       jest.spyOn(service, 'findByParcela').mockResolvedValueOnce(parcelaEntity);
       jest.spyOn(repository, 'update').mockRejectedValueOnce(new Error());
 
-      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrow(
-        'Não foi possível receber a parcela.',
-      );
+      await expect(service.receber(empresaId, caixaId, faturaId, parcela)).rejects.toThrow('Não foi possível receber a parcela.');
     });
   });
 });
-
-

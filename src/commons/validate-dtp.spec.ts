@@ -39,5 +39,3 @@ describe('validateDto', () => {
     expect(errors[0].constraints).toHaveProperty('isNotEmpty');
   });
 });
-
-

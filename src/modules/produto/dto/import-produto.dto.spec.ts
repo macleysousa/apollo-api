@@ -33,5 +33,3 @@ describe('ImportProdutoDto', () => {
     expect(importProdutoDto.precos[1]).toBeInstanceOf(ImportProdutoPrecosDto);
   });
 });
-
-

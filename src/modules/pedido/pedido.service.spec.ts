@@ -622,5 +622,3 @@ where i.pedidoId = ${id} and i.atendido > 0)
     });
   });
 });
-
-
