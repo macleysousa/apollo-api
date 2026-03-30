@@ -25,12 +25,19 @@ export class EstoqueService {
     private view: Repository<EstoqueView>,
   ) {}
 
-  async find(filter: EstoqueFilter): Promise<Pagination<EstoqueView>> {
+  async find(filter: EstoqueFilter, empresaSessaoId?: number): Promise<Pagination<EstoqueView>> {
     const queryBuilder = this.view.createQueryBuilder('e');
     queryBuilder.where({ empresaId: Not(IsNull()) });
 
-    if (filter?.empresaIds && filter.empresaIds.length > 0) {
-      queryBuilder.andWhere({ empresaId: In(filter.empresaIds) });
+    const empresaIds =
+      filter?.empresaIds && filter.empresaIds.length > 0
+        ? filter.empresaIds
+        : !filter?.estoqueDeTodasAsEmpresas && empresaSessaoId
+          ? [empresaSessaoId]
+          : [];
+
+    if (empresaIds.length > 0) {
+      queryBuilder.andWhere({ empresaId: In(empresaIds) });
     }
 
     if (filter?.referenciaIds && filter.referenciaIds.length > 0) {
