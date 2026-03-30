@@ -1,5 +1,5 @@
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, IsNull, Not, Repository } from 'typeorm';
 
@@ -69,8 +69,19 @@ export class EstoqueService {
       });
     }
 
-    const page = filter?.page || 1;
-    const limit = filter?.limit || 100;
+    const pageParam = Number(filter?.page ?? 1);
+    const limitParam = Number(filter?.limit ?? filter?.limite ?? 100);
+
+    if (!Number.isInteger(pageParam)) {
+      throw new BadRequestException('O parâmetro "page" deve ser um número inteiro ');
+    }
+
+    if (!Number.isInteger(limitParam)) {
+      throw new BadRequestException('O parâmetro "limit" deve ser um número inteiro ');
+    }
+
+    const page = pageParam === 0 ? 1 : pageParam;
+    const limit = limitParam;
 
     return paginate<EstoqueView>(queryBuilder, { page, limit });
   }

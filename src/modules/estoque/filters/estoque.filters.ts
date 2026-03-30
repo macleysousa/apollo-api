@@ -59,4 +59,8 @@ export class EstoqueFilter {
   @ApiPropertyOptional({ description: 'Número de itens por página para paginação', default: 100 })
   @IsOptional()
   limit?: number = 100;
+
+  @ApiPropertyOptional({ description: 'Alias de limit', default: 100 })
+  @IsOptional()
+  limite?: number;
 }
