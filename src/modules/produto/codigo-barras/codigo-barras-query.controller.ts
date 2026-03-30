@@ -4,8 +4,9 @@ import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ContextService } from 'src/context/context.service';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
+import { EstoqueView } from 'src/modules/estoque/views/estoque.view';
 
-import { CodigoBarrasResumo, CodigoBarrasService, ProdutoComEstoqueAtual } from './codigo-barras.service';
+import { CodigoBarrasResumo, CodigoBarrasService } from './codigo-barras.service';
 
 @ApiTags('Produtos')
 @Controller('produtos/codigo-barras')
@@ -25,7 +26,7 @@ export class CodigoBarrasQueryController {
 
     @Get(':codigo/produto')
     @ApiEmpresaAuth()
-    async findProdutoByCodigo(@Param('codigo') codigo: string): Promise<ProdutoComEstoqueAtual> {
+    async findProdutoByCodigo(@Param('codigo') codigo: string): Promise<EstoqueView> {
         return this.service.findProdutoByCodigo(codigo, this.contextService.empresaId());
     }
 }
