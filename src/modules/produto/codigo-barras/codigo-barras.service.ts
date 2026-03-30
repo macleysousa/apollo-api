@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { In, Not, Repository } from 'typeorm';
 
 import { EstoqueView } from 'src/modules/estoque/views/estoque.view';
@@ -21,15 +22,26 @@ export class CodigoBarrasService {
     private estoqueViewRepository: Repository<EstoqueView>,
   ) {}
 
-  async findCodigos(tipo?: 'EAN13' | 'RFID'): Promise<CodigoBarrasResumo[]> {
+  async findCodigos(page = 1, limit = 100, tipo?: 'EAN13' | 'RFID'): Promise<Pagination<CodigoBarrasResumo>> {
     if (tipo && !['EAN13', 'RFID'].includes(tipo)) {
       throw new BadRequestException('Tipo de código de barras inválido. Valores aceitos: EAN13, RFID');
     }
 
-    const where = tipo ? { tipo } : {};
-    const codigos = await this.repository.find({ where, select: { codigo: true, produtoId: true } });
+    const queryBuilder = this.repository
+      .createQueryBuilder('codigoBarras')
+      .select(['codigoBarras.codigo', 'codigoBarras.produtoId'])
+      .orderBy('codigoBarras.codigo', 'ASC');
 
-    return codigos.map(({ codigo, produtoId }) => ({ codigo, produtoId }));
+    if (tipo) {
+      queryBuilder.andWhere('codigoBarras.tipo = :tipo', { tipo });
+    }
+
+    const paginated = await paginate<CodigoBarrasEntity>(queryBuilder, { page, limit });
+
+    return {
+      ...paginated,
+      items: paginated.items.map(({ codigo, produtoId }) => ({ codigo, produtoId })),
+    };
   }
 
   async findProdutoByCodigo(codigo: string, empresaId: number): Promise<EstoqueView> {
