@@ -14,11 +14,4 @@ import { EcommerceReferenciaView } from './ecommerce-referencia/view/ecommerce-r
 @ApiComponent('ECOFM001', 'Manutenção de e-commerce')
 export class EcommerceController {
   constructor(private readonly service: EcommerceService) {}
-
-  @Get('publico/:id/referencias')
-  @ApiPaginatedResponse(EcommerceReferenciaView)
-  @IsPublic()
-  async findReferenciasPublic(@Param('id', ParseIntPipe) id: number): Promise<any> {
-    return this.service.findReferenciasPublic(id);
-  }
 }

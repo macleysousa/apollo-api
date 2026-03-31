@@ -52,10 +52,6 @@ export class EcommerceReferenciaService {
       queryBuilder.andWhere('er.ecommerceId = :ecommerceId', { ecommerceId });
     }
 
-    if (filters.empresaIds) {
-      queryBuilder.andWhere('er.empresaId IN (:...empresaIds)', { empresaIds: filters.empresaIds });
-    }
-
     if (filters.referenciaIds) {
       queryBuilder.andWhere('er.referenciaId IN (:...referenciaIds)', { referenciaIds: filters.referenciaIds });
     }
