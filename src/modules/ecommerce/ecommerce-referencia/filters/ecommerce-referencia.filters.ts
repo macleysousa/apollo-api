@@ -10,11 +10,6 @@ export class EcommerceReferenciaFilters {
   @IsArray('int')
   ids?: number[];
 
-  @ApiPropertyOptional({ description: 'IDs das Empresas' })
-  @IsOptional()
-  @IsArray('int')
-  empresaIds?: number[];
-
   @ApiPropertyOptional({ description: 'IDs das Referências' })
   @IsOptional()
   @IsArray('int')

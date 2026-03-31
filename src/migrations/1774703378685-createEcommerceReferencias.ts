@@ -4,7 +4,7 @@ export class CreateEcommerceReferencias1774703378685 implements MigrationInterfa
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ecommerce_referencias',
+        name: 'ecommerces_referencias',
         columns: [
           {
             name: 'id',
@@ -16,12 +16,14 @@ export class CreateEcommerceReferencias1774703378685 implements MigrationInterfa
           {
             name: 'empresaId',
             type: 'int',
-            isPrimary: true,
+          },
+          {
+            name: 'ecommerceId',
+            type: 'int',
           },
           {
             name: 'referenciaId',
             type: 'int',
-            isPrimary: true,
           },
           {
             name: 'tabelaDePrecoId',
@@ -44,11 +46,19 @@ export class CreateEcommerceReferencias1774703378685 implements MigrationInterfa
             onUpdate: 'CURRENT_TIMESTAMP',
           },
         ],
+        uniques: [{ columnNames: ['ecommerceId', 'empresaId', 'referenciaId'] }],
         foreignKeys: [
           {
             referencedTableName: 'empresas',
             referencedColumnNames: ['id'],
             columnNames: ['empresaId'],
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE',
+          },
+          {
+            referencedTableName: 'ecommerces',
+            referencedColumnNames: ['id'],
+            columnNames: ['ecommerceId'],
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
           },
@@ -69,12 +79,13 @@ export class CreateEcommerceReferencias1774703378685 implements MigrationInterfa
         ],
       }),
     );
+    await queryRunner.query(`DROP VIEW IF EXISTS view_ecommerces_referencias`);
 
     await queryRunner.query(`
-DROP VIEW IF EXISTS view_ecommerce_referencias;
-CREATE VIEW view_ecommerce_referencias AS
+CREATE VIEW view_ecommerces_referencias AS
 SELECT
   er.id,
+  er.ecommerceId,
   er.empresaId,
   er.referenciaId,
   r.nome,
@@ -93,15 +104,15 @@ SELECT
   er.rascunho,
   er.criadoEm,
   er.atualizadoEm
-  FROM ecommerce_referencias er
+FROM ecommerces_referencias er
 JOIN referencias r ON r.id = er.referenciaId
-LEFT JOIN tabelas_de_precos_referencias pr ON pr.referenciaId=er.referenciaId AND pr.tabelaDePrecoId=er.tabelaDePrecoId
-LEFT JOIN referencias_medias rm ON rm.referenciaId = er.referenciaId AND rm.isDefault = 1 AND rm.isPublic=1;
+LEFT JOIN tabelas_de_precos_referencias pr ON pr.referenciaId = er.referenciaId AND pr.tabelaDePrecoId = er.tabelaDePrecoId
+LEFT JOIN referencias_medias rm ON rm.referenciaId = er.referenciaId AND rm.isDefault = 1 AND rm.isPublic = 1
 `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP VIEW IF EXISTS view_ecommerce_referencias`);
-    await queryRunner.dropTable('ecommerce_referencias');
+    await queryRunner.query(`DROP VIEW IF EXISTS view_ecommerces_referencias`);
+    await queryRunner.dropTable('ecommerces_referencias');
   }
 }

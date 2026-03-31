@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { EcommerceReferenciaController } from './ecommerce-referencia.controller';
@@ -10,5 +10,13 @@ import { EcommerceReferenciaView } from './view/ecommerce-referencia.view';
   imports: [TypeOrmModule.forFeature([EcommerceReferenciaEntity, EcommerceReferenciaView])],
   controllers: [EcommerceReferenciaController],
   providers: [EcommerceReferenciaService],
+  exports: [EcommerceReferenciaService],
 })
-export class EcommerceReferenciaModule {}
+export class EcommerceReferenciaModule {
+  static forRoot(): DynamicModule {
+    return {
+      global: true,
+      module: this,
+    };
+  }
+}

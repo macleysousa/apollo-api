@@ -3,11 +3,15 @@ import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BaseEntity } from 'src/commons/base.entity';
 
-@Entity('ecommerce_referencias')
+@Entity('ecommerces_referencias')
 export class EcommerceReferenciaEntity extends BaseEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn('increment')
   id: number;
+
+  @ApiProperty()
+  @PrimaryColumn('int')
+  ecommerceId: number;
 
   @ApiProperty()
   @PrimaryColumn('int')

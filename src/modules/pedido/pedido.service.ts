@@ -152,10 +152,10 @@ export class PedidoService {
 
       const estoque = await this.estoqueService.findByProdutoIds(empresaId, produtoIds);
 
-      const prdsInsufi = produtos.filter((e) => estoque.first((x) => x.produtoId === e.produtoId).saldo < e.atendido);
-      if (prdsInsufi.length > 0) {
+      const prodsInsuficientes = produtos.filter((e) => estoque.first((x) => x.produtoId === e.produtoId).saldo < e.atendido);
+      if (prodsInsuficientes.length > 0) {
         throw new BadRequestException(
-          `Não há saldo suficiente para os produtos: ${prdsInsufi.map((e) => e.produtoId).join(', ')}`,
+          `Não há saldo suficiente para os produtos: ${prodsInsuficientes.map((e) => e.produtoId).join(', ')}`,
         );
       }
     }

@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsDateString, IsOptional } from 'class-validator';
+import { IsBoolean, IsDateString, IsOptional } from 'class-validator';
 
 import { IsArray } from 'src/commons/validations/is-array.validation';
 
@@ -59,4 +59,14 @@ export class EstoqueFilter {
   @ApiPropertyOptional({ description: 'Número de itens por página para paginação', default: 100 })
   @IsOptional()
   limit?: number = 100;
+
+  @ApiPropertyOptional({ description: 'Alias de limit', default: 100 })
+  @IsOptional()
+  limite?: number;
+
+  @ApiPropertyOptional({ description: 'Quando true, retorna o saldo de estoque de todas as empresas', default: false })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === true || value === 'true' || value === 1 || value === '1')
+  estoqueDeTodasAsEmpresas?: boolean = false;
 }
