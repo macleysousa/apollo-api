@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { ContextService } from 'src/context/context.service';
+
 import { CreateFuncionarioDto } from './dto/create-funcionario.dto';
 import { UpdateFuncionarioDto } from './dto/update-funcionario.dto';
 import { FuncionarioEntity } from './entities/funcionario.entity';
@@ -9,6 +11,7 @@ import { FuncionarioService } from './funcionario.service';
 describe('FuncionarioController', () => {
   let controller: FuncionarioController;
   let service: FuncionarioService;
+  let contextService: ContextService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -24,11 +27,18 @@ describe('FuncionarioController', () => {
             delete: jest.fn(),
           },
         },
+        {
+          provide: ContextService,
+          useValue: {
+            empresaId: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     controller = module.get<FuncionarioController>(FuncionarioController);
     service = module.get<FuncionarioService>(FuncionarioService);
+    contextService = module.get<ContextService>(ContextService);
   });
 
   it('should be defined', () => {
@@ -73,6 +83,25 @@ describe('FuncionarioController', () => {
       // Assert
       expect(result).toBe(funcionarios);
       expect(service.find).toHaveBeenCalledWith(empresaId, nome, inativo);
+    });
+
+    it('should use empresaId from session when query parameter is not informed', async () => {
+      // Arrange
+      const empresaIdSessao = 99;
+      const nome = 'João';
+      const inativo = false;
+      const funcionarios: FuncionarioEntity[] = [new FuncionarioEntity({ id: 1, nome, empresaId: empresaIdSessao, inativo })];
+
+      jest.spyOn(contextService, 'empresaId').mockReturnValueOnce(empresaIdSessao);
+      jest.spyOn(service, 'find').mockResolvedValueOnce(funcionarios);
+
+      // Act
+      const result = await controller.find(undefined, nome, inativo);
+
+      // Assert
+      expect(result).toBe(funcionarios);
+      expect(contextService.empresaId).toHaveBeenCalled();
+      expect(service.find).toHaveBeenCalledWith(empresaIdSessao, nome, inativo);
     });
   });
 

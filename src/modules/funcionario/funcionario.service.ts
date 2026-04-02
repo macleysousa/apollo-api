@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, IsNull, Not, Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 
 import { CreateFuncionarioDto } from './dto/create-funcionario.dto';
 import { UpdateFuncionarioDto } from './dto/update-funcionario.dto';
@@ -19,7 +19,19 @@ export class FuncionarioService {
   }
 
   async find(empresaId?: number, nome?: string, inativo?: boolean): Promise<FuncionarioEntity[]> {
-    return this.repository.find({ where: { empresaId, nome: ILike(`%${nome}%`), inativo: inativo ? Not(IsNull()) : false } });
+    const where: FindOptionsWhere<FuncionarioEntity> = {
+      inativo: inativo ?? false,
+    };
+
+    if (empresaId !== undefined && empresaId !== null) {
+      where.empresaId = empresaId;
+    }
+
+    if (nome?.trim()) {
+      where.nome = ILike(`%${nome.trim()}%`);
+    }
+
+    return this.repository.find({ where });
   }
 
   async findById(id: number): Promise<FuncionarioEntity> {

@@ -73,7 +73,7 @@ describe('FuncionarioService', () => {
       const result = await service.find(empresaId, nome, inativo);
 
       // Assert
-      expect(repository.find).toHaveBeenCalledWith({ where: { empresaId, nome: ILike(`%${nome}%`), inativo: Not(IsNull()) } });
+      expect(repository.find).toHaveBeenCalledWith({ where: { empresaId, nome: ILike(`%${nome}%`), inativo: true } });
       expect(result).toEqual(funcionarios);
     });
 
@@ -91,13 +91,11 @@ describe('FuncionarioService', () => {
 
       // Assert
       expect(repository.find).toHaveBeenCalledWith({ where: { empresaId, nome: ILike(`%${nome}%`), inativo: false } });
-      expect(result).toEqual([funcionarios[0], funcionarios[1]]);
+      expect(result).toEqual(funcionarios);
     });
 
     it('should find all funcionarios if no parameters are given', async () => {
       // Arrange
-      const empresaId = undefined;
-      const nome = undefined;
       const funcionarios: FuncionarioEntity[] = funcionarioFakeRepository.find();
 
       jest.spyOn(repository, 'find').mockResolvedValueOnce(funcionarios);
@@ -106,7 +104,7 @@ describe('FuncionarioService', () => {
       const result = await service.find();
 
       // Assert
-      expect(repository.find).toHaveBeenCalledWith({ where: { empresaId, nome: ILike(`%${nome}%`), inativo: false } });
+      expect(repository.find).toHaveBeenCalledWith({ where: { inativo: false } });
       expect(result).toEqual(funcionarios);
     });
   });
