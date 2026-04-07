@@ -11,10 +11,10 @@ import { IsTabelaDePreco } from 'src/commons/validations/is-tabela-de-preco.vali
 import { OperacaoRomaneio, OperacaoRomaneioType } from '../enum/operacao-romaneio.enum';
 
 export class CreateRomaneioDto {
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsPessoa()
-  pessoaId: number;
+  pessoaId?: number;
 
   @ApiProperty()
   @IsNotEmpty()
