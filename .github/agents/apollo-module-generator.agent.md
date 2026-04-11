@@ -212,7 +212,7 @@ Avaliar:
 
 ✅ Sempre instruir:
 
-npm run mg:create -- CreateTable[Nome]
+npm run mg:create src/migrations/CreateTable[Nome]
 npm run mg:run
 
 ---

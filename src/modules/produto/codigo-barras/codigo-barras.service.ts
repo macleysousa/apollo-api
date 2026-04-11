@@ -1,6 +1,6 @@
+import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { In, Not, Repository } from 'typeorm';
 
 import { EstoqueView } from 'src/modules/estoque/views/estoque.view';

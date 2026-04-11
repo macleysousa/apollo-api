@@ -1,11 +1,10 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { ContextService } from 'src/context/context.service';
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 
 import { ApiComponent } from '../../decorators/api-componente.decorator';
-
-import { ContextService } from 'src/context/context.service';
 
 import { CreateFuncionarioDto } from './dto/create-funcionario.dto';
 import { UpdateFuncionarioDto } from './dto/update-funcionario.dto';
@@ -18,7 +17,8 @@ import { FuncionarioService } from './funcionario.service';
 @Controller('funcionarios')
 @ApiComponent('FUNFM001', 'Manutenção de funcionários')
 export class FuncionarioController {
-  constructor(private readonly service: FuncionarioService,
+  constructor(
+    private readonly service: FuncionarioService,
     private readonly contextService: ContextService,
   ) {}
 

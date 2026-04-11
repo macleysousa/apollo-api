@@ -40,3 +40,6 @@ yarn.lock
 
 # text
 *.txt
+
+# TypeScript
+*.tsbuildinfo
