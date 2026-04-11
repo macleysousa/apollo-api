@@ -37,3 +37,6 @@ yarn.lock
 
 # env
 .env
+
+# text
+*.txt
