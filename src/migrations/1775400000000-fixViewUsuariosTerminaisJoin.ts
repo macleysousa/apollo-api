@@ -1,8 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateViewUsuariosTerminais1744753553277 implements MigrationInterface {
-  public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
+export class FixViewUsuariosTerminaisJoin1775400000000 implements MigrationInterface {
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`
 CREATE OR REPLACE VIEW view_usuarios_terminais AS
     SELECT
         ut.empresaId AS empresaId,
@@ -16,9 +16,9 @@ CREATE OR REPLACE VIEW view_usuarios_terminais AS
         usuarios_terminais ut
         JOIN empresas_terminais et ON et.empresaId = ut.empresaId AND et.id = ut.terminalId
 `);
-  }
+    }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP VIEW IF EXISTS view_usuarios_terminais`);
-  }
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`DROP VIEW IF EXISTS view_usuarios_terminais`);
+    }
 }
