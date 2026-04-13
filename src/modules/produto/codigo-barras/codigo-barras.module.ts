@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { EstoqueView } from 'src/modules/estoque/views/estoque.view';
 
 import { CodigoBarrasController } from './codigo-barras.controller';

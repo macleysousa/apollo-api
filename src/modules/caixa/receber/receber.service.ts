@@ -6,7 +6,7 @@ import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
 import { ContextService } from 'src/context/context.service';
 import { ConsignacaoService } from 'src/modules/consignacao/consignacao.service';
 import { EstoqueService } from 'src/modules/estoque/estoque.service';
-import { CreateFaturaAutimaticaDto } from 'src/modules/fatura/dto/create-fatura-automatica.dto';
+import { CreateFaturaAutomaticaDto } from 'src/modules/fatura/dto/create-fatura-automatica.dto';
 import { FaturaEntity } from 'src/modules/fatura/entities/fatura.entity';
 import { FaturaService } from 'src/modules/fatura/fatura.service';
 import { FaturaParcelaEntity } from 'src/modules/fatura/parcela/entities/parcela.entity';
@@ -280,7 +280,7 @@ export class ReceberService {
         valor: x.values.sum((y) => y.valor),
       }));
 
-    let faturaTroco: CreateFaturaAutimaticaDto = null;
+    let faturaTroco: CreateFaturaAutomaticaDto = null;
     if (pagamentos.sum((x) => x.valor) < recebimento.valor) {
       throw new BadRequestException('Valor insuficiente para realizar o a operação.');
     } else if (pagamentos.sum((x) => x.valor) > recebimento.valor) {

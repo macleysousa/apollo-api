@@ -1,5 +1,6 @@
 export enum CaixaSituacao {
   aberto = 'aberto',
+  contagem = 'contagem',
   fechado = 'fechado',
 }
 
