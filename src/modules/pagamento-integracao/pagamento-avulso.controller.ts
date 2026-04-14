@@ -91,7 +91,6 @@ export class PagamentoAvulsoController {
   }
 
   @Get(':id')
-  @ApiComponent('PAGFC004', 'Consulta de pagamento avulso por ID')
   @ApiOperation({ summary: 'Busca pagamento avulso por ID' })
   @ApiParam({ name: 'id', type: Number })
   @ApiQuery({
