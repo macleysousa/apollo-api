@@ -24,7 +24,6 @@ import { CaixaExtratoService } from '../extrato/extrato.service';
 
 import { PagamentoDto } from './dto/pagamento.dto';
 import { ReceberAdiantamentoDto } from './dto/receber-adiantamento.dto';
-import { ReceberFaturaDto } from './dto/receber-fatura.dto';
 import { ReceberRomaneioDto } from './dto/receber-romaneio.dto';
 import { RecebimentoDto } from './dto/recebimento.dto';
 
@@ -51,10 +50,6 @@ export class ReceberService {
     const liquidacao = await this.lancarNoCaixa(caixaId, TipoHistorico.Adiantamento, faturas);
 
     return liquidacao;
-  }
-
-  async fatura(caixaId: number, faturaDto: ReceberFaturaDto): Promise<FaturaEntity> {
-    return;
   }
 
   async romaneio(caixaId: number, romaneioDto: ReceberRomaneioDto): Promise<RomaneioView> {

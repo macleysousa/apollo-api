@@ -3,7 +3,6 @@ import { Type } from 'class-transformer';
 import { ArrayMinSize, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
 
 import { IsRomaneio } from 'src/commons/validations/is-romaneio.validation';
-import { SituacaoRomaneio } from 'src/modules/romaneio/enum/situacao-romaneio.enum';
 
 import { PagamentoDto } from './pagamento.dto';
 
