@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnprocessableEntityException } from '@nestjs/common';
 
 import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { TipoFrete } from 'src/commons/enum/tipo-frete';
@@ -24,7 +24,6 @@ import { CaixaExtratoService } from '../extrato/extrato.service';
 
 import { PagamentoDto } from './dto/pagamento.dto';
 import { ReceberAdiantamentoDto } from './dto/receber-adiantamento.dto';
-import { ReceberFaturaDto } from './dto/receber-fatura.dto';
 import { ReceberRomaneioDto } from './dto/receber-romaneio.dto';
 import { RecebimentoDto } from './dto/recebimento.dto';
 
@@ -51,10 +50,6 @@ export class ReceberService {
     const liquidacao = await this.lancarNoCaixa(caixaId, TipoHistorico.Adiantamento, faturas);
 
     return liquidacao;
-  }
-
-  async fatura(caixaId: number, faturaDto: ReceberFaturaDto): Promise<FaturaEntity> {
-    return;
   }
 
   async romaneio(caixaId: number, romaneioDto: ReceberRomaneioDto): Promise<RomaneioView> {
@@ -92,6 +87,15 @@ export class ReceberService {
     let faturas: FaturaEntity[];
     let extrato: CaixaExtratoEntity[];
     let liquidacaoId: number;
+
+    if (['venda', 'consignacao_acerto'].includes(romaneio.operacao) && !romaneioDto.formasDePagamento?.length) {
+      throw new UnprocessableEntityException(
+        'Formas de pagamento devem ser informadas para operações de venda e acerto de consignação',
+        {
+          description: 'Formas de pagamento devem ser informadas para operações de venda e acerto de consignação',
+        },
+      );
+    }
 
     switch (romaneio.operacao) {
       case OperacaoRomaneio.compra:
@@ -221,6 +225,12 @@ export class ReceberService {
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
       case OperacaoRomaneio.transferencia_entrada:
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
+
+      case OperacaoRomaneio.manual_entrada:
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
+
+      case OperacaoRomaneio.manual_saida:
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
       case OperacaoRomaneio.outros:

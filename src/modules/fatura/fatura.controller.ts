@@ -35,7 +35,7 @@ export class FaturaController {
   @ApiQuery({ name: 'pessoaIds', required: false, isArray: true })
   @ApiQuery({ name: 'dataInicio', required: false })
   @ApiQuery({ name: 'dataFim', required: false })
-  @ApiQuery({ name: 'incluir', required: false, description: 'Opçoes: itens', isArray: true })
+  @ApiQuery({ name: 'incluir', required: false, description: 'Opções: itens', isArray: true })
   @ApiQuery({ name: 'page', required: false, description: 'Value default: 1' })
   @ApiQuery({ name: 'limit', required: false, description: 'Value default: 100' })
   async find(
@@ -53,7 +53,7 @@ export class FaturaController {
 
   @Get(':id')
   @ApiResponse({ status: 200, type: FaturaEntity })
-  @ApiQuery({ name: 'incluir', required: false, description: 'Opçoes: itens', isArray: true })
+  @ApiQuery({ name: 'incluir', required: false, description: 'Opções: itens', isArray: true })
   async findById(
     @CurrentBranch() empresa: EmpresaEntity,
     @Param('id', ParseIntPipe) id: number,
