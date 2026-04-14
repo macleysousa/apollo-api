@@ -30,13 +30,22 @@ export class UsuarioTerminalController {
     return this.service.find(usuarioId);
   }
 
-  @Get(':empresaId')
+  @Get('empresas/:empresaId')
   @ApiResponse({ status: 200, type: [UsuarioTerminalView] })
   async findByEmpresaId(
     @Param('usuarioId', ParseUsuarioPipe) usuarioId: number,
     @Param('empresaId') empresaId: number,
   ): Promise<UsuarioTerminalView[]> {
     return this.service.findByEmpresaId(usuarioId, empresaId);
+  }
+
+  @Get(':terminalId')
+  @ApiResponse({ status: 200, type: UsuarioTerminalView })
+  async findByTerminalId(
+    @Param('usuarioId', ParseUsuarioPipe) usuarioId: number,
+    @Param('terminalId') terminalId: number,
+  ): Promise<UsuarioTerminalView> {
+    return this.service.findByTerminalId(usuarioId, terminalId);
   }
 
   @Delete(':terminalId')

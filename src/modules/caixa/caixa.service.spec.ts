@@ -121,4 +121,26 @@ describe('CaixaService', () => {
       expect(result).toBeUndefined();
     });
   });
+
+  describe('findOpen', () => {
+    it('should return open caixa by empresa and terminal', async () => {
+      const caixa = caixaFakeRepository.caixaAberto();
+
+      jest.spyOn(repository, 'findOne').mockResolvedValueOnce(caixa);
+
+      const result = await service.findOpen(1, 1);
+
+      expect(result).toEqual(caixa);
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { empresaId: 1, terminalId: 1, situacao: 'aberto' }, order: { id: 'DESC' } });
+    });
+
+    it('should return null when no open caixa is found', async () => {
+      jest.spyOn(repository, 'findOne').mockResolvedValueOnce(undefined);
+
+      const result = await service.findOpen(1, 1);
+
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { empresaId: 1, terminalId: 1, situacao: 'aberto' }, order: { id: 'DESC' } });
+      expect(result).toBeUndefined();
+    });
+  });
 });

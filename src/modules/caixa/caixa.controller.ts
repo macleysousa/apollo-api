@@ -1,5 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 
@@ -16,6 +16,18 @@ import { CaixaEntity } from './entities/caixa.entity';
 @ApiComponent('FCXFM001', 'Manutenção de caixa')
 export class CaixaController {
   constructor(private readonly service: CaixaService) {}
+
+  @Get('/aberto')
+  @ApiComponent('FCXFP006', 'Consulta de Caixa Aberto')
+  @ApiQuery({ name: 'empresaId', type: Number, required: true })
+  @ApiQuery({ name: 'terminalId', type: Number, required: true })
+  @ApiResponse({ status: 200, type: CaixaEntity })
+  async findOpen(
+    @Query('empresaId', ParseIntPipe) empresaId: number,
+    @Query('terminalId', ParseIntPipe) terminalId: number,
+  ): Promise<CaixaEntity> {
+    return this.service.findOpen(empresaId, terminalId);
+  }
 
   @Post('/abrir')
   @ApiComponent('FCXFP001', 'Abertura de Caixa')
