@@ -35,7 +35,6 @@ export class PagamentoAvulsoController {
   ) {}
 
   @Get('providers')
-  @ApiComponent('PAGFC001', 'Consulta de gateways de pagamento configurados')
   @ApiOperation({ summary: 'Lista gateways de pagamento configurados' })
   @ApiOkResponse({ type: [String] })
   listProviders() {
@@ -43,7 +42,6 @@ export class PagamentoAvulsoController {
   }
 
   @Get()
-  @ApiComponent('PAGFC002', 'Consulta de histórico de pagamentos avulsos')
   @ApiOperation({ summary: 'Lista historico de pagamentos avulsos' })
   @ApiQuery({ name: 'status', required: false, enum: PagamentoAvulsoStatus })
   @ApiQuery({
@@ -60,7 +58,6 @@ export class PagamentoAvulsoController {
   }
 
   @Get('pendentes')
-  @ApiComponent('PAGFC003', 'Consulta de pagamentos avulsos pendentes')
   @ApiOperation({ summary: 'Lista pagamentos avulsos pendentes' })
   @ApiQuery({
     name: 'apagado',
@@ -111,7 +108,6 @@ export class PagamentoAvulsoController {
   }
 
   @Post()
-  @ApiComponent('PAGFP001', 'Criação de pagamento avulso')
   @ApiOperation({ summary: 'Cria um pagamento avulso e inicia cobranca no gateway' })
   @ApiBody({ type: CreatePagamentoAvulsoDto })
   @ApiCreatedResponse({ type: CreatePagamentoAvulsoResponseDto })
@@ -120,7 +116,6 @@ export class PagamentoAvulsoController {
   }
 
   @Post(':id/retry-cobranca')
-  @ApiComponent('PAGFP002', 'Reprocessamento de cobrança')
   @ApiOperation({ summary: 'Tenta novamente criar cobranca no gateway para pagamento com erro de integracao' })
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ type: CreatePagamentoAvulsoResponseDto })
@@ -129,7 +124,6 @@ export class PagamentoAvulsoController {
   }
 
   @Patch(':id/sincronizar')
-  @ApiComponent('PAGFP003', 'Sincronização de status do pagamento')
   @ApiOperation({ summary: 'Sincroniza status do pagamento com gateway' })
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ type: PagamentoAvulsoResponseDto })
@@ -138,7 +132,6 @@ export class PagamentoAvulsoController {
   }
 
   @Patch(':id/cancelar')
-  @ApiComponent('PAGFP004', 'Cancelamento de pagamento avulso')
   @ApiOperation({ summary: 'Cancela pagamento avulso' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: CancelarPagamentoAvulsoDto })
@@ -148,7 +141,7 @@ export class PagamentoAvulsoController {
   }
 
   @Patch(':id/marcar-pago')
-  @ApiComponent('PAGFP005', 'Marcação manual de pagamento como pago')
+  @ApiComponent('PAGFP005', 'Cancelar pagamento avulso manualmente')
   @ApiOperation({ summary: 'Marca pagamento avulso como pago manualmente' })
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ type: PagamentoAvulsoResponseDto })
@@ -158,7 +151,7 @@ export class PagamentoAvulsoController {
 
   @Delete(':id')
   @ApiComponent('PAGFP006', 'Exclusão lógica de pagamento avulso')
-  @ApiOperation({ summary: 'Exclui pagamento avulso de forma logica' })
+  @ApiOperation({ summary: 'Exclui pagamento avulso' })
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ type: PagamentoAvulsoResponseDto })
   async delete(@Param('id', ParseIntPipe) id: number) {
@@ -166,7 +159,6 @@ export class PagamentoAvulsoController {
   }
 
   @Get('gateway/:provider/:externalId')
-  @ApiComponent('PAGFC005', 'Consulta de status direto no gateway')
   @ApiOperation({ summary: 'Consulta status direto no gateway' })
   @ApiParam({ name: 'provider', enum: ['noop', 'openpix', 'infinitypay'] })
   @ApiParam({ name: 'externalId', type: String })

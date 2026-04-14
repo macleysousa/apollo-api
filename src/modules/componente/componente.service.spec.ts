@@ -18,6 +18,7 @@ describe('ComponentsService', () => {
         {
           provide: getRepositoryToken(ComponenteEntity),
           useValue: {
+            count: jest.fn().mockResolvedValue(0),
             upsert: jest.fn(),
             findOne: jest.fn().mockResolvedValue(componentFakeRepository.findOne()),
             createQueryBuilder: jest.fn().mockReturnValue({
@@ -43,6 +44,7 @@ describe('ComponentsService', () => {
     it('should return popular components', async () => {
       // Arrange
       // const components: ComponentEntity[] = new Array(10).fill(componentFakeRepository.findOne());
+      jest.spyOn(componentRepository, 'count').mockResolvedValueOnce(-1);
 
       // Act
       await service.popular();
@@ -64,6 +66,7 @@ describe('ComponentsService', () => {
       const response = await service.find(filter, blocked);
 
       // Assert
+      expect(componentRepository.count).toHaveBeenCalledTimes(1);
       expect(componentRepository.createQueryBuilder).toHaveBeenCalledTimes(1);
 
       expect(componentRepository.createQueryBuilder().where).toHaveBeenCalledTimes(1);
