@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateProcedureRomanerioCalcularItensDevolvidos1693005606797 implements MigrationInterface {
+export class CreateProcedureRomaneioCalcularItensDevolvidos1693005606797 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DROP procedure IF EXISTS romaneio_calcular_itens_devidos`);
 

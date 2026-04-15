@@ -288,9 +288,14 @@ export class RomaneioService {
       throw new BadRequestException('Romaneio não está em andamento');
     }
 
-    await this.repository.update({ id }, { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId }).catch(() => {
-      throw new BadRequestException('Não foi possível encerrar o romaneio');
-    });
+    await this.repository
+      .update({ id }, { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId })
+      .catch((err) => {
+        throw new BadRequestException('Não foi possível encerrar o romaneio', {
+          cause: err,
+          description: err?.hint ?? err?.detail ?? err?.message,
+        });
+      });
 
     if (romaneio.romaneiosDevolucao && romaneio.romaneiosDevolucao.length > 0) {
       await this.repository.query(`CALL romaneio_calcular_itens_devidos(${id})`);

@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Transactional } from 'typeorm-transactional';
 
 import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { TipoFrete } from 'src/commons/enum/tipo-frete';
@@ -52,6 +53,7 @@ export class ReceberService {
     return liquidacao;
   }
 
+  @Transactional()
   async romaneio(caixaId: number, romaneioDto: ReceberRomaneioDto): Promise<RomaneioView> {
     const empresa = this.contextService.empresa();
     const parametros = this.contextService.parametros();
