@@ -12,9 +12,9 @@ import { CaixaSuprimentoService } from './suprimento.service';
 
 @ApiBearerAuth()
 @ApiEmpresaAuth()
-@ApiTags('Caixas - Suprimento')
-@Controller('caixas/:caixaId/suprimento')
-@ApiComponent('FCXFM003', 'Suprimento de caixa')
+@ApiTags('Caixas - Suprimentos')
+@Controller('caixas/:caixaId/suprimentos')
+@ApiComponent('FCXFM003', 'Manutenção de caixa - Suprimento de caixa')
 export class CaixaSuprimentoController {
   constructor(private readonly service: CaixaSuprimentoService) {}
 

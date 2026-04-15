@@ -14,7 +14,7 @@ import { CaixaContagemEntity } from './entities/contagem.entity';
 @ApiEmpresaAuth()
 @ApiTags('Caixas - Contagem')
 @Controller('caixas/:caixaId/contagem')
-@ApiComponent('FCXFM002', 'Manutenção de caixa (Contagem)')
+@ApiComponent('FCXFM002', 'Manutenção de caixa - Contagem')
 export class CaixaContagemController {
   constructor(private readonly service: CaixaContagemService) {}
 

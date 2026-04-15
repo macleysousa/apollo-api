@@ -6,7 +6,7 @@ import { ApiComponent } from 'src/decorators/api-componente.decorator';
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 
 import { CancelarService } from './cancelar.service';
-import { CancelarAdiantamentoDto } from './dto/cancelar-adianteamento.dto';
+import { CancelarAdiantamentoDto } from './dto/cancelar-adiantamento.dto';
 import { CancelarRomaneioDto } from './dto/cancelar-romaneio.dto';
 
 @ApiBearerAuth()
