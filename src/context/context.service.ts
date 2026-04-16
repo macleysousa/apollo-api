@@ -1,7 +1,7 @@
 import { RequestContext } from 'nestjs-easy-context';
 import { Injectable, Scope } from '@nestjs/common';
-import { LoggedRequest } from 'src';
 
+import { LoggedRequest } from 'src/index';
 import { EmpresaEntity } from 'src/modules/empresa/entities/empresa.entity';
 import { EmpresaParametroView } from 'src/modules/empresa/parametro/views/parametro.view';
 import { PessoaUsuario } from 'src/modules/pessoa-usuario/entities/pessoa-usuario.entity';

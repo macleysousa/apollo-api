@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { ContextService } from 'src/context/context.service';
 import { ApiEmpresaAuth } from 'src/decorators/api-empresa-auth.decorator';
 
 import { ApiComponent } from '../../decorators/api-componente.decorator';
@@ -16,7 +17,10 @@ import { FuncionarioService } from './funcionario.service';
 @Controller('funcionarios')
 @ApiComponent('FUNFM001', 'Manutenção de funcionários')
 export class FuncionarioController {
-  constructor(private readonly service: FuncionarioService) {}
+  constructor(
+    private readonly service: FuncionarioService,
+    private readonly contextService: ContextService,
+  ) {}
 
   @Post()
   @ApiResponse({ status: 201, type: FuncionarioEntity })
@@ -34,7 +38,7 @@ export class FuncionarioController {
     @Query('nome') nome: string,
     @Query('inativo') inativo: boolean,
   ): Promise<FuncionarioEntity[]> {
-    return this.service.find(empresaId, nome, inativo);
+    return this.service.find(empresaId ?? this.contextService.empresaId(), nome, inativo);
   }
 
   @Get(':id')

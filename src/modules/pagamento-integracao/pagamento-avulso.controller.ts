@@ -11,6 +11,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import { ApiComponent } from '../../decorators/api-componente.decorator';
 import { ApiEmpresaAuth } from '../../decorators/api-empresa-auth.decorator';
 import { IsPublic } from '../../decorators/is-public.decorator';
 
@@ -26,6 +27,7 @@ import { PagamentoIntegracaoService } from './pagamento-integracao.service';
 @Controller('pagamentos-avulsos')
 @ApiBearerAuth()
 @ApiEmpresaAuth()
+@ApiComponent('PAGFM001', 'Manutenção de pagamentos avulsos')
 export class PagamentoAvulsoController {
   constructor(
     private readonly pagamentoAvulsoService: PagamentoAvulsoService,
@@ -138,6 +140,7 @@ export class PagamentoAvulsoController {
   }
 
   @Patch(':id/marcar-pago')
+  @ApiComponent('PAGFP005', 'Cancelar pagamento avulso manualmente')
   @ApiOperation({ summary: 'Marca pagamento avulso como pago manualmente' })
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ type: PagamentoAvulsoResponseDto })
@@ -146,7 +149,8 @@ export class PagamentoAvulsoController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Exclui pagamento avulso de forma logica' })
+  @ApiComponent('PAGFP006', 'Exclusão lógica de pagamento avulso')
+  @ApiOperation({ summary: 'Exclui pagamento avulso' })
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ type: PagamentoAvulsoResponseDto })
   async delete(@Param('id', ParseIntPipe) id: number) {

@@ -7,7 +7,7 @@ import { CaixaService } from '../caixa.service';
 
 import { CancelarController } from './cancelar.controller';
 import { CancelarService } from './cancelar.service';
-import { CancelarAdiantamentoDto } from './dto/cancelar-adianteamento.dto';
+import { CancelarAdiantamentoDto } from './dto/cancelar-adiantamento.dto';
 
 describe('CancelarController', () => {
   let controller: CancelarController;

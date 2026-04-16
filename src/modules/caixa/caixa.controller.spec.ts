@@ -19,6 +19,7 @@ describe('CaixaController', () => {
           provide: CaixaService,
           useValue: {
             open: jest.fn().mockResolvedValue(caixaFakeRepository.caixaAberto()),
+            findOpen: jest.fn().mockResolvedValue(caixaFakeRepository.caixaAberto()),
           },
         },
       ],
@@ -43,6 +44,18 @@ describe('CaixaController', () => {
       const result = await controller.open(createCaixaDto);
 
       expect(service.open).toHaveBeenCalledWith(createCaixaDto);
+      expect(result).toEqual(caixaFakeRepository.caixaAberto());
+    });
+  });
+
+  describe('findOpen', () => {
+    it('should return open caixa by empresa and terminal', async () => {
+      const empresaId = 1;
+      const terminalId = 1;
+
+      const result = await controller.findOpen(empresaId, terminalId);
+
+      expect(service.findOpen).toHaveBeenCalledWith(empresaId, terminalId);
       expect(result).toEqual(caixaFakeRepository.caixaAberto());
     });
   });

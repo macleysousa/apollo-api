@@ -14,7 +14,7 @@ import { TipoHistorico } from '../extrato/enum/tipo-historico.enum';
 import { CaixaExtratoService } from '../extrato/extrato.service';
 
 import { CancelarService } from './cancelar.service';
-import { CancelarAdiantamentoDto } from './dto/cancelar-adianteamento.dto';
+import { CancelarAdiantamentoDto } from './dto/cancelar-adiantamento.dto';
 import { CancelarRomaneioDto } from './dto/cancelar-romaneio.dto';
 
 describe('CancelarService', () => {

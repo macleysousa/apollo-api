@@ -7,6 +7,7 @@ import { ContextService } from 'src/context/context.service';
 
 import { ConsignacaoService } from '../consignacao/consignacao.service';
 import { EstoqueService } from '../estoque/estoque.service';
+import { FuncionarioService } from '../funcionario/funcionario.service';
 import { PedidoService } from '../pedido/pedido.service';
 
 import { CreateRomaneioDto } from './dto/create-romaneio.dto';
@@ -35,6 +36,8 @@ export class RomaneioService {
     private readonly pedidoService: PedidoService,
     @Inject(forwardRef(() => EstoqueService))
     private readonly estoqueService: EstoqueService,
+    @Inject(forwardRef(() => FuncionarioService))
+    private readonly funcionarioService: FuncionarioService,
   ) {}
 
   async create(dto: CreateRomaneioDto): Promise<RomaneioView> {
@@ -58,6 +61,12 @@ export class RomaneioService {
       throw new BadRequestException('Romaneios de devolução não informados');
     } else if (dto.operacao == OperacaoRomaneio.transferencia_devolucao && !dto.romaneiosDevolucao) {
       throw new BadRequestException('Romaneios de devolução não informados');
+    }
+
+    const pessoaId = dto.pessoaId ?? (await this.funcionarioService.findById(dto.funcionarioId))?.pessoaId;
+
+    if (!pessoaId) {
+      throw new BadRequestException('Pessoa não informada e não localizada a partir do funcionário');
     }
 
     let modalidade = ModalidadeRomaneio.saida;
@@ -106,6 +115,7 @@ export class RomaneioService {
 
     const romaneio = await this.repository.save({
       ...dto,
+      pessoaId,
       empresaId: empresa.id,
       data: empresa.data,
       modalidade: modalidade,
@@ -278,9 +288,14 @@ export class RomaneioService {
       throw new BadRequestException('Romaneio não está em andamento');
     }
 
-    await this.repository.update({ id }, { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId }).catch(() => {
-      throw new BadRequestException('Não foi possível encerrar o romaneio');
-    });
+    await this.repository
+      .update({ id }, { caixaId, situacao: SituacaoRomaneio.encerrado, liquidacao, operadorId })
+      .catch((err) => {
+        throw new BadRequestException('Não foi possível encerrar o romaneio', {
+          cause: err,
+          description: err?.hint ?? err?.detail ?? err?.message,
+        });
+      });
 
     if (romaneio.romaneiosDevolucao && romaneio.romaneiosDevolucao.length > 0) {
       await this.repository.query(`CALL romaneio_calcular_itens_devidos(${id})`);

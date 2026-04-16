@@ -21,6 +21,14 @@ export class ComponentGuard implements CanActivate {
 
     const { usuario, empresa } = context.switchToHttp().getRequest();
 
+    if (
+      componentId === 'ADMFM007' &&
+      context.switchToHttp().getRequest().method === 'GET' &&
+      Number(context.switchToHttp().getRequest().params?.usuarioId) === usuario?.id
+    ) {
+      return true;
+    }
+
     const isValid = await this.authService.validateComponent(usuario?.id, empresa?.id, componentId);
 
     if (isValid || usuario?.tipo == Role.sysadmin || usuario?.tipo == Role.administrador) {

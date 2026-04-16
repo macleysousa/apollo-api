@@ -14,7 +14,7 @@ CREATE OR REPLACE VIEW view_usuarios_terminais AS
         et.atualizadoEm AS atualizadoEm
     FROM
         usuarios_terminais ut
-        JOIN empresas_terminais et
+        JOIN empresas_terminais et ON et.empresaId = ut.empresaId AND et.id = ut.terminalId
 `);
   }
 

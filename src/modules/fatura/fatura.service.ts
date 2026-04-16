@@ -8,7 +8,7 @@ import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { TipoInclusao } from 'src/commons/enum/tipo-inclusao';
 import { ContextService } from 'src/context/context.service';
 
-import { CreateFaturaAutimaticaDto } from './dto/create-fatura-automatica.dto';
+import { CreateFaturaAutomaticaDto } from './dto/create-fatura-automatica.dto';
 import { CreateFaturaManualDto } from './dto/create-fatura-manual.dto';
 import { UpdateFaturaManualDto } from './dto/update-fatura-manual.dto';
 import { FaturaEntity } from './entities/fatura.entity';
@@ -50,7 +50,7 @@ export class FaturaService {
     return this.findById(empresa.id, fatura.id);
   }
 
-  async createAutomatica(createFaturaDto: CreateFaturaAutimaticaDto): Promise<FaturaEntity> {
+  async createAutomatica(createFaturaDto: CreateFaturaAutomaticaDto): Promise<FaturaEntity> {
     const usuario = this.contextService.usuario();
     const empresa = this.contextService.empresa();
 

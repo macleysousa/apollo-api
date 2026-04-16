@@ -6,12 +6,21 @@ import { CaixaConstraint } from 'src/commons/validations/is-caixa.validation';
 import { CaixaController } from './caixa.controller';
 import { CaixaService } from './caixa.service';
 import { CancelarModule } from './cancelar/cancelar.module';
+import { ContagemModule } from './contagem/contagem.module';
 import { CaixaEntity } from './entities/caixa.entity';
 import { ExtratoModule } from './extrato/extrato.module';
 import { ReceberModule } from './receber/receber.module';
+import { SuprimentoModule } from './suprimento/suprimento.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CaixaEntity]), ExtratoModule.forRoot(), ReceberModule, CancelarModule],
+  imports: [
+    TypeOrmModule.forFeature([CaixaEntity]),
+    ExtratoModule.forRoot(),
+    ReceberModule,
+    CancelarModule,
+    ContagemModule.forRoot(),
+    SuprimentoModule.forRoot(),
+  ],
   controllers: [CaixaController],
   providers: [CaixaService, CaixaConstraint],
   exports: [CaixaService],

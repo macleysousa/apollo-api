@@ -34,6 +34,10 @@ export class CaixaService {
     return this.findById(empresaId, caixa.id);
   }
 
+  async findOpen(empresaId: number, terminalId: number): Promise<CaixaEntity> {
+    return this.repository.findOne({ where: { empresaId, terminalId, situacao: CaixaSituacao.aberto }, order: { id: 'DESC' } });
+  }
+
   async findById(empresaId: number, id: number): Promise<CaixaEntity> {
     return this.repository.findOne({ where: { empresaId, id } });
   }

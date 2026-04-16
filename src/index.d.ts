@@ -4,6 +4,14 @@ import { EmpresaEntity } from './modules/empresa/entities/empresa.entity';
 import { EmpresaParametroView } from './modules/empresa/parametro/views/parametro.view';
 import { UserEntity } from './modules/user/entity/user.entity';
 
+declare global {
+  namespace Express {
+    interface Multer {
+      File: import('multer').File;
+    }
+  }
+}
+
 interface TenantRequest extends Request {
   id?: number;
   username?: string;

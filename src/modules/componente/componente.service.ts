@@ -21,6 +21,8 @@ export class ComponenteService {
   }
 
   async find(filter?: string, blocked?: boolean): Promise<ComponenteEntity[]> {
+    await this.popular();
+
     const queryBuilder = this.componentRepository.createQueryBuilder('c');
     queryBuilder.where({ id: Not(IsNull()) });
 

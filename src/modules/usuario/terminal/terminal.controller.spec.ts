@@ -24,6 +24,7 @@ describe('UsuarioTerminalController', () => {
             add: jest.fn().mockResolvedValue(userFakeRepository.findOneTerminalView()),
             find: jest.fn().mockResolvedValue([userFakeRepository.findOneTerminalView()]),
             findByEmpresaId: jest.fn().mockResolvedValue([userFakeRepository.findOneTerminalView()]),
+            findByTerminalId: jest.fn().mockResolvedValue(userFakeRepository.findOneTerminalView()),
             delete: jest.fn().mockResolvedValue(undefined),
           },
         },
@@ -86,6 +87,19 @@ describe('UsuarioTerminalController', () => {
 
       expect(service.findByEmpresaId).toHaveBeenCalledWith(1, 1);
       expect(result).toEqual(terminals);
+    });
+  });
+
+  describe('findByTerminalId', () => {
+    it('should return terminal by user and terminal id', async () => {
+      const terminal = { id: 1 } as UsuarioTerminalView;
+
+      jest.spyOn(service, 'findByTerminalId').mockResolvedValueOnce(terminal);
+
+      const result = await controller.findByTerminalId(1, 1);
+
+      expect(service.findByTerminalId).toHaveBeenCalledWith(1, 1);
+      expect(result).toEqual(terminal);
     });
   });
 

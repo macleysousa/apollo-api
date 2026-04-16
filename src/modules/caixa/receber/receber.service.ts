@@ -1,4 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Transactional } from 'typeorm-transactional';
 
 import { TipoDocumento } from 'src/commons/enum/tipo-documento';
 import { TipoFrete } from 'src/commons/enum/tipo-frete';
@@ -6,7 +7,7 @@ import { TipoMovimento } from 'src/commons/enum/tipo-movimento';
 import { ContextService } from 'src/context/context.service';
 import { ConsignacaoService } from 'src/modules/consignacao/consignacao.service';
 import { EstoqueService } from 'src/modules/estoque/estoque.service';
-import { CreateFaturaAutimaticaDto } from 'src/modules/fatura/dto/create-fatura-automatica.dto';
+import { CreateFaturaAutomaticaDto } from 'src/modules/fatura/dto/create-fatura-automatica.dto';
 import { FaturaEntity } from 'src/modules/fatura/entities/fatura.entity';
 import { FaturaService } from 'src/modules/fatura/fatura.service';
 import { FaturaParcelaEntity } from 'src/modules/fatura/parcela/entities/parcela.entity';
@@ -24,7 +25,6 @@ import { CaixaExtratoService } from '../extrato/extrato.service';
 
 import { PagamentoDto } from './dto/pagamento.dto';
 import { ReceberAdiantamentoDto } from './dto/receber-adiantamento.dto';
-import { ReceberFaturaDto } from './dto/receber-fatura.dto';
 import { ReceberRomaneioDto } from './dto/receber-romaneio.dto';
 import { RecebimentoDto } from './dto/recebimento.dto';
 
@@ -53,10 +53,7 @@ export class ReceberService {
     return liquidacao;
   }
 
-  async fatura(caixaId: number, faturaDto: ReceberFaturaDto): Promise<FaturaEntity> {
-    return;
-  }
-
+  @Transactional()
   async romaneio(caixaId: number, romaneioDto: ReceberRomaneioDto): Promise<RomaneioView> {
     const empresa = this.contextService.empresa();
     const parametros = this.contextService.parametros();
@@ -92,6 +89,15 @@ export class ReceberService {
     let faturas: FaturaEntity[];
     let extrato: CaixaExtratoEntity[];
     let liquidacaoId: number;
+
+    if (['venda', 'consignacao_acerto'].includes(romaneio.operacao) && !romaneioDto.formasDePagamento?.length) {
+      throw new UnprocessableEntityException(
+        'Formas de pagamento devem ser informadas para operações de venda e acerto de consignação',
+        {
+          description: 'Formas de pagamento devem ser informadas para operações de venda e acerto de consignação',
+        },
+      );
+    }
 
     switch (romaneio.operacao) {
       case OperacaoRomaneio.compra:
@@ -223,6 +229,12 @@ export class ReceberService {
       case OperacaoRomaneio.transferencia_entrada:
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
 
+      case OperacaoRomaneio.manual_entrada:
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
+
+      case OperacaoRomaneio.manual_saida:
+        return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
+
       case OperacaoRomaneio.outros:
         return this.romaneioService.encerrar(empresa.id, caixaId, romaneioDto.romaneioId);
     }
@@ -280,7 +292,7 @@ export class ReceberService {
         valor: x.values.sum((y) => y.valor),
       }));
 
-    let faturaTroco: CreateFaturaAutimaticaDto = null;
+    let faturaTroco: CreateFaturaAutomaticaDto = null;
     if (pagamentos.sum((x) => x.valor) < recebimento.valor) {
       throw new BadRequestException('Valor insuficiente para realizar o a operação.');
     } else if (pagamentos.sum((x) => x.valor) > recebimento.valor) {

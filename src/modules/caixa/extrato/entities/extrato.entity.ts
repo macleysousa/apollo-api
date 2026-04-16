@@ -46,12 +46,16 @@ export class CaixaExtratoEntity extends BaseEntity {
   valor: number;
 
   @ApiProperty()
-  @Column('bigint')
+  @Column('bigint', { nullable: true })
   faturaId: number;
 
   @ApiProperty()
-  @Column('bigint')
+  @Column('bigint', { nullable: true })
   faturaParcela: number;
+
+  @ApiProperty({ required: false })
+  @Column('bigint', { nullable: true })
+  suprimentoId: number;
 
   @ApiProperty()
   @Column('varchar', { length: 500 })

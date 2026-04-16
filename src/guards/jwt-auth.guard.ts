@@ -2,10 +2,10 @@ import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/com
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { instanceToPlain } from 'class-transformer';
-import { TenantRequest } from 'src';
 
 import { PESSOA_KEY } from 'src/decorators/api-pessoa.decorator';
 import { IS_PUBLIC_KEY } from 'src/decorators/is-public.decorator';
+import { TenantRequest } from 'src/index';
 
 import { AuthService } from '../modules/auth/auth.service';
 
