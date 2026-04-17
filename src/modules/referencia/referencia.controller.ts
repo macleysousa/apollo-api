@@ -2,6 +2,8 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/
 import { ParseIntPipe } from '@nestjs/common/pipes';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { IsPublic } from 'src/decorators/is-public.decorator';
+
 import { ApiComponent } from '../../decorators/api-componente.decorator';
 
 import { CreateReferenciaDto } from './dto/create-referencia.dto';
@@ -25,12 +27,14 @@ export class ReferenciaController {
   }
 
   @Get()
+  @IsPublic()
   @ApiResponse({ type: [ReferenciaEntity], status: 200 })
   async find(@Query() filter?: ReferenciaFilter): Promise<ReferenciaEntity[]> {
     return this.referenceService.find(filter);
   }
 
   @Get(':id')
+  @IsPublic()
   @ApiResponse({ type: ReferenciaEntity, status: 200 })
   async findById(@Param('id', ParseIntPipe) id: number, @Query() filter?: ReferenciaBaseFilter): Promise<ReferenciaEntity> {
     return this.referenceService.findById(id, filter?.incluir);
