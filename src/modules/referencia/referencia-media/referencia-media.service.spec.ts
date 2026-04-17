@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 
 import { StorageService } from 'src/storage/storage.service';
 
+import { ReferenciaService } from '../referencia.service';
+
 import { ReferenciaMediaEntity } from './entities/referencia-media.entity';
 import { ReferenciaMediaService } from './referencia-media.service';
 
@@ -18,10 +20,16 @@ describe('ReferenciaMediaService', () => {
         ReferenciaMediaService,
         {
           provide: getRepositoryToken(ReferenciaMediaEntity),
-          useClass: Repository,
+          useValue: {
+            find: jest.fn().mockResolvedValue([]),
+          },
         },
         {
           provide: StorageService,
+          useValue: {},
+        },
+        {
+          provide: ReferenciaService,
           useValue: {},
         },
       ],
@@ -36,5 +44,16 @@ describe('ReferenciaMediaService', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
     expect(storageService).toBeDefined();
+  });
+
+  describe('findPublic', () => {
+    it('should return only public medias by reference id', async () => {
+      const referenciaId = 1;
+
+      await service.findPublic(referenciaId);
+
+      expect(repository.find).toHaveBeenCalledTimes(1);
+      expect(repository.find).toHaveBeenCalledWith({ where: { referenciaId, isPublic: true } });
+    });
   });
 });

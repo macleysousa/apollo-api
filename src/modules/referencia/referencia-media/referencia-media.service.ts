@@ -91,6 +91,10 @@ export class ReferenciaMediaService {
     return this.repository.find({ where: { referenciaId } });
   }
 
+  async findPublic(referenciaId: number): Promise<ReferenciaMediaEntity[]> {
+    return this.repository.find({ where: { referenciaId, isPublic: true } });
+  }
+
   async findById(referenciaId: number, id: number): Promise<ReferenciaMediaEntity> {
     return this.repository.findOne({ where: { id, referenciaId } });
   }

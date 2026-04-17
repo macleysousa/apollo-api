@@ -4,6 +4,7 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiRespons
 
 import { MediaType } from 'src/commons/enum/media-type';
 import { ApiComponent } from 'src/decorators/api-componente.decorator';
+import { IsPublic } from 'src/decorators/is-public.decorator';
 
 import { UpdateMediaDto } from './dto/update-media.dto';
 import { UploadMediaDto } from './dto/upload-media.dto';
@@ -52,6 +53,15 @@ export class ReferenciaMediaController {
   @ApiResponse({ status: 200, type: [ReferenciaMediaEntity] })
   async find(@Param('referenciaId', ParseIntPipe) referenciaId: number): Promise<ReferenciaMediaEntity[]> {
     return this.service.find(referenciaId);
+  }
+
+  @Get('publicas')
+  @IsPublic()
+  @ApiOperation({ summary: 'Lista mídias públicas da referência' })
+  @ApiParam({ name: 'referenciaId', type: Number })
+  @ApiResponse({ status: 200, type: [ReferenciaMediaEntity] })
+  async findPublic(@Param('referenciaId', ParseIntPipe) referenciaId: number): Promise<ReferenciaMediaEntity[]> {
+    return this.service.findPublic(referenciaId);
   }
 
   @Put(':id')

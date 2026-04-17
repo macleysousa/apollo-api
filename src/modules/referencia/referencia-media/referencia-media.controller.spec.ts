@@ -13,7 +13,10 @@ describe('ReferenciaMediaController', () => {
       providers: [
         {
           provide: ReferenciaMediaService,
-          useValue: {},
+          useValue: {
+            find: jest.fn(),
+            findPublic: jest.fn().mockResolvedValue([]),
+          },
         },
       ],
     }).compile();
@@ -25,5 +28,17 @@ describe('ReferenciaMediaController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
     expect(service).toBeDefined();
+  });
+
+  describe('GET public medias', () => {
+    it('should return only public medias from a reference', async () => {
+      const referenciaId = 1;
+
+      const result = await controller.findPublic(referenciaId);
+
+      expect(service.findPublic).toHaveBeenCalledTimes(1);
+      expect(service.findPublic).toHaveBeenCalledWith(referenciaId);
+      expect(result).toEqual([]);
+    });
   });
 });
