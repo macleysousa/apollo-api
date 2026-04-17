@@ -22,11 +22,15 @@ describe('ReferenciaMediaService', () => {
           provide: getRepositoryToken(ReferenciaMediaEntity),
           useValue: {
             find: jest.fn().mockResolvedValue([]),
+            findOne: jest.fn(),
+            delete: jest.fn(),
           },
         },
         {
           provide: StorageService,
-          useValue: {},
+          useValue: {
+            delete: jest.fn(),
+          },
         },
         {
           provide: ReferenciaService,
@@ -54,6 +58,21 @@ describe('ReferenciaMediaService', () => {
 
       expect(repository.find).toHaveBeenCalledTimes(1);
       expect(repository.find).toHaveBeenCalledWith({ where: { referenciaId, isPublic: true } });
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete media using id and referenciaId', async () => {
+      const referenciaId = 1;
+      const id = 12;
+      const media = { id, referenciaId, url: 'referencias/teste.jpg' } as ReferenciaMediaEntity;
+
+      jest.spyOn(repository, 'findOne').mockResolvedValue(media);
+
+      await service.delete(referenciaId, id);
+
+      expect(storageService.delete).toHaveBeenCalledWith(media.url);
+      expect(repository.delete).toHaveBeenCalledWith({ id, referenciaId });
     });
   });
 });

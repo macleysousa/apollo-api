@@ -129,8 +129,9 @@ export class ReferenciaMediaService {
   async delete(referenciaId: number, id: number): Promise<void> {
     const media = await this.findById(referenciaId, id);
     if (media) {
+
+      await this.repository.delete({ id, referenciaId });
       await this.storage.delete(media.url);
-      await this.repository.delete(id);
     }
   }
 }
