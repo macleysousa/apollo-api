@@ -131,7 +131,10 @@ describe('CaixaService', () => {
       const result = await service.findOpen(1, 1);
 
       expect(result).toEqual(caixa);
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { empresaId: 1, terminalId: 1, situacao: 'aberto' }, order: { id: 'DESC' } });
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { empresaId: 1, terminalId: 1, situacao: 'aberto' },
+        order: { id: 'DESC' },
+      });
     });
 
     it('should return null when no open caixa is found', async () => {
@@ -139,7 +142,10 @@ describe('CaixaService', () => {
 
       const result = await service.findOpen(1, 1);
 
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { empresaId: 1, terminalId: 1, situacao: 'aberto' }, order: { id: 'DESC' } });
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { empresaId: 1, terminalId: 1, situacao: 'aberto' },
+        order: { id: 'DESC' },
+      });
       expect(result).toBeUndefined();
     });
   });

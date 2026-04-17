@@ -16,6 +16,8 @@ export class LancarMovimento {
 
   faturaParcela?: number;
 
+  suprimentoId?: number;
+
   observacao?: string;
 
   constructor(data?: LancarMovimento) {

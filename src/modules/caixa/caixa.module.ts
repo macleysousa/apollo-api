@@ -10,6 +10,7 @@ import { ContagemModule } from './contagem/contagem.module';
 import { CaixaEntity } from './entities/caixa.entity';
 import { ExtratoModule } from './extrato/extrato.module';
 import { ReceberModule } from './receber/receber.module';
+import { SuprimentoModule } from './suprimento/suprimento.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ReceberModule } from './receber/receber.module';
     ReceberModule,
     CancelarModule,
     ContagemModule.forRoot(),
+    SuprimentoModule.forRoot(),
   ],
   controllers: [CaixaController],
   providers: [CaixaService, CaixaConstraint],
