@@ -17,10 +17,17 @@ interface TenantRequest extends Request {
   username?: string;
   name?: string;
   role?: string;
+  user?: UserEntity;
+  usuario?: UserEntity;
+  empresa?: EmpresaEntity;
+  parametros?: EmpresaParametroView;
+  pessoa?: unknown;
+  token?: string;
 }
 
 interface LoggedRequest extends TenantRequest {
   user?: UserEntity;
+  usuario?: UserEntity;
   empresa?: EmpresaEntity;
   parametros?: EmpresaParametroView;
 }

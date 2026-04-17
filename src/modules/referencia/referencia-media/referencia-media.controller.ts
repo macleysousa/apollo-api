@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -48,11 +48,16 @@ export class ReferenciaMediaController {
   }
 
   @Get()
+  @IsPublic()
   @ApiOperation({ summary: 'Lista mídias da referência' })
   @ApiParam({ name: 'referenciaId', type: Number })
   @ApiResponse({ status: 200, type: [ReferenciaMediaEntity] })
-  async find(@Param('referenciaId', ParseIntPipe) referenciaId: number): Promise<ReferenciaMediaEntity[]> {
-    return this.service.find(referenciaId);
+  async find(@Param('referenciaId', ParseIntPipe) referenciaId: number, @Req() request: any): Promise<ReferenciaMediaEntity[]> {
+    if (request?.usuario) {
+      return this.service.find(referenciaId);
+    }
+
+    return this.service.findPublic(referenciaId);
   }
 
   @Get('publicas')
