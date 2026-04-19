@@ -44,7 +44,7 @@ export class CreatePedidoDto {
 
   @ApiProperty({ format: 'date' })
   @IsOptional()
-  @IsDate({ message: 'O campo "dataBasePagamento" deve ser uma data válida' })
+  @IsDate({ message: 'O campo "previsaoDeEntrega" deve ser uma data válida' })
   previsaoDeEntrega?: Date;
 
   @ApiProperty({ enum: TipoPedido, default: TipoPedido.transferencia_saida })
